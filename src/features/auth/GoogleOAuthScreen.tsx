@@ -4,7 +4,9 @@ import * as AuthSession from 'expo-auth-session';
 import * as WebBrowser from 'expo-web-browser';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../types/navigation';
-import { googleLogin } from '../../services/authService';
+import { authService } from '../../services/authService';
+import { tokenStorage } from '../../utils/tokenStorage';
+import { getApiError } from '../../utils/apiError';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -45,9 +47,12 @@ export default function GoogleOAuthScreen({ navigation }: Props) {
     }
 
     setLoading(true);
-    googleLogin({ code, codeVerifier, redirectUri: REDIRECT_URI })
-      .then(() => navigation.replace('Success'))
-      .catch(() => setError('Authentication failed. Please try again.'))
+    authService.googleAuth({ code, codeVerifier, redirectUri: REDIRECT_URI })
+      .then(async res => {
+        await tokenStorage.set(res.token);
+        navigation.reset({ index: 0, routes: [{ name: res.isNewUser ? 'ProfileSetup' : 'Home' }] });
+      })
+      .catch(e => setError(getApiError(e)))
       .finally(() => setLoading(false));
   }, [response]);
 
@@ -60,24 +65,26 @@ export default function GoogleOAuthScreen({ navigation }: Props) {
       ) : (
         <TouchableOpacity
           style={[styles.button, !request && styles.buttonDisabled]}
-          onPress={() => {
-            setError(null);
-            promptAsync();
-          }}
+          onPress={() => { setError(null); promptAsync(); }}
           disabled={!request}
         >
           <Text style={styles.buttonText}>Sign in with Google</Text>
         </TouchableOpacity>
       )}
+      <TouchableOpacity style={styles.linkButton} onPress={() => navigation.goBack()}>
+        <Text style={styles.link}>Back</Text>
+      </TouchableOpacity>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center' },
-  title: { fontSize: 32, fontWeight: 'bold', marginBottom: 48 },
+  container: { flex: 1, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center', padding: 24 },
+  title: { fontSize: 32, fontWeight: 'bold', marginBottom: 48, color: '#111' },
   button: { backgroundColor: '#4285F4', paddingHorizontal: 24, paddingVertical: 14, borderRadius: 8 },
   buttonDisabled: { opacity: 0.5 },
   buttonText: { color: '#fff', fontSize: 16, fontWeight: '600' },
-  error: { color: 'red', marginBottom: 16, textAlign: 'center', paddingHorizontal: 24 },
+  error: { color: '#e53e3e', marginBottom: 16, textAlign: 'center' },
+  linkButton: { marginTop: 24 },
+  link: { color: '#666', fontSize: 14 },
 });
