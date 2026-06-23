@@ -2,6 +2,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types/navigation';
 import { tokenStorage } from '../utils/tokenStorage';
+import { FloatingBackground } from '../components/FloatingBackground';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
@@ -13,6 +14,7 @@ export default function HomeScreen({ navigation }: Props) {
 
   return (
     <View style={styles.container}>
+      <FloatingBackground />
       <Text style={styles.title}>Good boy! 🐕</Text>
       <Text style={styles.subtitle}>You're in. More screens coming soon.</Text>
       <TouchableOpacity style={styles.button} onPress={handleSignOut}>

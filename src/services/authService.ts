@@ -35,4 +35,7 @@ export const authService = {
 
   googleAuth: (payload: GoogleAuthPayload): Promise<AuthResponse> =>
     api.post<AuthResponse>('/auth/google', payload).then(r => r.data),
+
+  appleAuth: (identityToken: string): Promise<AuthResponse> =>
+    api.post<AuthResponse>('/auth/apple', { identityToken }).then(r => r.data),
 };

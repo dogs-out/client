@@ -5,13 +5,16 @@ import { RootStackParamList } from '../../types/navigation';
 import { authService } from '../../services/authService';
 import { tokenStorage } from '../../utils/tokenStorage';
 import { getApiError } from '../../utils/apiError';
+import { FloatingBackground } from '../../components/FloatingBackground';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'VerifyEmail'>;
 
 export default function VerifyEmailScreen({ route, navigation }: Props) {
-  const { email } = route.params;
+  const { email, name, password } = route.params;
   const [code, setCode] = useState('');
   const [loading, setLoading] = useState(false);
+  const [resending, setResending] = useState(false);
+  const [resent, setResent] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleVerify = async () => {
@@ -29,8 +32,24 @@ export default function VerifyEmailScreen({ route, navigation }: Props) {
     }
   };
 
+  const handleResend = async () => {
+    if (!name || !password) { navigation.goBack(); return; }
+    setResending(true);
+    setError(null);
+    try {
+      await authService.register(email, name, password);
+    } catch {
+      // 403 just means the email is already pending — code was resent, that's fine
+    } finally {
+      setResending(false);
+      setResent(true);
+      setTimeout(() => setResent(false), 4000);
+    }
+  };
+
   return (
     <View style={styles.container}>
+      <FloatingBackground />
       <Text style={styles.title}>Check your email</Text>
       <Text style={styles.subtitle}>
         We sent a 6-digit code to{'\n'}
@@ -58,9 +77,25 @@ export default function VerifyEmailScreen({ route, navigation }: Props) {
         </TouchableOpacity>
       )}
 
-      <TouchableOpacity style={styles.linkButton} onPress={() => navigation.goBack()}>
-        <Text style={styles.link}>Wrong email? Go back</Text>
-      </TouchableOpacity>
+      <View style={styles.footer}>
+        <TouchableOpacity
+          style={styles.linkButton}
+          onPress={handleResend}
+          disabled={resending}
+        >
+          {resending ? (
+            <ActivityIndicator size="small" />
+          ) : (
+            <Text style={[styles.link, resent && styles.linkSuccess]}>
+              {resent ? 'Code resent — check your inbox' : "Didn't get the code? Resend"}
+            </Text>
+          )}
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.linkButton} onPress={() => navigation.goBack()}>
+          <Text style={styles.link}>Wrong email? Go back</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -74,6 +109,8 @@ const styles = StyleSheet.create({
   input: { borderWidth: 1, borderColor: '#e0e0e0', borderRadius: 8, padding: 14, fontSize: 28, marginBottom: 16, letterSpacing: 8, color: '#111' },
   button: { backgroundColor: '#111', padding: 16, borderRadius: 8, alignItems: 'center', marginBottom: 12 },
   buttonText: { color: '#fff', fontSize: 16, fontWeight: '600' },
-  linkButton: { marginTop: 12, alignItems: 'center' },
+  footer: { marginTop: 8, gap: 8 },
+  linkButton: { alignItems: 'center', paddingVertical: 6 },
   link: { color: '#666', fontSize: 14 },
+  linkSuccess: { color: '#48bb78', fontWeight: '600' },
 });

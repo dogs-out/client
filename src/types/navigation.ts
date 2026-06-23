@@ -1,9 +1,8 @@
 export type RootStackParamList = {
   Login: undefined;
   Register: undefined;
-  VerifyEmail: { email: string };
+  VerifyEmail: { email: string; name?: string; password?: string };
   ForgotPassword: undefined;
-  GoogleOAuth: undefined;
   Home: undefined;
   ProfileSetup: undefined;
 };

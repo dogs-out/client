@@ -4,11 +4,11 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types/navigation';
 import { tokenStorage } from '../utils/tokenStorage';
+import { userService } from '../services/userService';
 import LoginScreen from '../features/auth/LoginScreen';
 import RegisterScreen from '../features/auth/RegisterScreen';
 import VerifyEmailScreen from '../features/auth/VerifyEmailScreen';
 import ForgotPasswordScreen from '../features/auth/ForgotPasswordScreen';
-import GoogleOAuthScreen from '../features/auth/GoogleOAuthScreen';
 import HomeScreen from '../screens/HomeScreen';
 import ProfileSetupScreen from '../screens/ProfileSetupScreen';
 
@@ -18,9 +18,19 @@ export default function Navigation() {
   const [initialRoute, setInitialRoute] = useState<keyof RootStackParamList | null>(null);
 
   useEffect(() => {
-    tokenStorage.get().then(token => {
-      setInitialRoute(token ? 'Home' : 'Login');
-    });
+    const resolve = async () => {
+      const token = await tokenStorage.get();
+      if (!token) { setInitialRoute('Login'); return; }
+      try {
+        const user = await userService.getMe();
+        setInitialRoute(user.dateOfBirth ? 'Home' : 'ProfileSetup');
+      } catch {
+        // Token is invalid or expired — clear it and send to login
+        await tokenStorage.remove();
+        setInitialRoute('Login');
+      }
+    };
+    resolve();
   }, []);
 
   if (!initialRoute) {
@@ -38,7 +48,6 @@ export default function Navigation() {
         <Stack.Screen name="Register" component={RegisterScreen} />
         <Stack.Screen name="VerifyEmail" component={VerifyEmailScreen} />
         <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
-        <Stack.Screen name="GoogleOAuth" component={GoogleOAuthScreen} />
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="ProfileSetup" component={ProfileSetupScreen} />
       </Stack.Navigator>

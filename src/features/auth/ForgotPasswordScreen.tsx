@@ -4,6 +4,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../types/navigation';
 import { authService } from '../../services/authService';
 import { getApiError } from '../../utils/apiError';
+import { FloatingBackground } from '../../components/FloatingBackground';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ForgotPassword'>;
 
@@ -30,6 +31,7 @@ export default function ForgotPasswordScreen({ navigation }: Props) {
   if (sent) {
     return (
       <View style={styles.container}>
+        <FloatingBackground />
         <Text style={styles.title}>Email sent</Text>
         <Text style={styles.subtitle}>Check your inbox for a link to reset your password.</Text>
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Login')}>
@@ -41,6 +43,7 @@ export default function ForgotPasswordScreen({ navigation }: Props) {
 
   return (
     <View style={styles.container}>
+      <FloatingBackground />
       <Text style={styles.title}>Forgot password</Text>
       <Text style={styles.subtitle}>Enter your email and we'll send you a reset link.</Text>
 

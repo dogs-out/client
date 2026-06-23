@@ -14,7 +14,23 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.dogsout.client",
+      "infoPlist": {
+        "CFBundleURLTypes": [
+          {
+            "CFBundleURLSchemes": [
+              "com.googleusercontent.apps.844535271431-3fiqhj3m9mpn8r2d3mtujae8kt1uecng"
+            ]
+          },
+          {
+            "CFBundleURLSchemes": [
+              "com.googleusercontent.apps.844535271431-3fiqhj3m9mpn8r2d3mtujae8kt1uecng"
+            ]
+          }
+        ],
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -29,7 +45,28 @@
     },
     "plugins": [
       "expo-web-browser",
-      "expo-secure-store"
-    ]
+      "expo-secure-store",
+      "expo-apple-authentication",
+      "expo-font",
+      "@react-native-community/datetimepicker",
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "DogsOut needs your location to show nearby dogs."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "DogsOut needs access to your photos to set a profile picture."
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "4c7cb57c-4d54-4ca3-bc97-346b2758f12f"
+      }
+    },
+    "owner": "moritzdav"
   }
 }
