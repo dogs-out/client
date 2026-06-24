@@ -13,6 +13,9 @@ import { authService } from '../../services/authService';
 import { tokenStorage } from '../../utils/tokenStorage';
 import { getApiError } from '../../utils/apiError';
 import { FloatingBackground } from '../../components/FloatingBackground';
+import { GlassCard } from '../../components/GlassCard';
+import { GlassButton } from '../../components/GlassButton';
+import { Colors } from '../../constants/colors';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -66,7 +69,7 @@ export default function LoginScreen({ navigation }: Props) {
     if (!code || !codeVerifier) { setError('Google sign-in failed. Please try again.'); return; }
     setLoading(true);
     setError(null);
-    authService.googleAuth({ code, codeVerifier, redirectUri: REDIRECT_URI })
+    authService.googleAuth({ code, codeVerifier, redirectUri: REDIRECT_URI, clientId: CLIENT_ID })
       .then(async res => {
         await tokenStorage.set(res.token);
         navigation.reset({ index: 0, routes: [{ name: res.isNewUser ? 'ProfileSetup' : 'Home' }] });
@@ -125,95 +128,105 @@ export default function LoginScreen({ navigation }: Props) {
   };
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+    <View style={styles.screen}>
       <FloatingBackground />
-      <Text style={styles.title}>Dogs Out</Text>
-      <Text style={styles.subtitle}>Sign in to your account</Text>
+      <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
 
-      {error && <Text style={styles.error}>{error}</Text>}
+        <Text style={styles.appTitle}>Dogs Out 🐕 🌳</Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        autoCapitalize="none"
-        keyboardType="email-address"
-        autoComplete="email"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-        autoComplete="password"
-      />
+        <GlassCard style={styles.card}>
+        <Text style={styles.title}>Welcome back</Text>
+        <Text style={styles.subtitle}>Sign in to your account</Text>
 
-      <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
-        <Text style={styles.forgotPassword}>Forgot password?</Text>
-      </TouchableOpacity>
+        {error && <Text style={styles.error}>{error}</Text>}
 
-      {loading ? (
-        <ActivityIndicator style={{ marginTop: 16 }} />
-      ) : (
-        <TouchableOpacity style={styles.button} onPress={handleLogin}>
-          <Text style={styles.buttonText}>Sign in</Text>
-        </TouchableOpacity>
-      )}
-
-      <View style={styles.dividerRow}>
-        <View style={styles.divider} />
-        <Text style={styles.dividerText}>or</Text>
-        <View style={styles.divider} />
-      </View>
-
-      <TouchableOpacity
-        style={[styles.button, styles.googleButton, !request && styles.buttonDisabled]}
-        onPress={() => { setError(null); promptAsync(); }}
-        disabled={!request || loading}
-      >
-        <View style={styles.buttonContent}>
-          <Ionicons name="logo-google" size={20} color="#fff" style={styles.buttonIcon} />
-          <Text style={styles.buttonText}>Sign in with Google</Text>
-        </View>
-      </TouchableOpacity>
-
-      {appleAvailable && (
-        <AppleAuthentication.AppleAuthenticationButton
-          buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
-          buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
-          cornerRadius={8}
-          style={styles.appleButton}
-          onPress={handleAppleSignIn}
+        <TextInput
+          style={styles.input}
+          placeholder="Email"
+          placeholderTextColor={Colors.textSecondary}
+          value={email}
+          onChangeText={setEmail}
+          autoCapitalize="none"
+          keyboardType="email-address"
+          autoComplete="email"
         />
-      )}
+        <TextInput
+          style={styles.input}
+          placeholder="Password"
+          placeholderTextColor={Colors.textSecondary}
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
+          autoComplete="password"
+        />
 
-      <TouchableOpacity style={styles.linkButton} onPress={() => navigation.navigate('Register')}>
-        <Text style={styles.link}>Don't have an account? <Text style={styles.linkBold}>Register</Text></Text>
-      </TouchableOpacity>
-    </KeyboardAvoidingView>
+        <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
+          <Text style={styles.forgotPassword}>Forgot password?</Text>
+        </TouchableOpacity>
+
+        {loading ? (
+          <ActivityIndicator style={{ marginTop: 16 }} color={Colors.primary} />
+        ) : (
+          <GlassButton onPress={handleLogin} style={styles.button}>
+            <Text style={styles.buttonText}>Sign in</Text>
+          </GlassButton>
+        )}
+
+        <View style={styles.dividerRow}>
+          <View style={styles.divider} />
+          <Text style={styles.dividerText}>or</Text>
+          <View style={styles.divider} />
+        </View>
+
+        <TouchableOpacity
+          style={[styles.googleButton, (!request || loading) && styles.googleButtonDisabled]}
+          onPress={() => { setError(null); promptAsync(); }}
+          disabled={!request || loading}
+        >
+          <Ionicons name="logo-google" size={20} color="#fff" style={styles.buttonIcon} />
+          <Text style={styles.googleButtonText}>Sign in with Google</Text>
+        </TouchableOpacity>
+
+        {appleAvailable && (
+          <AppleAuthentication.AppleAuthenticationButton
+            buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
+            buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
+            cornerRadius={8}
+            style={styles.appleButton}
+            onPress={handleAppleSignIn}
+          />
+        )}
+
+        <TouchableOpacity style={styles.linkButton} onPress={() => navigation.navigate('Register')}>
+          <Text style={styles.link}>Don't have an account? <Text style={styles.linkBold}>Register</Text></Text>
+        </TouchableOpacity>
+        </GlassCard>
+      </KeyboardAvoidingView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff', padding: 24, justifyContent: 'center' },
-  title: { fontSize: 32, fontWeight: 'bold', marginBottom: 8, color: '#111' },
-  subtitle: { fontSize: 16, color: '#666', marginBottom: 32 },
-  error: { color: '#e53e3e', marginBottom: 12, textAlign: 'center' },
-  input: { borderWidth: 1, borderColor: '#e0e0e0', borderRadius: 8, padding: 14, fontSize: 16, marginBottom: 12, color: '#111' },
-  forgotPassword: { color: '#666', textAlign: 'right', marginBottom: 20, fontSize: 14 },
-  button: { backgroundColor: '#111', padding: 16, borderRadius: 8, alignItems: 'center', marginBottom: 12 },
-  googleButton: { backgroundColor: '#4285F4' },
-  buttonDisabled: { opacity: 0.5 },
-  buttonContent: { flexDirection: 'row', alignItems: 'center' },
-  buttonIcon: { marginRight: 8 },
-  buttonText: { color: '#fff', fontSize: 16, fontWeight: '600' },
-  appleButton: { height: 50, width: '100%', marginBottom: 12 },
-  dividerRow: { flexDirection: 'row', alignItems: 'center', marginVertical: 8 },
-  divider: { flex: 1, height: 1, backgroundColor: '#e0e0e0' },
-  dividerText: { marginHorizontal: 12, color: '#999', fontSize: 14 },
-  linkButton: { marginTop: 4, alignItems: 'center' },
-  link: { color: '#666', fontSize: 14 },
-  linkBold: { color: '#111', fontWeight: '600' },
+  screen:         { flex: 1, backgroundColor: Colors.background },
+  container:      { flex: 1, padding: 24, justifyContent: 'center' },
+  appTitle:       { fontSize: 36, fontWeight: '800', color: Colors.primary, textAlign: 'center', marginBottom: 24, letterSpacing: 0 },
+  card:           { width: '100%' },
+  title:          { fontSize: 26, fontWeight: 'bold', color: Colors.text, marginBottom: 4 },
+  subtitle:       { fontSize: 15, color: Colors.textSecondary, marginBottom: 24 },
+  error:          { color: Colors.error, marginBottom: 12, textAlign: 'center', fontSize: 14 },
+  input:          { borderWidth: 1.5, borderColor: Colors.glass.inputBorder, borderRadius: 12, padding: 14, fontSize: 16, marginBottom: 12, color: Colors.text, backgroundColor: Colors.glass.inputBg, letterSpacing: 0 },
+  forgotPassword: { color: Colors.primary, textAlign: 'right', marginBottom: 20, fontSize: 14, fontWeight: '500' },
+  button:             { marginBottom: 12 },
+  buttonIcon:         { marginRight: 8 },
+  buttonText:         { color: Colors.text, fontSize: 16, fontWeight: '700' },
+  googleButton:       { backgroundColor: '#4285F4', height: 50, borderRadius: 8, alignItems: 'center', flexDirection: 'row', justifyContent: 'center', marginBottom: 12 },
+  googleButtonText:   { color: '#fff', fontSize: 16, fontWeight: '700' },
+  googleButtonDisabled: { opacity: 0.5 },
+  appleButton:    { height: 50, width: '100%', marginBottom: 12 },
+  dividerRow:     { flexDirection: 'row', alignItems: 'center', marginVertical: 8 },
+  divider:        { flex: 1, height: 1, backgroundColor: Colors.glass.divider },
+  dividerText:    { marginHorizontal: 12, color: Colors.textSecondary, fontSize: 14 },
+  linkButton:     { marginTop: 4, alignItems: 'center' },
+  link:           { color: Colors.textSecondary, fontSize: 14 },
+  linkBold:       { color: Colors.primary, fontWeight: '700' },
 });

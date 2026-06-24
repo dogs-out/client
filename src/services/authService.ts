@@ -15,6 +15,7 @@ export interface GoogleAuthPayload {
   code: string;
   codeVerifier: string;
   redirectUri: string;
+  clientId: string;
 }
 
 export const authService = {

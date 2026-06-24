@@ -6,6 +6,9 @@ import { authService } from '../../services/authService';
 import { tokenStorage } from '../../utils/tokenStorage';
 import { getApiError } from '../../utils/apiError';
 import { FloatingBackground } from '../../components/FloatingBackground';
+import { GlassCard } from '../../components/GlassCard';
+import { GlassButton } from '../../components/GlassButton';
+import { Colors } from '../../constants/colors';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'VerifyEmail'>;
 
@@ -48,69 +51,72 @@ export default function VerifyEmailScreen({ route, navigation }: Props) {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={styles.screen}>
       <FloatingBackground />
-      <Text style={styles.title}>Check your email</Text>
-      <Text style={styles.subtitle}>
-        We sent a 6-digit code to{'\n'}
-        <Text style={styles.emailText}>{email}</Text>
-      </Text>
+      <View style={styles.container}>
+      <GlassCard style={styles.card}>
+        <Text style={styles.title}>Check your email</Text>
+        <Text style={styles.subtitle}>
+          We sent a 6-digit code to{'\n'}
+          <Text style={styles.emailText}>{email}</Text>
+        </Text>
 
-      {error && <Text style={styles.error}>{error}</Text>}
+        {error && <Text style={styles.error}>{error}</Text>}
 
-      <TextInput
-        style={styles.input}
-        placeholder="000000"
-        value={code}
-        onChangeText={setCode}
-        keyboardType="number-pad"
-        maxLength={6}
-        textAlign="center"
-        autoFocus
-      />
+        <TextInput
+          style={styles.input}
+          placeholder="000000"
+          placeholderTextColor={Colors.textSecondary}
+          value={code}
+          onChangeText={setCode}
+          keyboardType="number-pad"
+          maxLength={6}
+          textAlign="center"
+          autoFocus
+        />
 
-      {loading ? (
-        <ActivityIndicator style={{ marginTop: 16 }} />
-      ) : (
-        <TouchableOpacity style={styles.button} onPress={handleVerify}>
-          <Text style={styles.buttonText}>Verify</Text>
-        </TouchableOpacity>
-      )}
+        {loading ? (
+          <ActivityIndicator style={{ marginTop: 16 }} color={Colors.primary} />
+        ) : (
+          <GlassButton onPress={handleVerify} style={styles.button}>
+            <Text style={styles.buttonText}>Verify</Text>
+          </GlassButton>
+        )}
 
-      <View style={styles.footer}>
-        <TouchableOpacity
-          style={styles.linkButton}
-          onPress={handleResend}
-          disabled={resending}
-        >
-          {resending ? (
-            <ActivityIndicator size="small" />
-          ) : (
-            <Text style={[styles.link, resent && styles.linkSuccess]}>
-              {resent ? 'Code resent — check your inbox' : "Didn't get the code? Resend"}
-            </Text>
-          )}
-        </TouchableOpacity>
+        <View style={styles.footer}>
+          <TouchableOpacity style={styles.linkButton} onPress={handleResend} disabled={resending}>
+            {resending ? (
+              <ActivityIndicator size="small" color={Colors.primary} />
+            ) : (
+              <Text style={[styles.link, resent && styles.linkSuccess]}>
+                {resent ? 'Code resent — check your inbox' : "Didn't get the code? Resend"}
+              </Text>
+            )}
+          </TouchableOpacity>
 
-        <TouchableOpacity style={styles.linkButton} onPress={() => navigation.goBack()}>
-          <Text style={styles.link}>Wrong email? Go back</Text>
-        </TouchableOpacity>
+          <TouchableOpacity style={styles.linkButton} onPress={() => navigation.goBack()}>
+            <Text style={styles.link}>Wrong email? Go back</Text>
+          </TouchableOpacity>
+        </View>
+      </GlassCard>
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff', padding: 24, justifyContent: 'center' },
-  title: { fontSize: 32, fontWeight: 'bold', marginBottom: 8, color: '#111' },
-  subtitle: { fontSize: 16, color: '#666', marginBottom: 32, lineHeight: 24 },
-  emailText: { color: '#111', fontWeight: '600' },
-  error: { color: '#e53e3e', marginBottom: 12, textAlign: 'center' },
-  input: { borderWidth: 1, borderColor: '#e0e0e0', borderRadius: 8, padding: 14, fontSize: 28, marginBottom: 16, letterSpacing: 8, color: '#111' },
-  button: { backgroundColor: '#111', padding: 16, borderRadius: 8, alignItems: 'center', marginBottom: 12 },
-  buttonText: { color: '#fff', fontSize: 16, fontWeight: '600' },
-  footer: { marginTop: 8, gap: 8 },
-  linkButton: { alignItems: 'center', paddingVertical: 6 },
-  link: { color: '#666', fontSize: 14 },
+  screen:      { flex: 1, backgroundColor: Colors.background },
+  container:   { flex: 1, padding: 24, justifyContent: 'center' },
+  card:        { width: '100%' },
+  title:       { fontSize: 26, fontWeight: 'bold', color: Colors.text, marginBottom: 4 },
+  subtitle:    { fontSize: 15, color: Colors.textSecondary, marginBottom: 24, lineHeight: 22 },
+  emailText:   { color: Colors.primary, fontWeight: '700' },
+  error:       { color: Colors.error, marginBottom: 12, textAlign: 'center', fontSize: 14 },
+  input:       { borderWidth: 1.5, borderColor: Colors.glass.inputBorder, borderRadius: 12, padding: 14, fontSize: 28, marginBottom: 16, letterSpacing: 0, color: Colors.text, backgroundColor: Colors.glass.inputBg, textAlign: 'center' },
+  button:      { marginBottom: 12 },
+  buttonText:  { color: Colors.text, fontSize: 16, fontWeight: '700' },
+  footer:      { marginTop: 8, gap: 8 },
+  linkButton:  { alignItems: 'center', paddingVertical: 6 },
+  link:        { color: Colors.textSecondary, fontSize: 14 },
   linkSuccess: { color: '#48bb78', fontWeight: '600' },
 });

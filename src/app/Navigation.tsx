@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { AxiosError } from 'axios';
 import { RootStackParamList } from '../types/navigation';
 import { tokenStorage } from '../utils/tokenStorage';
 import { userService } from '../services/userService';
@@ -24,9 +25,13 @@ export default function Navigation() {
       try {
         const user = await userService.getMe();
         setInitialRoute(user.dateOfBirth ? 'Home' : 'ProfileSetup');
-      } catch {
-        // Token is invalid or expired — clear it and send to login
-        await tokenStorage.remove();
+      } catch (e) {
+        const status = e instanceof AxiosError ? e.response?.status : null;
+        if (status === 401 || status === 403 || status === 404) {
+          // Token is invalid, expired, or references a deleted account — clear it
+          await tokenStorage.remove();
+        }
+        // Network errors / 5xx: preserve token, try again on next launch
         setInitialRoute('Login');
       }
     };

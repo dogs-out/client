@@ -9,6 +9,9 @@ import { RootStackParamList } from '../../types/navigation';
 import { authService } from '../../services/authService';
 import { getApiError } from '../../utils/apiError';
 import { FloatingBackground } from '../../components/FloatingBackground';
+import { GlassCard } from '../../components/GlassCard';
+import { GlassButton } from '../../components/GlassButton';
+import { Colors } from '../../constants/colors';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Register'>;
 
@@ -63,8 +66,10 @@ export default function RegisterScreen({ navigation }: Props) {
   };
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+    <View style={styles.screen}>
       <FloatingBackground />
+      <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      <GlassCard style={styles.card}>
       <Text style={styles.title}>Create account</Text>
       <Text style={styles.subtitle}>Join the Dogs Out community</Text>
 
@@ -117,32 +122,36 @@ export default function RegisterScreen({ navigation }: Props) {
       />
 
       {loading ? (
-        <ActivityIndicator style={{ marginTop: 16 }} />
+        <ActivityIndicator style={{ marginTop: 16 }} color={Colors.primary} />
       ) : (
-        <TouchableOpacity style={styles.button} onPress={handleRegister}>
+        <GlassButton onPress={handleRegister} style={styles.button}>
           <Text style={styles.buttonText}>Register</Text>
-        </TouchableOpacity>
+        </GlassButton>
       )}
 
       <TouchableOpacity style={styles.linkButton} onPress={() => navigation.navigate('Login')}>
         <Text style={styles.link}>Already have an account? <Text style={styles.linkBold}>Sign in</Text></Text>
       </TouchableOpacity>
-    </KeyboardAvoidingView>
+      </GlassCard>
+      </KeyboardAvoidingView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff', padding: 24, justifyContent: 'center' },
-  title: { fontSize: 32, fontWeight: 'bold', marginBottom: 8, color: '#111' },
-  subtitle: { fontSize: 16, color: '#666', marginBottom: 32 },
-  error: { color: '#e53e3e', marginBottom: 12, textAlign: 'center' },
-  input: { borderWidth: 1, borderColor: '#e0e0e0', borderRadius: 8, padding: 14, fontSize: 16, marginBottom: 12, color: '#111' },
-  strengthRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 12 },
-  strengthBar: { flex: 1, height: 4, borderRadius: 2 },
-  strengthLabel: { fontSize: 12, fontWeight: '600', width: 52 },
-  button: { backgroundColor: '#111', padding: 16, borderRadius: 8, alignItems: 'center', marginTop: 4, marginBottom: 12 },
-  buttonText: { color: '#fff', fontSize: 16, fontWeight: '600' },
-  linkButton: { marginTop: 12, alignItems: 'center' },
-  link: { color: '#666', fontSize: 14 },
-  linkBold: { color: '#111', fontWeight: '600' },
+  screen:       { flex: 1, backgroundColor: Colors.background },
+  container:    { flex: 1, padding: 24, justifyContent: 'center' },
+  card:         { width: '100%' },
+  title:        { fontSize: 26, fontWeight: 'bold', color: Colors.text, marginBottom: 4 },
+  subtitle:     { fontSize: 15, color: Colors.textSecondary, marginBottom: 24 },
+  error:        { color: Colors.error, marginBottom: 12, textAlign: 'center', fontSize: 14 },
+  input:        { borderWidth: 1.5, borderColor: Colors.glass.inputBorder, borderRadius: 12, padding: 14, fontSize: 16, marginBottom: 12, color: Colors.text, backgroundColor: Colors.glass.inputBg, letterSpacing: 0 },
+  strengthRow:  { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 12 },
+  strengthBar:  { flex: 1, height: 4, borderRadius: 2 },
+  strengthLabel:{ fontSize: 12, fontWeight: '600', width: 52 },
+  button:       { marginTop: 4, marginBottom: 12 },
+  buttonText:   { color: Colors.text, fontSize: 16, fontWeight: '700' },
+  linkButton:   { marginTop: 8, alignItems: 'center' },
+  link:         { color: Colors.textSecondary, fontSize: 14 },
+  linkBold:     { color: Colors.primary, fontWeight: '700' },
 });

@@ -13,6 +13,8 @@ import { RootStackParamList } from '../types/navigation';
 import { userService } from '../services/userService';
 import { getApiError } from '../utils/apiError';
 import { FloatingBackground } from '../components/FloatingBackground';
+import { GlassButton } from '../components/GlassButton';
+import { Colors } from '../constants/colors';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ProfileSetup'>;
 
@@ -116,13 +118,15 @@ export default function ProfileSetupScreen({ navigation }: Props) {
   })();
 
   return (
-    <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+    <View style={styles.flex}>
+      <FloatingBackground />
+      <View style={styles.dimOverlay} pointerEvents="none" />
+      <KeyboardAvoidingView style={styles.kav} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <ScrollView
-        style={styles.flex}
+        style={styles.kav}
         contentContainerStyle={styles.container}
         keyboardShouldPersistTaps="handled"
       >
-        <FloatingBackground />
 
         <Text style={styles.title}>Set up your profile</Text>
         <Text style={styles.subtitle}>Tell us a bit about yourself</Text>
@@ -171,36 +175,37 @@ export default function ProfileSetupScreen({ navigation }: Props) {
         </TouchableOpacity>
 
         <Text style={styles.label}>Location <Text style={styles.optional}>(optional)</Text></Text>
-        <TouchableOpacity
-          style={[styles.locationButton, location && styles.locationButtonActive]}
+        <GlassButton
           onPress={detectLocation}
           disabled={locating}
+          style={styles.locationButton}
         >
           {locating ? (
-            <ActivityIndicator size="small" color="#fff" />
+            <ActivityIndicator size="small" color={Colors.primary} />
           ) : (
             <>
               <Ionicons
                 name={location ? 'location' : 'location-outline'}
                 size={18}
-                color="#fff"
+                color={location ? '#48bb78' : Colors.text}
                 style={{ marginRight: 8 }}
               />
-              <Text style={styles.locationButtonText}>
+              <Text style={[styles.locationButtonText, location && styles.locationButtonTextActive]}>
                 {location ? 'Location detected' : 'Detect my location'}
               </Text>
             </>
           )}
-        </TouchableOpacity>
+        </GlassButton>
 
         {loading ? (
-          <ActivityIndicator style={{ marginTop: 24 }} />
+          <ActivityIndicator style={{ marginTop: 24 }} color={Colors.primary} />
         ) : (
-          <TouchableOpacity style={styles.button} onPress={handleContinue}>
+          <GlassButton onPress={handleContinue} style={styles.button}>
             <Text style={styles.buttonText}>Let's go 🐾</Text>
-          </TouchableOpacity>
+          </GlassButton>
         )}
       </ScrollView>
+      </KeyboardAvoidingView>
 
       {/* iOS date picker modal */}
       {Platform.OS === 'ios' && (
@@ -242,56 +247,52 @@ export default function ProfileSetupScreen({ navigation }: Props) {
           }}
         />
       )}
-    </KeyboardAvoidingView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1, backgroundColor: '#fff' },
+  flex: { flex: 1, backgroundColor: Colors.background },
+  dimOverlay: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(238,251,243,0.60)' },
+  kav: { flex: 1 },
   container: { padding: 24, paddingTop: 60, paddingBottom: 40 },
-  title: { fontSize: 28, fontWeight: 'bold', color: '#111', marginBottom: 4 },
-  subtitle: { fontSize: 16, color: '#666', marginBottom: 32 },
+  title: { fontSize: 28, fontWeight: 'bold', color: Colors.text, marginBottom: 4 },
+  subtitle: { fontSize: 16, color: Colors.textSecondary, marginBottom: 32 },
   avatarWrapper: { alignSelf: 'center', marginBottom: 32 },
   avatar: { width: 100, height: 100, borderRadius: 50 },
   avatarPlaceholder: {
     width: 100, height: 100, borderRadius: 50,
-    backgroundColor: '#f5f5f5', alignItems: 'center', justifyContent: 'center',
-    borderWidth: 1, borderColor: '#e0e0e0',
+    backgroundColor: 'rgba(46,158,107,0.08)', alignItems: 'center', justifyContent: 'center',
+    borderWidth: 1.5, borderColor: Colors.border,
   },
   avatarBadge: {
     position: 'absolute', bottom: 0, right: 0,
-    backgroundColor: '#111', borderRadius: 12, padding: 6,
+    backgroundColor: Colors.primary, borderRadius: 12, padding: 6,
   },
-  error: { color: '#e53e3e', marginBottom: 12, textAlign: 'center' },
-  label: { fontSize: 14, fontWeight: '600', color: '#111', marginBottom: 6 },
-  optional: { fontWeight: '400', color: '#999' },
+  error: { color: Colors.error, marginBottom: 12, textAlign: 'center' },
+  label: { fontSize: 14, fontWeight: '600', color: Colors.text, marginBottom: 6 },
+  optional: { fontWeight: '400', color: Colors.textSecondary },
   input: {
-    borderWidth: 1, borderColor: '#e0e0e0', borderRadius: 8,
-    padding: 14, fontSize: 16, marginBottom: 20, color: '#111',
-    backgroundColor: '#fff', justifyContent: 'center',
+    borderWidth: 1.5, borderColor: Colors.glass.inputBorder, borderRadius: 12,
+    padding: 14, fontSize: 16, marginBottom: 20, color: Colors.text,
+    backgroundColor: Colors.glass.inputBg, justifyContent: 'center', letterSpacing: 0,
   },
   bioInput: { height: 90 },
-  dateText: { fontSize: 16, color: '#111' },
-  datePlaceholder: { fontSize: 16, color: '#aaa' },
-  locationButton: {
-    flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
-    backgroundColor: '#666', padding: 14, borderRadius: 8, marginBottom: 32,
-  },
-  locationButtonActive: { backgroundColor: '#48bb78' },
-  locationButtonText: { color: '#fff', fontSize: 16, fontWeight: '600' },
-  button: {
-    backgroundColor: '#111', padding: 16, borderRadius: 8,
-    alignItems: 'center', marginTop: 4,
-  },
-  buttonText: { color: '#fff', fontSize: 16, fontWeight: '600' },
+  dateText: { fontSize: 16, color: Colors.text },
+  datePlaceholder: { fontSize: 16, color: Colors.textSecondary },
+  locationButton: { marginBottom: 32 },
+  locationButtonText: { color: Colors.text, fontSize: 16, fontWeight: '600' },
+  locationButtonTextActive: { color: '#48bb78' },
+  button: { marginTop: 4 },
+  buttonText: { color: Colors.text, fontSize: 16, fontWeight: '700' },
   modalOverlay: {
-    flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,0.4)',
+    flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(26,10,0,0.35)',
   },
-  modalContent: { backgroundColor: '#fff', borderTopLeftRadius: 16, borderTopRightRadius: 16 },
+  modalContent: { backgroundColor: Colors.background, borderTopLeftRadius: 20, borderTopRightRadius: 20 },
   modalHeader: {
     flexDirection: 'row', justifyContent: 'space-between',
-    padding: 16, borderBottomWidth: 1, borderBottomColor: '#e0e0e0',
+    padding: 16, borderBottomWidth: 1, borderBottomColor: Colors.border,
   },
-  modalCancel: { fontSize: 16, color: '#666' },
-  modalDone: { fontSize: 16, color: '#111', fontWeight: '600' },
+  modalCancel: { fontSize: 16, color: Colors.textSecondary },
+  modalDone: { fontSize: 16, color: Colors.primary, fontWeight: '700' },
 });

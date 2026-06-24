@@ -5,6 +5,9 @@ import { RootStackParamList } from '../../types/navigation';
 import { authService } from '../../services/authService';
 import { getApiError } from '../../utils/apiError';
 import { FloatingBackground } from '../../components/FloatingBackground';
+import { GlassCard } from '../../components/GlassCard';
+import { GlassButton } from '../../components/GlassButton';
+import { Colors } from '../../constants/colors';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ForgotPassword'>;
 
@@ -42,46 +45,53 @@ export default function ForgotPasswordScreen({ navigation }: Props) {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={styles.screen}>
       <FloatingBackground />
-      <Text style={styles.title}>Forgot password</Text>
-      <Text style={styles.subtitle}>Enter your email and we'll send you a reset link.</Text>
+      <View style={styles.container}>
+      <GlassCard style={styles.card}>
+        <Text style={styles.title}>Forgot password</Text>
+        <Text style={styles.subtitle}>Enter your email and we'll send you a reset link.</Text>
 
-      {error && <Text style={styles.error}>{error}</Text>}
+        {error && <Text style={styles.error}>{error}</Text>}
 
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        autoCapitalize="none"
-        keyboardType="email-address"
-        autoFocus
-      />
+        <TextInput
+          style={styles.input}
+          placeholder="Email"
+          placeholderTextColor={Colors.textSecondary}
+          value={email}
+          onChangeText={setEmail}
+          autoCapitalize="none"
+          keyboardType="email-address"
+          autoFocus
+        />
 
-      {loading ? (
-        <ActivityIndicator style={{ marginTop: 16 }} />
-      ) : (
-        <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-          <Text style={styles.buttonText}>Send reset email</Text>
+        {loading ? (
+          <ActivityIndicator style={{ marginTop: 16 }} color={Colors.primary} />
+        ) : (
+          <GlassButton onPress={handleSubmit} style={styles.button}>
+            <Text style={styles.buttonText}>Send reset email</Text>
+          </GlassButton>
+        )}
+
+        <TouchableOpacity style={styles.linkButton} onPress={() => navigation.goBack()}>
+          <Text style={styles.link}>Back to login</Text>
         </TouchableOpacity>
-      )}
-
-      <TouchableOpacity style={styles.linkButton} onPress={() => navigation.goBack()}>
-        <Text style={styles.link}>Back to login</Text>
-      </TouchableOpacity>
+      </GlassCard>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff', padding: 24, justifyContent: 'center' },
-  title: { fontSize: 32, fontWeight: 'bold', marginBottom: 8, color: '#111' },
-  subtitle: { fontSize: 16, color: '#666', marginBottom: 32 },
-  error: { color: '#e53e3e', marginBottom: 12, textAlign: 'center' },
-  input: { borderWidth: 1, borderColor: '#e0e0e0', borderRadius: 8, padding: 14, fontSize: 16, marginBottom: 16, color: '#111' },
-  button: { backgroundColor: '#111', padding: 16, borderRadius: 8, alignItems: 'center', marginBottom: 12 },
-  buttonText: { color: '#fff', fontSize: 16, fontWeight: '600' },
-  linkButton: { marginTop: 12, alignItems: 'center' },
-  link: { color: '#666', fontSize: 14 },
+  screen:     { flex: 1, backgroundColor: Colors.background },
+  container:  { flex: 1, padding: 24, justifyContent: 'center' },
+  card:       { width: '100%' },
+  title:      { fontSize: 26, fontWeight: 'bold', color: Colors.text, marginBottom: 4 },
+  subtitle:   { fontSize: 15, color: Colors.textSecondary, marginBottom: 24 },
+  error:      { color: Colors.error, marginBottom: 12, textAlign: 'center', fontSize: 14 },
+  input:      { borderWidth: 1.5, borderColor: Colors.glass.inputBorder, borderRadius: 12, padding: 14, fontSize: 16, marginBottom: 16, color: Colors.text, backgroundColor: Colors.glass.inputBg, letterSpacing: 0 },
+  button:     { marginBottom: 12 },
+  buttonText: { color: Colors.text, fontSize: 16, fontWeight: '700' },
+  linkButton: { marginTop: 8, alignItems: 'center' },
+  link:       { color: Colors.textSecondary, fontSize: 14 },
 });

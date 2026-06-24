@@ -25,7 +25,7 @@ export const getApiError = (error: unknown): string => {
     switch (error.response.status) {
       case 400: return 'Invalid request. Please check your details.';
       case 401: return 'Incorrect email or password.';
-      case 403: return 'Please verify your email before logging in.';
+      case 403: return 'Access denied. Please sign in again.';
       case 404: return 'No account found with that email.';
       case 409: return 'An account with this email already exists.';
       case 429: return 'Too many attempts. Please wait a moment and try again.';
