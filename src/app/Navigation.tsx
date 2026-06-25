@@ -10,8 +10,10 @@ import LoginScreen from '../features/auth/LoginScreen';
 import RegisterScreen from '../features/auth/RegisterScreen';
 import VerifyEmailScreen from '../features/auth/VerifyEmailScreen';
 import ForgotPasswordScreen from '../features/auth/ForgotPasswordScreen';
+import ResetPasswordScreen from '../features/auth/ResetPasswordScreen';
 import HomeScreen from '../screens/HomeScreen';
 import ProfileSetupScreen from '../screens/ProfileSetupScreen';
+import AddDogScreen from '../features/dogs/AddDogScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -53,8 +55,10 @@ export default function Navigation() {
         <Stack.Screen name="Register" component={RegisterScreen} />
         <Stack.Screen name="VerifyEmail" component={VerifyEmailScreen} />
         <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
+        <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} />
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="ProfileSetup" component={ProfileSetupScreen} />
+        <Stack.Screen name="AddDog" component={AddDogScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

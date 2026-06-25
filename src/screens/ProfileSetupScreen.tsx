@@ -100,7 +100,7 @@ export default function ProfileSetupScreen({ navigation }: Props) {
         longitude: location?.longitude,
         profilePicture: profilePicture ?? undefined,
       });
-      navigation.reset({ index: 0, routes: [{ name: 'Home' }] });
+      navigation.reset({ index: 0, routes: [{ name: 'AddDog', params: { fromOnboarding: true } }] });
     } catch (e) {
       setError(getApiError(e));
     } finally {
@@ -168,11 +168,26 @@ export default function ProfileSetupScreen({ navigation }: Props) {
         />
 
         <Text style={styles.label}>Date of birth</Text>
-        <TouchableOpacity style={styles.input} onPress={() => setShowPicker(true)}>
-          <Text style={dateOfBirth ? styles.dateText : styles.datePlaceholder}>
-            {dateOfBirth ? formatDate(dateOfBirth) : 'Select your date of birth'}
-          </Text>
-        </TouchableOpacity>
+        {Platform.OS === 'web' ? (
+          <View style={styles.input}>
+            {/* @ts-ignore — native HTML date input for web testing */}
+            <input
+              type="date"
+              max={new Date().toISOString().split('T')[0]}
+              value={dateOfBirth ? dateOfBirth.toISOString().split('T')[0] : ''}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                if (e.target.value) setDateOfBirth(new Date(e.target.value + 'T12:00:00'));
+              }}
+              style={{ border: 'none', background: 'transparent', fontSize: 16, color: Colors.text, width: '100%', outline: 'none', padding: 0 }}
+            />
+          </View>
+        ) : (
+          <TouchableOpacity style={styles.input} onPress={() => setShowPicker(true)}>
+            <Text style={dateOfBirth ? styles.dateText : styles.datePlaceholder}>
+              {dateOfBirth ? formatDate(dateOfBirth) : 'Select your date of birth'}
+            </Text>
+          </TouchableOpacity>
+        )}
 
         <Text style={styles.label}>Location <Text style={styles.optional}>(optional)</Text></Text>
         <GlassButton
@@ -253,7 +268,7 @@ export default function ProfileSetupScreen({ navigation }: Props) {
 
 const styles = StyleSheet.create({
   flex: { flex: 1, backgroundColor: Colors.background },
-  dimOverlay: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(238,251,243,0.60)' },
+  dimOverlay: { ...StyleSheet.absoluteFill, backgroundColor: 'rgba(238,251,243,0.60)' },
   kav: { flex: 1 },
   container: { padding: 24, paddingTop: 60, paddingBottom: 40 },
   title: { fontSize: 28, fontWeight: 'bold', color: Colors.text, marginBottom: 4 },

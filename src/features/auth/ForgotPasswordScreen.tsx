@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ActivityIndicator, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, View } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../types/navigation';
 import { authService } from '../../services/authService';
@@ -15,7 +15,6 @@ export default function ForgotPasswordScreen({ navigation }: Props) {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [sent, setSent] = useState(false);
 
   const handleSubmit = async () => {
     if (!email) { setError('Please enter your email.'); return; }
@@ -23,7 +22,7 @@ export default function ForgotPasswordScreen({ navigation }: Props) {
     setError(null);
     try {
       await authService.forgotPassword(email);
-      setSent(true);
+      navigation.navigate('ResetPassword', { email });
     } catch (e) {
       setError(getApiError(e));
     } finally {
@@ -31,26 +30,13 @@ export default function ForgotPasswordScreen({ navigation }: Props) {
     }
   };
 
-  if (sent) {
-    return (
-      <View style={styles.container}>
-        <FloatingBackground />
-        <Text style={styles.title}>Email sent</Text>
-        <Text style={styles.subtitle}>Check your inbox for a link to reset your password.</Text>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Login')}>
-          <Text style={styles.buttonText}>Back to login</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }
-
   return (
     <View style={styles.screen}>
       <FloatingBackground />
-      <View style={styles.container}>
+      <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <GlassCard style={styles.card}>
         <Text style={styles.title}>Forgot password</Text>
-        <Text style={styles.subtitle}>Enter your email and we'll send you a reset link.</Text>
+        <Text style={styles.subtitle}>Enter your email and we'll send you a reset token.</Text>
 
         {error && <Text style={styles.error}>{error}</Text>}
 
@@ -77,7 +63,7 @@ export default function ForgotPasswordScreen({ navigation }: Props) {
           <Text style={styles.link}>Back to login</Text>
         </TouchableOpacity>
       </GlassCard>
-      </View>
+      </KeyboardAvoidingView>
     </View>
   );
 }
