@@ -16,7 +16,7 @@ export default function DiscoverScreen() {
 
 const styles = StyleSheet.create({
   screen:     { flex: 1, backgroundColor: Colors.background, alignItems: 'center', justifyContent: 'center' },
-  dimOverlay: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(238,251,243,0.60)', pointerEvents: 'none' },
+  dimOverlay: { ...StyleSheet.absoluteFill, backgroundColor: 'rgba(238,251,243,0.60)', pointerEvents: 'none' },
   emoji:      { fontSize: 56, marginBottom: 16 },
   title:      { fontSize: 28, fontWeight: '800', color: Colors.text, marginBottom: 8 },
   subtitle:   { fontSize: 16, color: Colors.textSecondary },

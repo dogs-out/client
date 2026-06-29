@@ -135,7 +135,7 @@ export default function SettingsScreen({ navigation }: Props) {
 
 const styles = StyleSheet.create({
   safe:       { flex: 1, backgroundColor: Colors.background },
-  dimOverlay: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(238,251,243,0.60)', pointerEvents: 'none' },
+  dimOverlay: { ...StyleSheet.absoluteFill, backgroundColor: 'rgba(238,251,243,0.60)', pointerEvents: 'none' },
   header:     { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingTop: 8, paddingBottom: 4 },
   headerTitle:{ fontSize: 16, fontWeight: '700', color: Colors.text },
   scroll:     { padding: 20, paddingTop: 12 },
