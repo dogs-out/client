@@ -11,6 +11,7 @@ import { dogService, Dog } from '../../services/dogService';
 import { userService, UserProfile } from '../../services/userService';
 import { Colors } from '../../constants/colors';
 import { FloatingBackground } from '../../components/FloatingBackground';
+import { GlassTabBar } from '../../components/GlassTabBar';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'SwipePreview'>;
 
@@ -246,6 +247,8 @@ export default function SwipePreviewScreen({ navigation }: Props) {
           <Text style={styles.toastText}>{swipeResult === 'treat' ? 'Treat! 🦴' : 'No treat 🚫'}</Text>
         </View>
       )}
+
+      <GlassTabBar activeTab="Profile" />
     </SafeAreaView>
   );
 }
@@ -258,7 +261,7 @@ const styles = StyleSheet.create({
   hintNo:      { color: '#e53e3e', fontWeight: '600' },
   hintYes:     { color: Colors.primary, fontWeight: '600' },
 
-  cardWrap: { alignItems: 'center', paddingHorizontal: 16 },
+  cardWrap: { alignItems: 'center', paddingHorizontal: 16, paddingBottom: 100 },
   card: {
     width: CARD_W, height: CARD_H, borderRadius: 22, overflow: 'hidden',
     backgroundColor: '#111',

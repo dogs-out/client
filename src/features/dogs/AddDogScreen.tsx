@@ -11,7 +11,7 @@ export default function AddDogScreen({ navigation, route }: Props) {
       fromOnboarding={fromOnboarding}
       onSaved={() => {
         if (fromOnboarding) {
-          navigation.reset({ index: 0, routes: [{ name: 'Home' }] });
+          navigation.reset({ index: 0, routes: [{ name: 'MainTabs' }] });
         } else {
           navigation.goBack();
         }
