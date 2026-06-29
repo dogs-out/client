@@ -6,5 +6,6 @@ export type RootStackParamList = {
   ResetPassword: { email: string };
   Home: undefined;
   ProfileSetup: undefined;
+  EditProfile: undefined;
   AddDog: { fromOnboarding?: boolean };
 };
