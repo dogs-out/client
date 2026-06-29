@@ -19,8 +19,7 @@ export function GlassCard({ children, style, padding = 28 }: Props) {
           locations={[0, 0.45, 1]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
-          style={StyleSheet.absoluteFill}
-          pointerEvents="none"
+          style={[StyleSheet.absoluteFill, { pointerEvents: 'none' }]}
         />
         <View style={{ padding }}>
           {children}

@@ -8,4 +8,6 @@ export type RootStackParamList = {
   ProfileSetup: undefined;
   EditProfile: undefined;
   AddDog: { fromOnboarding?: boolean };
+  EditDog: { dogId: number };
+  SwipePreview: undefined;
 };

@@ -163,12 +163,12 @@ EXPO_PUBLIC_MAPS_API_KEY=
 ## Current Status
 - [x] Expo project initialised (SDK 54)
 - [x] GitHub Actions CI with SonarCloud
-- [ ] Navigation setup (React Navigation)
-- [ ] Axios API service
-- [ ] Auth screens (Login, Register)
-- [ ] Google OAuth
-- [ ] Dog profile screens
-- [ ] Swipe/matching interface
+- [x] Navigation setup (React Navigation)
+- [x] Axios API service
+- [x] Auth screens (Login, Register)
+- [x] Google OAuth
+- [x] Dog profile screens (add, edit, delete, photos, personality, tags)
+- [ ] Swipe/matching interface (Discover screen + matching API)
 - [ ] Chat with WebSockets
 - [ ] Map view
 - [ ] Push notifications

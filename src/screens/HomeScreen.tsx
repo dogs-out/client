@@ -66,7 +66,7 @@ export default function HomeScreen({ navigation }: Props) {
   return (
     <View style={styles.screen}>
       <FloatingBackground />
-      <View style={styles.dimOverlay} pointerEvents="none" />
+      <View style={styles.dimOverlay} />
 
       <ScrollView
         contentContainerStyle={styles.scroll}
@@ -113,12 +113,14 @@ export default function HomeScreen({ navigation }: Props) {
         {/* Dogs section */}
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>My Dogs</Text>
-          <TouchableOpacity
-            style={styles.addDogButton}
-            onPress={() => navigation.navigate('AddDog', {})}
-          >
-            <Ionicons name="add-circle" size={28} color={Colors.primary} />
-          </TouchableOpacity>
+          {dogs.length < 3 && (
+            <TouchableOpacity
+              style={styles.addDogButton}
+              onPress={() => navigation.navigate('AddDog', {})}
+            >
+              <Ionicons name="add-circle" size={28} color={Colors.primary} />
+            </TouchableOpacity>
+          )}
         </View>
 
         {dogs.length === 0 ? (
@@ -132,36 +134,51 @@ export default function HomeScreen({ navigation }: Props) {
             </GlassButton>
           </GlassCard>
         ) : (
-          dogs.map(dog => (
-            <GlassCard key={dog.id} style={styles.dogCard} padding={0}>
-              <View style={styles.dogRow}>
-                {dog.profilePicture ? (
-                  <Image source={{ uri: dog.profilePicture }} style={styles.dogPhoto} />
-                ) : (
-                  <View style={styles.dogPhotoPlaceholder}>
-                    <Text style={styles.dogEmoji}>🐶</Text>
+          <>
+            {dogs.map(dog => {
+              const coverPhoto = dog.photos[0]?.imageData ?? dog.profilePicture;
+              return (
+                <GlassCard key={dog.id} style={styles.dogCard} padding={0}>
+                  <View style={styles.dogRow}>
+                    {coverPhoto ? (
+                      <Image source={{ uri: coverPhoto }} style={styles.dogPhoto} />
+                    ) : (
+                      <View style={styles.dogPhotoPlaceholder}>
+                        <Text style={styles.dogEmoji}>🐶</Text>
+                      </View>
+                    )}
+                    <View style={styles.dogInfo}>
+                      <Text style={styles.dogName}>{dog.name}</Text>
+                      <View style={styles.dogMeta}>
+                        {dog.breed && <Text style={styles.dogMetaText}>{dog.breed}</Text>}
+                        {dog.breed && dog.dateOfBirth != null && <Text style={styles.dogMetaDot}> · </Text>}
+                        {dog.dateOfBirth != null && (() => {
+                          const age = Math.floor((Date.now() - new Date(dog.dateOfBirth).getTime()) / (1000 * 60 * 60 * 24 * 365.25));
+                          return <Text style={styles.dogMetaText}>{age} yr{age !== 1 ? 's' : ''}</Text>;
+                        })()}
+                      </View>
+                      {dog.bio && <Text style={styles.dogBio} numberOfLines={2}>{dog.bio}</Text>}
+                    </View>
                   </View>
-                )}
-                <View style={styles.dogInfo}>
-                  <Text style={styles.dogName}>{dog.name}</Text>
-                  <View style={styles.dogMeta}>
-                    {dog.breed && (
-                      <Text style={styles.dogMetaText}>{dog.breed}</Text>
-                    )}
-                    {dog.breed && dog.age != null && (
-                      <Text style={styles.dogMetaDot}> · </Text>
-                    )}
-                    {dog.age != null && (
-                      <Text style={styles.dogMetaText}>{dog.age} yr{dog.age !== 1 ? 's' : ''}</Text>
-                    )}
+                  <View style={styles.dogActions}>
+                    <TouchableOpacity style={styles.dogAction} onPress={() => navigation.navigate('EditDog', { dogId: dog.id })}>
+                      <Ionicons name="pencil-outline" size={15} color={Colors.textSecondary} style={{ marginRight: 4 }} />
+                      <Text style={[styles.dogActionText, { color: Colors.textSecondary }]}>Edit</Text>
+                    </TouchableOpacity>
                   </View>
-                  {dog.bio && (
-                    <Text style={styles.dogBio} numberOfLines={2}>{dog.bio}</Text>
-                  )}
-                </View>
-              </View>
-            </GlassCard>
-          ))
+                </GlassCard>
+              );
+            })}
+          </>
+        )}
+
+        {dogs.length > 0 && (
+          <GlassButton onPress={() => navigation.navigate('SwipePreview')} style={styles.previewButton}>
+            <Ionicons name="eye-outline" size={17} color={Colors.text} style={{ marginRight: 8 }} />
+            <Text style={styles.previewButtonText}>
+              Preview my {dogs.length === 1 ? 'Dog' : 'Dogs'}
+            </Text>
+          </GlassButton>
         )}
 
         <View style={styles.bottomPad} />
@@ -173,7 +190,7 @@ export default function HomeScreen({ navigation }: Props) {
 const styles = StyleSheet.create({
   screen:       { flex: 1, backgroundColor: Colors.background },
   centered:     { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: Colors.background },
-  dimOverlay:   { ...StyleSheet.absoluteFill, backgroundColor: 'rgba(238,251,243,0.60)' },
+  dimOverlay:   { ...StyleSheet.absoluteFill, backgroundColor: 'rgba(238,251,243,0.60)', pointerEvents: 'none' },
   scroll:       { padding: 24, paddingTop: 60, paddingBottom: 40 },
 
   headerRow:    { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 },
@@ -206,21 +223,27 @@ const styles = StyleSheet.create({
   addFirstButton: {},
   addFirstButtonText: { fontSize: 15, fontWeight: '600', color: Colors.text },
 
-  dogCard:      { marginBottom: 12 },
-  dogRow:       { flexDirection: 'row', alignItems: 'center', padding: 16 },
+  dogCard:        { marginBottom: 12 },
+  dogRow:         { flexDirection: 'row', alignItems: 'center', padding: 16 },
+  dogActions:     { flexDirection: 'row', borderTopWidth: 1, borderTopColor: Colors.border, paddingHorizontal: 16, paddingVertical: 10, gap: 16 },
+  dogAction:      { flexDirection: 'row', alignItems: 'center' },
+  dogActionText:  { fontSize: 13, fontWeight: '600', color: Colors.primary },
   dogPhoto:     { width: 72, height: 72, borderRadius: 36, marginRight: 16 },
   dogPhotoPlaceholder: {
     width: 72, height: 72, borderRadius: 36,
-    backgroundColor: 'rgba(46,158,107,0.08)', alignItems: 'center', justifyContent: 'center',
-    borderWidth: 1.5, borderColor: Colors.border, marginRight: 16,
+    backgroundColor: 'rgba(46,158,107,0.15)', alignItems: 'center', justifyContent: 'center',
+    borderWidth: 2, borderColor: Colors.primary, marginRight: 16,
   },
-  dogEmoji:     { fontSize: 32 },
+  dogEmoji:     { fontSize: 30 },
   dogInfo:      { flex: 1 },
   dogName:      { fontSize: 18, fontWeight: '700', color: Colors.text, marginBottom: 4 },
   dogMeta:      { flexDirection: 'row', alignItems: 'center', marginBottom: 4 },
   dogMetaText:  { fontSize: 13, color: Colors.textSecondary },
   dogMetaDot:   { fontSize: 13, color: Colors.textSecondary },
   dogBio:       { fontSize: 13, color: Colors.text, lineHeight: 18 },
+
+  previewButton:     { marginTop: 8, marginBottom: 4 },
+  previewButtonText: { fontSize: 15, fontWeight: '700', color: Colors.text },
 
   bottomPad:    { height: 16 },
 });
