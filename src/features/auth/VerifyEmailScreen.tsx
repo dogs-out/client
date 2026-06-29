@@ -27,7 +27,7 @@ export default function VerifyEmailScreen({ route, navigation }: Props) {
     try {
       const res = await authService.verifyEmail(email, code);
       await tokenStorage.set(res.token);
-      navigation.reset({ index: 0, routes: [{ name: res.isNewUser ? 'ProfileSetup' : 'Home' }] });
+      navigation.reset({ index: 0, routes: [{ name: res.isNewUser ? 'ProfileSetup' : 'MainTabs' }] });
     } catch (e) {
       setError(getApiError(e));
     } finally {

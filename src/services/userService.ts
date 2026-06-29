@@ -45,4 +45,6 @@ export const userService = {
     api.post<UserPhoto>('/users/me/photos', { imageData }).then(r => r.data),
   deletePhoto: (photoId: number): Promise<void> =>
     api.delete(`/users/me/photos/${photoId}`).then(() => {}),
+  deleteAccount: (): Promise<void> =>
+    api.delete('/users/me').then(() => {}),
 };

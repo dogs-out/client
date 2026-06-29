@@ -28,10 +28,10 @@ function getPasswordStrength(pwd: string): Strength {
   return                                    { level: 3, label: 'Strong', color: '#48bb78' };
 }
 
-export default function RegisterScreen({ navigation }: Props) {
+export default function RegisterScreen({ navigation, route }: Props) {
   const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState(route.params?.prefillEmail ?? '');
+  const [password, setPassword] = useState(route.params?.prefillPassword ?? '');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

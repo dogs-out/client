@@ -5,17 +5,22 @@ import {
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
+import { CompositeScreenProps } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { RootStackParamList } from '../types/navigation';
+import { MainTabParamList } from '../app/TabNavigator';
 import { userService, UserProfile } from '../services/userService';
 import { dogService, Dog } from '../services/dogService';
-import { tokenStorage } from '../utils/tokenStorage';
 import { FloatingBackground } from '../components/FloatingBackground';
 import { GlassCard } from '../components/GlassCard';
 import { GlassButton } from '../components/GlassButton';
 import { Colors } from '../constants/colors';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
+type Props = CompositeScreenProps<
+  BottomTabScreenProps<MainTabParamList, 'Profile'>,
+  NativeStackScreenProps<RootStackParamList>
+>;
 
 export default function HomeScreen({ navigation }: Props) {
   const [user, setUser]             = useState<UserProfile | null>(null);
@@ -42,11 +47,6 @@ export default function HomeScreen({ navigation }: Props) {
   useFocusEffect(useCallback(() => { load(); }, []));
 
   const onRefresh = () => { setRefreshing(true); load(); };
-
-  const handleSignOut = async () => {
-    await tokenStorage.remove();
-    navigation.reset({ index: 0, routes: [{ name: 'Login' }] });
-  };
 
   const formatAge = (dob: string | null) => {
     if (!dob) return null;
@@ -76,8 +76,8 @@ export default function HomeScreen({ navigation }: Props) {
         {/* Header row */}
         <View style={styles.headerRow}>
           <Text style={styles.pageTitle}>My Profile</Text>
-          <TouchableOpacity onPress={handleSignOut} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
-            <Ionicons name="log-out-outline" size={24} color={Colors.textSecondary} />
+          <TouchableOpacity onPress={() => navigation.navigate('Settings')} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
+            <Ionicons name="settings-outline" size={24} color={Colors.textSecondary} />
           </TouchableOpacity>
         </View>
 
@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
   screen:       { flex: 1, backgroundColor: Colors.background },
   centered:     { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: Colors.background },
   dimOverlay:   { ...StyleSheet.absoluteFill, backgroundColor: 'rgba(238,251,243,0.60)', pointerEvents: 'none' },
-  scroll:       { padding: 24, paddingTop: 60, paddingBottom: 40 },
+  scroll:       { padding: 24, paddingTop: 60, paddingBottom: 120 },
 
   headerRow:    { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 },
   pageTitle:    { fontSize: 30, fontWeight: '800', color: Colors.text },

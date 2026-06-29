@@ -9,6 +9,7 @@ import * as WebBrowser from 'expo-web-browser';
 import * as AppleAuthentication from 'expo-apple-authentication';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../types/navigation';
+import { AxiosError } from 'axios';
 import { authService } from '../../services/authService';
 import { tokenStorage } from '../../utils/tokenStorage';
 import { getApiError } from '../../utils/apiError';
@@ -72,7 +73,7 @@ export default function LoginScreen({ navigation }: Props) {
     authService.googleAuth({ code, codeVerifier, redirectUri: REDIRECT_URI, clientId: CLIENT_ID })
       .then(async res => {
         await tokenStorage.set(res.token);
-        navigation.reset({ index: 0, routes: [{ name: res.isNewUser ? 'ProfileSetup' : 'Home' }] });
+        navigation.reset({ index: 0, routes: [{ name: res.isNewUser ? 'ProfileSetup' : 'MainTabs' }] });
       })
       .catch(e => setError(getApiError(e)))
       .finally(() => setLoading(false));
@@ -85,9 +86,14 @@ export default function LoginScreen({ navigation }: Props) {
     try {
       const res = await authService.login(email, password);
       await tokenStorage.set(res.token);
-      navigation.reset({ index: 0, routes: [{ name: res.isNewUser ? 'ProfileSetup' : 'Home' }] });
+      navigation.reset({ index: 0, routes: [{ name: res.isNewUser ? 'ProfileSetup' : 'MainTabs' }] });
     } catch (e) {
-      setError(getApiError(e));
+      const status = e instanceof AxiosError ? e.response?.status : null;
+      if (status === 404) {
+        navigation.navigate('Register', { prefillEmail: email, prefillPassword: password });
+      } else {
+        setError(getApiError(e));
+      }
     } finally {
       setLoading(false);
     }
@@ -119,7 +125,7 @@ export default function LoginScreen({ navigation }: Props) {
     try {
       const res = await authService.appleAuth(credential.identityToken);
       await tokenStorage.set(res.token);
-      navigation.reset({ index: 0, routes: [{ name: res.isNewUser ? 'ProfileSetup' : 'Home' }] });
+      navigation.reset({ index: 0, routes: [{ name: res.isNewUser ? 'ProfileSetup' : 'MainTabs' }] });
     } catch (e) {
       setError(getApiError(e));
     } finally {

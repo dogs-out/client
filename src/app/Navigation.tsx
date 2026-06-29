@@ -11,12 +11,13 @@ import RegisterScreen from '../features/auth/RegisterScreen';
 import VerifyEmailScreen from '../features/auth/VerifyEmailScreen';
 import ForgotPasswordScreen from '../features/auth/ForgotPasswordScreen';
 import ResetPasswordScreen from '../features/auth/ResetPasswordScreen';
-import HomeScreen from '../screens/HomeScreen';
 import ProfileSetupScreen from '../screens/ProfileSetupScreen';
 import EditProfileScreen from '../features/profile/EditProfileScreen';
+import SettingsScreen from '../features/profile/SettingsScreen';
 import AddDogScreen from '../features/dogs/AddDogScreen';
 import EditDogScreen from '../features/dogs/EditDogScreen';
 import SwipePreviewScreen from '../features/dogs/SwipePreviewScreen';
+import TabNavigator from './TabNavigator';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -29,14 +30,12 @@ export default function Navigation() {
       if (!token) { setInitialRoute('Login'); return; }
       try {
         const user = await userService.getMe();
-        setInitialRoute(user.dateOfBirth ? 'Home' : 'ProfileSetup');
+        setInitialRoute(user.dateOfBirth ? 'MainTabs' : 'ProfileSetup');
       } catch (e) {
         const status = e instanceof AxiosError ? e.response?.status : null;
         if (status === 401 || status === 403 || status === 404) {
-          // Token is invalid, expired, or references a deleted account — clear it
           await tokenStorage.remove();
         }
-        // Network errors / 5xx: preserve token, try again on next launch
         setInitialRoute('Login');
       }
     };
@@ -54,17 +53,21 @@ export default function Navigation() {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName={initialRoute} screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="Register" component={RegisterScreen} />
-        <Stack.Screen name="VerifyEmail" component={VerifyEmailScreen} />
+        {/* Auth */}
+        <Stack.Screen name="Login"          component={LoginScreen} />
+        <Stack.Screen name="Register"       component={RegisterScreen} />
+        <Stack.Screen name="VerifyEmail"    component={VerifyEmailScreen} />
         <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
-        <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} />
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="ProfileSetup" component={ProfileSetupScreen} />
-        <Stack.Screen name="EditProfile" component={EditProfileScreen} />
-        <Stack.Screen name="AddDog" component={AddDogScreen} />
-        <Stack.Screen name="EditDog" component={EditDogScreen} />
-        <Stack.Screen name="SwipePreview" component={SwipePreviewScreen} />
+        <Stack.Screen name="ResetPassword"  component={ResetPasswordScreen} />
+        <Stack.Screen name="ProfileSetup"   component={ProfileSetupScreen} />
+        {/* Main app */}
+        <Stack.Screen name="MainTabs"       component={TabNavigator} />
+        {/* Modal/stack screens accessible from any tab */}
+        <Stack.Screen name="EditProfile"    component={EditProfileScreen} />
+        <Stack.Screen name="Settings"       component={SettingsScreen} />
+        <Stack.Screen name="AddDog"         component={AddDogScreen} />
+        <Stack.Screen name="EditDog"        component={EditDogScreen} />
+        <Stack.Screen name="SwipePreview"   component={SwipePreviewScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
