@@ -38,9 +38,14 @@ export default function RegisterScreen({ navigation }: Props) {
 
   const strength = getPasswordStrength(password);
 
+  const NAME_REGEX = /^[a-zA-ZÀ-ÿ\s'\-]+$/;
+
   const handleRegister = async () => {
     if (!name || !email || !password || !confirmPassword) {
       setError('Please fill in all fields.'); return;
+    }
+    if (!NAME_REGEX.test(name.trim())) {
+      setError('Name may only contain letters, spaces, hyphens, and apostrophes.'); return;
     }
     if (password !== confirmPassword) {
       setError('Passwords do not match.'); return;

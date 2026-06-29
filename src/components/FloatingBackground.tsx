@@ -100,7 +100,7 @@ function FloatingShape({ cfg, sw, sh }: { cfg: ShapeConfig; sw: number; sh: numb
 export function FloatingBackground() {
   const { width, height } = useWindowDimensions();
   return (
-    <View style={StyleSheet.absoluteFill} pointerEvents="none">
+    <View style={[StyleSheet.absoluteFill, { pointerEvents: 'none' }]}>
       {SHAPES.map((s, i) => (
         <FloatingShape key={i} cfg={s} sw={width} sh={height} />
       ))}

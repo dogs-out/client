@@ -1,23 +1,43 @@
 import api from './api';
 
+export interface DogPhoto {
+  id: number;
+  imageData: string;
+  sortOrder: number;
+}
+
 export interface Dog {
   id: number;
   name: string;
   breed: string | null;
-  age: number | null;
+  dateOfBirth: string | null;
   bio: string | null;
   profilePicture: string | null;
   ownerId: number;
   ownerName: string;
+  ownerProfilePicture: string | null;
   createdAt: string;
+  energyLevel: number | null;
+  socialBehavior: string | null;
+  loves: string[];
+  offLeash: string | null;
+  kidsComfort: number | null;
+  tags: string[];
+  photos: DogPhoto[];
 }
 
 export interface DogPayload {
   name: string;
   breed?: string;
-  age?: number;
+  dateOfBirth?: string;
   bio?: string;
   profilePicture?: string;
+  energyLevel?: number;
+  socialBehavior?: string;
+  loves?: string[];
+  offLeash?: string;
+  kidsComfort?: number;
+  tags?: string[];
 }
 
 export const dogService = {
@@ -36,15 +56,24 @@ export const dogService = {
   deleteDog: (id: number): Promise<void> =>
     api.delete(`/dogs/${id}`).then(() => undefined),
 
-  uploadImage: async (uri: string): Promise<string> => {
-    const formData = new FormData();
-    const filename = uri.split('/').pop() ?? 'photo.jpg';
-    const match = /\.(\w+)$/.exec(filename);
-    const type = match ? `image/${match[1]}` : 'image/jpeg';
-    formData.append('file', { uri, name: filename, type } as unknown as Blob);
-    const res = await api.post<{ url: string }>('/upload/image', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
+  addPhoto: (dogId: number, imageData: string): Promise<DogPhoto> =>
+    api.post<DogPhoto>(`/dogs/${dogId}/photos`, { imageData }).then(r => r.data),
+
+  deletePhoto: (dogId: number, photoId: number): Promise<void> =>
+    api.delete(`/dogs/${dogId}/photos/${photoId}`).then(() => undefined),
+
+  pickImageAsBase64: async (uri: string): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.onload = () => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result as string);
+        reader.readAsDataURL(xhr.response);
+      };
+      xhr.onerror = reject;
+      xhr.open('GET', uri);
+      xhr.responseType = 'blob';
+      xhr.send();
     });
-    return res.data.url;
   },
 };
