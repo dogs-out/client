@@ -21,25 +21,25 @@ export function GlassTabBar({ activeTab }: Props) {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   return (
-    <View style={styles.wrapper} pointerEvents="box-none">
-      <BlurView intensity={60} tint="light" style={styles.blur}>
-        <View style={styles.tabBar}>
+    <View style={glassTabBarStyles.wrapper} pointerEvents="box-none">
+      <BlurView intensity={60} tint="light" style={glassTabBarStyles.blur}>
+        <View style={glassTabBarStyles.tabBar}>
           {TABS.map(tab => {
             const focused = tab.name === activeTab;
             return (
               <TouchableOpacity
                 key={tab.name}
-                style={styles.tab}
+                style={glassTabBarStyles.tab}
                 activeOpacity={0.7}
                 onPress={() => navigation.navigate('MainTabs', { screen: tab.name } as any)}
               >
-                <View style={[styles.tabInner, focused && styles.tabInnerActive]}>
+                <View style={[glassTabBarStyles.tabInner, focused && glassTabBarStyles.tabInnerActive]}>
                   <Ionicons
                     name={(focused ? tab.iconActive : tab.icon) as any}
                     size={22}
                     color={focused ? Colors.primary : Colors.textSecondary}
                   />
-                  <Text style={[styles.tabLabel, focused && styles.tabLabelActive]}>
+                  <Text style={[glassTabBarStyles.tabLabel, focused && glassTabBarStyles.tabLabelActive]}>
                     {tab.label}
                   </Text>
                 </View>
@@ -52,7 +52,7 @@ export function GlassTabBar({ activeTab }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
+export const glassTabBarStyles = StyleSheet.create({
   wrapper: {
     position: 'absolute', bottom: 0, left: 0, right: 0,
     paddingBottom: Platform.OS === 'ios' ? 24 : 8,

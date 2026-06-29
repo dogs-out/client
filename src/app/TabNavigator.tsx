@@ -1,10 +1,11 @@
-import { Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 import { createBottomTabNavigator, BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { BlurView } from 'expo-blur';
 import { Ionicons } from '@expo/vector-icons';
 import DiscoverScreen from '../features/matching/DiscoverScreen';
 import ChatsScreen from '../features/chat/ChatsScreen';
 import HomeScreen from '../screens/HomeScreen';
+import { glassTabBarStyles as styles } from '../components/GlassTabBar';
 import { Colors } from '../constants/colors';
 
 export type MainTabParamList = {
@@ -23,7 +24,7 @@ const TAB_ITEMS: { name: keyof MainTabParamList; label: string; icon: string; ic
 
 function GlassTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   return (
-    <View style={styles.tabBarWrapper}>
+    <View style={styles.wrapper}>
       <BlurView intensity={60} tint="light" style={styles.blur}>
         <View style={styles.tabBar}>
           {state.routes.map((route, index) => {
@@ -75,28 +76,3 @@ export default function TabNavigator() {
   );
 }
 
-const styles = StyleSheet.create({
-  tabBarWrapper: {
-    position: 'absolute', bottom: 0, left: 0, right: 0,
-    paddingBottom: Platform.OS === 'ios' ? 24 : 8,
-  },
-  blur: {
-    marginHorizontal: 16,
-    marginBottom: Platform.OS === 'ios' ? 0 : 8,
-    borderRadius: 24,
-    overflow: 'hidden',
-    borderWidth: 1.5,
-    borderColor: Colors.glass.border,
-  },
-  tabBar: {
-    flexDirection: 'row',
-    paddingVertical: 10,
-    paddingHorizontal: 8,
-    backgroundColor: Colors.glass.overlay,
-  },
-  tab:            { flex: 1, alignItems: 'center' },
-  tabInner:       { alignItems: 'center', paddingVertical: 6, paddingHorizontal: 16, borderRadius: 16, gap: 3 },
-  tabInnerActive: { backgroundColor: 'rgba(46,158,107,0.12)' },
-  tabLabel:       { fontSize: 11, fontWeight: '600', color: Colors.textSecondary },
-  tabLabelActive: { color: Colors.primary },
-});
