@@ -11,6 +11,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { userService, UserPhoto } from '../../services/userService';
 import { OWNER_LIFESTYLE_TAGS, OWNER_PERSONALITY_TAGS, RELATIONSHIP_STATUS_OPTIONS } from '../../constants/tags';
 import { getApiError } from '../../utils/apiError';
+import { containsProfanity } from '../../utils/profanityFilter';
 import { FloatingBackground } from '../../components/FloatingBackground';
 import { GlassButton } from '../../components/GlassButton';
 import { Colors } from '../../constants/colors';
@@ -118,8 +119,11 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: P
   const handleSubmit = async () => {
     if (!name.trim()) { setError('Please enter your name.'); return; }
     if (!NAME_REGEX.test(name.trim())) { setError('Name may only contain letters, spaces, hyphens, and apostrophes.'); return; }
+    if (containsProfanity(name)) { setError('Your name contains inappropriate language.'); return; }
     if (!dateOfBirth) { setError('Please select your date of birth.'); return; }
     if (!isOldEnough(dateOfBirth)) { setError('You must be at least 18 years old to use Dogs Out.'); return; }
+    if (!location) { setError('Location is required — tap "Detect my location" to allow access.'); return; }
+    if (bio && containsProfanity(bio)) { setError('Your bio contains inappropriate language.'); return; }
     setLoading(true);
     setError(null);
     try {
@@ -254,7 +258,7 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: P
             </TouchableOpacity>
           )}
 
-          <Text style={styles.label}>Location <Text style={styles.optional}>(optional)</Text></Text>
+          <Text style={styles.label}>Location</Text>
           <GlassButton onPress={detectLocation} disabled={locating} style={styles.locationButton}>
             {locating ? (
               <ActivityIndicator size="small" color={Colors.primary} />

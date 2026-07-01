@@ -9,6 +9,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from '@expo/vector-icons';
 import { dogService, DogPhoto } from '../../services/dogService';
 import { getApiError } from '../../utils/apiError';
+import { containsProfanity } from '../../utils/profanityFilter';
 import { FloatingBackground } from '../../components/FloatingBackground';
 import { GlassCard } from '../../components/GlassCard';
 import { GlassButton } from '../../components/GlassButton';
@@ -115,6 +116,8 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Pr
   const handleSave = async () => {
     if (!name.trim()) { setError('Your dog needs a name.'); return; }
     if (!NAME_REGEX.test(name.trim())) { setError('Name may only contain letters, spaces, hyphens, and apostrophes.'); return; }
+    if (containsProfanity(name)) { setError('Your dog\'s name contains inappropriate language.'); return; }
+    if (bio && containsProfanity(bio)) { setError('Your dog\'s bio contains inappropriate language.'); return; }
     setLoading(true);
     setError(null);
     try {
