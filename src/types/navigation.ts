@@ -11,4 +11,7 @@ export type RootStackParamList = {
   AddDog: { fromOnboarding?: boolean };
   EditDog: { dogId: number };
   SwipePreview: undefined;
+  DiscoverFilters: undefined;
+  ChangePassword: undefined;
+  ChatDetail: { matchId: number; otherUserId: number; name: string; profilePicture: string | null };
 };

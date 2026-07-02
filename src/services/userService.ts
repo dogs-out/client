@@ -22,6 +22,11 @@ export interface UserProfile {
   relationshipStatus: string | null;
   createdAt: string;
   photos: UserPhoto[];
+  maxDistanceKm: number | null;
+  minAge: number | null;
+  maxAge: number | null;
+  minDogAge: number | null;
+  maxDogAge: number | null;
 }
 
 export interface UpdateProfilePayload {
@@ -34,6 +39,11 @@ export interface UpdateProfilePayload {
   lifestyleTags?: string[];
   personalityTags?: string[];
   relationshipStatus?: string;
+  maxDistanceKm?: number | null;
+  minAge?: number | null;
+  maxAge?: number | null;
+  minDogAge?: number | null;
+  maxDogAge?: number | null;
 }
 
 export const userService = {
@@ -45,6 +55,8 @@ export const userService = {
     api.post<UserPhoto>('/users/me/photos', { imageData }).then(r => r.data),
   deletePhoto: (photoId: number): Promise<void> =>
     api.delete(`/users/me/photos/${photoId}`).then(() => {}),
+  changePassword: (currentPassword: string, newPassword: string): Promise<void> =>
+    api.put('/users/me/password', { currentPassword, newPassword }).then(() => {}),
   deleteAccount: (): Promise<void> =>
     api.delete('/users/me').then(() => {}),
 };

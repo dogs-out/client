@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { Alert, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
@@ -18,6 +19,14 @@ type SettingsRow = {
 };
 
 export default function SettingsScreen({ navigation }: Props) {
+  const [isLocalAuth, setIsLocalAuth] = useState(true);
+
+  useEffect(() => {
+    userService.getMe()
+      .then(u => setIsLocalAuth(u.authProvider !== 'GOOGLE' && u.authProvider !== 'APPLE'))
+      .catch(() => {});
+  }, []);
+
   const handleSignOut = () => {
     Alert.alert('Sign out', 'Are you sure you want to sign out?', [
       { text: 'Cancel', style: 'cancel' },
@@ -33,10 +42,16 @@ export default function SettingsScreen({ navigation }: Props) {
 
   const sections: { title: string; rows: SettingsRow[] }[] = [
     {
+      title: 'Discover',
+      rows: [
+        { icon: 'options-outline', label: 'Discovery preferences', onPress: () => navigation.navigate('DiscoverFilters') },
+      ],
+    },
+    {
       title: 'Account',
       rows: [
         { icon: 'person-outline',        label: 'Edit profile',        onPress: () => navigation.navigate('EditProfile') },
-        { icon: 'lock-closed-outline',   label: 'Change password',     onPress: () => {} },
+        ...(isLocalAuth ? [{ icon: 'lock-closed-outline', label: 'Change password', onPress: () => navigation.navigate('ChangePassword') }] : []),
         { icon: 'notifications-outline', label: 'Notifications',       onPress: () => {} },
       ],
     },
