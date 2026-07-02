@@ -1,4 +1,5 @@
 import api from './api';
+import { tokenStorage } from '../utils/tokenStorage';
 
 export interface UserPhoto {
   id: number;
@@ -55,8 +56,11 @@ export const userService = {
     api.post<UserPhoto>('/users/me/photos', { imageData }).then(r => r.data),
   deletePhoto: (photoId: number): Promise<void> =>
     api.delete(`/users/me/photos/${photoId}`).then(() => {}),
-  changePassword: (currentPassword: string, newPassword: string): Promise<void> =>
-    api.put('/users/me/password', { currentPassword, newPassword }).then(() => {}),
+  changePassword: async (currentPassword: string, newPassword: string): Promise<void> => {
+    // The server revokes all previous tokens and returns a fresh one
+    const { data } = await api.put<{ token: string }>('/users/me/password', { currentPassword, newPassword });
+    if (data?.token) await tokenStorage.set(data.token);
+  },
   deleteAccount: (): Promise<void> =>
     api.delete('/users/me').then(() => {}),
 };

@@ -29,10 +29,17 @@ export default function ChatDetailScreen() {
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  // Bumped on every send so an in-flight poll from before the send
+  // can't overwrite the list and briefly swallow the new bubble
+  const sendSeqRef = useRef(0);
 
   const load = useCallback(() => {
+    const seq = sendSeqRef.current;
     chatService.getMessages(matchId)
-      .then(data => setMessages([...data].reverse()))  // inverted list wants newest first
+      .then(data => {
+        if (seq !== sendSeqRef.current) return; // stale response, a send happened meanwhile
+        setMessages([...data].reverse()); // inverted list wants newest first
+      })
       .catch(() => {})
       .finally(() => setLoading(false));
   }, [matchId]);
@@ -56,6 +63,7 @@ export default function ChatDetailScreen() {
     setSending(true);
     chatService.sendMessage(matchId, content)
       .then(msg => {
+        sendSeqRef.current++;
         setDraft('');
         setMessages(prev => [msg, ...prev]);
       })

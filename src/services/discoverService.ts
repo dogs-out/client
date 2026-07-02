@@ -5,7 +5,7 @@ import { UserPhoto } from './userService';
 export interface DiscoverProfile {
   userId: number;
   name: string;
-  dateOfBirth: string | null;
+  age: number | null;
   bio: string | null;
   profilePicture: string | null;
   photos: UserPhoto[];
