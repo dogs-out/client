@@ -1,12 +1,16 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
-  Animated, Dimensions, Image, PanResponder,
+  Animated, Dimensions, Easing, Image, PanResponder,
   SafeAreaView, StyleSheet, Text, TouchableOpacity, View, ActivityIndicator,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { discoverService, DiscoverProfile } from '../../services/discoverService';
 import { Dog } from '../../services/dogService';
+import { userService } from '../../services/userService';
+import { RootStackParamList } from '../../types/navigation';
 import { Colors } from '../../constants/colors';
 import { FloatingBackground } from '../../components/FloatingBackground';
 import { GlassTabBar } from '../../components/GlassTabBar';
@@ -38,7 +42,116 @@ function buildFlatPhotos(profile: DiscoverProfile): FlatPhoto[] {
   });
 }
 
+/** US-06: dog jumps up, catches the bone mid-air, lands and wags. */
+function BoneCatchOverlay({ onDone }: { onDone: () => void }) {
+  const fade      = useRef(new Animated.Value(0)).current;
+  const dogY      = useRef(new Animated.Value(0)).current;
+  const wag       = useRef(new Animated.Value(0)).current;
+  const boneY     = useRef(new Animated.Value(-110)).current;
+  const boneScale = useRef(new Animated.Value(1)).current;
+
+  useEffect(() => {
+    Animated.sequence([
+      Animated.timing(fade, { toValue: 1, duration: 100, useNativeDriver: true }),
+      // bone drops while the dog jumps up to meet it
+      Animated.parallel([
+        Animated.timing(boneY, { toValue: -34, duration: 330, easing: Easing.in(Easing.quad), useNativeDriver: true }),
+        Animated.timing(dogY,  { toValue: -44, duration: 330, easing: Easing.out(Easing.quad), useNativeDriver: true }),
+      ]),
+      // caught! bone vanishes, dog springs back down
+      Animated.parallel([
+        Animated.timing(boneScale, { toValue: 0, duration: 130, useNativeDriver: true }),
+        Animated.spring(dogY, { toValue: 0, friction: 4, useNativeDriver: true }),
+      ]),
+      // happy wiggle
+      Animated.timing(wag, { toValue: 1,  duration: 90, useNativeDriver: true }),
+      Animated.timing(wag, { toValue: -1, duration: 90, useNativeDriver: true }),
+      Animated.timing(wag, { toValue: 1,  duration: 90, useNativeDriver: true }),
+      Animated.timing(wag, { toValue: 0,  duration: 90, useNativeDriver: true }),
+      Animated.timing(fade, { toValue: 0, duration: 200, delay: 60, useNativeDriver: true }),
+    ]).start(() => onDone());
+  }, [fade, dogY, wag, boneY, boneScale, onDone]);
+
+  const wagRotate = wag.interpolate({ inputRange: [-1, 1], outputRange: ['-14deg', '14deg'] });
+
+  return (
+    <Animated.View style={[styles.boneCatchOverlay, { opacity: fade }]} pointerEvents="none">
+      <Animated.Text style={[styles.boneCatchBone, { transform: [{ translateY: boneY }, { scale: boneScale }] }]}>
+        🦴
+      </Animated.Text>
+      <Animated.Text style={[styles.boneCatchDog, { transform: [{ translateY: dogY }, { rotate: wagRotate }] }]}>
+        🐕
+      </Animated.Text>
+    </Animated.View>
+  );
+}
+
+/** US-07: two dogs run to each other, hearts pop, chat CTA. */
+function MatchOverlay({ profile, myPicture, onChat, onDismiss }: {
+  profile: DiscoverProfile;
+  myPicture: string | null;
+  onChat: () => void;
+  onDismiss: () => void;
+}) {
+  const fade        = useRef(new Animated.Value(0)).current;
+  const titleScale  = useRef(new Animated.Value(0.3)).current;
+  const leftDogX    = useRef(new Animated.Value(-SW / 2)).current;
+  const rightDogX   = useRef(new Animated.Value(SW / 2)).current;
+  const heartsScale = useRef(new Animated.Value(0)).current;
+  const restOpacity = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.sequence([
+      Animated.parallel([
+        Animated.timing(fade, { toValue: 1, duration: 200, useNativeDriver: true }),
+        Animated.spring(titleScale, { toValue: 1, friction: 5, useNativeDriver: true }),
+      ]),
+      Animated.parallel([
+        Animated.spring(leftDogX,  { toValue: 0, friction: 6, tension: 50, useNativeDriver: true }),
+        Animated.spring(rightDogX, { toValue: 0, friction: 6, tension: 50, useNativeDriver: true }),
+      ]),
+      Animated.spring(heartsScale, { toValue: 1, friction: 4, useNativeDriver: true }),
+      Animated.timing(restOpacity, { toValue: 1, duration: 250, useNativeDriver: true }),
+    ]).start();
+  }, [fade, titleScale, leftDogX, rightDogX, heartsScale, restOpacity]);
+
+  return (
+    <Animated.View style={[styles.matchOverlay, { opacity: fade }]}>
+      <Animated.Text style={[styles.matchTitle, { transform: [{ scale: titleScale }] }]}>
+        It's a Match! 🐾
+      </Animated.Text>
+
+      <View style={styles.matchDogsRow}>
+        <Animated.Text style={[styles.matchDog, { transform: [{ translateX: leftDogX }] }]}>🐕</Animated.Text>
+        <Animated.Text style={[styles.matchHearts, { transform: [{ scale: heartsScale }] }]}>💞</Animated.Text>
+        <Animated.Text style={[styles.matchDog, { transform: [{ translateX: rightDogX }, { scaleX: -1 }] }]}>🐕</Animated.Text>
+      </View>
+
+      <Animated.View style={{ opacity: restOpacity, alignItems: 'center' }}>
+        <View style={styles.matchAvatarRow}>
+          {myPicture
+            ? <Image source={{ uri: myPicture }} style={styles.matchAvatar} resizeMode="cover" />
+            : <View style={[styles.matchAvatar, styles.photoPlaceholder]}><Text style={{ fontSize: 36 }}>👤</Text></View>
+          }
+          {profile.profilePicture
+            ? <Image source={{ uri: profile.profilePicture }} style={styles.matchAvatar} resizeMode="cover" />
+            : <View style={[styles.matchAvatar, styles.photoPlaceholder]}><Text style={{ fontSize: 36 }}>👤</Text></View>
+          }
+        </View>
+        <Text style={styles.matchSub}>{profile.name} also gave you a treat!</Text>
+        <TouchableOpacity style={styles.matchBtn} onPress={onChat}>
+          <Text style={styles.matchBtnText}>Chat now 💬</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.matchSecondaryBtn} onPress={onDismiss}>
+          <Text style={styles.matchSecondaryText}>Keep Swiping</Text>
+        </TouchableOpacity>
+      </Animated.View>
+    </Animated.View>
+  );
+}
+
 export default function DiscoverScreen() {
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [feed, setFeed] = useState<DiscoverProfile[]>([]);
   const [idx, setIdx] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -46,8 +159,14 @@ export default function DiscoverScreen() {
   const [showOwner, setShowOwner] = useState(false);
   const [photoIndex, setPhotoIndex] = useState(0);
   const [ownerPhotoIndex, setOwnerPhotoIndex] = useState(0);
-  const [matchProfile, setMatchProfile] = useState<DiscoverProfile | null>(null);
+  const [matchInfo, setMatchInfo] = useState<{ profile: DiscoverProfile; matchId: number } | null>(null);
+  const [showBoneCatch, setShowBoneCatch] = useState(false);
+  const [myPicture, setMyPicture] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    userService.getMe().then(u => setMyPicture(u.profilePicture)).catch(() => {});
+  }, []);
 
   const pan = useRef(new Animated.ValueXY()).current;
   const treatOpacity   = pan.x.interpolate({ inputRange: [30, 100],   outputRange: [0, 1], extrapolate: 'clamp' });
@@ -81,15 +200,28 @@ export default function DiscoverScreen() {
     if (!profile) return;
 
     setSwiping(true);
+    if (action === 'LIKE') setShowBoneCatch(true);
     const toX = action === 'LIKE' ? SW + 100 : -SW - 100;
 
     Animated.timing(pan, { toValue: { x: toX, y: dy }, duration: 280, useNativeDriver: false }).start(() => {
       discoverService.swipe(profile.userId, action)
-        .then(res => { if (res.match) setMatchProfile(profile); })
+        .then(res => { if (res.match) setMatchInfo({ profile, matchId: res.matchId }); })
         .catch(() => {})
         .finally(() => advanceCard());
     });
   }, [swiping, feed, idx, pan, advanceCard]);
+
+  const openMatchChat = useCallback(() => {
+    if (!matchInfo) return;
+    const { profile, matchId } = matchInfo;
+    setMatchInfo(null);
+    navigation.navigate('ChatDetail', {
+      matchId,
+      otherUserId: profile.userId,
+      name: profile.name,
+      profilePicture: profile.profilePicture,
+    });
+  }, [matchInfo, navigation]);
 
   const panResponder = useRef(
     PanResponder.create({
@@ -323,21 +455,17 @@ export default function DiscoverScreen() {
         </TouchableOpacity>
       </View>
 
-      {/* Match overlay */}
-      {matchProfile && (
-        <View style={styles.matchOverlay}>
-          <Text style={styles.matchTitle}>It's a Match! 🐾</Text>
-          <View style={styles.matchAvatarRow}>
-            {matchProfile.profilePicture
-              ? <Image source={{ uri: matchProfile.profilePicture }} style={styles.matchAvatar} resizeMode="cover" />
-              : <View style={[styles.matchAvatar, styles.photoPlaceholder]}><Text style={{ fontSize: 36 }}>👤</Text></View>
-            }
-          </View>
-          <Text style={styles.matchSub}>{matchProfile.name} also gave you a treat!</Text>
-          <TouchableOpacity style={styles.matchBtn} onPress={() => setMatchProfile(null)}>
-            <Text style={styles.matchBtnText}>Keep Swiping</Text>
-          </TouchableOpacity>
-        </View>
+      {/* Bone catch animation (US-06) */}
+      {showBoneCatch && <BoneCatchOverlay onDone={() => setShowBoneCatch(false)} />}
+
+      {/* Match overlay (US-07) */}
+      {matchInfo && (
+        <MatchOverlay
+          profile={matchInfo.profile}
+          myPicture={myPicture}
+          onChat={openMatchChat}
+          onDismiss={() => setMatchInfo(null)}
+        />
       )}
 
       <GlassTabBar activeTab="Discover" />
@@ -428,10 +556,22 @@ const styles = StyleSheet.create({
     alignItems: 'center', justifyContent: 'center',
     zIndex: 100, paddingHorizontal: 32,
   },
-  matchTitle:    { fontSize: 36, fontWeight: '900', color: '#fff', marginBottom: 24, textAlign: 'center' },
+  matchTitle:    { fontSize: 36, fontWeight: '900', color: '#fff', marginBottom: 16, textAlign: 'center' },
+  matchDogsRow:  { flexDirection: 'row', alignItems: 'center', gap: 4, marginBottom: 16 },
+  matchDog:      { fontSize: 56 },
+  matchHearts:   { fontSize: 36, marginHorizontal: 2 },
   matchAvatarRow: { flexDirection: 'row', gap: 16, marginBottom: 20 },
-  matchAvatar:   { width: 120, height: 120, borderRadius: 60, borderWidth: 3, borderColor: Colors.primary },
-  matchSub:      { fontSize: 16, color: 'rgba(255,255,255,0.80)', textAlign: 'center', marginBottom: 32 },
+  matchAvatar:   { width: 110, height: 110, borderRadius: 55, borderWidth: 3, borderColor: Colors.primary },
+  matchSub:      { fontSize: 16, color: 'rgba(255,255,255,0.80)', textAlign: 'center', marginBottom: 28 },
   matchBtn:      { backgroundColor: Colors.primary, paddingHorizontal: 40, paddingVertical: 14, borderRadius: 28 },
   matchBtnText:  { color: '#fff', fontWeight: '800', fontSize: 17 },
+  matchSecondaryBtn:  { marginTop: 14, paddingHorizontal: 24, paddingVertical: 10 },
+  matchSecondaryText: { color: 'rgba(255,255,255,0.75)', fontWeight: '700', fontSize: 15 },
+
+  boneCatchOverlay: {
+    ...StyleSheet.absoluteFill,
+    alignItems: 'center', justifyContent: 'center', zIndex: 90,
+  },
+  boneCatchBone: { fontSize: 44 },
+  boneCatchDog:  { fontSize: 72 },
 });

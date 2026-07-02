@@ -13,4 +13,5 @@ export type RootStackParamList = {
   SwipePreview: undefined;
   DiscoverFilters: undefined;
   ChangePassword: undefined;
+  ChatDetail: { matchId: number; otherUserId: number; name: string; profilePicture: string | null };
 };
