@@ -5,15 +5,15 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { discoverService, DiscoverProfile } from '../../services/discoverService';
 import { Dog } from '../../services/dogService';
 import { userService } from '../../services/userService';
+import { getDiscoverFiltersVersion } from '../../utils/discoverFilters';
 import { RootStackParamList } from '../../types/navigation';
 import { Colors } from '../../constants/colors';
 import { FloatingBackground } from '../../components/FloatingBackground';
-import { GlassTabBar } from '../../components/GlassTabBar';
 
 const { width: SW } = Dimensions.get('window');
 const CARD_W = SW - 32;
@@ -50,6 +50,11 @@ function BoneCatchOverlay({ onDone }: { onDone: () => void }) {
   const boneY     = useRef(new Animated.Value(-110)).current;
   const boneScale = useRef(new Animated.Value(1)).current;
 
+  // Keep the callback out of the effect deps so parent re-renders
+  // (advanceCard fires mid-animation) can't restart the sequence
+  const onDoneRef = useRef(onDone);
+  useEffect(() => { onDoneRef.current = onDone; }, [onDone]);
+
   useEffect(() => {
     Animated.sequence([
       Animated.timing(fade, { toValue: 1, duration: 100, useNativeDriver: true }),
@@ -69,8 +74,9 @@ function BoneCatchOverlay({ onDone }: { onDone: () => void }) {
       Animated.timing(wag, { toValue: 1,  duration: 90, useNativeDriver: true }),
       Animated.timing(wag, { toValue: 0,  duration: 90, useNativeDriver: true }),
       Animated.timing(fade, { toValue: 0, duration: 200, delay: 60, useNativeDriver: true }),
-    ]).start(() => onDone());
-  }, [fade, dogY, wag, boneY, boneScale, onDone]);
+    ]).start(() => onDoneRef.current());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const wagRotate = wag.interpolate({ inputRange: [-1, 1], outputRange: ['-14deg', '14deg'] });
 
@@ -113,7 +119,8 @@ function MatchOverlay({ profile, myPicture, onChat, onDismiss }: {
       Animated.spring(heartsScale, { toValue: 1, friction: 4, useNativeDriver: true }),
       Animated.timing(restOpacity, { toValue: 1, duration: 250, useNativeDriver: true }),
     ]).start();
-  }, [fade, titleScale, leftDogX, rightDogX, heartsScale, restOpacity]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Animated.View style={[styles.matchOverlay, { opacity: fade }]}>
@@ -185,6 +192,17 @@ export default function DiscoverScreen() {
 
   useEffect(() => { loadFeed(); }, [loadFeed]);
 
+  // Reload the deck when the user saved new discovery filters while this tab stayed mounted
+  const filtersVersionRef = useRef(getDiscoverFiltersVersion());
+  useFocusEffect(
+    useCallback(() => {
+      if (filtersVersionRef.current !== getDiscoverFiltersVersion()) {
+        filtersVersionRef.current = getDiscoverFiltersVersion();
+        loadFeed();
+      }
+    }, [loadFeed])
+  );
+
   const advanceCard = useCallback(() => {
     setIdx(i => i + 1);
     setPhotoIndex(0);
@@ -223,13 +241,18 @@ export default function DiscoverScreen() {
     });
   }, [matchInfo, navigation]);
 
+  // The PanResponder is created once, so route its release through a ref —
+  // otherwise it would keep calling the first-render handleSwipe (empty feed)
+  const handleSwipeRef = useRef(handleSwipe);
+  useEffect(() => { handleSwipeRef.current = handleSwipe; }, [handleSwipe]);
+
   const panResponder = useRef(
     PanResponder.create({
       onMoveShouldSetPanResponder: (_, g) => Math.abs(g.dx) > 12 && Math.abs(g.dy) < 40,
       onPanResponderMove: Animated.event([null, { dx: pan.x, dy: pan.y }], { useNativeDriver: false }),
       onPanResponderRelease: (_, g) => {
-        if (g.dx > SWIPE_THRESHOLD)       handleSwipe('LIKE', g.dy);
-        else if (g.dx < -SWIPE_THRESHOLD) handleSwipe('PASS', g.dy);
+        if (g.dx > SWIPE_THRESHOLD)       handleSwipeRef.current('LIKE', g.dy);
+        else if (g.dx < -SWIPE_THRESHOLD) handleSwipeRef.current('PASS', g.dy);
         else Animated.spring(pan, { toValue: { x: 0, y: 0 }, useNativeDriver: false }).start();
       },
     })
@@ -240,7 +263,6 @@ export default function DiscoverScreen() {
       <SafeAreaView style={styles.safe}>
         <FloatingBackground />
         <View style={styles.centered}><ActivityIndicator size="large" color={Colors.primary} /></View>
-        <GlassTabBar activeTab="Discover" />
       </SafeAreaView>
     );
   }
@@ -257,7 +279,6 @@ export default function DiscoverScreen() {
             <Text style={styles.refreshBtnText}>Try again</Text>
           </TouchableOpacity>
         </View>
-        <GlassTabBar activeTab="Discover" />
       </SafeAreaView>
     );
   }
@@ -276,7 +297,6 @@ export default function DiscoverScreen() {
             <Text style={styles.refreshBtnText}>Refresh</Text>
           </TouchableOpacity>
         </View>
-        <GlassTabBar activeTab="Discover" />
       </SafeAreaView>
     );
   }
@@ -287,7 +307,7 @@ export default function DiscoverScreen() {
   const ownerPhotos = profile.photos.length > 0
     ? profile.photos.map(p => p.imageData)
     : profile.profilePicture ? [profile.profilePicture] : [];
-  const ownerAge = getAge(profile.dateOfBirth);
+  const ownerAge = profile.age;
   const ownerTags = [...(profile.lifestyleTags ?? []), ...(profile.personalityTags ?? [])];
   const nextProfile = feed[idx + 1];
 
@@ -468,7 +488,6 @@ export default function DiscoverScreen() {
         />
       )}
 
-      <GlassTabBar activeTab="Discover" />
     </SafeAreaView>
   );
 }

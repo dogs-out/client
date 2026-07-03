@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { RefObject, useRef, useState } from 'react';
 import {
   ActivityIndicator, Alert, SafeAreaView, ScrollView,
   StyleSheet, Text, TextInput, TouchableOpacity, View,
@@ -13,12 +13,13 @@ import { Colors } from '../../constants/colors';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ChangePassword'>;
 
-function PasswordField({ label, value, onChange, onSubmit, returnKeyType = 'next' }: {
+function PasswordField({ label, value, onChange, onSubmit, returnKeyType = 'next', inputRef }: {
   label: string;
   value: string;
   onChange: (v: string) => void;
   onSubmit?: () => void;
   returnKeyType?: 'next' | 'done';
+  inputRef?: RefObject<TextInput | null>;
 }) {
   const [visible, setVisible] = useState(false);
   return (
@@ -26,6 +27,7 @@ function PasswordField({ label, value, onChange, onSubmit, returnKeyType = 'next
       <Text style={fieldStyles.label}>{label}</Text>
       <View style={fieldStyles.inputRow}>
         <TextInput
+          ref={inputRef}
           style={fieldStyles.input}
           value={value}
           onChangeText={onChange}
@@ -123,6 +125,7 @@ export default function ChangePasswordScreen({ navigation }: Props) {
             value={next}
             onChange={setNext}
             onSubmit={() => confirmRef.current?.focus()}
+            inputRef={nextRef}
           />
           <View style={styles.divider} />
           <PasswordField
@@ -131,6 +134,7 @@ export default function ChangePasswordScreen({ navigation }: Props) {
             onChange={setConfirm}
             onSubmit={submit}
             returnKeyType="done"
+            inputRef={confirmRef}
           />
         </GlassCard>
 

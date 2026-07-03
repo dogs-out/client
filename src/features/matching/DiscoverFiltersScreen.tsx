@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
-  ActivityIndicator, PanResponder, SafeAreaView, ScrollView,
+  ActivityIndicator, Alert, PanResponder, SafeAreaView, ScrollView,
   StyleSheet, Switch, Text, TouchableOpacity, View,
 } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -8,6 +8,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { RootStackParamList } from '../../types/navigation';
 import { userService } from '../../services/userService';
 import { dogService, Dog } from '../../services/dogService';
+import { bumpDiscoverFiltersVersion } from '../../utils/discoverFilters';
 import { FloatingBackground } from '../../components/FloatingBackground';
 import { GlassCard } from '../../components/GlassCard';
 import { Colors } from '../../constants/colors';
@@ -138,11 +139,17 @@ export default function DiscoverFiltersScreen({ navigation }: Props) {
         setSelectedDogId(myDogs[0].id);
         if (u.maxDogAge != null) {
           setDogAgeOn(true);
-          // Infer the saved tolerance from the first dog's age
-          const firstAge = dogAgeYears(myDogs[0].dateOfBirth);
-          if (firstAge !== null) {
-            const n = u.maxDogAge - firstAge;
-            setDogAgeTolerance(n >= 1 && n <= 6 ? n : 3);
+          // Find the dog whose age reproduces the saved min/max range,
+          // so reopening the screen restores the filter as it was saved
+          for (const dog of myDogs) {
+            const age = dogAgeYears(dog.dateOfBirth);
+            if (age === null) continue;
+            const tol = u.maxDogAge - age;
+            if (tol >= 1 && tol <= 6 && Math.max(0, age - tol) === (u.minDogAge ?? 0)) {
+              setSelectedDogId(dog.id);
+              setDogAgeTolerance(tol);
+              break;
+            }
           }
         }
       }
@@ -181,7 +188,11 @@ export default function DiscoverFiltersScreen({ navigation }: Props) {
         minDogAge,
         maxDogAge,
       });
+      bumpDiscoverFiltersVersion();
       navigation.goBack();
+    } catch (err: any) {
+      const msg = err?.response?.data?.message ?? 'Your preferences could not be saved. Please try again.';
+      Alert.alert('Save failed', msg);
     } finally {
       setSaving(false);
     }
