@@ -59,7 +59,7 @@ export default function SettingsScreen({ navigation }: Props) {
       title: 'Privacy',
       rows: [
         { icon: 'location-outline',      label: 'Location settings',   onPress: () => {} },
-        { icon: 'eye-off-outline',        label: 'Blocked users',       onPress: () => {} },
+        { icon: 'eye-off-outline',        label: 'Blocked users',       onPress: () => navigation.navigate('BlockedUsers') },
       ],
     },
     {

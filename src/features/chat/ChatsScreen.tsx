@@ -9,6 +9,7 @@ import { chatService, MatchSummary } from '../../services/chatService';
 import { RootStackParamList } from '../../types/navigation';
 import { Colors } from '../../constants/colors';
 import { FloatingBackground } from '../../components/FloatingBackground';
+import { GlassCard } from '../../components/GlassCard';
 
 const POLL_MS = 8000;
 
@@ -62,8 +63,10 @@ export default function ChatsScreen() {
     const lastIsMine = item.lastMessageSenderId !== null && item.lastMessageSenderId !== item.otherUserId;
 
     return (
-      <TouchableOpacity style={styles.row} activeOpacity={0.7} onPress={() => openChat(item)}>
-        {item.otherUserProfilePicture
+      <TouchableOpacity activeOpacity={0.7} onPress={() => openChat(item)}>
+        <GlassCard padding={0} style={styles.card}>
+          <View style={styles.row}>
+            {item.otherUserProfilePicture
           ? <Image source={{ uri: item.otherUserProfilePicture }} style={styles.avatar} />
           : <View style={[styles.avatar, styles.avatarPlaceholder]}><Text style={{ fontSize: 24 }}>🐶</Text></View>
         }
@@ -94,7 +97,9 @@ export default function ChatsScreen() {
               )}
             </View>
           )}
-        </View>
+            </View>
+          </View>
+        </GlassCard>
       </TouchableOpacity>
     );
   };
@@ -125,7 +130,6 @@ export default function ChatsScreen() {
             </View>
           )
         }
-        ItemSeparatorComponent={() => <View style={styles.separator} />}
       />
     </SafeAreaView>
   );
@@ -139,9 +143,10 @@ const styles = StyleSheet.create({
   listContainer:  { paddingHorizontal: 16, paddingBottom: 120 },
   emptyContainer: { flexGrow: 1, justifyContent: 'center' },
 
+  card: { marginBottom: 14 },
   row: {
     flexDirection: 'row', alignItems: 'center',
-    paddingVertical: 12,
+    paddingVertical: 12, paddingHorizontal: 14,
   },
   avatar:            { width: 56, height: 56, borderRadius: 28 },
   avatarPlaceholder: { backgroundColor: 'rgba(46,158,107,0.12)', alignItems: 'center', justifyContent: 'center' },
@@ -163,8 +168,6 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primary, alignItems: 'center', justifyContent: 'center',
   },
   unreadText: { color: '#fff', fontSize: 12, fontWeight: '800' },
-
-  separator: { height: 1, backgroundColor: Colors.glass.divider, marginLeft: 68 },
 
   empty:      { alignItems: 'center', paddingHorizontal: 32 },
   emptyEmoji: { fontSize: 56, marginBottom: 16 },

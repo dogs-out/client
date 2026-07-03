@@ -20,6 +20,8 @@ import SwipePreviewScreen from '../features/dogs/SwipePreviewScreen';
 import DiscoverFiltersScreen from '../features/matching/DiscoverFiltersScreen';
 import ChangePasswordScreen from '../features/profile/ChangePasswordScreen';
 import ChatDetailScreen from '../features/chat/ChatDetailScreen';
+import UserProfileScreen from '../features/profile/UserProfileScreen';
+import BlockedUsersScreen from '../features/profile/BlockedUsersScreen';
 import TabNavigator from './TabNavigator';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -74,6 +76,8 @@ export default function Navigation() {
         <Stack.Screen name="DiscoverFilters"    component={DiscoverFiltersScreen} />
         <Stack.Screen name="ChangePassword"     component={ChangePasswordScreen} />
         <Stack.Screen name="ChatDetail"         component={ChatDetailScreen} />
+        <Stack.Screen name="UserProfile"        component={UserProfileScreen} />
+        <Stack.Screen name="BlockedUsers"       component={BlockedUsersScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
