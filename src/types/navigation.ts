@@ -14,4 +14,6 @@ export type RootStackParamList = {
   DiscoverFilters: undefined;
   ChangePassword: undefined;
   ChatDetail: { matchId: number; otherUserId: number; name: string; profilePicture: string | null };
+  UserProfile: { userId: number };
+  BlockedUsers: undefined;
 };

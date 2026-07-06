@@ -25,6 +25,9 @@ export const discoverService = {
   getFeed: (): Promise<DiscoverProfile[]> =>
     api.get<DiscoverProfile[]>('/discover').then(r => r.data),
 
+  getUserProfile: (userId: number): Promise<DiscoverProfile> =>
+    api.get<DiscoverProfile>(`/discover/profile/${userId}`).then(r => r.data),
+
   swipe: (targetUserId: number, action: 'LIKE' | 'PASS'): Promise<SwipeResponse> =>
     api.post<SwipeResponse>('/matches/swipe', { targetUserId, action }).then(r => r.data),
 };
