@@ -6,12 +6,15 @@ import {
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { chatService, MatchSummary } from '../../services/chatService';
+import { chatSocket } from '../../services/socket';
 import { RootStackParamList } from '../../types/navigation';
 import { Colors } from '../../constants/colors';
 import { FloatingBackground } from '../../components/FloatingBackground';
 import { GlassCard } from '../../components/GlassCard';
 
 const POLL_MS = 8000;
+// With a live socket, polling is only a safety net every SLOW_POLL_TICKS * POLL_MS
+const SLOW_POLL_TICKS = 4;
 
 function formatWhen(iso: string | null): string {
   if (!iso) return '';
@@ -44,8 +47,17 @@ export default function ChatsScreen() {
   useFocusEffect(
     useCallback(() => {
       load();
-      pollRef.current = setInterval(load, POLL_MS);
-      return () => { if (pollRef.current) clearInterval(pollRef.current); };
+      // Any live event (new message or match) can change the list and its ordering
+      const unsubscribe = chatSocket.subscribe(() => load());
+      let tick = 0;
+      pollRef.current = setInterval(() => {
+        tick++;
+        if (!chatSocket.isConnected() || tick % SLOW_POLL_TICKS === 0) load();
+      }, POLL_MS);
+      return () => {
+        unsubscribe();
+        if (pollRef.current) clearInterval(pollRef.current);
+      };
     }, [load])
   );
 

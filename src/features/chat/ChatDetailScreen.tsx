@@ -10,6 +10,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
 import { AxiosError } from 'axios';
 import { chatService, ChatMessage } from '../../services/chatService';
+import { chatSocket } from '../../services/socket';
 import { moderationService } from '../../services/moderationService';
 import { containsProfanity } from '../../utils/profanityFilter';
 import { RootStackParamList } from '../../types/navigation';
@@ -18,6 +19,8 @@ import { FloatingBackground } from '../../components/FloatingBackground';
 import { ReportUserModal } from './ReportUserModal';
 
 const POLL_MS = 3000;
+// With a live socket, polling is only a safety net every SLOW_POLL_TICKS * POLL_MS
+const SLOW_POLL_TICKS = 10;
 
 function formatTime(iso: string): string {
   return new Date(iso).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -68,9 +71,20 @@ export default function ChatDetailScreen() {
   useFocusEffect(
     useCallback(() => {
       load();
-      pollRef.current = setInterval(load, POLL_MS);
-      return () => { if (pollRef.current) clearInterval(pollRef.current); };
-    }, [load])
+      // Live path: reload on socket events for this match (the GET also marks them read)
+      const unsubscribe = chatSocket.subscribe(event => {
+        if (event.matchId === matchId && event.type === 'NEW_MESSAGE') load();
+      });
+      let tick = 0;
+      pollRef.current = setInterval(() => {
+        tick++;
+        if (!chatSocket.isConnected() || tick % SLOW_POLL_TICKS === 0) load();
+      }, POLL_MS);
+      return () => {
+        unsubscribe();
+        if (pollRef.current) clearInterval(pollRef.current);
+      };
+    }, [load, matchId])
   );
 
   const send = () => {

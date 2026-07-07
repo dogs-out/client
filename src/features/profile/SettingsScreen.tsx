@@ -8,6 +8,7 @@ import { GlassCard } from '../../components/GlassCard';
 import { Colors } from '../../constants/colors';
 import { tokenStorage } from '../../utils/tokenStorage';
 import { userService } from '../../services/userService';
+import { notificationService } from '../../services/notificationService';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Settings'>;
 
@@ -33,6 +34,7 @@ export default function SettingsScreen({ navigation }: Props) {
       {
         text: 'Sign out', style: 'destructive',
         onPress: async () => {
+          await notificationService.unregister(); // stop pushes to this device
           await tokenStorage.remove();
           navigation.reset({ index: 0, routes: [{ name: 'Login' }] });
         },
@@ -52,22 +54,22 @@ export default function SettingsScreen({ navigation }: Props) {
       rows: [
         { icon: 'person-outline',        label: 'Edit profile',        onPress: () => navigation.navigate('EditProfile') },
         ...(isLocalAuth ? [{ icon: 'lock-closed-outline', label: 'Change password', onPress: () => navigation.navigate('ChangePassword') }] : []),
-        { icon: 'notifications-outline', label: 'Notifications',       onPress: () => {} },
+        { icon: 'notifications-outline', label: 'Notifications',       onPress: () => navigation.navigate('NotificationSettings') },
       ],
     },
     {
       title: 'Privacy',
       rows: [
-        { icon: 'location-outline',      label: 'Location settings',   onPress: () => {} },
+        { icon: 'location-outline',      label: 'Location settings',   onPress: () => navigation.navigate('LocationSettings') },
         { icon: 'eye-off-outline',        label: 'Blocked users',       onPress: () => navigation.navigate('BlockedUsers') },
       ],
     },
     {
       title: 'Support',
       rows: [
-        { icon: 'help-circle-outline',   label: 'Help & FAQ',          onPress: () => {} },
-        { icon: 'document-text-outline', label: 'Terms & Privacy',     onPress: () => {} },
-        { icon: 'information-circle-outline', label: 'About Dogs Out', onPress: () => {} },
+        { icon: 'help-circle-outline',   label: 'Help & FAQ',          onPress: () => navigation.navigate('HelpFaq') },
+        { icon: 'document-text-outline', label: 'Terms & Privacy',     onPress: () => navigation.navigate('TermsPrivacy') },
+        { icon: 'information-circle-outline', label: 'About Dogs Out', onPress: () => navigation.navigate('About') },
       ],
     },
     {

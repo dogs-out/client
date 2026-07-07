@@ -1,5 +1,7 @@
+import { useEffect } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import { createBottomTabNavigator, BottomTabBarProps } from '@react-navigation/bottom-tabs';
+import { notificationService } from '../services/notificationService';
 import { BlurView } from 'expo-blur';
 import { Ionicons } from '@expo/vector-icons';
 import DiscoverScreen from '../features/matching/DiscoverScreen';
@@ -64,6 +66,9 @@ function GlassTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
 }
 
 export default function TabNavigator() {
+  // The user is authenticated once the main tabs mount — register this device for push
+  useEffect(() => { notificationService.register(); }, []);
+
   return (
     <Tab.Navigator
       tabBar={props => <GlassTabBar {...props} />}
