@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
+import { createNavigationContainerRef, NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { AxiosError } from 'axios';
 import { RootStackParamList } from '../types/navigation';
 import { tokenStorage } from '../utils/tokenStorage';
 import { userService } from '../services/userService';
+import { notificationService } from '../services/notificationService';
 import LoginScreen from '../features/auth/LoginScreen';
 import RegisterScreen from '../features/auth/RegisterScreen';
 import VerifyEmailScreen from '../features/auth/VerifyEmailScreen';
@@ -22,12 +23,34 @@ import ChangePasswordScreen from '../features/profile/ChangePasswordScreen';
 import ChatDetailScreen from '../features/chat/ChatDetailScreen';
 import UserProfileScreen from '../features/profile/UserProfileScreen';
 import BlockedUsersScreen from '../features/profile/BlockedUsersScreen';
+import NotificationSettingsScreen from '../features/profile/NotificationSettingsScreen';
+import LocationSettingsScreen from '../features/profile/LocationSettingsScreen';
+import HelpFaqScreen from '../features/profile/HelpFaqScreen';
+import TermsPrivacyScreen from '../features/profile/TermsPrivacyScreen';
+import AboutScreen from '../features/profile/AboutScreen';
 import TabNavigator from './TabNavigator';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
+const navigationRef = createNavigationContainerRef<RootStackParamList>();
 
 export default function Navigation() {
   const [initialRoute, setInitialRoute] = useState<keyof RootStackParamList | null>(null);
+
+  // Tapping a push notification jumps straight to the relevant chat
+  useEffect(() =>
+    notificationService.onNotificationTap(data => {
+      if (!navigationRef.isReady()) return;
+      if (data.type === 'NEW_MESSAGE' && data.matchId && data.otherUserId) {
+        navigationRef.navigate('ChatDetail', {
+          matchId: data.matchId,
+          otherUserId: data.otherUserId,
+          name: data.name ?? 'Chat',
+          profilePicture: null,
+        });
+      } else if (data.type === 'NEW_MATCH') {
+        navigationRef.navigate('MainTabs', { screen: 'Chats' } as never);
+      }
+    }), []);
 
   useEffect(() => {
     const resolve = async () => {
@@ -56,7 +79,7 @@ export default function Navigation() {
   }
 
   return (
-    <NavigationContainer>
+    <NavigationContainer ref={navigationRef}>
       <Stack.Navigator initialRouteName={initialRoute} screenOptions={{ headerShown: false }}>
         {/* Auth */}
         <Stack.Screen name="Login"          component={LoginScreen} />
@@ -78,6 +101,11 @@ export default function Navigation() {
         <Stack.Screen name="ChatDetail"         component={ChatDetailScreen} />
         <Stack.Screen name="UserProfile"        component={UserProfileScreen} />
         <Stack.Screen name="BlockedUsers"       component={BlockedUsersScreen} />
+        <Stack.Screen name="NotificationSettings" component={NotificationSettingsScreen} />
+        <Stack.Screen name="LocationSettings"     component={LocationSettingsScreen} />
+        <Stack.Screen name="HelpFaq"              component={HelpFaqScreen} />
+        <Stack.Screen name="TermsPrivacy"         component={TermsPrivacyScreen} />
+        <Stack.Screen name="About"                component={AboutScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

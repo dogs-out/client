@@ -28,6 +28,7 @@ export interface UserProfile {
   maxAge: number | null;
   minDogAge: number | null;
   maxDogAge: number | null;
+  notificationsEnabled: boolean;
 }
 
 export interface UpdateProfilePayload {
