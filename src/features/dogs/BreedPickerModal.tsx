@@ -7,6 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { DOG_BREEDS } from '../../constants/dogBreeds';
 import { Colors } from '../../constants/colors';
+import { translateBreed } from '../../i18n/translateBreed';
 
 const MIXED = 'Mixed / Unknown';
 const ALL_BREEDS = [MIXED, ...DOG_BREEDS];
@@ -21,7 +22,7 @@ interface Props {
 type Step = 'primary' | 'secondary';
 
 export function BreedPickerModal({ visible, value, onChange, onClose }: Props) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [step, setStep]         = useState<Step>('primary');
   const [primary, setPrimary]   = useState<string | null>(null);
   const [secondary, setSecondary] = useState<string | null>(null);
@@ -43,8 +44,11 @@ export function BreedPickerModal({ visible, value, onChange, onClose }: Props) {
 
   const filtered = useMemo(() => {
     const q = search.toLowerCase();
-    return q ? ALL_BREEDS.filter(b => b.toLowerCase().includes(q)) : ALL_BREEDS;
-  }, [search]);
+    if (!q) return ALL_BREEDS;
+    return ALL_BREEDS.filter(b =>
+      b.toLowerCase().includes(q) || translateBreed(b, i18n.language).toLowerCase().includes(q)
+    );
+  }, [search, i18n.language]);
 
   const selectPrimary = (breed: string) => {
     setPrimary(breed);
@@ -79,7 +83,7 @@ export function BreedPickerModal({ visible, value, onChange, onClose }: Props) {
         {primary && (
           <View style={styles.selectionBar}>
             <Text style={styles.selectionText} numberOfLines={1}>
-              {secondary ? `${primary} / ${secondary}` : primary}
+              {translateBreed(secondary ? `${primary} / ${secondary}` : primary, i18n.language)}
             </Text>
             {step === 'primary' && primary !== MIXED && (
               <TouchableOpacity onPress={() => { setStep('secondary'); setSearch(''); }} style={styles.mixButton}>
@@ -128,7 +132,7 @@ export function BreedPickerModal({ visible, value, onChange, onClose }: Props) {
                   }
                 }}
               >
-                <Text style={[styles.itemText, isSelected && styles.itemTextSelected]}>{item}</Text>
+                <Text style={[styles.itemText, isSelected && styles.itemTextSelected]}>{translateBreed(item, i18n.language)}</Text>
                 {isSelected && <Ionicons name="checkmark" size={20} color={Colors.primary} />}
               </TouchableOpacity>
             );

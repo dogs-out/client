@@ -13,6 +13,7 @@ import { Colors } from '../../constants/colors';
 import { FloatingBackground } from '../../components/FloatingBackground';
 import { GlassCard } from '../../components/GlassCard';
 import { translateTag } from '../../i18n/translateTag';
+import { translateBreed } from '../../i18n/translateBreed';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'UserProfile'>;
 
@@ -60,7 +61,7 @@ function PhotoCarousel({ uris, placeholder }: { uris: string[]; placeholder: str
 }
 
 function DogCard({ dog }: { dog: Dog }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const age = getAge(dog.dateOfBirth);
   const photos = dog.photos.length > 0
     ? dog.photos.map(p => p.imageData)
@@ -73,7 +74,7 @@ function DogCard({ dog }: { dog: Dog }) {
         <Text style={styles.dogName}>
           {dog.name}{age !== null ? `, ${age}` : ''}
         </Text>
-        {dog.breed && <Text style={styles.subLine}>{dog.breed}</Text>}
+        {dog.breed && <Text style={styles.subLine}>{translateBreed(dog.breed, i18n.language)}</Text>}
         {dog.tags.length > 0 && (
           <View style={styles.tagRow}>
             {dog.tags.map(tag => (

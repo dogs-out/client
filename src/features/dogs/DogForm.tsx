@@ -21,6 +21,7 @@ import {
   LOVES_OPTIONS, OFF_LEASH_OPTIONS, SOCIAL_BEHAVIOR_OPTIONS,
 } from '../../constants/tags';
 import { translateTag } from '../../i18n/translateTag';
+import { translateBreed } from '../../i18n/translateBreed';
 
 interface Props {
   dogId?: number;
@@ -42,7 +43,7 @@ const DEFAULT_DOB = new Date();
 DEFAULT_DOB.setFullYear(DEFAULT_DOB.getFullYear() - 3);
 
 export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Props) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [name, setName]               = useState('');
   const [breed, setBreed]             = useState<string | null>(null);
   const [dateOfBirth, setDateOfBirth] = useState<Date | null>(null);
@@ -264,7 +265,7 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Pr
 
             <TouchableOpacity style={styles.input} onPress={() => setShowBreedPicker(true)}>
               <Text style={breed ? styles.valueText : styles.placeholderText}>
-                {breed ?? t('dogs.form.breedPlaceholder')}
+                {breed ? translateBreed(breed, i18n.language) : t('dogs.form.breedPlaceholder')}
               </Text>
             </TouchableOpacity>
 

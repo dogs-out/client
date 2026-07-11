@@ -17,6 +17,7 @@ import { RootStackParamList } from '../../types/navigation';
 import { Colors } from '../../constants/colors';
 import { FloatingBackground } from '../../components/FloatingBackground';
 import { translateTag } from '../../i18n/translateTag';
+import { translateBreed } from '../../i18n/translateBreed';
 
 const { width: SW } = Dimensions.get('window');
 const CARD_W = SW - 32;
@@ -162,7 +163,7 @@ function MatchOverlay({ profile, myPicture, onChat, onDismiss }: {
 }
 
 export default function DiscoverScreen() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [feed, setFeed] = useState<DiscoverProfile[]>([]);
   const [idx, setIdx] = useState(0);
@@ -435,7 +436,7 @@ export default function DiscoverScreen() {
                     );
                   })}
                 </View>
-                {currentDog?.breed && <Text style={styles.subLine}>{currentDog.breed}</Text>}
+                {currentDog?.breed && <Text style={styles.subLine}>{translateBreed(currentDog.breed, i18n.language)}</Text>}
                 {currentDog?.tags && currentDog.tags.length > 0 && (
                   <View style={styles.tagRow}>
                     {currentDog.tags.slice(0, 5).map(tag => (

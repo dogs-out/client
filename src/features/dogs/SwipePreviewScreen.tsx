@@ -12,6 +12,7 @@ import { dogService, Dog } from '../../services/dogService';
 import { userService, UserProfile } from '../../services/userService';
 import { Colors } from '../../constants/colors';
 import { translateTag } from '../../i18n/translateTag';
+import { translateBreed } from '../../i18n/translateBreed';
 import { FloatingBackground } from '../../components/FloatingBackground';
 import { GlassTabBar } from '../../components/GlassTabBar';
 
@@ -25,7 +26,7 @@ const SWIPE_THRESHOLD = 100;
 type FlatPhoto = { uri: string; dogIndex: number };
 
 export default function SwipePreviewScreen({ navigation }: Props) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [dogs, setDogs]           = useState<Dog[]>([]);
   const [user, setUser]           = useState<UserProfile | null>(null);
   const [photoIndex, setPhotoIndex]           = useState(0);
@@ -215,7 +216,7 @@ export default function SwipePreviewScreen({ navigation }: Props) {
                     );
                   })}
                 </View>
-                {currentDog.breed && <Text style={styles.subLine}>{currentDog.breed}</Text>}
+                {currentDog.breed && <Text style={styles.subLine}>{translateBreed(currentDog.breed, i18n.language)}</Text>}
                 {currentDog.tags.length > 0 && (
                   <View style={styles.tagRow}>
                     {currentDog.tags.slice(0, 5).map(tag => (

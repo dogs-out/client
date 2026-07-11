@@ -17,6 +17,7 @@ import { FloatingBackground } from '../components/FloatingBackground';
 import { GlassCard } from '../components/GlassCard';
 import { GlassButton } from '../components/GlassButton';
 import { Colors } from '../constants/colors';
+import { translateBreed } from '../i18n/translateBreed';
 
 type Props = CompositeScreenProps<
   BottomTabScreenProps<MainTabParamList, 'Profile'>,
@@ -24,7 +25,7 @@ type Props = CompositeScreenProps<
 >;
 
 export default function HomeScreen({ navigation }: Props) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [user, setUser]             = useState<UserProfile | null>(null);
   const [dogs, setDogs]             = useState<Dog[]>([]);
   const [loading, setLoading]       = useState(true);
@@ -152,7 +153,7 @@ export default function HomeScreen({ navigation }: Props) {
                     <View style={styles.dogInfo}>
                       <Text style={styles.dogName}>{dog.name}</Text>
                       <View style={styles.dogMeta}>
-                        {dog.breed && <Text style={styles.dogMetaText}>{dog.breed}</Text>}
+                        {dog.breed && <Text style={styles.dogMetaText}>{translateBreed(dog.breed, i18n.language)}</Text>}
                         {dog.breed && dog.dateOfBirth != null && <Text style={styles.dogMetaDot}> · </Text>}
                         {dog.dateOfBirth != null && (() => {
                           const age = Math.floor((Date.now() - new Date(dog.dateOfBirth).getTime()) / (1000 * 60 * 60 * 24 * 365.25));
