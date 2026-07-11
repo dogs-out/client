@@ -2,6 +2,7 @@ import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-na
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
 import Constants from 'expo-constants';
+import { useTranslation } from 'react-i18next';
 import { RootStackParamList } from '../../types/navigation';
 import { Colors } from '../../constants/colors';
 import { FloatingBackground } from '../../components/FloatingBackground';
@@ -10,6 +11,7 @@ import { GlassCard } from '../../components/GlassCard';
 type Props = NativeStackScreenProps<RootStackParamList, 'About'>;
 
 export default function AboutScreen({ navigation }: Props) {
+  const { t } = useTranslation();
   const version = Constants.expoConfig?.version ?? '1.0.0';
 
   return (
@@ -20,7 +22,7 @@ export default function AboutScreen({ navigation }: Props) {
         <TouchableOpacity onPress={() => navigation.goBack()} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
           <Ionicons name="chevron-back" size={26} color={Colors.text} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>About</Text>
+        <Text style={styles.headerTitle}>{t('profile.about.headerTitle')}</Text>
         <View style={{ width: 26 }} />
       </View>
 
@@ -29,13 +31,13 @@ export default function AboutScreen({ navigation }: Props) {
           <View style={styles.center}>
             <Text style={styles.logo}>🐕</Text>
             <Text style={styles.appName}>Dogs Out</Text>
-            <Text style={styles.tagline}>Find walk buddies for you and your dog</Text>
-            <Text style={styles.version}>Version {version}</Text>
+            <Text style={styles.tagline}>{t('profile.about.tagline')}</Text>
+            <Text style={styles.version}>{t('profile.about.version', { version })}</Text>
           </View>
         </GlassCard>
 
         <Text style={styles.credit}>
-          Built with 🦴 in Zürich as a UZH Informatikpraktikum project, 2026.
+          {t('profile.about.credit')}
         </Text>
       </View>
     </SafeAreaView>

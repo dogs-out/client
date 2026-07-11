@@ -5,6 +5,7 @@ import {
 } from 'react-native';
 import { AxiosError } from 'axios';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useTranslation } from 'react-i18next';
 import { RootStackParamList } from '../../types/navigation';
 import { authService } from '../../services/authService';
 import { getApiError } from '../../utils/apiError';
@@ -15,20 +16,21 @@ import { Colors } from '../../constants/colors';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Register'>;
 
-interface Strength { level: 0 | 1 | 2 | 3; label: string; color: string; }
+interface Strength { level: 0 | 1 | 2 | 3; color: string; }
 
 function getPasswordStrength(pwd: string): Strength {
-  if (!pwd) return { level: 0, label: '', color: '#e0e0e0' };
+  if (!pwd) return { level: 0, color: '#e0e0e0' };
   const hasLetters = /[a-zA-Z]/.test(pwd);
   const hasNumbers = /[0-9]/.test(pwd);
   const hasSymbols = /[^a-zA-Z0-9]/.test(pwd);
   const types = [hasLetters, hasNumbers, hasSymbols].filter(Boolean).length;
-  if (pwd.length < 8 || types < 2) return { level: 1, label: 'Weak',   color: '#e53e3e' };
-  if (types < 3 && pwd.length < 12) return { level: 2, label: 'OK',     color: '#ecc94b' };
-  return                                    { level: 3, label: 'Strong', color: '#48bb78' };
+  if (pwd.length < 8 || types < 2) return { level: 1, color: '#e53e3e' };
+  if (types < 3 && pwd.length < 12) return { level: 2, color: '#ecc94b' };
+  return                                    { level: 3, color: '#48bb78' };
 }
 
 export default function RegisterScreen({ navigation, route }: Props) {
+  const { t } = useTranslation();
   const [name, setName] = useState('');
   const [email, setEmail] = useState(route.params?.prefillEmail ?? '');
   const [password, setPassword] = useState(route.params?.prefillPassword ?? '');
@@ -37,21 +39,22 @@ export default function RegisterScreen({ navigation, route }: Props) {
   const [error, setError] = useState<string | null>(null);
 
   const strength = getPasswordStrength(password);
+  const strengthLabels = { 0: '', 1: t('auth.register.weak'), 2: t('auth.register.ok'), 3: t('auth.register.strong') };
 
   const NAME_REGEX = /^[a-zA-ZÀ-ÿ\s'\-]+$/;
 
   const handleRegister = async () => {
     if (!name || !email || !password || !confirmPassword) {
-      setError('Please fill in all fields.'); return;
+      setError(t('auth.fillAllFields')); return;
     }
     if (!NAME_REGEX.test(name.trim())) {
-      setError('Name may only contain letters, spaces, hyphens, and apostrophes.'); return;
+      setError(t('auth.register.invalidName')); return;
     }
     if (password !== confirmPassword) {
-      setError('Passwords do not match.'); return;
+      setError(t('auth.register.passwordMismatch')); return;
     }
     if (strength.level < 2) {
-      setError('Please choose a stronger password (8+ chars with letters and numbers).'); return;
+      setError(t('auth.register.passwordTooWeak')); return;
     }
     setLoading(true);
     setError(null);
@@ -75,21 +78,21 @@ export default function RegisterScreen({ navigation, route }: Props) {
       <FloatingBackground />
       <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <GlassCard style={styles.card}>
-      <Text style={styles.title}>Create account</Text>
-      <Text style={styles.subtitle}>Join the Dogs Out community</Text>
+      <Text style={styles.title}>{t('auth.register.title')}</Text>
+      <Text style={styles.subtitle}>{t('auth.register.subtitle')}</Text>
 
       {error && <Text style={styles.error}>{error}</Text>}
 
       <TextInput
         style={styles.input}
-        placeholder="Name"
+        placeholder={t('auth.register.namePlaceholder')}
         value={name}
         onChangeText={setName}
         autoComplete="name"
       />
       <TextInput
         style={styles.input}
-        placeholder="Email"
+        placeholder={t('auth.login.emailPlaceholder')}
         value={email}
         onChangeText={setEmail}
         autoCapitalize="none"
@@ -98,7 +101,7 @@ export default function RegisterScreen({ navigation, route }: Props) {
       />
       <TextInput
         style={styles.input}
-        placeholder="Password"
+        placeholder={t('auth.login.passwordPlaceholder')}
         value={password}
         onChangeText={setPassword}
         secureTextEntry
@@ -113,13 +116,13 @@ export default function RegisterScreen({ navigation, route }: Props) {
               style={[styles.strengthBar, { backgroundColor: strength.level >= lvl ? strength.color : '#e0e0e0' }]}
             />
           ))}
-          <Text style={[styles.strengthLabel, { color: strength.color }]}>{strength.label}</Text>
+          <Text style={[styles.strengthLabel, { color: strength.color }]}>{strengthLabels[strength.level]}</Text>
         </View>
       )}
 
       <TextInput
         style={styles.input}
-        placeholder="Confirm password"
+        placeholder={t('auth.register.confirmPasswordPlaceholder')}
         value={confirmPassword}
         onChangeText={setConfirmPassword}
         secureTextEntry
@@ -130,12 +133,12 @@ export default function RegisterScreen({ navigation, route }: Props) {
         <ActivityIndicator style={{ marginTop: 16 }} color={Colors.primary} />
       ) : (
         <GlassButton onPress={handleRegister} style={styles.button}>
-          <Text style={styles.buttonText}>Register</Text>
+          <Text style={styles.buttonText}>{t('auth.register.register')}</Text>
         </GlassButton>
       )}
 
       <TouchableOpacity style={styles.linkButton} onPress={() => navigation.navigate('Login')}>
-        <Text style={styles.link}>Already have an account? <Text style={styles.linkBold}>Sign in</Text></Text>
+        <Text style={styles.link}>{t('auth.register.haveAccount')} <Text style={styles.linkBold}>{t('auth.register.signIn')}</Text></Text>
       </TouchableOpacity>
       </GlassCard>
       </KeyboardAvoidingView>

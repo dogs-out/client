@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ActivityIndicator, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useTranslation } from 'react-i18next';
 import { RootStackParamList } from '../../types/navigation';
 import { authService } from '../../services/authService';
 import { tokenStorage } from '../../utils/tokenStorage';
@@ -13,6 +14,7 @@ import { Colors } from '../../constants/colors';
 type Props = NativeStackScreenProps<RootStackParamList, 'VerifyEmail'>;
 
 export default function VerifyEmailScreen({ route, navigation }: Props) {
+  const { t } = useTranslation();
   const { email, name, password } = route.params;
   const [code, setCode] = useState('');
   const [loading, setLoading] = useState(false);
@@ -21,7 +23,7 @@ export default function VerifyEmailScreen({ route, navigation }: Props) {
   const [error, setError] = useState<string | null>(null);
 
   const handleVerify = async () => {
-    if (code.length !== 6) { setError('Please enter the 6-digit code.'); return; }
+    if (code.length !== 6) { setError(t('auth.verifyEmail.enterCode')); return; }
     setLoading(true);
     setError(null);
     try {
@@ -55,9 +57,9 @@ export default function VerifyEmailScreen({ route, navigation }: Props) {
       <FloatingBackground />
       <View style={styles.container}>
       <GlassCard style={styles.card}>
-        <Text style={styles.title}>Check your email</Text>
+        <Text style={styles.title}>{t('auth.verifyEmail.title')}</Text>
         <Text style={styles.subtitle}>
-          We sent a 6-digit code to{'\n'}
+          {t('auth.verifyEmail.subtitle')}{'\n'}
           <Text style={styles.emailText}>{email}</Text>
         </Text>
 
@@ -79,7 +81,7 @@ export default function VerifyEmailScreen({ route, navigation }: Props) {
           <ActivityIndicator style={{ marginTop: 16 }} color={Colors.primary} />
         ) : (
           <GlassButton onPress={handleVerify} style={styles.button}>
-            <Text style={styles.buttonText}>Verify</Text>
+            <Text style={styles.buttonText}>{t('auth.verifyEmail.verify')}</Text>
           </GlassButton>
         )}
 
@@ -89,13 +91,13 @@ export default function VerifyEmailScreen({ route, navigation }: Props) {
               <ActivityIndicator size="small" color={Colors.primary} />
             ) : (
               <Text style={[styles.link, resent && styles.linkSuccess]}>
-                {resent ? 'Code resent — check your inbox' : "Didn't get the code? Resend"}
+                {resent ? t('auth.verifyEmail.codeResent') : t('auth.verifyEmail.resend')}
               </Text>
             )}
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.linkButton} onPress={() => navigation.goBack()}>
-            <Text style={styles.link}>Wrong email? Go back</Text>
+            <Text style={styles.link}>{t('auth.verifyEmail.wrongEmail')}</Text>
           </TouchableOpacity>
         </View>
       </GlassCard>

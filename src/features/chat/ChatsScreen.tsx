@@ -5,6 +5,8 @@ import {
 } from 'react-native';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useTranslation } from 'react-i18next';
+import { TFunction } from 'i18next';
 import { chatService, MatchSummary } from '../../services/chatService';
 import { chatSocket } from '../../services/socket';
 import { RootStackParamList } from '../../types/navigation';
@@ -16,20 +18,21 @@ const POLL_MS = 8000;
 // With a live socket, polling is only a safety net every SLOW_POLL_TICKS * POLL_MS
 const SLOW_POLL_TICKS = 4;
 
-function formatWhen(iso: string | null): string {
+function formatWhen(iso: string | null, t: TFunction): string {
   if (!iso) return '';
   const then = new Date(iso).getTime();
   const mins = Math.floor((Date.now() - then) / 60000);
-  if (mins < 1) return 'now';
-  if (mins < 60) return `${mins}m`;
+  if (mins < 1) return t('chat.chatsScreen.timeNow');
+  if (mins < 60) return t('chat.chatsScreen.timeMinutes', { count: mins });
   const hours = Math.floor(mins / 60);
-  if (hours < 24) return `${hours}h`;
+  if (hours < 24) return t('chat.chatsScreen.timeHours', { count: hours });
   const days = Math.floor(hours / 24);
-  if (days < 7) return `${days}d`;
+  if (days < 7) return t('chat.chatsScreen.timeDays', { count: days });
   return new Date(iso).toLocaleDateString();
 }
 
 export default function ChatsScreen() {
+  const { t } = useTranslation();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [matches, setMatches] = useState<MatchSummary[]>([]);
   const [loaded, setLoaded] = useState(false);
@@ -40,9 +43,9 @@ export default function ChatsScreen() {
   const load = useCallback(() => {
     chatService.getMatches()
       .then(data => { setMatches(data); setError(null); })
-      .catch(() => setError('Could not load your matches. Is the backend running?'))
+      .catch(() => setError(t('chat.chatsScreen.loadError')))
       .finally(() => { setLoaded(true); setRefreshing(false); });
-  }, []);
+  }, [t]);
 
   useFocusEffect(
     useCallback(() => {
@@ -85,13 +88,13 @@ export default function ChatsScreen() {
         <View style={styles.rowBody}>
           <View style={styles.rowTop}>
             <Text style={styles.name} numberOfLines={1}>{item.otherUserName}</Text>
-            <Text style={styles.when}>{formatWhen(item.lastMessageSentAt ?? item.matchedAt)}</Text>
+            <Text style={styles.when}>{formatWhen(item.lastMessageSentAt ?? item.matchedAt, t)}</Text>
           </View>
           {isNew ? (
             <View style={styles.newMatchRow}>
-              <Text style={styles.newMatchText}>You matched! 🐾</Text>
+              <Text style={styles.newMatchText}>{t('chat.chatsScreen.youMatched')}</Text>
               <View style={styles.chatNowPill}>
-                <Text style={styles.chatNowText}>Chat now</Text>
+                <Text style={styles.chatNowText}>{t('chat.chatsScreen.chatNow')}</Text>
               </View>
             </View>
           ) : (
@@ -100,7 +103,7 @@ export default function ChatsScreen() {
                 style={[styles.preview, item.unreadCount > 0 && styles.previewUnread]}
                 numberOfLines={1}
               >
-                {lastIsMine ? 'You: ' : ''}{item.lastMessageContent}
+                {lastIsMine ? t('chat.chatsScreen.youPrefix') : ''}{item.lastMessageContent}
               </Text>
               {item.unreadCount > 0 && (
                 <View style={styles.unreadBadge}>
@@ -120,7 +123,7 @@ export default function ChatsScreen() {
     <SafeAreaView style={styles.safe}>
       <FloatingBackground />
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Chats</Text>
+        <Text style={styles.headerTitle}>{t('chat.chatsScreen.headerTitle')}</Text>
       </View>
 
       <FlatList
@@ -135,9 +138,9 @@ export default function ChatsScreen() {
           !loaded ? null : (
             <View style={styles.empty}>
               <Text style={styles.emptyEmoji}>{error ? '⚠️' : '💬'}</Text>
-              <Text style={styles.emptyTitle}>{error ? 'Something went wrong' : 'No matches yet'}</Text>
+              <Text style={styles.emptyTitle}>{error ? t('chat.chatsScreen.errorTitle') : t('chat.chatsScreen.noMatchesTitle')}</Text>
               <Text style={styles.emptySub}>
-                {error ?? 'Give some treats in Discover — when it’s mutual, your match shows up here.'}
+                {error ?? t('chat.chatsScreen.noMatchesSub')}
               </Text>
             </View>
           )

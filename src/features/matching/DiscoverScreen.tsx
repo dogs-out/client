@@ -7,6 +7,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useTranslation } from 'react-i18next';
+import { TFunction } from 'i18next';
 import { discoverService, DiscoverProfile } from '../../services/discoverService';
 import { Dog } from '../../services/dogService';
 import { userService } from '../../services/userService';
@@ -14,6 +16,7 @@ import { getDiscoverFiltersVersion } from '../../utils/discoverFilters';
 import { RootStackParamList } from '../../types/navigation';
 import { Colors } from '../../constants/colors';
 import { FloatingBackground } from '../../components/FloatingBackground';
+import { translateTag } from '../../i18n/translateTag';
 
 const { width: SW } = Dimensions.get('window');
 const CARD_W = SW - 32;
@@ -27,10 +30,10 @@ function getAge(dob: string | null): number | null {
   return Math.floor((Date.now() - new Date(dob).getTime()) / (1000 * 60 * 60 * 24 * 365.25));
 }
 
-function formatDistance(km: number): string {
+function formatDistance(km: number, t: TFunction): string {
   if (km < 0) return '';
-  if (km < 1) return '< 1 km away';
-  return `${Math.round(km)} km away`;
+  if (km < 1) return t('matching.discover.lessThanOneKm');
+  return t('matching.discover.distanceAway', { km: Math.round(km) });
 }
 
 function buildFlatPhotos(profile: DiscoverProfile): FlatPhoto[] {
@@ -99,6 +102,7 @@ function MatchOverlay({ profile, myPicture, onChat, onDismiss }: {
   onChat: () => void;
   onDismiss: () => void;
 }) {
+  const { t } = useTranslation();
   const fade        = useRef(new Animated.Value(0)).current;
   const titleScale  = useRef(new Animated.Value(0.3)).current;
   const leftDogX    = useRef(new Animated.Value(-SW / 2)).current;
@@ -125,7 +129,7 @@ function MatchOverlay({ profile, myPicture, onChat, onDismiss }: {
   return (
     <Animated.View style={[styles.matchOverlay, { opacity: fade }]}>
       <Animated.Text style={[styles.matchTitle, { transform: [{ scale: titleScale }] }]}>
-        It's a Match! 🐾
+        {t('matching.discover.matchTitle')}
       </Animated.Text>
 
       <View style={styles.matchDogsRow}>
@@ -145,12 +149,12 @@ function MatchOverlay({ profile, myPicture, onChat, onDismiss }: {
             : <View style={[styles.matchAvatar, styles.photoPlaceholder]}><Text style={{ fontSize: 36 }}>👤</Text></View>
           }
         </View>
-        <Text style={styles.matchSub}>{profile.name} also gave you a treat!</Text>
+        <Text style={styles.matchSub}>{t('matching.discover.matchSub', { name: profile.name })}</Text>
         <TouchableOpacity style={styles.matchBtn} onPress={onChat}>
-          <Text style={styles.matchBtnText}>Chat now 💬</Text>
+          <Text style={styles.matchBtnText}>{t('matching.discover.chatNow')}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.matchSecondaryBtn} onPress={onDismiss}>
-          <Text style={styles.matchSecondaryText}>Keep Swiping</Text>
+          <Text style={styles.matchSecondaryText}>{t('matching.discover.keepSwiping')}</Text>
         </TouchableOpacity>
       </Animated.View>
     </Animated.View>
@@ -158,6 +162,7 @@ function MatchOverlay({ profile, myPicture, onChat, onDismiss }: {
 }
 
 export default function DiscoverScreen() {
+  const { t } = useTranslation();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [feed, setFeed] = useState<DiscoverProfile[]>([]);
   const [idx, setIdx] = useState(0);
@@ -186,9 +191,9 @@ export default function DiscoverScreen() {
     setError(null);
     discoverService.getFeed()
       .then(data => { setFeed(data); setIdx(0); })
-      .catch(err => setError(err?.response?.data?.message ?? 'Could not load feed. Is the backend running?'))
+      .catch(err => setError(err?.response?.data?.message ?? t('matching.discover.loadError')))
       .finally(() => setLoading(false));
-  }, []);
+  }, [t]);
 
   useEffect(() => { loadFeed(); }, [loadFeed]);
 
@@ -273,10 +278,10 @@ export default function DiscoverScreen() {
         <FloatingBackground />
         <View style={styles.centered}>
           <Text style={styles.emptyEmoji}>⚠️</Text>
-          <Text style={styles.emptyTitle}>Something went wrong</Text>
+          <Text style={styles.emptyTitle}>{t('matching.discover.errorTitle')}</Text>
           <Text style={styles.emptySub}>{error}</Text>
           <TouchableOpacity style={styles.refreshBtn} onPress={loadFeed}>
-            <Text style={styles.refreshBtnText}>Try again</Text>
+            <Text style={styles.refreshBtnText}>{t('common.retry')}</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -291,10 +296,10 @@ export default function DiscoverScreen() {
         <FloatingBackground />
         <View style={styles.centered}>
           <Text style={styles.emptyEmoji}>🐾</Text>
-          <Text style={styles.emptyTitle}>No more dogs nearby</Text>
-          <Text style={styles.emptySub}>Check back later or expand your distance.</Text>
+          <Text style={styles.emptyTitle}>{t('matching.discover.noMoreDogsTitle')}</Text>
+          <Text style={styles.emptySub}>{t('matching.discover.noMoreDogsSub')}</Text>
           <TouchableOpacity style={styles.refreshBtn} onPress={loadFeed}>
-            <Text style={styles.refreshBtnText}>Refresh</Text>
+            <Text style={styles.refreshBtnText}>{t('matching.discover.refresh')}</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -326,16 +331,16 @@ export default function DiscoverScreen() {
       <FloatingBackground />
 
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Discover</Text>
+        <Text style={styles.headerTitle}>{t('matching.discover.headerTitle')}</Text>
         {profile.distanceKm >= 0 && (
-          <Text style={styles.headerDist}>{formatDistance(profile.distanceKm)}</Text>
+          <Text style={styles.headerDist}>{formatDistance(profile.distanceKm, t)}</Text>
         )}
       </View>
 
       <Text style={styles.hint}>
-        <Text style={styles.hintNo}>← No treat</Text>
+        <Text style={styles.hintNo}>{t('dogs.swipePreview.noTreatHint')}</Text>
         {'  ·  '}
-        <Text style={styles.hintYes}>Treat →</Text>
+        <Text style={styles.hintYes}>{t('dogs.swipePreview.treatHint')}</Text>
       </Text>
 
       <View style={styles.cardWrap}>
@@ -387,10 +392,10 @@ export default function DiscoverScreen() {
           <TouchableOpacity style={styles.tapRight} onPress={() => tapPhoto('right')} />
 
           <Animated.View style={[styles.treatBadge, { opacity: treatOpacity }]}>
-            <Text style={styles.treatText}>TREAT 🦴</Text>
+            <Text style={styles.treatText}>{t('dogs.swipePreview.treat')}</Text>
           </Animated.View>
           <Animated.View style={[styles.noTreatBadge, { opacity: noTreatOpacity }]}>
-            <Text style={styles.noTreatText}>NO TREAT 🚫</Text>
+            <Text style={styles.noTreatText}>{t('dogs.swipePreview.noTreat')}</Text>
           </Animated.View>
 
           <LinearGradient
@@ -404,13 +409,13 @@ export default function DiscoverScreen() {
                   {profile.name}{ownerAge !== null ? `, ${ownerAge}` : ''}
                 </Text>
                 {profile.relationshipStatus && (
-                  <Text style={styles.subLine}>{profile.relationshipStatus}</Text>
+                  <Text style={styles.subLine}>{translateTag(profile.relationshipStatus, t)}</Text>
                 )}
                 {ownerTags.length > 0 && (
                   <View style={styles.tagRow}>
                     {ownerTags.slice(0, 5).map(tag => (
                       <View key={tag} style={styles.tag}>
-                        <Text style={styles.tagText}>{tag}</Text>
+                        <Text style={styles.tagText}>{translateTag(tag, t)}</Text>
                       </View>
                     ))}
                   </View>
@@ -435,7 +440,7 @@ export default function DiscoverScreen() {
                   <View style={styles.tagRow}>
                     {currentDog.tags.slice(0, 5).map(tag => (
                       <View key={tag} style={styles.tag}>
-                        <Text style={styles.tagText}>{tag}</Text>
+                        <Text style={styles.tagText}>{translateTag(tag, t)}</Text>
                       </View>
                     ))}
                   </View>

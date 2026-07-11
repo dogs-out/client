@@ -7,6 +7,7 @@ import {
 import DateTimePicker from '@react-native-community/datetimepicker';
 import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { dogService, DogPhoto } from '../../services/dogService';
 import { getApiError } from '../../utils/apiError';
 import { containsProfanity } from '../../utils/profanityFilter';
@@ -19,6 +20,7 @@ import {
   DOG_PERSONALITY_TAGS, DOG_PLAY_TAGS, DOG_SOCIAL_TAGS,
   LOVES_OPTIONS, OFF_LEASH_OPTIONS, SOCIAL_BEHAVIOR_OPTIONS,
 } from '../../constants/tags';
+import { translateTag } from '../../i18n/translateTag';
 
 interface Props {
   dogId?: number;
@@ -40,6 +42,7 @@ const DEFAULT_DOB = new Date();
 DEFAULT_DOB.setFullYear(DEFAULT_DOB.getFullYear() - 3);
 
 export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Props) {
+  const { t } = useTranslation();
   const [name, setName]               = useState('');
   const [breed, setBreed]             = useState<string | null>(null);
   const [dateOfBirth, setDateOfBirth] = useState<Date | null>(null);
@@ -72,13 +75,13 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Pr
       setOffLeash(dog.offLeash);
       setKidsComfort(dog.kidsComfort);
       setDogTags(dog.tags ?? []);
-    }).catch(() => setError('Failed to load dog profile.')).finally(() => setFetching(false));
+    }).catch(() => setError(t('dogs.form.loadFailed'))).finally(() => setFetching(false));
   }, [dogId]);
 
   const pickPhoto = async () => {
-    if (photos.length >= 6) { setError('Maximum 6 photos per dog.'); return; }
+    if (photos.length >= 6) { setError(t('dogs.form.maxPhotos')); return; }
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== 'granted') { setError('Photo library access is required.'); return; }
+    if (status !== 'granted') { setError(t('dogs.form.photoPermission')); return; }
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ['images'], allowsEditing: true, aspect: [3, 4], quality: 0.6, base64: true,
     });
@@ -114,10 +117,10 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Pr
   };
 
   const handleSave = async () => {
-    if (!name.trim()) { setError('Your dog needs a name.'); return; }
-    if (!NAME_REGEX.test(name.trim())) { setError('Name may only contain letters, spaces, hyphens, and apostrophes.'); return; }
-    if (containsProfanity(name)) { setError('Your dog\'s name contains inappropriate language.'); return; }
-    if (bio && containsProfanity(bio)) { setError('Your dog\'s bio contains inappropriate language.'); return; }
+    if (!name.trim()) { setError(t('dogs.form.nameRequired')); return; }
+    if (!NAME_REGEX.test(name.trim())) { setError(t('auth.register.invalidName')); return; }
+    if (containsProfanity(name)) { setError(t('dogs.form.nameProfanity')); return; }
+    if (bio && containsProfanity(bio)) { setError(t('dogs.form.bioProfanity')); return; }
     setLoading(true);
     setError(null);
     try {
@@ -163,12 +166,12 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Pr
   const handleDelete = () => {
     if (!dogId) return;
     Alert.alert(
-      'Remove dog',
-      `Are you sure you want to remove ${name || 'this dog'}?`,
+      t('dogs.form.removeDogTitle'),
+      t('dogs.form.removeDogMessage', { name: name || t('dogs.form.defaultDogName') }),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('common.cancel'), style: 'cancel' },
         {
-          text: 'Remove', style: 'destructive',
+          text: t('dogs.form.removeAction'), style: 'destructive',
           onPress: async () => {
             try {
               await dogService.deleteDog(dogId);
@@ -212,16 +215,16 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Pr
           )}
 
           <Text style={styles.title}>
-            {fromOnboarding ? 'Introduce your dog 🐾' : dogId ? 'Edit dog' : 'Add a dog'}
+            {fromOnboarding ? t('dogs.form.titleOnboarding') : dogId ? t('dogs.form.titleEdit') : t('dogs.form.titleAdd')}
           </Text>
           <Text style={styles.subtitle}>
-            {fromOnboarding ? 'Other dog owners will see this when you match' : 'Tell us about your furry friend'}
+            {fromOnboarding ? t('dogs.form.subtitleOnboarding') : t('dogs.form.subtitleDefault')}
           </Text>
 
           {/* PHOTO GRID */}
           <GlassCard style={styles.card}>
-            <Text style={styles.sectionLabel}>Photos ({photos.length}/6)</Text>
-            <Text style={styles.sectionHint}>Add up to 6 great shots of your dog</Text>
+            <Text style={styles.sectionLabel}>{t('dogs.form.photosLabel', { count: photos.length })}</Text>
+            <Text style={styles.sectionHint}>{t('dogs.form.photosHint')}</Text>
             <View style={styles.photoGrid}>
               {Array.from({ length: 6 }).map((_, i) => {
                 const photo = photos[i];
@@ -233,7 +236,7 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Pr
                         <TouchableOpacity style={styles.photoRemove} onPress={() => removePhoto(i)}>
                           <Ionicons name="close-circle" size={22} color="#e53e3e" />
                         </TouchableOpacity>
-                        {i === 0 && <View style={styles.primaryBadge}><Text style={styles.primaryText}>Main</Text></View>}
+                        {i === 0 && <View style={styles.primaryBadge}><Text style={styles.primaryText}>{t('dogs.form.mainBadge')}</Text></View>}
                       </>
                     ) : (
                       <TouchableOpacity style={styles.photoAdd} onPress={pickPhoto}>
@@ -248,12 +251,12 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Pr
 
           {/* BASIC INFO */}
           <GlassCard style={styles.card}>
-            <Text style={styles.sectionLabel}>Basic Info</Text>
+            <Text style={styles.sectionLabel}>{t('dogs.form.basicInfo')}</Text>
             {error && <Text style={styles.error}>{error}</Text>}
 
             <TextInput
               style={styles.input}
-              placeholder="Name *"
+              placeholder={t('dogs.form.namePlaceholder')}
               placeholderTextColor={Colors.textSecondary}
               value={name}
               onChangeText={setName}
@@ -261,7 +264,7 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Pr
 
             <TouchableOpacity style={styles.input} onPress={() => setShowBreedPicker(true)}>
               <Text style={breed ? styles.valueText : styles.placeholderText}>
-                {breed ?? 'Breed (optional)'}
+                {breed ?? t('dogs.form.breedPlaceholder')}
               </Text>
             </TouchableOpacity>
 
@@ -282,14 +285,14 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Pr
             ) : (
               <TouchableOpacity style={styles.input} onPress={() => setShowDatePicker(true)}>
                 <Text style={dateOfBirth ? styles.valueText : styles.placeholderText}>
-                  {dateOfBirth ? formatDate(dateOfBirth) : 'Date of birth (optional)'}
+                  {dateOfBirth ? formatDate(dateOfBirth) : t('dogs.form.dobPlaceholder')}
                 </Text>
               </TouchableOpacity>
             )}
 
             <TextInput
               style={[styles.input, styles.bioInput]}
-              placeholder="Bio — what makes your dog special?"
+              placeholder={t('dogs.form.bioPlaceholder')}
               placeholderTextColor={Colors.textSecondary}
               value={bio}
               onChangeText={t => setBio(t.slice(0, 250))}
@@ -305,10 +308,10 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Pr
 
           {/* PERSONALITY */}
           <GlassCard style={styles.card}>
-            <Text style={styles.sectionLabel}>Personality</Text>
+            <Text style={styles.sectionLabel}>{t('dogs.form.personality')}</Text>
 
-            <Text style={styles.questionLabel}>Energy level</Text>
-            <Text style={styles.questionHint}>1 = Couch potato · 5 = Never stops running</Text>
+            <Text style={styles.questionLabel}>{t('dogs.form.energyLevel')}</Text>
+            <Text style={styles.questionHint}>{t('dogs.form.energyHint')}</Text>
             <View style={styles.levelRow}>
               {[1, 2, 3, 4, 5].map(n => (
                 <TouchableOpacity key={n} onPress={() => setEnergyLevel(n)} style={styles.levelItem}>
@@ -319,7 +322,7 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Pr
               ))}
             </View>
 
-            <Text style={[styles.questionLabel, { marginTop: 20 }]}>How does your dog react to new dogs?</Text>
+            <Text style={[styles.questionLabel, { marginTop: 20 }]}>{t('dogs.form.socialQuestion')}</Text>
             <View style={styles.optionWrap}>
               {SOCIAL_BEHAVIOR_OPTIONS.map(opt => (
                 <TouchableOpacity
@@ -327,12 +330,12 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Pr
                   style={[styles.optionChip, socialBehavior === opt && styles.optionChipActive]}
                   onPress={() => setSocialBehavior(opt)}
                 >
-                  <Text style={[styles.optionText, socialBehavior === opt && styles.optionTextActive]}>{opt}</Text>
+                  <Text style={[styles.optionText, socialBehavior === opt && styles.optionTextActive]}>{translateTag(opt, t)}</Text>
                 </TouchableOpacity>
               ))}
             </View>
 
-            <Text style={[styles.questionLabel, { marginTop: 20 }]}>What does your dog love most? <Text style={styles.questionHint}>(up to 3)</Text></Text>
+            <Text style={[styles.questionLabel, { marginTop: 20 }]}>{t('dogs.form.lovesQuestion')} <Text style={styles.questionHint}>{t('dogs.form.lovesHint')}</Text></Text>
             <View style={styles.chipWrap}>
               {LOVES_OPTIONS.map(opt => {
                 const sel = loves.includes(opt);
@@ -343,13 +346,13 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Pr
                     style={[styles.chip, sel && styles.chipActive, maxed && styles.chipDisabled]}
                     onPress={() => !maxed && toggleLove(opt)}
                   >
-                    <Text style={[styles.chipText, sel && styles.chipTextActive]}>{opt}</Text>
+                    <Text style={[styles.chipText, sel && styles.chipTextActive]}>{translateTag(opt, t)}</Text>
                   </TouchableOpacity>
                 );
               })}
             </View>
 
-            <Text style={[styles.questionLabel, { marginTop: 20 }]}>Off-leash comfort</Text>
+            <Text style={[styles.questionLabel, { marginTop: 20 }]}>{t('dogs.form.offLeash')}</Text>
             <View style={styles.optionWrap}>
               {OFF_LEASH_OPTIONS.map(opt => (
                 <TouchableOpacity
@@ -357,13 +360,13 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Pr
                   style={[styles.optionChip, offLeash === opt && styles.optionChipActive]}
                   onPress={() => setOffLeash(opt)}
                 >
-                  <Text style={[styles.optionText, offLeash === opt && styles.optionTextActive]}>{opt}</Text>
+                  <Text style={[styles.optionText, offLeash === opt && styles.optionTextActive]}>{translateTag(opt, t)}</Text>
                 </TouchableOpacity>
               ))}
             </View>
 
-            <Text style={[styles.questionLabel, { marginTop: 20 }]}>Comfort around small children</Text>
-            <Text style={styles.questionHint}>1 = Avoids them · 5 = Loves them</Text>
+            <Text style={[styles.questionLabel, { marginTop: 20 }]}>{t('dogs.form.kidsComfort')}</Text>
+            <Text style={styles.questionHint}>{t('dogs.form.kidsComfortHint')}</Text>
             <View style={styles.levelRow}>
               {[1, 2, 3, 4, 5].map(n => (
                 <TouchableOpacity key={n} onPress={() => setKidsComfort(n)} style={styles.levelItem}>
@@ -377,32 +380,32 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Pr
 
           {/* TAGS */}
           <GlassCard style={styles.card}>
-            <Text style={styles.sectionLabel}>Tags</Text>
-            <Text style={styles.sectionHint}>Pick one per category</Text>
+            <Text style={styles.sectionLabel}>{t('dogs.form.tags')}</Text>
+            <Text style={styles.sectionHint}>{t('dogs.form.tagsHint')}</Text>
 
-            <Text style={styles.tagCategory}>Personality</Text>
+            <Text style={styles.tagCategory}>{t('dogs.form.personalityCategory')}</Text>
             <View style={styles.chipWrap}>
               {DOG_PERSONALITY_TAGS.map(tag => (
                 <TouchableOpacity key={tag} style={[styles.chip, dogTags.includes(tag) && styles.chipActive]} onPress={() => toggleTag(tag)}>
-                  <Text style={[styles.chipText, dogTags.includes(tag) && styles.chipTextActive]}>{tag}</Text>
+                  <Text style={[styles.chipText, dogTags.includes(tag) && styles.chipTextActive]}>{translateTag(tag, t)}</Text>
                 </TouchableOpacity>
               ))}
             </View>
 
-            <Text style={styles.tagCategory}>Play style</Text>
+            <Text style={styles.tagCategory}>{t('dogs.form.playStyleCategory')}</Text>
             <View style={styles.chipWrap}>
               {DOG_PLAY_TAGS.map(tag => (
                 <TouchableOpacity key={tag} style={[styles.chip, dogTags.includes(tag) && styles.chipActive]} onPress={() => toggleTag(tag)}>
-                  <Text style={[styles.chipText, dogTags.includes(tag) && styles.chipTextActive]}>{tag}</Text>
+                  <Text style={[styles.chipText, dogTags.includes(tag) && styles.chipTextActive]}>{translateTag(tag, t)}</Text>
                 </TouchableOpacity>
               ))}
             </View>
 
-            <Text style={styles.tagCategory}>Social</Text>
+            <Text style={styles.tagCategory}>{t('dogs.form.socialCategory')}</Text>
             <View style={styles.chipWrap}>
               {DOG_SOCIAL_TAGS.map(tag => (
                 <TouchableOpacity key={tag} style={[styles.chip, dogTags.includes(tag) && styles.chipActive]} onPress={() => toggleTag(tag)}>
-                  <Text style={[styles.chipText, dogTags.includes(tag) && styles.chipTextActive]}>{tag}</Text>
+                  <Text style={[styles.chipText, dogTags.includes(tag) && styles.chipTextActive]}>{translateTag(tag, t)}</Text>
                 </TouchableOpacity>
               ))}
             </View>
@@ -416,13 +419,13 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Pr
               <>
                 <GlassButton onPress={handleSave}>
                   <Text style={styles.saveText}>
-                    {fromOnboarding ? "Let's go 🐾" : dogId ? 'Save changes' : 'Add dog'}
+                    {fromOnboarding ? t('dogs.form.letsGo') : dogId ? t('dogs.form.saveChanges') : t('dogs.form.addDog')}
                   </Text>
                 </GlassButton>
                 {dogId && (
                   <TouchableOpacity style={styles.deleteButton} onPress={handleDelete}>
                     <Ionicons name="trash-outline" size={16} color={Colors.error} style={{ marginRight: 6 }} />
-                    <Text style={styles.deleteText}>Remove this dog</Text>
+                    <Text style={styles.deleteText}>{t('dogs.form.removeThisDog')}</Text>
                   </TouchableOpacity>
                 )}
               </>
@@ -446,10 +449,10 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Pr
             <View style={styles.modalContent}>
               <View style={styles.modalHeader}>
                 <TouchableOpacity onPress={() => setShowDatePicker(false)}>
-                  <Text style={styles.modalCancel}>Cancel</Text>
+                  <Text style={styles.modalCancel}>{t('common.cancel')}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => { if (!dateOfBirth) setDateOfBirth(DEFAULT_DOB); setShowDatePicker(false); }}>
-                  <Text style={styles.modalDone}>Done</Text>
+                  <Text style={styles.modalDone}>{t('common.done')}</Text>
                 </TouchableOpacity>
               </View>
               <DateTimePicker

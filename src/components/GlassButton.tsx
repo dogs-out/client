@@ -8,9 +8,11 @@ interface Props {
   children: React.ReactNode;
   style?: ViewStyle;
   disabled?: boolean;
+  /** Optional rgba() overlay color, e.g. to read as a primary CTA rather than neutral glass. */
+  tint?: string;
 }
 
-export function GlassButton({ onPress, children, style, disabled }: Props) {
+export function GlassButton({ onPress, children, style, disabled, tint }: Props) {
   return (
     <TouchableOpacity
       onPress={onPress}
@@ -20,6 +22,7 @@ export function GlassButton({ onPress, children, style, disabled }: Props) {
     >
       <View style={styles.clip}>
         <GlassView isInteractive glassEffectStyle="clear" style={StyleSheet.absoluteFill} />
+        {tint && <View style={[StyleSheet.absoluteFill, { backgroundColor: tint }]} />}
         <LinearGradient
           colors={['rgba(255,255,255,0.72)', 'rgba(255,255,255,0.18)', 'rgba(255,255,255,0)']}
           locations={[0, 0.45, 1]}

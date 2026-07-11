@@ -5,6 +5,7 @@ import {
 } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { RootStackParamList } from '../../types/navigation';
 import { userService } from '../../services/userService';
 import { FloatingBackground } from '../../components/FloatingBackground';
@@ -55,6 +56,7 @@ const fieldStyles = StyleSheet.create({
 });
 
 export default function ChangePasswordScreen({ navigation }: Props) {
+  const { t } = useTranslation();
   const [current, setCurrent]   = useState('');
   const [next, setNext]         = useState('');
   const [confirm, setConfirm]   = useState('');
@@ -65,34 +67,34 @@ export default function ChangePasswordScreen({ navigation }: Props) {
 
   const submit = async () => {
     if (!current || !next || !confirm) {
-      Alert.alert('Missing fields', 'Please fill in all fields.');
+      Alert.alert(t('profile.changePassword.missingFieldsTitle'), t('auth.fillAllFields'));
       return;
     }
     if (next.length < 8) {
-      Alert.alert('Password too short', 'New password must be at least 8 characters.');
+      Alert.alert(t('profile.changePassword.tooShortTitle'), t('profile.changePassword.tooShortMessage'));
       return;
     }
     if (next !== confirm) {
-      Alert.alert('Passwords do not match', 'New password and confirmation do not match.');
+      Alert.alert(t('profile.changePassword.mismatchTitle'), t('profile.changePassword.mismatchMessage'));
       return;
     }
     if (next === current) {
-      Alert.alert('Same password', 'New password must be different from your current password.');
+      Alert.alert(t('profile.changePassword.samePasswordTitle'), t('profile.changePassword.samePasswordMessage'));
       return;
     }
 
     setSaving(true);
     try {
       await userService.changePassword(current, next);
-      Alert.alert('Password changed', 'Your password has been updated successfully.', [
-        { text: 'OK', onPress: () => navigation.goBack() },
+      Alert.alert(t('profile.changePassword.successTitle'), t('profile.changePassword.successMessage'), [
+        { text: t('common.ok'), onPress: () => navigation.goBack() },
       ]);
     } catch (err: any) {
-      const msg: string = err?.response?.data?.message ?? err?.message ?? 'Something went wrong.';
+      const msg: string = err?.response?.data?.message ?? err?.message ?? t('profile.changePassword.genericError');
       if (msg.toLowerCase().includes('incorrect')) {
-        Alert.alert('Wrong password', 'Your current password is incorrect.');
+        Alert.alert(t('profile.changePassword.wrongPasswordTitle'), t('profile.changePassword.wrongPasswordMessage'));
       } else {
-        Alert.alert('Error', msg);
+        Alert.alert(t('common.error'), msg);
       }
     } finally {
       setSaving(false);
@@ -107,21 +109,21 @@ export default function ChangePasswordScreen({ navigation }: Props) {
         <TouchableOpacity onPress={() => navigation.goBack()} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
           <Ionicons name="chevron-back" size={26} color={Colors.text} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Change password</Text>
+        <Text style={styles.headerTitle}>{t('profile.changePassword.headerTitle')}</Text>
         <View style={{ width: 26 }} />
       </View>
 
       <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
         <GlassCard>
           <PasswordField
-            label="Current password"
+            label={t('profile.changePassword.currentPassword')}
             value={current}
             onChange={setCurrent}
             onSubmit={() => nextRef.current?.focus()}
           />
           <View style={styles.divider} />
           <PasswordField
-            label="New password"
+            label={t('profile.changePassword.newPassword')}
             value={next}
             onChange={setNext}
             onSubmit={() => confirmRef.current?.focus()}
@@ -129,7 +131,7 @@ export default function ChangePasswordScreen({ navigation }: Props) {
           />
           <View style={styles.divider} />
           <PasswordField
-            label="Confirm new password"
+            label={t('profile.changePassword.confirmNewPassword')}
             value={confirm}
             onChange={setConfirm}
             onSubmit={submit}
@@ -138,12 +140,12 @@ export default function ChangePasswordScreen({ navigation }: Props) {
           />
         </GlassCard>
 
-        <Text style={styles.hint}>Password must be at least 8 characters.</Text>
+        <Text style={styles.hint}>{t('profile.changePassword.hint')}</Text>
 
         <TouchableOpacity style={[styles.btn, saving && styles.btnDisabled]} onPress={submit} disabled={saving}>
           {saving
             ? <ActivityIndicator color="#fff" />
-            : <Text style={styles.btnText}>Update password</Text>
+            : <Text style={styles.btnText}>{t('profile.changePassword.updatePassword')}</Text>
           }
         </TouchableOpacity>
       </ScrollView>

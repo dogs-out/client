@@ -1,6 +1,6 @@
 export const DOG_PERSONALITY_TAGS = [
   'Goofy', 'Independent', 'Velcro dog', 'Couch potato',
-  'Zoomies champion', 'Gentle giant', 'Drama queen',
+  'Zoomies champion', 'Gentle giant', 'Drama queen', 'Shy',
 ];
 
 export const DOG_PLAY_TAGS = [
@@ -9,15 +9,14 @@ export const DOG_PLAY_TAGS = [
 ];
 
 export const DOG_SOCIAL_TAGS = [
-  'Dog park regular', 'Shy but friendly', 'Life of the party',
-  'One dog at a time', 'Good with puppies', 'Good with cats',
+  'Dog park regular', 'Life of the party', 'One dog at a time', 'Good with puppies', 'Good with cats',
 ];
 
 export const ALL_DOG_TAGS = [...DOG_PERSONALITY_TAGS, ...DOG_PLAY_TAGS, ...DOG_SOCIAL_TAGS];
 
 export const LOVES_OPTIONS = [
   'Fetch / ball games', 'Swimming', 'Sniffing everything',
-  'Cuddles', 'Treats', 'Other dogs', 'Belly rubs', 'Running',
+  'Cuddles', 'Treats', 'Other dogs', 'Belly rubs', 'Running', 'Napping'
 ];
 
 export const SOCIAL_BEHAVIOR_OPTIONS = [

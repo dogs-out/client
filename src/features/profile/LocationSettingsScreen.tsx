@@ -3,6 +3,7 @@ import { ActivityIndicator, SafeAreaView, StyleSheet, Text, TouchableOpacity, Vi
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
 import * as Location from 'expo-location';
+import { useTranslation } from 'react-i18next';
 import { RootStackParamList } from '../../types/navigation';
 import { Colors } from '../../constants/colors';
 import { FloatingBackground } from '../../components/FloatingBackground';
@@ -21,6 +22,7 @@ async function describe(latitude: number, longitude: number): Promise<string> {
 }
 
 export default function LocationSettingsScreen({ navigation }: Props) {
+  const { t } = useTranslation();
   const [place, setPlace] = useState<string | null>(null);
   const [loaded, setLoaded] = useState(false);
   const [updating, setUpdating] = useState(false);
@@ -43,14 +45,14 @@ export default function LocationSettingsScreen({ navigation }: Props) {
     try {
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
-        setError('Location access is needed to find nearby dogs. You can allow it in your phone\'s system settings.');
+        setError(t('profile.locationSettings.permissionNeeded'));
         return;
       }
       const loc = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
       await userService.updateProfile({ latitude: loc.coords.latitude, longitude: loc.coords.longitude });
       setPlace(await describe(loc.coords.latitude, loc.coords.longitude));
     } catch {
-      setError('Could not update your location. Please try again.');
+      setError(t('profile.locationSettings.updateError'));
     } finally {
       setUpdating(false);
     }
@@ -64,7 +66,7 @@ export default function LocationSettingsScreen({ navigation }: Props) {
         <TouchableOpacity onPress={() => navigation.goBack()} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
           <Ionicons name="chevron-back" size={26} color={Colors.text} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Location</Text>
+        <Text style={styles.headerTitle}>{t('profile.locationSettings.headerTitle')}</Text>
         <View style={{ width: 26 }} />
       </View>
 
@@ -75,10 +77,10 @@ export default function LocationSettingsScreen({ navigation }: Props) {
               <Ionicons name="location" size={20} color={Colors.primary} />
             </View>
             <View style={styles.rowText}>
-              <Text style={styles.rowLabel}>Your location</Text>
+              <Text style={styles.rowLabel}>{t('profile.locationSettings.yourLocation')}</Text>
               {!loaded
                 ? <ActivityIndicator size="small" color={Colors.primary} style={{ alignSelf: 'flex-start' }} />
-                : <Text style={styles.rowSub}>{place ?? 'Not set yet'}</Text>
+                : <Text style={styles.rowSub}>{place ?? t('profile.locationSettings.notSet')}</Text>
               }
             </View>
           </View>
@@ -90,14 +92,13 @@ export default function LocationSettingsScreen({ navigation }: Props) {
           disabled={updating}
         >
           <Ionicons name="navigate" size={18} color="#fff" />
-          <Text style={styles.updateText}>{updating ? 'Updating…' : 'Update to my current location'}</Text>
+          <Text style={styles.updateText}>{updating ? t('profile.locationSettings.updating') : t('profile.locationSettings.updateToCurrentLocation')}</Text>
         </TouchableOpacity>
 
         {error && <Text style={styles.errorText}>{error}</Text>}
 
         <Text style={styles.hint}>
-          Your location is only used to show dogs nearby and how far away matches are.
-          Other users never see your exact position.
+          {t('profile.locationSettings.hint')}
         </Text>
       </View>
     </SafeAreaView>

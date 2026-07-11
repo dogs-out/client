@@ -9,6 +9,7 @@ import { useFocusEffect, useNavigation, useRoute, RouteProp } from '@react-navig
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
 import { AxiosError } from 'axios';
+import { useTranslation } from 'react-i18next';
 import { chatService, ChatMessage } from '../../services/chatService';
 import { chatSocket } from '../../services/socket';
 import { moderationService } from '../../services/moderationService';
@@ -16,6 +17,7 @@ import { containsProfanity } from '../../utils/profanityFilter';
 import { RootStackParamList } from '../../types/navigation';
 import { Colors } from '../../constants/colors';
 import { FloatingBackground } from '../../components/FloatingBackground';
+import { GlassCard } from '../../components/GlassCard';
 import { ReportUserModal } from './ReportUserModal';
 
 const POLL_MS = 3000;
@@ -34,6 +36,7 @@ type MenuAction = {
 };
 
 export default function ChatDetailScreen() {
+  const { t } = useTranslation();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { params } = useRoute<RouteProp<RootStackParamList, 'ChatDetail'>>();
   const { matchId, otherUserId, name, profilePicture } = params;
@@ -91,7 +94,7 @@ export default function ChatDetailScreen() {
     const content = draft.trim();
     if (!content || sending) return;
     if (containsProfanity(content)) {
-      setError('Your message contains inappropriate language.');
+      setError(t('chat.chatDetail.profanity'));
       return;
     }
     setError(null);
@@ -102,7 +105,7 @@ export default function ChatDetailScreen() {
         setDraft('');
         setMessages(prev => [msg, ...prev]);
       })
-      .catch(err => setError(err?.response?.data?.message ?? 'Message could not be sent.'))
+      .catch(err => setError(err?.response?.data?.message ?? t('chat.chatDetail.sendFailed')))
       .finally(() => setSending(false));
   };
 
@@ -114,20 +117,20 @@ export default function ChatDetailScreen() {
   const blockUser = (thenGoBack = true) => {
     moderationService.blockUser(otherUserId)
       .then(() => {
-        Alert.alert('Blocked', `${name} can no longer see you or message you.`);
+        Alert.alert(t('chat.chatDetail.blockedTitle'), t('chat.chatDetail.blockedMessage', { name }));
         if (thenGoBack) navigation.goBack();
       })
-      .catch(() => Alert.alert('Error', 'Could not block this user. Please try again.'));
+      .catch(() => Alert.alert(t('common.error'), t('chat.chatDetail.blockError')));
   };
 
   const confirmBlock = () => {
     setMenuOpen(false);
     Alert.alert(
-      `Block ${name}?`,
-      'They will disappear from your matches and Discover, and neither of you can message the other. They won’t be notified.',
+      t('chat.chatDetail.blockConfirmTitle', { name }),
+      t('chat.chatDetail.blockConfirmMessage'),
       [
-        { text: 'Cancel', style: 'cancel' },
-        { text: 'Block', style: 'destructive', onPress: () => blockUser() },
+        { text: t('common.cancel'), style: 'cancel' },
+        { text: t('chat.chatDetail.blockAction'), style: 'destructive', onPress: () => blockUser() },
       ]
     );
   };
@@ -135,15 +138,15 @@ export default function ChatDetailScreen() {
   const confirmUnmatch = () => {
     setMenuOpen(false);
     Alert.alert(
-      `Unmatch ${name}?`,
-      'This deletes the match and the entire chat for both of you. This cannot be undone.',
+      t('chat.chatDetail.unmatchConfirmTitle', { name }),
+      t('chat.chatDetail.unmatchConfirmMessage'),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('common.cancel'), style: 'cancel' },
         {
-          text: 'Unmatch', style: 'destructive',
+          text: t('chat.chatDetail.unmatchAction'), style: 'destructive',
           onPress: () => moderationService.unmatch(matchId)
             .then(() => navigation.goBack())
-            .catch(() => Alert.alert('Error', 'Could not unmatch. Please try again.')),
+            .catch(() => Alert.alert(t('common.error'), t('chat.chatDetail.unmatchError'))),
         },
       ]
     );
@@ -153,29 +156,29 @@ export default function ChatDetailScreen() {
     moderationService.reportUser(matchId, reason, message).then(() => {
       setReportOpen(false);
       Alert.alert(
-        'Report sent',
-        `Thanks for letting us know. Do you also want to block ${name}?`,
+        t('chat.chatDetail.reportSentTitle'),
+        t('chat.chatDetail.reportSentMessage', { name }),
         [
-          { text: 'Not now', style: 'cancel' },
-          { text: `Block ${name}`, style: 'destructive', onPress: () => blockUser() },
+          { text: t('chat.chatDetail.notNow'), style: 'cancel' },
+          { text: t('chat.chatDetail.blockName', { name }), style: 'destructive', onPress: () => blockUser() },
         ]
       );
     });
 
   const menuActions: MenuAction[] = [
-    { icon: 'person-circle-outline', label: 'View profile', onPress: openProfile },
-    { icon: 'flag-outline', label: `Report ${name}`, destructive: true, onPress: () => { setMenuOpen(false); setReportOpen(true); } },
-    { icon: 'remove-circle-outline', label: `Block ${name}`, destructive: true, onPress: confirmBlock },
-    { icon: 'trash-outline', label: 'Unmatch & delete chat', destructive: true, onPress: confirmUnmatch },
+    { icon: 'person-circle-outline', label: t('chat.chatDetail.viewProfile'), onPress: openProfile },
+    { icon: 'flag-outline', label: t('chat.chatDetail.reportName', { name }), destructive: true, onPress: () => { setMenuOpen(false); setReportOpen(true); } },
+    { icon: 'remove-circle-outline', label: t('chat.chatDetail.blockName', { name }), destructive: true, onPress: confirmBlock },
+    { icon: 'trash-outline', label: t('chat.chatDetail.unmatchDeleteChat'), destructive: true, onPress: confirmUnmatch },
   ];
 
   const renderItem = ({ item }: { item: ChatMessage }) => {
     const mine = item.senderId !== otherUserId;
     return (
       <View style={[styles.bubbleRow, mine ? styles.bubbleRowMine : styles.bubbleRowTheirs]}>
-        <View style={[styles.bubble, mine ? styles.bubbleMine : styles.bubbleTheirs]}>
+        <GlassCard padding={10} radius={16} compact tint={mine ? 'rgba(46,158,107,0.72)' : undefined}>
           <Text style={mine ? styles.bubbleTextMine : styles.bubbleTextTheirs}>{item.content}</Text>
-        </View>
+        </GlassCard>
         <Text style={styles.bubbleTime}>{formatTime(item.sentAt)}</Text>
       </View>
     );
@@ -220,10 +223,12 @@ export default function ChatDetailScreen() {
             contentContainerStyle={styles.listContainer}
             ListEmptyComponent={
               <View style={styles.emptyChat}>
-                <Text style={styles.emptyChatEmoji}>🐾</Text>
-                <Text style={styles.emptyChatText}>
-                  You matched with {name}! Say hi and plan your first walk together.
-                </Text>
+                <GlassCard style={styles.emptyChatCard}>
+                  <Text style={styles.emptyChatEmoji}>🐾</Text>
+                  <Text style={styles.emptyChatText}>
+                    {t('chat.chatDetail.emptyChatText', { name })}
+                  </Text>
+                </GlassCard>
               </View>
             }
           />
@@ -238,7 +243,7 @@ export default function ChatDetailScreen() {
               style={styles.input}
               value={draft}
               onChangeText={setDraft}
-              placeholder={`Message ${name}…`}
+              placeholder={t('chat.chatDetail.messagePlaceholder', { name })}
               placeholderTextColor={Colors.textSecondary}
               multiline
               maxLength={2000}
@@ -280,7 +285,7 @@ export default function ChatDetailScreen() {
           </BlurView>
           <BlurView intensity={80} tint="light" style={[styles.menuSheet, styles.menuCancel]}>
             <TouchableOpacity style={styles.menuCancelBtn} onPress={() => setMenuOpen(false)}>
-              <Text style={styles.menuCancelText}>Cancel</Text>
+              <Text style={styles.menuCancelText}>{t('common.cancel')}</Text>
             </TouchableOpacity>
           </BlurView>
         </View>
@@ -323,15 +328,13 @@ const styles = StyleSheet.create({
   bubbleRow:       { marginVertical: 3, maxWidth: '80%' },
   bubbleRowMine:   { alignSelf: 'flex-end', alignItems: 'flex-end' },
   bubbleRowTheirs: { alignSelf: 'flex-start', alignItems: 'flex-start' },
-  bubble:          { borderRadius: 18, paddingHorizontal: 14, paddingVertical: 9 },
-  bubbleMine:      { backgroundColor: 'rgba(46,158,107,0.92)', borderBottomRightRadius: 4, borderWidth: 1, borderColor: 'rgba(255,255,255,0.35)' },
-  bubbleTheirs:    { backgroundColor: Colors.glass.inputBg, borderBottomLeftRadius: 4, borderWidth: 1, borderColor: Colors.glass.border },
   bubbleTextMine:   { color: '#fff', fontSize: 15, lineHeight: 20 },
   bubbleTextTheirs: { color: Colors.text, fontSize: 15, lineHeight: 20 },
   bubbleTime:      { fontSize: 10, color: Colors.textSecondary, marginTop: 2, marginHorizontal: 4 },
 
   // inverted list flips children, so flip the empty state back
   emptyChat:      { flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 32, transform: [{ scaleY: -1 }] },
+  emptyChatCard:  { alignItems: 'center' },
   emptyChatEmoji: { fontSize: 48, marginBottom: 12 },
   emptyChatText:  { fontSize: 15, color: Colors.textSecondary, textAlign: 'center', lineHeight: 22 },
 

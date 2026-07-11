@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Alert, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { RootStackParamList } from '../../types/navigation';
 import { FloatingBackground } from '../../components/FloatingBackground';
 import { GlassCard } from '../../components/GlassCard';
@@ -20,6 +21,7 @@ type SettingsRow = {
 };
 
 export default function SettingsScreen({ navigation }: Props) {
+  const { t } = useTranslation();
   const [isLocalAuth, setIsLocalAuth] = useState(true);
 
   useEffect(() => {
@@ -29,10 +31,10 @@ export default function SettingsScreen({ navigation }: Props) {
   }, []);
 
   const handleSignOut = () => {
-    Alert.alert('Sign out', 'Are you sure you want to sign out?', [
-      { text: 'Cancel', style: 'cancel' },
+    Alert.alert(t('settings.signOutTitle'), t('settings.signOutConfirm'), [
+      { text: t('common.cancel'), style: 'cancel' },
       {
-        text: 'Sign out', style: 'destructive',
+        text: t('settings.signOutTitle'), style: 'destructive',
         onPress: async () => {
           await notificationService.unregister(); // stop pushes to this device
           await tokenStorage.remove();
@@ -44,54 +46,56 @@ export default function SettingsScreen({ navigation }: Props) {
 
   const sections: { title: string; rows: SettingsRow[] }[] = [
     {
-      title: 'Discover',
+      title: t('settings.sections.discover'),
       rows: [
-        { icon: 'options-outline', label: 'Discovery preferences', onPress: () => navigation.navigate('DiscoverFilters') },
+        { icon: 'options-outline', label: t('settings.rows.discoveryPreferences'), onPress: () => navigation.navigate('DiscoverFilters') },
       ],
     },
     {
-      title: 'Account',
+      title: t('settings.sections.account'),
       rows: [
-        { icon: 'person-outline',        label: 'Edit profile',        onPress: () => navigation.navigate('EditProfile') },
-        ...(isLocalAuth ? [{ icon: 'lock-closed-outline', label: 'Change password', onPress: () => navigation.navigate('ChangePassword') }] : []),
-        { icon: 'notifications-outline', label: 'Notifications',       onPress: () => navigation.navigate('NotificationSettings') },
+        { icon: 'person-outline',        label: t('settings.rows.editProfile'),        onPress: () => navigation.navigate('EditProfile') },
+        ...(isLocalAuth ? [{ icon: 'lock-closed-outline', label: t('settings.rows.changePassword'), onPress: () => navigation.navigate('ChangePassword') }] : []),
+        { icon: 'notifications-outline', label: t('settings.rows.notifications'),       onPress: () => navigation.navigate('NotificationSettings') },
+        { icon: 'language-outline',      label: t('settings.language.title'),            onPress: () => navigation.navigate('Language') },
       ],
     },
     {
-      title: 'Privacy',
+      title: t('settings.sections.privacy'),
       rows: [
-        { icon: 'location-outline',      label: 'Location settings',   onPress: () => navigation.navigate('LocationSettings') },
-        { icon: 'eye-off-outline',        label: 'Blocked users',       onPress: () => navigation.navigate('BlockedUsers') },
+        { icon: 'location-outline',      label: t('settings.rows.locationSettings'),   onPress: () => navigation.navigate('LocationSettings') },
+        { icon: 'eye-off-outline',        label: t('settings.rows.blockedUsers'),       onPress: () => navigation.navigate('BlockedUsers') },
       ],
     },
     {
-      title: 'Support',
+      title: t('settings.sections.support'),
       rows: [
-        { icon: 'help-circle-outline',   label: 'Help & FAQ',          onPress: () => navigation.navigate('HelpFaq') },
-        { icon: 'document-text-outline', label: 'Terms & Privacy',     onPress: () => navigation.navigate('TermsPrivacy') },
-        { icon: 'information-circle-outline', label: 'About Dogs Out', onPress: () => navigation.navigate('About') },
+        { icon: 'chatbubble-ellipses-outline', label: t('settings.rows.sendFeedback'), onPress: () => navigation.navigate('Feedback') },
+        { icon: 'help-circle-outline',   label: t('settings.rows.helpFaq'),          onPress: () => navigation.navigate('HelpFaq') },
+        { icon: 'document-text-outline', label: t('settings.rows.termsPrivacy'),     onPress: () => navigation.navigate('TermsPrivacy') },
+        { icon: 'information-circle-outline', label: t('settings.rows.aboutDogsOut'), onPress: () => navigation.navigate('About') },
       ],
     },
     {
-      title: 'Danger zone',
+      title: t('settings.sections.dangerZone'),
       rows: [
-        { icon: 'log-out-outline', label: 'Sign out', destructive: true, onPress: handleSignOut },
+        { icon: 'log-out-outline', label: t('settings.signOutTitle'), destructive: true, onPress: handleSignOut },
         {
-          icon: 'trash-outline', label: 'Delete account', destructive: true,
+          icon: 'trash-outline', label: t('settings.rows.deleteAccount'), destructive: true,
           onPress: () => Alert.alert(
-            'Delete account',
-            'This permanently deletes your account, all your dogs, and all your data. This cannot be undone.',
+            t('settings.deleteAccountTitle'),
+            t('settings.deleteAccountMessage'),
             [
-              { text: 'Cancel', style: 'cancel' },
+              { text: t('common.cancel'), style: 'cancel' },
               {
-                text: 'Delete forever', style: 'destructive',
+                text: t('settings.deleteForever'), style: 'destructive',
                 onPress: async () => {
                   try {
                     await userService.deleteAccount();
                     await tokenStorage.remove();
                     navigation.reset({ index: 0, routes: [{ name: 'Login' }] });
                   } catch {
-                    Alert.alert('Error', 'Could not delete account. Please try again.');
+                    Alert.alert(t('common.error'), t('settings.deleteAccountError'));
                   }
                 },
               },
@@ -111,7 +115,7 @@ export default function SettingsScreen({ navigation }: Props) {
         <TouchableOpacity onPress={() => navigation.goBack()} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
           <Ionicons name="chevron-back" size={26} color={Colors.text} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Settings</Text>
+        <Text style={styles.headerTitle}>{t('settings.headerTitle')}</Text>
         <View style={{ width: 26 }} />
       </View>
 

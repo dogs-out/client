@@ -60,7 +60,8 @@
         {
           "photosPermission": "DogsOut needs access to your photos to set a profile picture."
         }
-      ]
+      ],
+      "expo-localization"
     ],
     "extra": {
       "eas": {

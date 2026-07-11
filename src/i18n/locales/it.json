@@ -1,0 +1,482 @@
+{
+  "common": {
+    "cancel": "Annulla",
+    "done": "Fatto",
+    "save": "Salva",
+    "delete": "Elimina",
+    "edit": "Modifica",
+    "ok": "OK",
+    "error": "Errore",
+    "loading": "Caricamento…",
+    "retry": "Riprova",
+    "back": "Indietro",
+    "yearsOld": "{{age}} anni"
+  },
+  "settings": {
+    "language": {
+      "title": "Lingua"
+    }
+  },
+  "auth": {
+    "fillAllFields": "Compila tutti i campi.",
+    "login": {
+      "googleSignInFailed": "Accesso con Google non riuscito. Riprova.",
+      "appleSignInFailed": "Accesso con Apple non riuscito. Riprova.",
+      "welcomeBack": "Bentornato",
+      "subtitle": "Accedi al tuo account",
+      "emailPlaceholder": "E-mail",
+      "passwordPlaceholder": "Password",
+      "forgotPassword": "Password dimenticata?",
+      "signIn": "Accedi",
+      "or": "oppure",
+      "signInWithGoogle": "Accedi con Google",
+      "noAccount": "Non hai un account?",
+      "register": "Registrati"
+    },
+    "register": {
+      "weak": "Debole",
+      "ok": "OK",
+      "strong": "Forte",
+      "invalidName": "Il nome può contenere solo lettere, spazi, trattini e apostrofi.",
+      "passwordMismatch": "Le password non coincidono.",
+      "passwordTooWeak": "Scegli una password più sicura (almeno 8 caratteri con lettere e numeri).",
+      "title": "Crea account",
+      "subtitle": "Unisciti alla community di Dogs Out",
+      "namePlaceholder": "Nome",
+      "confirmPasswordPlaceholder": "Conferma password",
+      "register": "Registrati",
+      "haveAccount": "Hai già un account?",
+      "signIn": "Accedi"
+    },
+    "forgotPassword": {
+      "enterEmail": "Inserisci la tua e-mail.",
+      "title": "Password dimenticata",
+      "subtitle": "Inserisci la tua e-mail e ti invieremo un token di reimpostazione.",
+      "sendResetEmail": "Invia e-mail di reimpostazione",
+      "backToLogin": "Torna al login"
+    },
+    "resetPassword": {
+      "pasteToken": "Incolla il token ricevuto via e-mail.",
+      "title": "Reimposta password",
+      "subtitle": "Incolla il token ricevuto via e-mail, poi scegli una nuova password.",
+      "tokenPlaceholder": "Token dall'e-mail",
+      "newPasswordPlaceholder": "Nuova password",
+      "setNewPassword": "Imposta nuova password"
+    },
+    "verifyEmail": {
+      "enterCode": "Inserisci il codice a 6 cifre.",
+      "title": "Controlla la tua e-mail",
+      "subtitle": "Abbiamo inviato un codice a 6 cifre a",
+      "verify": "Verifica",
+      "codeResent": "Codice inviato di nuovo — controlla la tua casella di posta",
+      "resend": "Non hai ricevuto il codice? Invia di nuovo",
+      "wrongEmail": "E-mail sbagliata? Torna indietro"
+    }
+  },
+  "chat": {
+    "chatsScreen": {
+      "loadError": "Impossibile caricare i tuoi match. Il server è attivo?",
+      "headerTitle": "Chat",
+      "youMatched": "È un match! 🐾",
+      "chatNow": "Chatta ora",
+      "youPrefix": "Tu: ",
+      "errorTitle": "Qualcosa è andato storto",
+      "noMatchesTitle": "Ancora nessun match",
+      "noMatchesSub": "Regala qualche premio in Scopri — quando è reciproco, il match comparirà qui.",
+      "timeNow": "ora",
+      "timeMinutes": "{{count}} min",
+      "timeHours": "{{count}} h",
+      "timeDays": "{{count}} g"
+    },
+    "chatDetail": {
+      "profanity": "Il tuo messaggio contiene un linguaggio inappropriato.",
+      "sendFailed": "Impossibile inviare il messaggio.",
+      "blockedTitle": "Bloccato",
+      "blockedMessage": "{{name}} non può più vederti né scriverti.",
+      "blockError": "Impossibile bloccare questo utente. Riprova.",
+      "blockConfirmTitle": "Bloccare {{name}}?",
+      "blockConfirmMessage": "Questa persona sparirà dai tuoi match e da Scopri, e non potrete più scrivervi. Non riceverà una notifica.",
+      "blockAction": "Blocca",
+      "unmatchConfirmTitle": "Annullare il match con {{name}}?",
+      "unmatchConfirmMessage": "Questo elimina il match e l'intera chat per entrambi. L'azione non può essere annullata.",
+      "unmatchAction": "Annulla match",
+      "unmatchError": "Impossibile annullare il match. Riprova.",
+      "reportSentTitle": "Segnalazione inviata",
+      "reportSentMessage": "Grazie per averci avvisati. Vuoi anche bloccare {{name}}?",
+      "notNow": "Non ora",
+      "blockName": "Blocca {{name}}",
+      "viewProfile": "Vedi profilo",
+      "reportName": "Segnala {{name}}",
+      "unmatchDeleteChat": "Annulla match ed elimina chat",
+      "emptyChatText": "Hai fatto match con {{name}}! Salutala/o e organizzate la vostra prima passeggiata insieme.",
+      "messagePlaceholder": "Messaggio a {{name}}…"
+    },
+    "reportModal": {
+      "sendFailed": "Impossibile inviare la segnalazione. Riprova.",
+      "title": "Segnala {{name}}",
+      "subtitle": "La tua segnalazione è confidenziale. {{name}} non saprà di essere stato/a segnalato/a.",
+      "messagePlaceholder": "Raccontaci di più (facoltativo)…",
+      "sending": "Invio…",
+      "sendReport": "Invia segnalazione"
+    }
+  },
+  "dogs": {
+    "form": {
+      "loadFailed": "Impossibile caricare il profilo del cane.",
+      "maxPhotos": "Massimo 6 foto per cane.",
+      "photoPermission": "È necessario l'accesso alla libreria foto.",
+      "nameRequired": "Il tuo cane ha bisogno di un nome.",
+      "nameProfanity": "Il nome del tuo cane contiene un linguaggio inappropriato.",
+      "bioProfanity": "La bio del tuo cane contiene un linguaggio inappropriato.",
+      "removeDogTitle": "Rimuovi cane",
+      "removeDogMessage": "Vuoi davvero rimuovere {{name}}?",
+      "defaultDogName": "questo cane",
+      "removeAction": "Rimuovi",
+      "titleOnboarding": "Presenta il tuo cane 🐾",
+      "titleEdit": "Modifica cane",
+      "titleAdd": "Aggiungi un cane",
+      "subtitleOnboarding": "Gli altri proprietari lo vedranno quando fate match",
+      "subtitleDefault": "Parlaci del tuo amico a quattro zampe",
+      "photosLabel": "Foto ({{count}}/6)",
+      "photosHint": "Aggiungi fino a 6 belle foto del tuo cane",
+      "mainBadge": "Principale",
+      "basicInfo": "Informazioni di base",
+      "namePlaceholder": "Nome *",
+      "breedPlaceholder": "Razza (facoltativo)",
+      "dobPlaceholder": "Data di nascita (facoltativo)",
+      "bioPlaceholder": "Bio — cosa rende speciale il tuo cane?",
+      "personality": "Personalità",
+      "energyLevel": "Livello di energia",
+      "energyHint": "1 = Pigrone da divano · 5 = Non smette mai di correre",
+      "socialQuestion": "Come reagisce il tuo cane con cani nuovi?",
+      "lovesQuestion": "Cosa ama di più il tuo cane?",
+      "lovesHint": "(fino a 3)",
+      "offLeash": "Comportamento senza guinzaglio",
+      "kidsComfort": "Comportamento con i bambini piccoli",
+      "kidsComfortHint": "1 = Li evita · 5 = Li adora",
+      "tags": "Tag",
+      "tagsHint": "Scegline uno per categoria",
+      "personalityCategory": "Personalità",
+      "playStyleCategory": "Stile di gioco",
+      "socialCategory": "Socialità",
+      "letsGo": "Si parte 🐾",
+      "saveChanges": "Salva modifiche",
+      "addDog": "Aggiungi cane",
+      "removeThisDog": "Rimuovi questo cane"
+    },
+    "breedPicker": {
+      "selectBreed": "Seleziona razza",
+      "selectSecondBreed": "Seleziona seconda razza",
+      "addMix": "Aggiungi mix",
+      "searchPlaceholder": "Cerca razze...",
+      "confirm": "Conferma"
+    },
+    "swipePreview": {
+      "headerTitle": "Anteprima profilo",
+      "noTreatHint": "← Niente premio",
+      "treatHint": "Premio →",
+      "treat": "PREMIO 🦴",
+      "noTreat": "NIENTE PREMIO 🚫",
+      "treatToast": "Premio! 🦴",
+      "noTreatToast": "Niente premio 🚫"
+    }
+  },
+  "matching": {
+    "discover": {
+      "distanceAway": "a {{km}} km",
+      "lessThanOneKm": "a < 1 km",
+      "loadError": "Impossibile caricare il feed. Il server è attivo?",
+      "errorTitle": "Qualcosa è andato storto",
+      "noMoreDogsTitle": "Nessun altro cane nelle vicinanze",
+      "noMoreDogsSub": "Ricontrolla più tardi o amplia la distanza.",
+      "refresh": "Aggiorna",
+      "headerTitle": "Scopri",
+      "matchTitle": "È un match! 🐾",
+      "matchSub": "Anche {{name}} ti ha dato un premio!",
+      "chatNow": "Chatta ora 💬",
+      "keepSwiping": "Continua a scorrere"
+    },
+    "filters": {
+      "saveFailed": "Impossibile salvare le tue preferenze. Riprova.",
+      "saveFailedTitle": "Salvataggio non riuscito",
+      "headerTitle": "Preferenze di scoperta",
+      "distance": "Distanza",
+      "maxDistance": "Distanza massima",
+      "kmValue": "{{km}} km",
+      "ownerAge": "Età del proprietario",
+      "filterByOwnerAge": "Filtra per età del proprietario",
+      "showOwnersAged": "Mostra proprietari di {{min}}–{{max}} anni",
+      "showingAllAges": "Mostra tutte le età",
+      "dogAge": "Età del cane",
+      "addDogHint": "Aggiungi un cane al tuo profilo per usare questo filtro",
+      "filterByDogAge": "Filtra per età del cane",
+      "showDogsAged": "Mostra cani di {{min}}–{{max}} anni",
+      "dogAgeToleranceUnset": "±{{tolerance}} anni (il cane non ha una data di nascita)",
+      "showingAllDogAges": "Mostra cani di tutte le età",
+      "yearAbbrev": "{{count}} anno",
+      "oneYrEdge": "±1 anno",
+      "toleranceValue_one": "±{{count}} anno",
+      "toleranceValue_other": "±{{count}} anni",
+      "sixYrsEdge": "±6 anni",
+      "noBirthday": "Nessuna data di nascita per {{name}} — intervallo mostrato come ±{{tolerance}} anni",
+      "savePreferences": "Salva preferenze"
+    }
+  },
+  "profile": {
+    "editProfile": {
+      "title": "Modifica profilo",
+      "subtitle": "Aggiorna i tuoi dati"
+    },
+    "setup": {
+      "title": "Configura il tuo profilo",
+      "subtitle": "Raccontaci qualcosa di te"
+    },
+    "form": {
+      "maxPhotos": "Massimo 3 foto per profilo.",
+      "photoPermission": "È necessario l'accesso alla libreria foto.",
+      "locationPermission": "È necessario l'accesso alla posizione per trovare cani nelle vicinanze.",
+      "locationError": "Impossibile ottenere la posizione. Riprova.",
+      "nameRequired": "Inserisci il tuo nome.",
+      "nameProfanity": "Il tuo nome contiene un linguaggio inappropriato.",
+      "dobRequired": "Seleziona la tua data di nascita.",
+      "tooYoung": "Devi avere almeno 18 anni per usare Dogs Out.",
+      "locationRequired": "La posizione è obbligatoria — tocca \"Rileva la mia posizione\" per consentire l'accesso.",
+      "bioProfanity": "La tua bio contiene un linguaggio inappropriato.",
+      "photosLabel": "Foto",
+      "name": "Nome",
+      "namePlaceholder": "Il tuo nome",
+      "bio": "Bio",
+      "optional": "(facoltativo)",
+      "bioPlaceholder": "Racconta agli altri proprietari di cani qualcosa su di te...",
+      "dob": "Data di nascita",
+      "selectDob": "Seleziona la tua data di nascita",
+      "location": "Posizione",
+      "locationDetected": "Posizione rilevata",
+      "detectLocation": "Rileva la mia posizione",
+      "tags": "Tag",
+      "lifestyle": "Stile di vita",
+      "personality": "Personalità",
+      "relationshipStatus": "Stato sentimentale"
+    },
+    "userProfile": {
+      "profileFallback": "Profilo",
+      "notAvailable": "Questo profilo non è più disponibile.",
+      "lovesPrefix": "Ama: ",
+      "theirDog_one": "Il suo cane",
+      "theirDog_other": "I suoi cani"
+    },
+    "changePassword": {
+      "headerTitle": "Cambia password",
+      "currentPassword": "Password attuale",
+      "newPassword": "Nuova password",
+      "confirmNewPassword": "Conferma nuova password",
+      "hint": "La password deve contenere almeno 8 caratteri.",
+      "updatePassword": "Aggiorna password",
+      "missingFieldsTitle": "Campi mancanti",
+      "tooShortTitle": "Password troppo corta",
+      "tooShortMessage": "La nuova password deve contenere almeno 8 caratteri.",
+      "mismatchTitle": "Le password non coincidono",
+      "mismatchMessage": "La nuova password e la conferma non coincidono.",
+      "samePasswordTitle": "Password identica",
+      "samePasswordMessage": "La nuova password deve essere diversa dalla tua password attuale.",
+      "successTitle": "Password modificata",
+      "successMessage": "La tua password è stata aggiornata con successo.",
+      "wrongPasswordTitle": "Password errata",
+      "wrongPasswordMessage": "La tua password attuale non è corretta.",
+      "genericError": "Qualcosa è andato storto."
+    },
+    "blockedUsers": {
+      "loadError": "Impossibile caricare gli utenti bloccati.",
+      "headerTitle": "Utenti bloccati",
+      "emptyTitle": "Nessun utente bloccato",
+      "emptySub": "Le persone che blocchi da una chat appariranno qui.",
+      "unblockConfirmTitle": "Sbloccare {{name}}?",
+      "unblockConfirmMessage": "Questa persona potrà ricomparire in Scopri e potrete di nuovo fare match.",
+      "unblock": "Sblocca",
+      "unblockError": "Impossibile sbloccare. Riprova."
+    },
+    "notificationSettings": {
+      "saveError": "Impossibile salvare la tua preferenza. Riprova.",
+      "pushNotifications": "Notifiche push",
+      "pushNotificationsSub": "Nuovi messaggi e match quando l'app è chiusa",
+      "hint": "Le notifiche devono essere consentite per Dogs Out anche nelle impostazioni di sistema del tuo telefono."
+    },
+    "locationSettings": {
+      "permissionNeeded": "È necessario l'accesso alla posizione per trovare cani nelle vicinanze. Puoi consentirlo nelle impostazioni di sistema del tuo telefono.",
+      "updateError": "Impossibile aggiornare la tua posizione. Riprova.",
+      "headerTitle": "Posizione",
+      "yourLocation": "La tua posizione",
+      "notSet": "Non ancora impostata",
+      "updating": "Aggiornamento…",
+      "updateToCurrentLocation": "Aggiorna alla mia posizione attuale",
+      "hint": "La tua posizione viene usata solo per mostrare i cani nelle vicinanze e la distanza dei match. Gli altri utenti non vedono mai la tua posizione esatta."
+    },
+    "about": {
+      "headerTitle": "Informazioni",
+      "tagline": "Trova compagni di passeggiata per te e il tuo cane",
+      "version": "Versione {{version}}",
+      "credit": "Creato con 🦴 a Zurigo come progetto di tirocinio informatico UZH, 2026."
+    },
+    "helpFaq": {
+      "headerTitle": "Aiuto e FAQ",
+      "matching": {
+        "q": "Come funziona il matching?",
+        "a": "In Scopri vedi i cani (e i loro proprietari) vicino a te. Scorri a destra o tocca l'osso per dare un premio, scorri a sinistra per passare. Quando entrambi vi date un premio a vicenda, è un match — potete quindi chattare e organizzare una passeggiata insieme."
+      },
+      "discoverEmpty": {
+        "q": "Perché non vedo nessuno in Scopri?",
+        "a": "Scopri mostra solo le persone entro la distanza impostata che corrispondono ai tuoi filtri. Prova ad aumentare la distanza massima o ad ampliare i filtri per età in Impostazioni → Preferenze di scoperta. La tua posizione deve essere impostata perché il matching per distanza funzioni."
+      },
+      "editDogs": {
+        "q": "Come aggiungo o modifico i miei cani?",
+        "a": "Vai nella scheda Profilo. Lì puoi aggiungere un nuovo cane o toccarne uno esistente per modificarne foto, razza, bio, personalità e tag."
+      },
+      "reportBlock": {
+        "q": "Come segnalo o blocco qualcuno?",
+        "a": "Apri la chat con quella persona e tocca il menu ••• in alto a destra. Puoi vedere il suo profilo, segnalarla (con un motivo — il nostro team esamina ogni segnalazione), bloccarla o annullare il match. Gli utenti bloccati si gestiscono in Impostazioni → Utenti bloccati."
+      },
+      "privateMessages": {
+        "q": "I miei messaggi sono privati?",
+        "a": "I messaggi sono visibili solo a te e al tuo match. Se una chat viene segnalata, la conversazione viene condivisa con il nostro team di moderazione per la revisione."
+      },
+      "deleteAccount": {
+        "q": "Come elimino il mio account?",
+        "a": "Impostazioni → Elimina account. Questo rimuove definitivamente il tuo profilo, i tuoi cani, i match e i messaggi. L'azione non può essere annullata."
+      },
+      "contact": "Ancora bloccato? Scrivici a noreply.dogsout@gmail.com🐾"
+    },
+    "termsPrivacy": {
+      "headerTitle": "Termini e privacy",
+      "updated": "Ultimo aggiornamento: luglio 2026",
+      "whoCanUse": {
+        "title": "1. Chi può usare Dogs Out",
+        "body": "Devi avere almeno 18 anni per creare un account. Sei responsabile dell'accuratezza del tuo profilo e della sicurezza delle tue credenziali di accesso."
+      },
+      "contentBehaviour": {
+        "title": "2. I tuoi contenuti e il tuo comportamento",
+        "body": "Sii gentile. Non sono ammessi contenuti offensivi, discriminatori, sessualmente espliciti, ingannevoli o non pertinenti all'incontro con altri proprietari di cani. Filtriamo automaticamente il linguaggio volgare evidente ed esaminiamo ogni segnalazione degli utenti. Potremmo rimuovere contenuti o sospendere account che violano queste regole. Puoi segnalare o bloccare qualsiasi utente dalla vostra chat."
+      },
+      "meetingInPerson": {
+        "title": "3. Incontrarsi di persona",
+        "body": "Dogs Out ti aiuta a incontrare altri proprietari di cani, ma gli incontri avvengono sotto la tua responsabilità. Incontratevi in luoghi pubblici come i parchi e assicurati che il tuo cane sia a suo agio con altri cani."
+      },
+      "dataStored": {
+        "title": "4. Quali dati conserviamo",
+        "body": "Il tuo account (nome, e-mail, data di nascita), il tuo profilo e i profili dei cani incluse le foto, la tua posizione approssimativa (usata solo per il matching basato sulla distanza — gli altri utenti non vedono mai la tua posizione esatta), i tuoi match e i messaggi di chat, e le tue preferenze di notifica."
+      },
+      "dataUse": {
+        "title": "5. Come vengono usati i tuoi dati",
+        "body": "I tuoi dati vengono usati esclusivamente per far funzionare Dogs Out: mostrare il tuo profilo agli utenti nelle vicinanze, consegnare i messaggi e inviare notifiche push che puoi disattivare in qualsiasi momento. Non vendiamo i tuoi dati né li condividiamo con inserzionisti. Le chat segnalate vengono esaminate dal nostro team di moderazione."
+      },
+      "deletingData": {
+        "title": "6. Eliminare i tuoi dati",
+        "body": "Impostazioni → Elimina account rimuove definitivamente il tuo profilo, le foto, i cani, i match, i messaggi e i blocchi. L'operazione è immediata e non può essere annullata."
+      },
+      "contact": {
+        "title": "7. Contatti",
+        "body": "Domande su questi termini o sui tuoi dati? Contattaci a noreply.dogsout@gmail.com."
+      }
+    }
+  },
+  "settings": {
+    "headerTitle": "Impostazioni",
+    "signOutTitle": "Esci",
+    "signOutConfirm": "Sei sicuro di voler uscire?",
+    "deleteAccountTitle": "Elimina account",
+    "deleteAccountMessage": "Questo elimina definitivamente il tuo account, tutti i tuoi cani e tutti i tuoi dati. L'azione non può essere annullata.",
+    "deleteForever": "Elimina definitivamente",
+    "deleteAccountError": "Impossibile eliminare l'account. Riprova.",
+    "sections": {
+      "discover": "Scopri",
+      "account": "Account",
+      "privacy": "Privacy",
+      "support": "Supporto",
+      "dangerZone": "Zona pericolosa"
+    },
+    "rows": {
+      "discoveryPreferences": "Preferenze di scoperta",
+      "editProfile": "Modifica profilo",
+      "changePassword": "Cambia password",
+      "notifications": "Notifiche",
+      "locationSettings": "Impostazioni posizione",
+      "blockedUsers": "Utenti bloccati",
+      "sendFeedback": "Invia feedback",
+      "helpFaq": "Aiuto e FAQ",
+      "termsPrivacy": "Termini e privacy",
+      "aboutDogsOut": "Informazioni su Dogs Out",
+      "deleteAccount": "Elimina account"
+    }
+  },
+  "home": {
+    "myProfile": "Il mio profilo",
+    "profileTab": "Profilo",
+    "noBio": "Ancora nessuna bio",
+    "myDogs": "I miei cani",
+    "noDogsTitle": "Ancora nessun cane",
+    "noDogsSub": "Aggiungi il tuo primo cane per iniziare a fare match",
+    "yearAbbrev_one": "{{count}} anno",
+    "yearAbbrev_other": "{{count}} anni",
+    "previewMyDog_one": "Anteprima del mio cane",
+    "previewMyDog_other": "Anteprima dei miei cani"
+  },
+  "tags": {
+    "Goofy": "Buffo",
+    "Independent": "Indipendente",
+    "Velcro dog": "Cane appiccicoso",
+    "Couch potato": "Pigrone da divano",
+    "Zoomies champion": "Campione di corse pazze",
+    "Gentle giant": "Gigante buono",
+    "Drama queen": "Prima donna",
+    "Shy": "Timido",
+    "Fetch obsessed": "Ossessionato dal riporto",
+    "Loves to swim": "Ama nuotare",
+    "Sniff-first explorer": "Esploratore con il naso",
+    "Wrestler": "Lottatore",
+    "Chaser": "Inseguitore",
+    "Cuddler not a fighter": "Coccole non lotte",
+    "Dog park regular": "Habitué del parco cani",
+    "Life of the party": "Anima della festa",
+    "One dog at a time": "Un cane alla volta",
+    "Good with puppies": "Bravo con i cuccioli",
+    "Good with cats": "Bravo con i gatti",
+    "Fetch / ball games": "Riporto / giochi con la palla",
+    "Swimming": "Nuoto",
+    "Sniffing everything": "Annusare tutto",
+    "Cuddles": "Coccole",
+    "Treats": "Premietti",
+    "Other dogs": "Altri cani",
+    "Belly rubs": "Grattini sulla pancia",
+    "Running": "Correre",
+    "Napping": "Pisolini",
+    "Instant best friends": "Migliori amici all'istante",
+    "Cautious but warms up": "Cauto ma si scioglie",
+    "Prefers to observe first": "Preferisce osservare prima",
+    "Can be reactive/needs space": "Può essere reattivo/ha bisogno di spazio",
+    "Yes, fully reliable": "Sì, completamente affidabile",
+    "Only in fenced areas": "Solo in aree recintate",
+    "Working on it": "Ci stiamo lavorando",
+    "No, always on leash": "No, sempre al guinzaglio",
+    "Early bird walks": "Passeggiate mattiniere",
+    "Night owl walks": "Passeggiate notturne",
+    "Weekend warrior": "Guerriero del weekend",
+    "Hiking buddy wanted": "Cerco compagno di escursioni",
+    "Café-with-dog person": "Amante dei caffè con il cane",
+    "Beach walker": "Camminatore da spiaggia",
+    "Dog mom/dad energy": "Energia da mamma/papà cane",
+    "Treat negotiator": "Negoziatore di premietti",
+    "Professional ball-thrower": "Lanciatore di palla professionista",
+    "Responsible pup parent": "Genitore responsabile del cucciolo",
+    "Will talk about my dog for hours": "Parlerà del mio cane per ore",
+    "Single": "Single",
+    "In a relationship": "In una relazione",
+    "Married": "Sposato/a",
+    "It's complicated": "È complicato",
+    "Prefer not to say": "Preferisco non dirlo",
+    "Inappropriate messages": "Messaggi inappropriati",
+    "Harassment or bullying": "Molestie o bullismo",
+    "Spam or scam": "Spam o truffa",
+    "Fake profile": "Profilo falso",
+    "Safety concern": "Problema di sicurezza",
+    "Other": "Altro"
+  }
+}

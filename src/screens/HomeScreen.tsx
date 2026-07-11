@@ -5,6 +5,7 @@ import {
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { CompositeScreenProps } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
@@ -23,6 +24,7 @@ type Props = CompositeScreenProps<
 >;
 
 export default function HomeScreen({ navigation }: Props) {
+  const { t } = useTranslation();
   const [user, setUser]             = useState<UserProfile | null>(null);
   const [dogs, setDogs]             = useState<Dog[]>([]);
   const [loading, setLoading]       = useState(true);
@@ -51,7 +53,7 @@ export default function HomeScreen({ navigation }: Props) {
   const formatAge = (dob: string | null) => {
     if (!dob) return null;
     const age = Math.floor((Date.now() - new Date(dob).getTime()) / (1000 * 60 * 60 * 24 * 365.25));
-    return `${age} years old`;
+    return t('common.yearsOld', { age });
   };
 
   if (loading) {
@@ -75,7 +77,7 @@ export default function HomeScreen({ navigation }: Props) {
       >
         {/* Header row */}
         <View style={styles.headerRow}>
-          <Text style={styles.pageTitle}>My Profile</Text>
+          <Text style={styles.pageTitle}>{t('home.myProfile')}</Text>
           <TouchableOpacity onPress={() => navigation.navigate('Settings')} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
             <Ionicons name="settings-outline" size={24} color={Colors.textSecondary} />
           </TouchableOpacity>
@@ -99,20 +101,20 @@ export default function HomeScreen({ navigation }: Props) {
               {user?.bio ? (
                 <Text style={styles.bio} numberOfLines={2}>{user.bio}</Text>
               ) : (
-                <Text style={styles.bioEmpty}>No bio yet</Text>
+                <Text style={styles.bioEmpty}>{t('home.noBio')}</Text>
               )}
             </View>
           </View>
 
           <GlassButton onPress={() => navigation.navigate('EditProfile')} style={styles.editButton}>
             <Ionicons name="pencil-outline" size={16} color={Colors.text} style={{ marginRight: 6 }} />
-            <Text style={styles.editButtonText}>Edit profile</Text>
+            <Text style={styles.editButtonText}>{t('settings.rows.editProfile')}</Text>
           </GlassButton>
         </GlassCard>
 
         {/* Dogs section */}
         <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>My Dogs</Text>
+          <Text style={styles.sectionTitle}>{t('home.myDogs')}</Text>
           {dogs.length < 3 && (
             <TouchableOpacity
               style={styles.addDogButton}
@@ -126,11 +128,11 @@ export default function HomeScreen({ navigation }: Props) {
         {dogs.length === 0 ? (
           <GlassCard style={styles.emptyCard} padding={24}>
             <Text style={styles.emptyIcon}>🐾</Text>
-            <Text style={styles.emptyTitle}>No dogs yet</Text>
-            <Text style={styles.emptySubtitle}>Add your first dog to start matching</Text>
+            <Text style={styles.emptyTitle}>{t('home.noDogsTitle')}</Text>
+            <Text style={styles.emptySubtitle}>{t('home.noDogsSub')}</Text>
             <GlassButton onPress={() => navigation.navigate('AddDog', {})} style={styles.addFirstButton}>
               <Ionicons name="add" size={18} color={Colors.text} style={{ marginRight: 6 }} />
-              <Text style={styles.addFirstButtonText}>Add a dog</Text>
+              <Text style={styles.addFirstButtonText}>{t('dogs.form.titleAdd')}</Text>
             </GlassButton>
           </GlassCard>
         ) : (
@@ -154,7 +156,7 @@ export default function HomeScreen({ navigation }: Props) {
                         {dog.breed && dog.dateOfBirth != null && <Text style={styles.dogMetaDot}> · </Text>}
                         {dog.dateOfBirth != null && (() => {
                           const age = Math.floor((Date.now() - new Date(dog.dateOfBirth).getTime()) / (1000 * 60 * 60 * 24 * 365.25));
-                          return <Text style={styles.dogMetaText}>{age} yr{age !== 1 ? 's' : ''}</Text>;
+                          return <Text style={styles.dogMetaText}>{t('home.yearAbbrev', { count: age })}</Text>;
                         })()}
                       </View>
                       {dog.bio && <Text style={styles.dogBio} numberOfLines={2}>{dog.bio}</Text>}
@@ -163,7 +165,7 @@ export default function HomeScreen({ navigation }: Props) {
                   <View style={styles.dogActions}>
                     <TouchableOpacity style={styles.dogAction} onPress={() => navigation.navigate('EditDog', { dogId: dog.id })}>
                       <Ionicons name="pencil-outline" size={15} color={Colors.textSecondary} style={{ marginRight: 4 }} />
-                      <Text style={[styles.dogActionText, { color: Colors.textSecondary }]}>Edit</Text>
+                      <Text style={[styles.dogActionText, { color: Colors.textSecondary }]}>{t('common.edit')}</Text>
                     </TouchableOpacity>
                   </View>
                 </GlassCard>
@@ -176,7 +178,7 @@ export default function HomeScreen({ navigation }: Props) {
           <GlassButton onPress={() => navigation.navigate('SwipePreview')} style={styles.previewButton}>
             <Ionicons name="eye-outline" size={17} color={Colors.text} style={{ marginRight: 8 }} />
             <Text style={styles.previewButtonText}>
-              Preview my {dogs.length === 1 ? 'Dog' : 'Dogs'}
+              {t('home.previewMyDog', { count: dogs.length })}
             </Text>
           </GlassButton>
         )}

@@ -21,4 +21,6 @@ export type RootStackParamList = {
   HelpFaq: undefined;
   TermsPrivacy: undefined;
   About: undefined;
+  Feedback: undefined;
+  Language: undefined;
 };

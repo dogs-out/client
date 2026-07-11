@@ -6,6 +6,7 @@ import {
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { moderationService, BlockedUser } from '../../services/moderationService';
 import { RootStackParamList } from '../../types/navigation';
 import { Colors } from '../../constants/colors';
@@ -15,29 +16,30 @@ import { GlassCard } from '../../components/GlassCard';
 type Props = NativeStackScreenProps<RootStackParamList, 'BlockedUsers'>;
 
 export default function BlockedUsersScreen({ navigation }: Props) {
+  const { t } = useTranslation();
   const [blocked, setBlocked] = useState<BlockedUser[]>([]);
   const [loaded, setLoaded] = useState(false);
 
   const load = useCallback(() => {
     moderationService.getBlockedUsers()
       .then(setBlocked)
-      .catch(() => Alert.alert('Error', 'Could not load blocked users.'))
+      .catch(() => Alert.alert(t('common.error'), t('profile.blockedUsers.loadError')))
       .finally(() => setLoaded(true));
-  }, []);
+  }, [t]);
 
   useFocusEffect(useCallback(() => { load(); }, [load]));
 
   const unblock = (user: BlockedUser) => {
     Alert.alert(
-      `Unblock ${user.name}?`,
-      'They may appear in Discover again and you can match with each other.',
+      t('profile.blockedUsers.unblockConfirmTitle', { name: user.name }),
+      t('profile.blockedUsers.unblockConfirmMessage'),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('common.cancel'), style: 'cancel' },
         {
-          text: 'Unblock',
+          text: t('profile.blockedUsers.unblock'),
           onPress: () => moderationService.unblockUser(user.userId)
             .then(() => setBlocked(prev => prev.filter(b => b.userId !== user.userId)))
-            .catch(() => Alert.alert('Error', 'Could not unblock. Please try again.')),
+            .catch(() => Alert.alert(t('common.error'), t('profile.blockedUsers.unblockError'))),
         },
       ]
     );
@@ -51,7 +53,7 @@ export default function BlockedUsersScreen({ navigation }: Props) {
         <TouchableOpacity onPress={() => navigation.goBack()} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
           <Ionicons name="chevron-back" size={26} color={Colors.text} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Blocked users</Text>
+        <Text style={styles.headerTitle}>{t('profile.blockedUsers.headerTitle')}</Text>
         <View style={{ width: 26 }} />
       </View>
 
@@ -60,8 +62,8 @@ export default function BlockedUsersScreen({ navigation }: Props) {
       ) : blocked.length === 0 ? (
         <View style={styles.centered}>
           <Text style={styles.emptyEmoji}>🕊️</Text>
-          <Text style={styles.emptyTitle}>No blocked users</Text>
-          <Text style={styles.emptySub}>People you block from a chat will show up here.</Text>
+          <Text style={styles.emptyTitle}>{t('profile.blockedUsers.emptyTitle')}</Text>
+          <Text style={styles.emptySub}>{t('profile.blockedUsers.emptySub')}</Text>
         </View>
       ) : (
         <FlatList
@@ -77,7 +79,7 @@ export default function BlockedUsersScreen({ navigation }: Props) {
                 }
                 <Text style={styles.name} numberOfLines={1}>{item.name}</Text>
                 <TouchableOpacity style={styles.unblockBtn} onPress={() => unblock(item)}>
-                  <Text style={styles.unblockText}>Unblock</Text>
+                  <Text style={styles.unblockText}>{t('profile.blockedUsers.unblock')}</Text>
                 </TouchableOpacity>
               </View>
             </GlassCard>

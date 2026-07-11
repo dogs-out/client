@@ -5,12 +5,14 @@ import {
 } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { discoverService, DiscoverProfile } from '../../services/discoverService';
 import { Dog } from '../../services/dogService';
 import { RootStackParamList } from '../../types/navigation';
 import { Colors } from '../../constants/colors';
 import { FloatingBackground } from '../../components/FloatingBackground';
 import { GlassCard } from '../../components/GlassCard';
+import { translateTag } from '../../i18n/translateTag';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'UserProfile'>;
 
@@ -58,6 +60,7 @@ function PhotoCarousel({ uris, placeholder }: { uris: string[]; placeholder: str
 }
 
 function DogCard({ dog }: { dog: Dog }) {
+  const { t } = useTranslation();
   const age = getAge(dog.dateOfBirth);
   const photos = dog.photos.length > 0
     ? dog.photos.map(p => p.imageData)
@@ -74,12 +77,12 @@ function DogCard({ dog }: { dog: Dog }) {
         {dog.tags.length > 0 && (
           <View style={styles.tagRow}>
             {dog.tags.map(tag => (
-              <View key={tag} style={styles.tag}><Text style={styles.tagText}>{tag}</Text></View>
+              <View key={tag} style={styles.tag}><Text style={styles.tagText}>{translateTag(tag, t)}</Text></View>
             ))}
           </View>
         )}
         {dog.loves.length > 0 && (
-          <Text style={styles.detailLine}>Loves: {dog.loves.join(', ')}</Text>
+          <Text style={styles.detailLine}>{t('profile.userProfile.lovesPrefix')}{dog.loves.join(', ')}</Text>
         )}
         {dog.bio ? <Text style={styles.bioText}>{dog.bio}</Text> : null}
       </View>
@@ -88,6 +91,7 @@ function DogCard({ dog }: { dog: Dog }) {
 }
 
 export default function UserProfileScreen({ navigation, route }: Props) {
+  const { t } = useTranslation();
   const { userId } = route.params;
   const [profile, setProfile] = useState<DiscoverProfile | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -95,8 +99,8 @@ export default function UserProfileScreen({ navigation, route }: Props) {
   useEffect(() => {
     discoverService.getUserProfile(userId)
       .then(setProfile)
-      .catch(() => setError('This profile is no longer available.'));
-  }, [userId]);
+      .catch(() => setError(t('profile.userProfile.notAvailable')));
+  }, [userId, t]);
 
   const ownerPhotos = profile
     ? (profile.photos.length > 0
@@ -113,7 +117,7 @@ export default function UserProfileScreen({ navigation, route }: Props) {
         <TouchableOpacity onPress={() => navigation.goBack()} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
           <Ionicons name="chevron-back" size={26} color={Colors.text} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle} numberOfLines={1}>{profile?.name ?? 'Profile'}</Text>
+        <Text style={styles.headerTitle} numberOfLines={1}>{profile?.name ?? t('profile.userProfile.profileFallback')}</Text>
         <View style={{ width: 26 }} />
       </View>
 
@@ -137,11 +141,11 @@ export default function UserProfileScreen({ navigation, route }: Props) {
               <Text style={styles.dogName}>
                 {profile.name}{profile.age !== null ? `, ${profile.age}` : ''}
               </Text>
-              {profile.relationshipStatus && <Text style={styles.subLine}>{profile.relationshipStatus}</Text>}
+              {profile.relationshipStatus && <Text style={styles.subLine}>{translateTag(profile.relationshipStatus, t)}</Text>}
               {ownerTags.length > 0 && (
                 <View style={styles.tagRow}>
                   {ownerTags.map(tag => (
-                    <View key={tag} style={styles.tag}><Text style={styles.tagText}>{tag}</Text></View>
+                    <View key={tag} style={styles.tag}><Text style={styles.tagText}>{translateTag(tag, t)}</Text></View>
                   ))}
                 </View>
               )}
@@ -152,7 +156,7 @@ export default function UserProfileScreen({ navigation, route }: Props) {
           {/* Dogs */}
           {profile.dogs.length > 0 && (
             <Text style={styles.sectionTitle}>
-              {profile.dogs.length === 1 ? 'Their dog' : 'Their dogs'} 🐾
+              {t('profile.userProfile.theirDog', { count: profile.dogs.length })} 🐾
             </Text>
           )}
           {profile.dogs.map(dog => <DogCard key={dog.id} dog={dog} />)}

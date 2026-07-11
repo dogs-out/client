@@ -8,6 +8,7 @@ import * as AuthSession from 'expo-auth-session';
 import * as WebBrowser from 'expo-web-browser';
 import * as AppleAuthentication from 'expo-apple-authentication';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useTranslation } from 'react-i18next';
 import { RootStackParamList } from '../../types/navigation';
 import { AxiosError } from 'axios';
 import { authService } from '../../services/authService';
@@ -40,6 +41,7 @@ const REDIRECT_URI = AuthSession.makeRedirectUri({
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
 export default function LoginScreen({ navigation }: Props) {
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -67,7 +69,7 @@ export default function LoginScreen({ navigation }: Props) {
     if (response?.type !== 'success') return;
     const code = response.params.code;
     const codeVerifier = request?.codeVerifier;
-    if (!code || !codeVerifier) { setError('Google sign-in failed. Please try again.'); return; }
+    if (!code || !codeVerifier) { setError(t('auth.login.googleSignInFailed')); return; }
     setLoading(true);
     setError(null);
     authService.googleAuth({ code, codeVerifier, redirectUri: REDIRECT_URI, clientId: CLIENT_ID })
@@ -80,7 +82,7 @@ export default function LoginScreen({ navigation }: Props) {
   }, [response]);
 
   const handleLogin = async () => {
-    if (!email || !password) { setError('Please fill in all fields.'); return; }
+    if (!email || !password) { setError(t('auth.fillAllFields')); return; }
     setLoading(true);
     setError(null);
     try {
@@ -113,12 +115,12 @@ export default function LoginScreen({ navigation }: Props) {
       });
     } catch (e: unknown) {
       if ((e as { code?: string }).code !== 'ERR_REQUEST_CANCELED') {
-        setError('Apple Sign-In failed. Please try again.');
+        setError(t('auth.login.appleSignInFailed'));
       }
       return;
     }
 
-    if (!credential.identityToken) { setError('Apple Sign-In failed. Please try again.'); return; }
+    if (!credential.identityToken) { setError(t('auth.login.appleSignInFailed')); return; }
 
     // Step 2: exchange token with our backend — errors here are Axios errors
     setLoading(true);
@@ -138,17 +140,17 @@ export default function LoginScreen({ navigation }: Props) {
       <FloatingBackground />
       <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
 
-        <Text style={styles.appTitle}>Dogs Out 🐕 🌳</Text>
+        <Text style={styles.appTitle}>Dogs Out</Text>
 
         <GlassCard style={styles.card}>
-        <Text style={styles.title}>Welcome back</Text>
-        <Text style={styles.subtitle}>Sign in to your account</Text>
+        <Text style={styles.title}>{t('auth.login.welcomeBack')}</Text>
+        <Text style={styles.subtitle}>{t('auth.login.subtitle')}</Text>
 
         {error && <Text style={styles.error}>{error}</Text>}
 
         <TextInput
           style={styles.input}
-          placeholder="Email"
+          placeholder={t('auth.login.emailPlaceholder')}
           placeholderTextColor={Colors.textSecondary}
           value={email}
           onChangeText={setEmail}
@@ -158,7 +160,7 @@ export default function LoginScreen({ navigation }: Props) {
         />
         <TextInput
           style={styles.input}
-          placeholder="Password"
+          placeholder={t('auth.login.passwordPlaceholder')}
           placeholderTextColor={Colors.textSecondary}
           value={password}
           onChangeText={setPassword}
@@ -167,20 +169,20 @@ export default function LoginScreen({ navigation }: Props) {
         />
 
         <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
-          <Text style={styles.forgotPassword}>Forgot password?</Text>
+          <Text style={styles.forgotPassword}>{t('auth.login.forgotPassword')}</Text>
         </TouchableOpacity>
 
         {loading ? (
           <ActivityIndicator style={{ marginTop: 16 }} color={Colors.primary} />
         ) : (
           <GlassButton onPress={handleLogin} style={styles.button}>
-            <Text style={styles.buttonText}>Sign in</Text>
+            <Text style={styles.buttonText}>{t('auth.login.signIn')}</Text>
           </GlassButton>
         )}
 
         <View style={styles.dividerRow}>
           <View style={styles.divider} />
-          <Text style={styles.dividerText}>or</Text>
+          <Text style={styles.dividerText}>{t('auth.login.or')}</Text>
           <View style={styles.divider} />
         </View>
 
@@ -190,7 +192,7 @@ export default function LoginScreen({ navigation }: Props) {
           disabled={!request || loading}
         >
           <Ionicons name="logo-google" size={20} color="#fff" style={styles.buttonIcon} />
-          <Text style={styles.googleButtonText}>Sign in with Google</Text>
+          <Text style={styles.googleButtonText}>{t('auth.login.signInWithGoogle')}</Text>
         </TouchableOpacity>
 
         {appleAvailable && (
@@ -204,7 +206,7 @@ export default function LoginScreen({ navigation }: Props) {
         )}
 
         <TouchableOpacity style={styles.linkButton} onPress={() => navigation.navigate('Register')}>
-          <Text style={styles.link}>Don't have an account? <Text style={styles.linkBold}>Register</Text></Text>
+          <Text style={styles.link}>{t('auth.login.noAccount')} <Text style={styles.linkBold}>{t('auth.login.register')}</Text></Text>
         </TouchableOpacity>
         </GlassCard>
       </KeyboardAvoidingView>
@@ -215,7 +217,10 @@ export default function LoginScreen({ navigation }: Props) {
 const styles = StyleSheet.create({
   screen:         { flex: 1, backgroundColor: Colors.background },
   container:      { flex: 1, padding: 24, justifyContent: 'center' },
-  appTitle:       { fontSize: 36, fontWeight: '800', color: Colors.primary, textAlign: 'center', marginBottom: 24, letterSpacing: 0 },
+  appTitle:       {
+    fontSize: 44, fontWeight: '800', color: Colors.primary, textAlign: 'center', marginBottom: 28, letterSpacing: -0.5,
+    textShadowColor: 'rgba(46,158,107,0.30)', textShadowOffset: { width: 0, height: 2 }, textShadowRadius: 3,
+  },
   card:           { width: '100%' },
   title:          { fontSize: 26, fontWeight: 'bold', color: Colors.text, marginBottom: 4 },
   subtitle:       { fontSize: 15, color: Colors.textSecondary, marginBottom: 24 },

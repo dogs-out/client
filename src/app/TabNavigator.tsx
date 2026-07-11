@@ -4,6 +4,7 @@ import { createBottomTabNavigator, BottomTabBarProps } from '@react-navigation/b
 import { notificationService } from '../services/notificationService';
 import { BlurView } from 'expo-blur';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import DiscoverScreen from '../features/matching/DiscoverScreen';
 import ChatsScreen from '../features/chat/ChatsScreen';
 import HomeScreen from '../screens/HomeScreen';
@@ -18,13 +19,14 @@ export type MainTabParamList = {
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
-const TAB_ITEMS: { name: keyof MainTabParamList; label: string; icon: string; iconActive: string }[] = [
-  { name: 'Discover', label: 'Discover', icon: 'paw-outline',       iconActive: 'paw' },
-  { name: 'Chats',    label: 'Chats',    icon: 'chatbubble-outline', iconActive: 'chatbubble' },
-  { name: 'Profile',  label: 'Profile',  icon: 'person-outline',     iconActive: 'person' },
+const TAB_ITEMS: { name: keyof MainTabParamList; labelKey: string; icon: string; iconActive: string }[] = [
+  { name: 'Discover', labelKey: 'matching.discover.headerTitle', icon: 'paw-outline',       iconActive: 'paw' },
+  { name: 'Chats',    labelKey: 'chat.chatsScreen.headerTitle',  icon: 'chatbubble-outline', iconActive: 'chatbubble' },
+  { name: 'Profile',  labelKey: 'home.profileTab',                icon: 'person-outline',     iconActive: 'person' },
 ];
 
 function GlassTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
+  const { t } = useTranslation();
   return (
     <View style={styles.wrapper}>
       <BlurView intensity={60} tint="light" style={styles.blur}>
@@ -33,7 +35,7 @@ function GlassTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
             const item = TAB_ITEMS.find(t => t.name === route.name)!;
             const focused = state.index === index;
             const { options } = descriptors[route.key];
-            const label = options.tabBarLabel?.toString() ?? item.label;
+            const label = options.tabBarLabel?.toString() ?? t(item.labelKey);
 
             return (
               <TouchableOpacity

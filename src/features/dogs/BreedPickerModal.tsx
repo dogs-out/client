@@ -4,6 +4,7 @@ import {
   TouchableOpacity, View,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { DOG_BREEDS } from '../../constants/dogBreeds';
 import { Colors } from '../../constants/colors';
 
@@ -20,6 +21,7 @@ interface Props {
 type Step = 'primary' | 'secondary';
 
 export function BreedPickerModal({ visible, value, onChange, onClose }: Props) {
+  const { t } = useTranslation();
   const [step, setStep]         = useState<Step>('primary');
   const [primary, setPrimary]   = useState<string | null>(null);
   const [secondary, setSecondary] = useState<string | null>(null);
@@ -58,7 +60,7 @@ export function BreedPickerModal({ visible, value, onChange, onClose }: Props) {
     onClose();
   };
 
-  const title = step === 'primary' ? 'Select breed' : 'Select second breed';
+  const title = step === 'primary' ? t('dogs.breedPicker.selectBreed') : t('dogs.breedPicker.selectSecondBreed');
 
   return (
     <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
@@ -82,7 +84,7 @@ export function BreedPickerModal({ visible, value, onChange, onClose }: Props) {
             {step === 'primary' && primary !== MIXED && (
               <TouchableOpacity onPress={() => { setStep('secondary'); setSearch(''); }} style={styles.mixButton}>
                 <Ionicons name="add-circle-outline" size={16} color={Colors.primary} style={{ marginRight: 4 }} />
-                <Text style={styles.mixButtonText}>Add mix</Text>
+                <Text style={styles.mixButtonText}>{t('dogs.breedPicker.addMix')}</Text>
               </TouchableOpacity>
             )}
           </View>
@@ -93,7 +95,7 @@ export function BreedPickerModal({ visible, value, onChange, onClose }: Props) {
           <Ionicons name="search" size={18} color={Colors.textSecondary} style={styles.searchIcon} />
           <TextInput
             style={styles.searchInput}
-            placeholder="Search breeds..."
+            placeholder={t('dogs.breedPicker.searchPlaceholder')}
             placeholderTextColor={Colors.textSecondary}
             value={search}
             onChangeText={setSearch}
@@ -137,7 +139,7 @@ export function BreedPickerModal({ visible, value, onChange, onClose }: Props) {
         {/* Confirm */}
         {primary && step === 'primary' && (
           <TouchableOpacity style={styles.confirmButton} onPress={confirm}>
-            <Text style={styles.confirmText}>Confirm</Text>
+            <Text style={styles.confirmText}>{t('dogs.breedPicker.confirm')}</Text>
           </TouchableOpacity>
         )}
       </View>

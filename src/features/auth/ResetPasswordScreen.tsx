@@ -4,6 +4,7 @@ import {
   StyleSheet, Text, TextInput, View,
 } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useTranslation } from 'react-i18next';
 import { RootStackParamList } from '../../types/navigation';
 import { authService } from '../../services/authService';
 import { getApiError } from '../../utils/apiError';
@@ -14,20 +15,21 @@ import { Colors } from '../../constants/colors';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ResetPassword'>;
 
-interface Strength { level: 0 | 1 | 2 | 3; label: string; color: string; }
+interface Strength { level: 0 | 1 | 2 | 3; color: string; }
 
 function getPasswordStrength(pwd: string): Strength {
-  if (!pwd) return { level: 0, label: '', color: '#e0e0e0' };
+  if (!pwd) return { level: 0, color: '#e0e0e0' };
   const hasLetters = /[a-zA-Z]/.test(pwd);
   const hasNumbers = /[0-9]/.test(pwd);
   const hasSymbols = /[^a-zA-Z0-9]/.test(pwd);
   const types = [hasLetters, hasNumbers, hasSymbols].filter(Boolean).length;
-  if (pwd.length < 8 || types < 2) return { level: 1, label: 'Weak',   color: '#e53e3e' };
-  if (types < 3 && pwd.length < 12) return { level: 2, label: 'OK',     color: '#ecc94b' };
-  return                                    { level: 3, label: 'Strong', color: '#48bb78' };
+  if (pwd.length < 8 || types < 2) return { level: 1, color: '#e53e3e' };
+  if (types < 3 && pwd.length < 12) return { level: 2, color: '#ecc94b' };
+  return                                    { level: 3, color: '#48bb78' };
 }
 
 export default function ResetPasswordScreen({ navigation }: Props) {
+  const { t } = useTranslation();
   const [token, setToken]       = useState('');
   const [password, setPassword] = useState('');
   const [confirm, setConfirm]   = useState('');
@@ -35,11 +37,12 @@ export default function ResetPasswordScreen({ navigation }: Props) {
   const [error, setError]       = useState<string | null>(null);
 
   const strength = getPasswordStrength(password);
+  const strengthLabels = { 0: '', 1: t('auth.register.weak'), 2: t('auth.register.ok'), 3: t('auth.register.strong') };
 
   const handleReset = async () => {
-    if (!token.trim())        { setError('Please paste the token from your email.'); return; }
-    if (strength.level < 2)   { setError('Please choose a stronger password (8+ chars with letters and numbers).'); return; }
-    if (password !== confirm) { setError('Passwords do not match.'); return; }
+    if (!token.trim())        { setError(t('auth.resetPassword.pasteToken')); return; }
+    if (strength.level < 2)   { setError(t('auth.register.passwordTooWeak')); return; }
+    if (password !== confirm) { setError(t('auth.register.passwordMismatch')); return; }
     setLoading(true);
     setError(null);
     try {
@@ -57,14 +60,14 @@ export default function ResetPasswordScreen({ navigation }: Props) {
       <FloatingBackground />
       <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <GlassCard style={styles.card}>
-          <Text style={styles.title}>Reset password</Text>
-          <Text style={styles.subtitle}>Paste the token from your email, then choose a new password.</Text>
+          <Text style={styles.title}>{t('auth.resetPassword.title')}</Text>
+          <Text style={styles.subtitle}>{t('auth.resetPassword.subtitle')}</Text>
 
           {error && <Text style={styles.error}>{error}</Text>}
 
           <TextInput
             style={styles.input}
-            placeholder="Token from email"
+            placeholder={t('auth.resetPassword.tokenPlaceholder')}
             placeholderTextColor={Colors.textSecondary}
             value={token}
             onChangeText={setToken}
@@ -74,7 +77,7 @@ export default function ResetPasswordScreen({ navigation }: Props) {
           />
           <TextInput
             style={styles.input}
-            placeholder="New password"
+            placeholder={t('auth.resetPassword.newPasswordPlaceholder')}
             placeholderTextColor={Colors.textSecondary}
             value={password}
             onChangeText={setPassword}
@@ -89,12 +92,12 @@ export default function ResetPasswordScreen({ navigation }: Props) {
                   style={[styles.strengthBar, { backgroundColor: strength.level >= lvl ? strength.color : '#e0e0e0' }]}
                 />
               ))}
-              <Text style={[styles.strengthLabel, { color: strength.color }]}>{strength.label}</Text>
+              <Text style={[styles.strengthLabel, { color: strength.color }]}>{strengthLabels[strength.level]}</Text>
             </View>
           )}
           <TextInput
             style={styles.input}
-            placeholder="Confirm new password"
+            placeholder={t('auth.register.confirmPasswordPlaceholder')}
             placeholderTextColor={Colors.textSecondary}
             value={confirm}
             onChangeText={setConfirm}
@@ -106,12 +109,12 @@ export default function ResetPasswordScreen({ navigation }: Props) {
             <ActivityIndicator style={{ marginTop: 16 }} color={Colors.primary} />
           ) : (
             <GlassButton onPress={handleReset} style={styles.button}>
-              <Text style={styles.buttonText}>Set new password</Text>
+              <Text style={styles.buttonText}>{t('auth.resetPassword.setNewPassword')}</Text>
             </GlassButton>
           )}
 
           <GlassButton onPress={() => navigation.goBack()} style={styles.backButton}>
-            <Text style={styles.backText}>Back</Text>
+            <Text style={styles.backText}>{t('common.back')}</Text>
           </GlassButton>
         </GlassCard>
       </KeyboardAvoidingView>

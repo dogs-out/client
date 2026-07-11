@@ -3,21 +3,23 @@ import { BlurView } from 'expo-blur';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useTranslation } from 'react-i18next';
 import { RootStackParamList } from '../types/navigation';
 import { MainTabParamList } from '../app/TabNavigator';
 import { Colors } from '../constants/colors';
 
-type Tab = { name: keyof MainTabParamList; label: string; icon: string; iconActive: string };
+type Tab = { name: keyof MainTabParamList; labelKey: string; icon: string; iconActive: string };
 
 const TABS: Tab[] = [
-  { name: 'Discover', label: 'Discover', icon: 'paw-outline',        iconActive: 'paw' },
-  { name: 'Chats',    label: 'Chats',    icon: 'chatbubble-outline',  iconActive: 'chatbubble' },
-  { name: 'Profile',  label: 'Profile',  icon: 'person-outline',      iconActive: 'person' },
+  { name: 'Discover', labelKey: 'matching.discover.headerTitle', icon: 'paw-outline',        iconActive: 'paw' },
+  { name: 'Chats',    labelKey: 'chat.chatsScreen.headerTitle',  icon: 'chatbubble-outline',  iconActive: 'chatbubble' },
+  { name: 'Profile',  labelKey: 'home.profileTab',               icon: 'person-outline',      iconActive: 'person' },
 ];
 
 type Props = { activeTab?: keyof MainTabParamList };
 
 export function GlassTabBar({ activeTab }: Props) {
+  const { t } = useTranslation();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   return (
@@ -31,7 +33,7 @@ export function GlassTabBar({ activeTab }: Props) {
                 key={tab.name}
                 style={glassTabBarStyles.tab}
                 activeOpacity={0.7}
-                onPress={() => navigation.navigate('MainTabs', { screen: tab.name } as any)}
+                onPress={() => navigation.popTo('MainTabs', { screen: tab.name } as any)}
               >
                 <View style={[glassTabBarStyles.tabInner, focused && glassTabBarStyles.tabInnerActive]}>
                   <Ionicons
@@ -40,7 +42,7 @@ export function GlassTabBar({ activeTab }: Props) {
                     color={focused ? Colors.primary : Colors.textSecondary}
                   />
                   <Text style={[glassTabBarStyles.tabLabel, focused && glassTabBarStyles.tabLabelActive]}>
-                    {tab.label}
+                    {t(tab.labelKey)}
                   </Text>
                 </View>
               </TouchableOpacity>

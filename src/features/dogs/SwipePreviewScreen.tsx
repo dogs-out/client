@@ -6,10 +6,12 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { RootStackParamList } from '../../types/navigation';
 import { dogService, Dog } from '../../services/dogService';
 import { userService, UserProfile } from '../../services/userService';
 import { Colors } from '../../constants/colors';
+import { translateTag } from '../../i18n/translateTag';
 import { FloatingBackground } from '../../components/FloatingBackground';
 import { GlassTabBar } from '../../components/GlassTabBar';
 
@@ -23,6 +25,7 @@ const SWIPE_THRESHOLD = 100;
 type FlatPhoto = { uri: string; dogIndex: number };
 
 export default function SwipePreviewScreen({ navigation }: Props) {
+  const { t } = useTranslation();
   const [dogs, setDogs]           = useState<Dog[]>([]);
   const [user, setUser]           = useState<UserProfile | null>(null);
   const [photoIndex, setPhotoIndex]           = useState(0);
@@ -110,14 +113,14 @@ export default function SwipePreviewScreen({ navigation }: Props) {
         <TouchableOpacity onPress={() => navigation.goBack()} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
           <Ionicons name="chevron-back" size={26} color={Colors.text} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Profile Preview</Text>
+        <Text style={styles.headerTitle}>{t('dogs.swipePreview.headerTitle')}</Text>
         <View style={{ width: 26 }} />
       </View>
 
       <Text style={styles.hint}>
-        <Text style={styles.hintNo}>← No treat</Text>
+        <Text style={styles.hintNo}>{t('dogs.swipePreview.noTreatHint')}</Text>
         {'  ·  '}
-        <Text style={styles.hintYes}>Treat →</Text>
+        <Text style={styles.hintYes}>{t('dogs.swipePreview.treatHint')}</Text>
       </Text>
 
       <View style={styles.cardWrap}>
@@ -161,10 +164,10 @@ export default function SwipePreviewScreen({ navigation }: Props) {
 
           {/* TREAT / NO TREAT stamp */}
           <Animated.View style={[styles.treatBadge, { opacity: treatOpacity }]}>
-            <Text style={styles.treatText}>TREAT 🦴</Text>
+            <Text style={styles.treatText}>{t('dogs.swipePreview.treat')}</Text>
           </Animated.View>
           <Animated.View style={[styles.noTreatBadge, { opacity: noTreatOpacity }]}>
-            <Text style={styles.noTreatText}>NO TREAT 🚫</Text>
+            <Text style={styles.noTreatText}>{t('dogs.swipePreview.noTreat')}</Text>
           </Animated.View>
 
           {/* Gradient overlay */}
@@ -180,13 +183,13 @@ export default function SwipePreviewScreen({ navigation }: Props) {
                   {user.name}{ownerAge !== null ? `, ${ownerAge}` : ''}
                 </Text>
                 {user.relationshipStatus && (
-                  <Text style={styles.subLine}>{user.relationshipStatus}</Text>
+                  <Text style={styles.subLine}>{translateTag(user.relationshipStatus, t)}</Text>
                 )}
                 {ownerTags.length > 0 && (
                   <View style={styles.tagRow}>
                     {ownerTags.slice(0, 5).map(tag => (
                       <View key={tag} style={styles.tag}>
-                        <Text style={styles.tagText}>{tag}</Text>
+                        <Text style={styles.tagText}>{translateTag(tag, t)}</Text>
                       </View>
                     ))}
                   </View>
@@ -217,7 +220,7 @@ export default function SwipePreviewScreen({ navigation }: Props) {
                   <View style={styles.tagRow}>
                     {currentDog.tags.slice(0, 5).map(tag => (
                       <View key={tag} style={styles.tag}>
-                        <Text style={styles.tagText}>{tag}</Text>
+                        <Text style={styles.tagText}>{translateTag(tag, t)}</Text>
                       </View>
                     ))}
                   </View>
@@ -244,7 +247,7 @@ export default function SwipePreviewScreen({ navigation }: Props) {
 
       {swipeResult && (
         <View style={[styles.toast, swipeResult === 'treat' ? styles.toastTreat : styles.toastNoTreat]}>
-          <Text style={styles.toastText}>{swipeResult === 'treat' ? 'Treat! 🦴' : 'No treat 🚫'}</Text>
+          <Text style={styles.toastText}>{swipeResult === 'treat' ? t('dogs.swipePreview.treatToast') : t('dogs.swipePreview.noTreatToast')}</Text>
         </View>
       )}
 

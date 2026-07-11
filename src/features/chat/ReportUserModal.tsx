@@ -5,8 +5,10 @@ import {
 } from 'react-native';
 import { BlurView } from 'expo-blur';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { REPORT_REASONS } from '../../services/moderationService';
 import { Colors } from '../../constants/colors';
+import { translateTag } from '../../i18n/translateTag';
 
 interface Props {
   visible: boolean;
@@ -16,6 +18,7 @@ interface Props {
 }
 
 export function ReportUserModal({ visible, name, onClose, onSubmit }: Props) {
+  const { t } = useTranslation();
   const [reason, setReason] = useState<string | null>(null);
   const [message, setMessage] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -36,7 +39,7 @@ export function ReportUserModal({ visible, name, onClose, onSubmit }: Props) {
     setError(null);
     onSubmit(reason, message.trim())
       .catch(() => {
-        setError('Your report could not be sent. Please try again.');
+        setError(t('chat.reportModal.sendFailed'));
         setSubmitting(false);
       });
   };
@@ -53,13 +56,13 @@ export function ReportUserModal({ visible, name, onClose, onSubmit }: Props) {
           <BlurView intensity={80} tint="light" style={styles.card}>
             <View style={styles.cardInner}>
               <View style={styles.titleRow}>
-                <Text style={styles.title}>Report {name}</Text>
+                <Text style={styles.title}>{t('chat.reportModal.title', { name })}</Text>
                 <TouchableOpacity onPress={onClose} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
                   <Ionicons name="close" size={22} color={Colors.textSecondary} />
                 </TouchableOpacity>
               </View>
               <Text style={styles.subtitle}>
-                Your report is confidential. {name} won’t know you reported them.
+                {t('chat.reportModal.subtitle', { name })}
               </Text>
 
               {REPORT_REASONS.map(r => {
@@ -71,7 +74,7 @@ export function ReportUserModal({ visible, name, onClose, onSubmit }: Props) {
                       size={20}
                       color={selected ? Colors.primary : Colors.textSecondary}
                     />
-                    <Text style={[styles.reasonText, selected && styles.reasonTextSelected]}>{r}</Text>
+                    <Text style={[styles.reasonText, selected && styles.reasonTextSelected]}>{translateTag(r, t)}</Text>
                   </TouchableOpacity>
                 );
               })}
@@ -80,7 +83,7 @@ export function ReportUserModal({ visible, name, onClose, onSubmit }: Props) {
                 style={styles.input}
                 value={message}
                 onChangeText={setMessage}
-                placeholder="Tell us more (optional)…"
+                placeholder={t('chat.reportModal.messagePlaceholder')}
                 placeholderTextColor={Colors.textSecondary}
                 multiline
                 maxLength={2000}
@@ -94,7 +97,7 @@ export function ReportUserModal({ visible, name, onClose, onSubmit }: Props) {
                 disabled={!reason || submitting}
               >
                 <Ionicons name="flag" size={16} color="#fff" />
-                <Text style={styles.submitText}>{submitting ? 'Sending…' : 'Send report'}</Text>
+                <Text style={styles.submitText}>{submitting ? t('chat.reportModal.sending') : t('chat.reportModal.sendReport')}</Text>
               </TouchableOpacity>
             </View>
           </BlurView>

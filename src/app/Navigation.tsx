@@ -28,6 +28,8 @@ import LocationSettingsScreen from '../features/profile/LocationSettingsScreen';
 import HelpFaqScreen from '../features/profile/HelpFaqScreen';
 import TermsPrivacyScreen from '../features/profile/TermsPrivacyScreen';
 import AboutScreen from '../features/profile/AboutScreen';
+import FeedbackScreen from '../features/profile/FeedbackScreen';
+import LanguageScreen from '../features/profile/LanguageScreen';
 import TabNavigator from './TabNavigator';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -106,6 +108,8 @@ export default function Navigation() {
         <Stack.Screen name="HelpFaq"              component={HelpFaqScreen} />
         <Stack.Screen name="TermsPrivacy"         component={TermsPrivacyScreen} />
         <Stack.Screen name="About"                component={AboutScreen} />
+        <Stack.Screen name="Feedback"              component={FeedbackScreen} />
+        <Stack.Screen name="Language"               component={LanguageScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

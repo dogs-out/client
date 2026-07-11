@@ -8,8 +8,10 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import * as ImagePicker from 'expo-image-picker';
 import * as Location from 'expo-location';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { userService, UserPhoto } from '../../services/userService';
 import { OWNER_LIFESTYLE_TAGS, OWNER_PERSONALITY_TAGS, RELATIONSHIP_STATUS_OPTIONS } from '../../constants/tags';
+import { translateTag } from '../../i18n/translateTag';
 import { getApiError } from '../../utils/apiError';
 import { containsProfanity } from '../../utils/profanityFilter';
 import { FloatingBackground } from '../../components/FloatingBackground';
@@ -44,6 +46,7 @@ type PhotoItem =
   | { kind: 'new'; uri: string };
 
 export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: Props) {
+  const { t } = useTranslation();
   const [name, setName]                     = useState('');
   const [bio, setBio]                       = useState('');
   const [dateOfBirth, setDateOfBirth]       = useState<Date | null>(null);
@@ -79,9 +82,9 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: P
   }, []);
 
   const addPhoto = async () => {
-    if (photos.length >= 3) { setError('Maximum 3 photos per profile.'); return; }
+    if (photos.length >= 3) { setError(t('profile.form.maxPhotos')); return; }
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== 'granted') { setError('Photo library access is needed.'); return; }
+    if (status !== 'granted') { setError(t('profile.form.photoPermission')); return; }
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ['images'],
       allowsEditing: true,
@@ -104,26 +107,26 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: P
     try {
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
-        setError('Location access is needed to find nearby dogs.');
+        setError(t('profile.form.locationPermission'));
         return;
       }
       const loc = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
       setLocation({ latitude: loc.coords.latitude, longitude: loc.coords.longitude });
     } catch {
-      setError('Could not get location. Please try again.');
+      setError(t('profile.form.locationError'));
     } finally {
       setLocating(false);
     }
   };
 
   const handleSubmit = async () => {
-    if (!name.trim()) { setError('Please enter your name.'); return; }
-    if (!NAME_REGEX.test(name.trim())) { setError('Name may only contain letters, spaces, hyphens, and apostrophes.'); return; }
-    if (containsProfanity(name)) { setError('Your name contains inappropriate language.'); return; }
-    if (!dateOfBirth) { setError('Please select your date of birth.'); return; }
-    if (!isOldEnough(dateOfBirth)) { setError('You must be at least 18 years old to use Dogs Out.'); return; }
-    if (!location) { setError('Location is required — tap "Detect my location" to allow access.'); return; }
-    if (bio && containsProfanity(bio)) { setError('Your bio contains inappropriate language.'); return; }
+    if (!name.trim()) { setError(t('profile.form.nameRequired')); return; }
+    if (!NAME_REGEX.test(name.trim())) { setError(t('auth.register.invalidName')); return; }
+    if (containsProfanity(name)) { setError(t('profile.form.nameProfanity')); return; }
+    if (!dateOfBirth) { setError(t('profile.form.dobRequired')); return; }
+    if (!isOldEnough(dateOfBirth)) { setError(t('profile.form.tooYoung')); return; }
+    if (!location) { setError(t('profile.form.locationRequired')); return; }
+    if (bio && containsProfanity(bio)) { setError(t('profile.form.bioProfanity')); return; }
     setLoading(true);
     setError(null);
     try {
@@ -184,7 +187,7 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: P
           <Text style={styles.title}>{title}</Text>
           <Text style={styles.subtitle}>{subtitle}</Text>
 
-          <Text style={styles.label}>Photos <Text style={styles.optional}>({photos.length}/3)</Text></Text>
+          <Text style={styles.label}>{t('profile.form.photosLabel')} <Text style={styles.optional}>({photos.length}/3)</Text></Text>
           <View style={styles.photoGrid}>
             {Array.from({ length: 3 }).map((_, i) => {
               const photo = photos[i];
@@ -193,7 +196,7 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: P
                   {photo ? (
                     <>
                       <Image source={{ uri: photo.uri }} style={styles.photoThumb} />
-                      {i === 0 && <View style={styles.mainBadge}><Text style={styles.mainBadgeText}>Main</Text></View>}
+                      {i === 0 && <View style={styles.mainBadge}><Text style={styles.mainBadgeText}>{t('dogs.form.mainBadge')}</Text></View>}
                       <TouchableOpacity style={styles.photoRemove} onPress={() => removePhoto(i)}>
                         <Ionicons name="close-circle" size={22} color="#e53e3e" />
                       </TouchableOpacity>
@@ -210,20 +213,20 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: P
 
           {error && <Text style={styles.error}>{error}</Text>}
 
-          <Text style={styles.label}>Name</Text>
+          <Text style={styles.label}>{t('profile.form.name')}</Text>
           <TextInput
             style={styles.input}
-            placeholder="Your name"
+            placeholder={t('profile.form.namePlaceholder')}
             placeholderTextColor={Colors.textSecondary}
             value={name}
             onChangeText={setName}
             autoComplete="name"
           />
 
-          <Text style={styles.label}>Bio <Text style={styles.optional}>(optional)</Text></Text>
+          <Text style={styles.label}>{t('profile.form.bio')} <Text style={styles.optional}>{t('profile.form.optional')}</Text></Text>
           <TextInput
             style={[styles.input, styles.bioInput]}
-            placeholder="Tell other dog owners about yourself..."
+            placeholder={t('profile.form.bioPlaceholder')}
             placeholderTextColor={Colors.textSecondary}
             value={bio}
             onChangeText={t => setBio(t.slice(0, 250))}
@@ -236,7 +239,7 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: P
             {bio.length}/250
           </Text>
 
-          <Text style={styles.label}>Date of birth</Text>
+          <Text style={styles.label}>{t('profile.form.dob')}</Text>
           {Platform.OS === 'web' ? (
             <View style={styles.input}>
               {/* @ts-ignore — native HTML date input for web testing */}
@@ -253,12 +256,12 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: P
           ) : (
             <TouchableOpacity style={styles.input} onPress={() => setShowPicker(true)}>
               <Text style={dateOfBirth ? styles.dateText : styles.datePlaceholder}>
-                {dateOfBirth ? formatDate(dateOfBirth) : 'Select your date of birth'}
+                {dateOfBirth ? formatDate(dateOfBirth) : t('profile.form.selectDob')}
               </Text>
             </TouchableOpacity>
           )}
 
-          <Text style={styles.label}>Location</Text>
+          <Text style={styles.label}>{t('profile.form.location')}</Text>
           <GlassButton onPress={detectLocation} disabled={locating} style={styles.locationButton}>
             {locating ? (
               <ActivityIndicator size="small" color={Colors.primary} />
@@ -271,7 +274,7 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: P
                   style={{ marginRight: 8 }}
                 />
                 <Text style={[styles.locationButtonText, location && styles.locationButtonTextActive]}>
-                  {location ? 'Location detected' : 'Detect my location'}
+                  {location ? t('profile.form.locationDetected') : t('profile.form.detectLocation')}
                 </Text>
               </>
             )}
@@ -279,10 +282,10 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: P
 
           {/* OWNER TAGS */}
           <Text style={[styles.label, { marginTop: 8 }]}>
-            Tags <Text style={styles.optional}>(optional)</Text>
+            {t('profile.form.tags')} <Text style={styles.optional}>{t('profile.form.optional')}</Text>
           </Text>
 
-          <Text style={styles.tagCat}>Lifestyle</Text>
+          <Text style={styles.tagCat}>{t('profile.form.lifestyle')}</Text>
           <View style={styles.chipRow}>
             {OWNER_LIFESTYLE_TAGS.map(tag => {
               const sel = lifestyleTags.includes(tag);
@@ -292,13 +295,13 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: P
                   style={[styles.chip, sel && styles.chipActive]}
                   onPress={() => setLifestyleTags(sel ? [] : [tag])}
                 >
-                  <Text style={[styles.chipText, sel && styles.chipTextActive]}>{tag}</Text>
+                  <Text style={[styles.chipText, sel && styles.chipTextActive]}>{translateTag(tag, t)}</Text>
                 </TouchableOpacity>
               );
             })}
           </View>
 
-          <Text style={styles.tagCat}>Personality</Text>
+          <Text style={styles.tagCat}>{t('profile.form.personality')}</Text>
           <View style={styles.chipRow}>
             {OWNER_PERSONALITY_TAGS.map(tag => {
               const sel = personalityTags.includes(tag);
@@ -308,13 +311,13 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: P
                   style={[styles.chip, sel && styles.chipActive]}
                   onPress={() => setPersonalityTags(sel ? [] : [tag])}
                 >
-                  <Text style={[styles.chipText, sel && styles.chipTextActive]}>{tag}</Text>
+                  <Text style={[styles.chipText, sel && styles.chipTextActive]}>{translateTag(tag, t)}</Text>
                 </TouchableOpacity>
               );
             })}
           </View>
 
-          <Text style={styles.tagCat}>Relationship status</Text>
+          <Text style={styles.tagCat}>{t('profile.form.relationshipStatus')}</Text>
           <View style={styles.chipRow}>
             {RELATIONSHIP_STATUS_OPTIONS.map(opt => {
               const sel = relationshipStatus === opt;
@@ -324,7 +327,7 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: P
                   style={[styles.chip, sel && styles.chipActive]}
                   onPress={() => setRelationshipStatus(sel ? null : opt)}
                 >
-                  <Text style={[styles.chipText, sel && styles.chipTextActive]}>{opt}</Text>
+                  <Text style={[styles.chipText, sel && styles.chipTextActive]}>{translateTag(opt, t)}</Text>
                 </TouchableOpacity>
               );
             })}
@@ -346,13 +349,13 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: P
             <View style={styles.modalContent}>
               <View style={styles.modalHeader}>
                 <TouchableOpacity onPress={() => setShowPicker(false)}>
-                  <Text style={styles.modalCancel}>Cancel</Text>
+                  <Text style={styles.modalCancel}>{t('common.cancel')}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => {
                   if (!dateOfBirth) setDateOfBirth(defaultPickerDate);
                   setShowPicker(false);
                 }}>
-                  <Text style={styles.modalDone}>Done</Text>
+                  <Text style={styles.modalDone}>{t('common.done')}</Text>
                 </TouchableOpacity>
               </View>
               <DateTimePicker

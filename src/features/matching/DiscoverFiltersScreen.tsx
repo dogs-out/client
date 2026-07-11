@@ -5,6 +5,8 @@ import {
 } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
+import MultiSlider from '@ptomasroos/react-native-multi-slider';
+import { useTranslation } from 'react-i18next';
 import { RootStackParamList } from '../../types/navigation';
 import { userService } from '../../services/userService';
 import { dogService, Dog } from '../../services/dogService';
@@ -74,35 +76,14 @@ const sliderStyles = StyleSheet.create({
   rail:  { height: 4, backgroundColor: Colors.border, borderRadius: 2, position: 'absolute', left: 0, right: 0 },
   fill:  { height: 4, backgroundColor: Colors.primary, borderRadius: 2, position: 'absolute', left: 0 },
   thumb: { width: 24, height: 24, borderRadius: 12, backgroundColor: Colors.primary, position: 'absolute', top: 10, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.2, shadowRadius: 4, elevation: 4 },
+  multiThumb: { width: 24, height: 24, borderRadius: 12, backgroundColor: Colors.primary, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.2, shadowRadius: 4, elevation: 4 },
 });
 // ──────────────────────────────────────────────────────────────────────────────
-
-function Stepper({ value, min, max, onDecrement, onIncrement }: {
-  value: number; min: number; max: number;
-  onDecrement: () => void; onIncrement: () => void;
-}) {
-  return (
-    <View style={stepperStyles.row}>
-      <TouchableOpacity style={stepperStyles.btn} onPress={onDecrement} disabled={value <= min}>
-        <Ionicons name="remove" size={20} color={value <= min ? Colors.border : Colors.primary} />
-      </TouchableOpacity>
-      <Text style={stepperStyles.value}>{value}</Text>
-      <TouchableOpacity style={stepperStyles.btn} onPress={onIncrement} disabled={value >= max}>
-        <Ionicons name="add" size={20} color={value >= max ? Colors.border : Colors.primary} />
-      </TouchableOpacity>
-    </View>
-  );
-}
-
-const stepperStyles = StyleSheet.create({
-  row:   { flexDirection: 'row', alignItems: 'center', gap: 16 },
-  btn:   { width: 36, height: 36, borderRadius: 18, backgroundColor: 'rgba(46,158,107,0.12)', alignItems: 'center', justifyContent: 'center' },
-  value: { fontSize: 22, fontWeight: '800', color: Colors.text, minWidth: 36, textAlign: 'center' },
-});
 
 // ──────────────────────────────────────────────────────────────────────────────
 
 export default function DiscoverFiltersScreen({ navigation }: Props) {
+  const { t } = useTranslation();
   const [loading, setLoading]         = useState(true);
   const [saving, setSaving]           = useState(false);
   const [scrollEnabled, setScrollEnabled] = useState(true);
@@ -114,6 +95,7 @@ export default function DiscoverFiltersScreen({ navigation }: Props) {
   const [ageOn, setAgeOn]             = useState(false);
   const [minAge, setMinAge]           = useState(18);
   const [maxAge, setMaxAge]           = useState(50);
+  const [ageSliderWidth, setAgeSliderWidth] = useState(0);
 
   // Dog age
   const [dogs, setDogs]               = useState<Dog[]>([]);
@@ -156,15 +138,18 @@ export default function DiscoverFiltersScreen({ navigation }: Props) {
     }).finally(() => setLoading(false));
   }, []);
 
-  const lockScroll = useCallback(() => {
-    setScrollEnabled(false);
+  // The screen has its own back button, so the native edge-swipe-to-go-back gesture is
+  // disabled for the whole screen — toggling it reactively per-drag was too late to win
+  // the race against the system's own edge gesture recognizer, which made dragging a
+  // slider (especially the min-age thumb, which sits near the left edge) frequently get
+  // misread as "swipe to dismiss".
+  useEffect(() => {
     navigation.setOptions({ gestureEnabled: false });
+    return () => navigation.setOptions({ gestureEnabled: true });
   }, [navigation]);
 
-  const unlockScroll = useCallback(() => {
-    setScrollEnabled(true);
-    navigation.setOptions({ gestureEnabled: true });
-  }, [navigation]);
+  const lockScroll = useCallback(() => setScrollEnabled(false), []);
+  const unlockScroll = useCallback(() => setScrollEnabled(true), []);
 
   const handleDistanceChange   = useCallback((v: number) => setDistance(v), []);
   const handleDogAgeChange     = useCallback((v: number) => setDogAgeTolerance(v), []);
@@ -191,8 +176,8 @@ export default function DiscoverFiltersScreen({ navigation }: Props) {
       bumpDiscoverFiltersVersion();
       navigation.goBack();
     } catch (err: any) {
-      const msg = err?.response?.data?.message ?? 'Your preferences could not be saved. Please try again.';
-      Alert.alert('Save failed', msg);
+      const msg = err?.response?.data?.message ?? t('matching.filters.saveFailed');
+      Alert.alert(t('matching.filters.saveFailedTitle'), msg);
     } finally {
       setSaving(false);
     }
@@ -215,7 +200,7 @@ export default function DiscoverFiltersScreen({ navigation }: Props) {
         <TouchableOpacity onPress={() => navigation.goBack()} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
           <Ionicons name="chevron-back" size={26} color={Colors.text} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Discovery Preferences</Text>
+        <Text style={styles.headerTitle}>{t('matching.filters.headerTitle')}</Text>
         <View style={{ width: 26 }} />
       </View>
 
@@ -223,15 +208,15 @@ export default function DiscoverFiltersScreen({ navigation }: Props) {
 
         {/* ── Distance (always on) ── */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Distance</Text>
+          <Text style={styles.sectionTitle}>{t('matching.filters.distance')}</Text>
           <GlassCard>
             <View style={styles.sliderHeader}>
-              <Text style={styles.toggleLabel}>Maximum distance</Text>
-              <Text style={styles.sliderValue}>{distance} km</Text>
+              <Text style={styles.toggleLabel}>{t('matching.filters.maxDistance')}</Text>
+              <Text style={styles.sliderValue}>{t('matching.filters.kmValue', { km: distance })}</Text>
             </View>
             <View style={styles.sliderLabels}>
-              <Text style={styles.sliderEdge}>1 km</Text>
-              <Text style={styles.sliderEdge}>50 km</Text>
+              <Text style={styles.sliderEdge}>{t('matching.filters.kmValue', { km: 1 })}</Text>
+              <Text style={styles.sliderEdge}>{t('matching.filters.kmValue', { km: 50 })}</Text>
             </View>
             <CustomSlider
               value={distance} min={1} max={50} step={1}
@@ -244,32 +229,50 @@ export default function DiscoverFiltersScreen({ navigation }: Props) {
 
         {/* ── Owner age ── */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Owner age</Text>
+          <Text style={styles.sectionTitle}>{t('matching.filters.ownerAge')}</Text>
           <GlassCard>
             <View style={styles.toggleRow}>
               <View style={{ flex: 1, marginRight: 12 }}>
-                <Text style={styles.toggleLabel}>Filter by owner age</Text>
+                <Text style={styles.toggleLabel}>{t('matching.filters.filterByOwnerAge')}</Text>
                 <Text style={styles.toggleSub}>
-                  {ageOn ? `Show owners aged ${minAge}–${maxAge}` : 'Showing all ages'}
+                  {ageOn ? t('matching.filters.showOwnersAged', { min: minAge, max: maxAge }) : t('matching.filters.showingAllAges')}
                 </Text>
               </View>
               <Switch value={ageOn} onValueChange={setAgeOn}
                 trackColor={{ false: Colors.border, true: Colors.primary }} thumbColor="#fff" />
             </View>
             {ageOn && (
-              <View style={styles.ageRow}>
-                <View style={styles.agePicker}>
-                  <Text style={styles.ageLabel}>Min</Text>
-                  <Stepper value={minAge} min={18} max={maxAge - 1}
-                    onDecrement={() => setMinAge(a => Math.max(18, a - 1))}
-                    onIncrement={() => setMinAge(a => Math.min(maxAge - 1, a + 1))} />
+              <View style={styles.sliderBlock}>
+                <View style={styles.sliderLabels}>
+                  <Text style={styles.sliderEdge}>18</Text>
+                  <Text style={styles.sliderValue}>{minAge}–{maxAge}</Text>
+                  <Text style={styles.sliderEdge}>80</Text>
                 </View>
-                <View style={styles.ageDivider} />
-                <View style={styles.agePicker}>
-                  <Text style={styles.ageLabel}>Max</Text>
-                  <Stepper value={maxAge} min={minAge + 1} max={80}
-                    onDecrement={() => setMaxAge(a => Math.max(minAge + 1, a - 1))}
-                    onIncrement={() => setMaxAge(a => Math.min(80, a + 1))} />
+                <View
+                  style={styles.rangeSliderTrack}
+                  onLayout={e => setAgeSliderWidth(e.nativeEvent.layout.width)}
+                >
+                  {ageSliderWidth > 0 && (
+                    <MultiSlider
+                      values={[minAge, maxAge]}
+                      min={18}
+                      max={80}
+                      step={1}
+                      sliderLength={ageSliderWidth}
+                      allowOverlap={false}
+                      minMarkerOverlapDistance={20}
+                      touchDimensions={{ height: 60, width: 60, borderRadius: 30, slipDisplacement: 300 }}
+                      onValuesChangeStart={lockScroll}
+                      onValuesChange={([lo, hi]) => { setMinAge(lo); setMaxAge(hi); }}
+                      onValuesChangeFinish={unlockScroll}
+                      selectedStyle={{ backgroundColor: Colors.primary }}
+                      unselectedStyle={{ backgroundColor: Colors.border }}
+                      trackStyle={{ height: 4, borderRadius: 2 }}
+                      markerStyle={sliderStyles.multiThumb}
+                      pressedMarkerStyle={sliderStyles.multiThumb}
+                      containerStyle={styles.rangeSliderContainer}
+                    />
+                  )}
                 </View>
               </View>
             )}
@@ -278,24 +281,24 @@ export default function DiscoverFiltersScreen({ navigation }: Props) {
 
         {/* ── Dog age ── */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Dog age</Text>
+          <Text style={styles.sectionTitle}>{t('matching.filters.dogAge')}</Text>
           <GlassCard>
             {dogs.length === 0 ? (
               <View style={styles.noDogRow}>
                 <Ionicons name="paw-outline" size={20} color={Colors.textSecondary} />
-                <Text style={styles.noDogText}>Add a dog to your profile to use this filter</Text>
+                <Text style={styles.noDogText}>{t('matching.filters.addDogHint')}</Text>
               </View>
             ) : (
               <>
                 <View style={styles.toggleRow}>
                   <View style={{ flex: 1, marginRight: 12 }}>
-                    <Text style={styles.toggleLabel}>Filter by dog age</Text>
+                    <Text style={styles.toggleLabel}>{t('matching.filters.filterByDogAge')}</Text>
                     <Text style={styles.toggleSub}>
                       {dogAgeOn && selectedDogAge !== null
-                        ? `Show dogs aged ${Math.max(0, selectedDogAge - dogAgeTolerance)}–${selectedDogAge + dogAgeTolerance} yrs`
+                        ? t('matching.filters.showDogsAged', { min: Math.max(0, selectedDogAge - dogAgeTolerance), max: selectedDogAge + dogAgeTolerance })
                         : dogAgeOn && selectedDogAge === null
-                        ? `±${dogAgeTolerance} years (dog has no birthday set)`
-                        : 'Showing all dog ages'}
+                        ? t('matching.filters.dogAgeToleranceUnset', { tolerance: dogAgeTolerance })
+                        : t('matching.filters.showingAllDogAges')}
                     </Text>
                   </View>
                   <Switch value={dogAgeOn} onValueChange={setDogAgeOn}
@@ -318,7 +321,7 @@ export default function DiscoverFiltersScreen({ navigation }: Props) {
                           </Text>
                           {dogAgeYears(dog.dateOfBirth) !== null && (
                             <Text style={[styles.dogChipAge, selected && styles.dogChipTextSelected]}>
-                              {dogAgeYears(dog.dateOfBirth)} yr
+                              {t('matching.filters.yearAbbrev', { count: dogAgeYears(dog.dateOfBirth) })}
                             </Text>
                           )}
                         </TouchableOpacity>
@@ -331,13 +334,13 @@ export default function DiscoverFiltersScreen({ navigation }: Props) {
                   <View style={styles.sliderBlock}>
                     {selectedDogAge !== null ? (
                       <View style={styles.sliderLabels}>
-                        <Text style={styles.sliderEdge}>±1 yr</Text>
-                        <Text style={styles.sliderValue}>±{dogAgeTolerance} yr{dogAgeTolerance === 1 ? '' : 's'}</Text>
-                        <Text style={styles.sliderEdge}>±6 yrs</Text>
+                        <Text style={styles.sliderEdge}>{t('matching.filters.oneYrEdge')}</Text>
+                        <Text style={styles.sliderValue}>{t('matching.filters.toleranceValue', { count: dogAgeTolerance })}</Text>
+                        <Text style={styles.sliderEdge}>{t('matching.filters.sixYrsEdge')}</Text>
                       </View>
                     ) : (
                       <Text style={[styles.toggleSub, { marginBottom: 8 }]}>
-                        No birthday set for {selectedDog?.name} — range shown as ±{dogAgeTolerance} yrs
+                        {t('matching.filters.noBirthday', { name: selectedDog?.name, tolerance: dogAgeTolerance })}
                       </Text>
                     )}
                     <CustomSlider
@@ -356,7 +359,7 @@ export default function DiscoverFiltersScreen({ navigation }: Props) {
         <TouchableOpacity style={[styles.saveBtn, saving && styles.saveBtnDisabled]} onPress={save} disabled={saving}>
           {saving
             ? <ActivityIndicator color="#fff" />
-            : <Text style={styles.saveBtnText}>Save preferences</Text>
+            : <Text style={styles.saveBtnText}>{t('matching.filters.savePreferences')}</Text>
           }
         </TouchableOpacity>
 
@@ -387,10 +390,8 @@ const styles = StyleSheet.create({
   sliderEdge:   { fontSize: 12, color: Colors.textSecondary },
   sliderValue:  { fontSize: 16, fontWeight: '700', color: Colors.primary },
 
-  ageRow:    { flexDirection: 'row', marginTop: 20, alignItems: 'center' },
-  agePicker: { flex: 1, alignItems: 'center' },
-  ageLabel:  { fontSize: 12, color: Colors.textSecondary, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.6, marginBottom: 12 },
-  ageDivider:{ width: 1, height: 60, backgroundColor: Colors.border, marginHorizontal: 8 },
+  rangeSliderTrack:     { marginTop: 4 },
+  rangeSliderContainer: { height: 44, justifyContent: 'center' },
 
   dogPicker:        { marginTop: 16, marginBottom: 4 },
   dogPickerContent: { gap: 8, paddingHorizontal: 2 },

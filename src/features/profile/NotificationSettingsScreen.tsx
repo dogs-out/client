@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { SafeAreaView, StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { RootStackParamList } from '../../types/navigation';
 import { Colors } from '../../constants/colors';
 import { FloatingBackground } from '../../components/FloatingBackground';
@@ -12,6 +13,7 @@ import { notificationService } from '../../services/notificationService';
 type Props = NativeStackScreenProps<RootStackParamList, 'NotificationSettings'>;
 
 export default function NotificationSettingsScreen({ navigation }: Props) {
+  const { t } = useTranslation();
   const [enabled, setEnabled] = useState<boolean | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -28,7 +30,7 @@ export default function NotificationSettingsScreen({ navigation }: Props) {
       .then(() => { if (value) notificationService.register(); })
       .catch(() => {
         setEnabled(!value);
-        setError('Could not save your preference. Please try again.');
+        setError(t('profile.notificationSettings.saveError'));
       });
   };
 
@@ -40,7 +42,7 @@ export default function NotificationSettingsScreen({ navigation }: Props) {
         <TouchableOpacity onPress={() => navigation.goBack()} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
           <Ionicons name="chevron-back" size={26} color={Colors.text} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Notifications</Text>
+        <Text style={styles.headerTitle}>{t('settings.rows.notifications')}</Text>
         <View style={{ width: 26 }} />
       </View>
 
@@ -48,8 +50,8 @@ export default function NotificationSettingsScreen({ navigation }: Props) {
         <GlassCard padding={0}>
           <View style={styles.row}>
             <View style={styles.rowText}>
-              <Text style={styles.rowLabel}>Push notifications</Text>
-              <Text style={styles.rowSub}>New messages and matches while the app is closed</Text>
+              <Text style={styles.rowLabel}>{t('profile.notificationSettings.pushNotifications')}</Text>
+              <Text style={styles.rowSub}>{t('profile.notificationSettings.pushNotificationsSub')}</Text>
             </View>
             <Switch
               value={enabled ?? true}
@@ -63,7 +65,7 @@ export default function NotificationSettingsScreen({ navigation }: Props) {
         {error && <Text style={styles.errorText}>{error}</Text>}
 
         <Text style={styles.hint}>
-          Notifications also need to be allowed for Dogs Out in your phone's system settings.
+          {t('profile.notificationSettings.hint')}
         </Text>
       </View>
     </SafeAreaView>
