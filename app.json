@@ -22,11 +22,6 @@
             "CFBundleURLSchemes": [
               "com.googleusercontent.apps.844535271431-3fiqhj3m9mpn8r2d3mtujae8kt1uecng"
             ]
-          },
-          {
-            "CFBundleURLSchemes": [
-              "com.googleusercontent.apps.844535271431-3fiqhj3m9mpn8r2d3mtujae8kt1uecng"
-            ]
           }
         ],
         "ITSAppUsesNonExemptEncryption": false
@@ -61,7 +56,13 @@
           "photosPermission": "DogsOut needs access to your photos to set a profile picture."
         }
       ],
-      "expo-localization"
+      "expo-localization",
+      [
+        "expo-notifications",
+        {
+          "color": "#2E9E6B"
+        }
+      ]
     ],
     "extra": {
       "eas": {
