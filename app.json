@@ -14,7 +14,7 @@
       "backgroundColor": "#2E9E6B"
     },
     "ios": {
-      "supportsTablet": true,
+      "supportsTablet": false,
       "bundleIdentifier": "com.dogsout.app",
       "infoPlist": {
         "CFBundleURLTypes": [
