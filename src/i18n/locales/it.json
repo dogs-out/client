@@ -382,6 +382,9 @@
   },
   "settings": {
     "headerTitle": "Impostazioni",
+    "language": {
+      "title": "Lingua"
+    },
     "signOutTitle": "Esci",
     "signOutConfirm": "Sei sicuro di voler uscire?",
     "deleteAccountTitle": "Elimina account",

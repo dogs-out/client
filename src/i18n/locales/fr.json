@@ -382,6 +382,9 @@
   },
   "settings": {
     "headerTitle": "Réglages",
+    "language": {
+      "title": "Langue"
+    },
     "signOutTitle": "Se déconnecter",
     "signOutConfirm": "Veux-tu vraiment te déconnecter ?",
     "deleteAccountTitle": "Supprimer le compte",

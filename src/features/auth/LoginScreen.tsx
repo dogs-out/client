@@ -18,6 +18,7 @@ import { FloatingBackground } from '../../components/FloatingBackground';
 import { GlassCard } from '../../components/GlassCard';
 import { GlassButton } from '../../components/GlassButton';
 import { Colors } from '../../constants/colors';
+import { SUPPORTED_LANGUAGES, setLanguage } from '../../i18n';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -41,7 +42,7 @@ const REDIRECT_URI = AuthSession.makeRedirectUri({
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
 export default function LoginScreen({ navigation }: Props) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -140,6 +141,16 @@ export default function LoginScreen({ navigation }: Props) {
       <FloatingBackground />
       <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
 
+        <View style={styles.languageRow}>
+          {SUPPORTED_LANGUAGES.map(lang => (
+            <TouchableOpacity key={lang.code} onPress={() => setLanguage(lang.code)} hitSlop={8}>
+              <Text style={[styles.languageCode, i18n.language === lang.code && styles.languageCodeActive]}>
+                {lang.code.toUpperCase()}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+
         <Text style={styles.appTitle}>Dogs Out</Text>
 
         <GlassCard style={styles.card}>
@@ -217,6 +228,9 @@ export default function LoginScreen({ navigation }: Props) {
 const styles = StyleSheet.create({
   screen:         { flex: 1, backgroundColor: Colors.background },
   container:      { flex: 1, padding: 24, justifyContent: 'center' },
+  languageRow:    { flexDirection: 'row', justifyContent: 'center', gap: 14, marginBottom: 12 },
+  languageCode:       { fontSize: 12, fontWeight: '600', color: Colors.textSecondary, letterSpacing: 0.5 },
+  languageCodeActive: { color: Colors.primary, fontWeight: '800' },
   appTitle:       {
     fontSize: 44, fontWeight: '800', color: Colors.primary, textAlign: 'center', marginBottom: 28, letterSpacing: -0.5,
     textShadowColor: 'rgba(46,158,107,0.30)', textShadowOffset: { width: 0, height: 2 }, textShadowRadius: 3,
