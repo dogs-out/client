@@ -69,9 +69,9 @@ export default function FeedbackScreen({ navigation }: Props) {
           />
         </GlassCard>
 
-        <GlassButton onPress={submit} disabled={saving} tint="rgba(0,0,0,0.38)" style={styles.btn}>
+        <GlassButton onPress={submit} disabled={saving} style={styles.btn}>
           {saving
-            ? <ActivityIndicator color="#fff" />
+            ? <ActivityIndicator color={Colors.primary} />
             : <Text style={styles.btnText}>Send feedback</Text>
           }
         </GlassButton>
@@ -91,5 +91,5 @@ const styles = StyleSheet.create({
   input: { minHeight: 140, fontSize: 15, color: Colors.text, lineHeight: 21 },
 
   btn:     { marginTop: 24 },
-  btnText: { color: '#fff', fontSize: 16, fontWeight: '700' },
+  btnText: { color: Colors.text, fontSize: 16, fontWeight: '700' },
 });

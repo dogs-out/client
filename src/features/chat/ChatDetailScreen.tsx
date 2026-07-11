@@ -223,8 +223,8 @@ export default function ChatDetailScreen() {
     const mine = message.senderId !== otherUserId;
     return (
       <View style={[styles.bubbleRow, mine ? styles.bubbleRowMine : styles.bubbleRowTheirs]}>
-        <GlassCard padding={10} radius={16} compact tint={mine ? 'rgba(0,0,0,0.38)' : undefined}>
-          <Text style={mine ? styles.bubbleTextMine : styles.bubbleTextTheirs}>{message.content}</Text>
+        <GlassCard padding={10} radius={16} compact>
+          <Text style={styles.bubbleText}>{message.content}</Text>
         </GlassCard>
         <Text style={styles.bubbleTime}>{formatTime(message.sentAt)}</Text>
       </View>
@@ -375,8 +375,7 @@ const styles = StyleSheet.create({
   bubbleRow:       { marginVertical: 3, maxWidth: '80%' },
   bubbleRowMine:   { alignSelf: 'flex-end', alignItems: 'flex-end' },
   bubbleRowTheirs: { alignSelf: 'flex-start', alignItems: 'flex-start' },
-  bubbleTextMine:   { color: '#fff', fontSize: 15, lineHeight: 20 },
-  bubbleTextTheirs: { color: Colors.text, fontSize: 15, lineHeight: 20 },
+  bubbleText: { color: Colors.text, fontSize: 15, lineHeight: 20 },
   bubbleTime:      { fontSize: 10, color: Colors.textSecondary, marginTop: 2, marginHorizontal: 4 },
 
   dateSeparatorRow:  { alignItems: 'center', marginVertical: 12 },
