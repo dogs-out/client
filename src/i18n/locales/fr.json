@@ -109,7 +109,9 @@
       "reportName": "Signaler {{name}}",
       "unmatchDeleteChat": "Annuler le match et supprimer la conversation",
       "emptyChatText": "Tu as matché avec {{name}} ! Dis bonjour et planifiez votre première balade ensemble.",
-      "messagePlaceholder": "Message à {{name}}…"
+      "messagePlaceholder": "Message à {{name}}…",
+      "today": "Aujourd'hui",
+      "yesterday": "Hier"
     },
     "reportModal": {
       "sendFailed": "Ton signalement n'a pas pu être envoyé. Veuillez réessayer.",
@@ -374,7 +376,7 @@
       },
       "contact": {
         "title": "7. Contact",
-        "body": "Des questions sur ces conditions ou tes données ? Contacte-nous à noreply.dogsout@gmail.com."
+        "body": "Des questions sur ces conditions ou tes données ? Contacte-nous à help@dogsout.app."
       }
     }
   },

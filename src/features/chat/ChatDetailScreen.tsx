@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import {
   ActivityIndicator, Alert, FlatList, Image, KeyboardAvoidingView, Modal,
   Platform, Pressable, SafeAreaView, StyleSheet, Text, TextInput,
@@ -10,6 +10,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
 import { AxiosError } from 'axios';
 import { useTranslation } from 'react-i18next';
+import { TFunction } from 'i18next';
 import { chatService, ChatMessage } from '../../services/chatService';
 import { chatSocket } from '../../services/socket';
 import { moderationService } from '../../services/moderationService';
@@ -28,6 +29,23 @@ function formatTime(iso: string): string {
   return new Date(iso).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
 
+function isSameDay(a: Date, b: Date): boolean {
+  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+}
+
+function formatDateLabel(iso: string, t: TFunction, language: string): string {
+  const date = new Date(iso);
+  const now = new Date();
+  if (isSameDay(date, now)) return t('chat.chatDetail.today');
+  const yesterday = new Date(now);
+  yesterday.setDate(yesterday.getDate() - 1);
+  if (isSameDay(date, yesterday)) return t('chat.chatDetail.yesterday');
+  const sameYear = date.getFullYear() === now.getFullYear();
+  return date.toLocaleDateString(language, sameYear
+    ? { day: 'numeric', month: 'long' }
+    : { day: 'numeric', month: 'long', year: 'numeric' });
+}
+
 type MenuAction = {
   icon: string;
   label: string;
@@ -35,8 +53,12 @@ type MenuAction = {
   onPress: () => void;
 };
 
+type ListItem =
+  | { type: 'message'; message: ChatMessage }
+  | { type: 'separator'; key: string; label: string };
+
 export default function ChatDetailScreen() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { params } = useRoute<RouteProp<RootStackParamList, 'ChatDetail'>>();
   const { matchId, otherUserId, name, profilePicture } = params;
@@ -172,14 +194,39 @@ export default function ChatDetailScreen() {
     { icon: 'trash-outline', label: t('chat.chatDetail.unmatchDeleteChat'), destructive: true, onPress: confirmUnmatch },
   ];
 
-  const renderItem = ({ item }: { item: ChatMessage }) => {
-    const mine = item.senderId !== otherUserId;
+  // messages is newest-first; insert one date separator after the oldest message of each
+  // calendar day so it lands visually above that day's block in the inverted FlatList
+  const listData = useMemo<ListItem[]>(() => {
+    const result: ListItem[] = [];
+    messages.forEach((message, i) => {
+      result.push({ type: 'message', message });
+      const next = messages[i + 1];
+      const isLastOfDay = !next || !isSameDay(new Date(message.sentAt), new Date(next.sentAt));
+      if (isLastOfDay) {
+        result.push({ type: 'separator', key: `sep-${message.sentAt}`, label: formatDateLabel(message.sentAt, t, i18n.language) });
+      }
+    });
+    return result;
+  }, [messages, t, i18n.language]);
+
+  const renderItem = ({ item }: { item: ListItem }) => {
+    if (item.type === 'separator') {
+      return (
+        <View style={styles.dateSeparatorRow}>
+          <View style={styles.dateSeparatorPill}>
+            <Text style={styles.dateSeparatorText}>{item.label}</Text>
+          </View>
+        </View>
+      );
+    }
+    const message = item.message;
+    const mine = message.senderId !== otherUserId;
     return (
       <View style={[styles.bubbleRow, mine ? styles.bubbleRowMine : styles.bubbleRowTheirs]}>
-        <GlassCard padding={10} radius={16} compact tint={mine ? 'rgba(46,158,107,0.72)' : undefined}>
-          <Text style={mine ? styles.bubbleTextMine : styles.bubbleTextTheirs}>{item.content}</Text>
+        <GlassCard padding={10} radius={16} compact tint={mine ? 'rgba(0,0,0,0.38)' : undefined}>
+          <Text style={mine ? styles.bubbleTextMine : styles.bubbleTextTheirs}>{message.content}</Text>
         </GlassCard>
-        <Text style={styles.bubbleTime}>{formatTime(item.sentAt)}</Text>
+        <Text style={styles.bubbleTime}>{formatTime(message.sentAt)}</Text>
       </View>
     );
   };
@@ -216,9 +263,9 @@ export default function ChatDetailScreen() {
           <View style={styles.centered}><ActivityIndicator size="large" color={Colors.primary} /></View>
         ) : (
           <FlatList
-            data={messages}
+            data={listData}
             inverted
-            keyExtractor={m => String(m.id)}
+            keyExtractor={item => item.type === 'separator' ? item.key : String(item.message.id)}
             renderItem={renderItem}
             contentContainerStyle={styles.listContainer}
             ListEmptyComponent={
@@ -331,6 +378,13 @@ const styles = StyleSheet.create({
   bubbleTextMine:   { color: '#fff', fontSize: 15, lineHeight: 20 },
   bubbleTextTheirs: { color: Colors.text, fontSize: 15, lineHeight: 20 },
   bubbleTime:      { fontSize: 10, color: Colors.textSecondary, marginTop: 2, marginHorizontal: 4 },
+
+  dateSeparatorRow:  { alignItems: 'center', marginVertical: 12 },
+  dateSeparatorPill: {
+    paddingHorizontal: 12, paddingVertical: 4, borderRadius: 12,
+    backgroundColor: Colors.glass.inputBg, borderWidth: 1, borderColor: Colors.glass.border,
+  },
+  dateSeparatorText: { fontSize: 11, fontWeight: '600', color: Colors.textSecondary },
 
   // inverted list flips children, so flip the empty state back
   emptyChat:      { flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 32, transform: [{ scaleY: -1 }] },

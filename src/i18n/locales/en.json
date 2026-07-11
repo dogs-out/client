@@ -109,7 +109,9 @@
       "reportName": "Report {{name}}",
       "unmatchDeleteChat": "Unmatch & delete chat",
       "emptyChatText": "You matched with {{name}}! Say hi and plan your first walk together.",
-      "messagePlaceholder": "Message {{name}}…"
+      "messagePlaceholder": "Message {{name}}…",
+      "today": "Today",
+      "yesterday": "Yesterday"
     },
     "reportModal": {
       "sendFailed": "Your report could not be sent. Please try again.",
@@ -374,7 +376,7 @@
       },
       "contact": {
         "title": "7. Contact",
-        "body": "Questions about these terms or your data? Contact us at noreply.dogsout@gmail.com."
+        "body": "Questions about these terms or your data? Contact us at help@dogsout.app."
       }
     }
   },

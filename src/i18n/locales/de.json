@@ -109,7 +109,9 @@
       "reportName": "{{name}} melden",
       "unmatchDeleteChat": "Match aufheben & Chat löschen",
       "emptyChatText": "Du hast mit {{name}} gematcht! Sag Hallo und plant euren ersten gemeinsamen Spaziergang.",
-      "messagePlaceholder": "Nachricht an {{name}}…"
+      "messagePlaceholder": "Nachricht an {{name}}…",
+      "today": "Heute",
+      "yesterday": "Gestern"
     },
     "reportModal": {
       "sendFailed": "Deine Meldung konnte nicht gesendet werden. Bitte versuche es erneut.",
@@ -374,7 +376,7 @@
       },
       "contact": {
         "title": "7. Kontakt",
-        "body": "Fragen zu diesen Bedingungen oder deinen Daten? Kontaktiere uns unter noreply.dogsout@gmail.com."
+        "body": "Fragen zu diesen Bedingungen oder deinen Daten? Kontaktiere uns unter help@dogsout.app."
       }
     }
   },

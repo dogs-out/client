@@ -69,7 +69,7 @@ export default function FeedbackScreen({ navigation }: Props) {
           />
         </GlassCard>
 
-        <GlassButton onPress={submit} disabled={saving} tint="rgba(46,158,107,0.72)" style={styles.btn}>
+        <GlassButton onPress={submit} disabled={saving} tint="rgba(0,0,0,0.38)" style={styles.btn}>
           {saving
             ? <ActivityIndicator color="#fff" />
             : <Text style={styles.btnText}>Send feedback</Text>
