@@ -43,3 +43,6 @@ yarn-error.*
 
 # Claude Code isolated agent worktrees
 .claude/worktrees/
+
+# Local build artifacts
+build-*.apk

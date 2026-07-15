@@ -2,7 +2,7 @@
   "expo": {
     "name": "DogsOut",
     "slug": "client",
-    "scheme": "dogsout",
+    "scheme": ["dogsout", "com.dogsout.app"],
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -29,6 +29,7 @@
       "buildNumber": "2"
     },
     "android": {
+      "package": "com.dogsout.app",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#2E9E6B"

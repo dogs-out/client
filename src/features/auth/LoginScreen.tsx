@@ -27,16 +27,22 @@ const GOOGLE_DISCOVERY = {
   tokenEndpoint: 'https://oauth2.googleapis.com/token',
 };
 
-// Use the iOS-specific client ID on device (it has a matching CFBundleURLScheme registered),
-// and the web client ID on web where the redirect is http://localhost:8081.
+// Each platform needs its own Google OAuth client: iOS uses the reverse-client-ID
+// URL scheme, Android uses the package name as scheme (validated via SHA-1 in Google
+// Console), and web uses http://localhost:8081.
 const IOS_CLIENT_ID = process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID!;
+const ANDROID_CLIENT_ID = process.env.EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID!;
 const WEB_CLIENT_ID = process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID!;
-const CLIENT_ID = Platform.OS === 'ios' ? IOS_CLIENT_ID : WEB_CLIENT_ID;
+const CLIENT_ID = Platform.select({
+  ios: IOS_CLIENT_ID,
+  android: ANDROID_CLIENT_ID,
+  default: WEB_CLIENT_ID,
+})!;
 
-// On native the redirect must match the reverse-client-ID scheme Google registered automatically.
-// On web makeRedirectUri() returns http://localhost:8081 which is whitelisted in Google Console.
 const REDIRECT_URI = AuthSession.makeRedirectUri({
-  native: `com.googleusercontent.apps.${IOS_CLIENT_ID.split('.apps.')[0]}:/oauth2redirect`,
+  native: Platform.OS === 'android'
+    ? 'com.dogsout.app:/oauth2redirect'
+    : `com.googleusercontent.apps.${IOS_CLIENT_ID.split('.apps.')[0]}:/oauth2redirect`,
 });
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
