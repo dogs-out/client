@@ -1,4 +1,4 @@
-import { StyleSheet, View, ViewStyle } from 'react-native';
+import { Platform, StyleSheet, View, ViewStyle } from 'react-native';
 import { GlassView } from 'expo-glass-effect';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Colors } from '../constants/colors';
@@ -15,20 +15,24 @@ interface Props {
   compact?: boolean;
 }
 
+const isIOS = Platform.OS === 'ios';
+
 export function GlassCard({ children, style, padding = 28, radius = 28, tint, compact = false }: Props) {
   const shadow = compact ? styles.shadowCompact : styles.shadow;
   return (
     <View style={[shadow, { borderRadius: radius }, style]}>
       <View style={[styles.clip, { borderRadius: radius }]}>
-        <GlassView glassEffectStyle="clear" style={StyleSheet.absoluteFill} />
-        {tint && <View style={[StyleSheet.absoluteFill, { backgroundColor: tint }]} />}
-        <LinearGradient
-          colors={['rgba(255,255,255,0.78)', 'rgba(255,255,255,0.22)', 'rgba(255,255,255,0)']}
-          locations={[0, 0.45, 1]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={[StyleSheet.absoluteFill, { pointerEvents: 'none' }]}
-        />
+        {isIOS && <GlassView glassEffectStyle="clear" style={StyleSheet.absoluteFill} />}
+        {tint && <View style={[StyleSheet.absoluteFill, { backgroundColor: tint, borderRadius: radius }]} />}
+        {isIOS && (
+          <LinearGradient
+            colors={['rgba(255,255,255,0.78)', 'rgba(255,255,255,0.22)', 'rgba(255,255,255,0)']}
+            locations={[0, 0.45, 1]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={[StyleSheet.absoluteFill, { pointerEvents: 'none' }]}
+          />
+        )}
         <View style={{ padding }}>
           {children}
         </View>
@@ -43,14 +47,16 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 6, height: 10 },
     shadowOpacity: 0.18,
     shadowRadius: 28,
-    elevation: 12,
+    // No elevation on Android: on translucent views its shadow pass composites
+    // the subtree against an opaque white buffer (white slab behind content).
+    elevation: 0,
   },
   shadowCompact: {
     shadowColor: Colors.text,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.10,
     shadowRadius: 4,
-    elevation: 3,
+    elevation: 0,
   },
   clip: {
     overflow: 'hidden',
@@ -59,5 +65,8 @@ const styles = StyleSheet.create({
     borderLeftColor:   'rgba(255, 255, 255, 0.75)',
     borderRightColor:  'rgba(255, 255, 255, 0.40)',
     borderBottomColor: 'rgba(255, 255, 255, 0.25)',
+    // expo-glass-effect is iOS-only; Android gets a flat translucent frost as
+    // the view's own background instead.
+    ...(!isIOS && { backgroundColor: 'rgba(255,255,255,0.65)' }),
   },
 });
