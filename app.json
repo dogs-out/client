@@ -2,7 +2,10 @@
   "expo": {
     "name": "DogsOut",
     "slug": "client",
-    "scheme": ["dogsout", "com.dogsout.app"],
+    "scheme": [
+      "dogsout",
+      "com.dogsout.app"
+    ],
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -26,7 +29,7 @@
         ],
         "ITSAppUsesNonExemptEncryption": false
       },
-      "buildNumber": "2"
+      "buildNumber": "3"
     },
     "android": {
       "package": "com.dogsout.app",
