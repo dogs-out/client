@@ -28,6 +28,11 @@ function getAge(dob: string | null): number | null {
 
 function PhotoCarousel({ uris, placeholder }: { uris: string[]; placeholder: string }) {
   const [index, setIndex] = useState(0);
+  // pagingEnabled snaps by the *viewport* width. The card's border makes the
+  // viewport a few px narrower than PHOTO_W, so fixed-width pages drift a bit
+  // further each page (previous photo bleeds in at the left edge). Measure the
+  // real viewport and size each page to exactly that.
+  const [pageW, setPageW] = useState(PHOTO_W);
 
   if (uris.length === 0) {
     return (
@@ -38,15 +43,15 @@ function PhotoCarousel({ uris, placeholder }: { uris: string[]; placeholder: str
   }
 
   return (
-    <View>
+    <View onLayout={e => setPageW(e.nativeEvent.layout.width)}>
       <ScrollView
         horizontal
         pagingEnabled
         showsHorizontalScrollIndicator={false}
-        onMomentumScrollEnd={e => setIndex(Math.round(e.nativeEvent.contentOffset.x / PHOTO_W))}
+        onMomentumScrollEnd={e => setIndex(Math.round(e.nativeEvent.contentOffset.x / pageW))}
       >
         {uris.map((uri, i) => (
-          <Image key={i} source={{ uri }} style={styles.photo} resizeMode="cover" />
+          <Image key={i} source={{ uri }} style={[styles.photo, { width: pageW }]} resizeMode="cover" />
         ))}
       </ScrollView>
       {uris.length > 1 && (
@@ -68,7 +73,7 @@ function DogCard({ dog }: { dog: Dog }) {
     : dog.profilePicture ? [dog.profilePicture] : [];
 
   return (
-    <GlassCard padding={0} style={styles.dogCard}>
+    <GlassCard padding={0} plain style={styles.dogCard}>
       <PhotoCarousel uris={photos} placeholder="🐶" />
       <View style={styles.dogInfo}>
         <Text style={styles.dogName}>
@@ -136,7 +141,7 @@ export default function UserProfileScreen({ navigation, route }: Props) {
       ) : (
         <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
           {/* Owner */}
-          <GlassCard padding={0}>
+          <GlassCard padding={0} plain>
             <PhotoCarousel uris={ownerPhotos} placeholder="👤" />
             <View style={styles.dogInfo}>
               <Text style={styles.dogName}>

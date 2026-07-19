@@ -195,7 +195,7 @@ export default function SwipePreviewScreen({ navigation }: Props) {
                     ))}
                   </View>
                 )}
-                {user.bio ? <Text style={styles.bioText} numberOfLines={2}>{user.bio}</Text> : null}
+                {user.bio ? <Text style={styles.bioText}>{user.bio}</Text> : null}
               </View>
             ) : (
               /* ── DOG VIEW ── */
@@ -226,7 +226,7 @@ export default function SwipePreviewScreen({ navigation }: Props) {
                     ))}
                   </View>
                 )}
-                {currentDog.bio ? <Text style={styles.bioText} numberOfLines={2}>{currentDog.bio}</Text> : null}
+                {currentDog.bio ? <Text style={styles.bioText}>{currentDog.bio}</Text> : null}
               </View>
             )}
 

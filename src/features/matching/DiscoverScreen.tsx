@@ -427,7 +427,7 @@ export default function DiscoverScreen() {
                     ))}
                   </View>
                 )}
-                {profile.bio ? <Text style={styles.bioText} numberOfLines={2}>{profile.bio}</Text> : null}
+                {profile.bio ? <Text style={styles.bioText}>{profile.bio}</Text> : null}
               </View>
             ) : (
               <View key="dog-info" style={styles.infoContent}>
@@ -452,7 +452,7 @@ export default function DiscoverScreen() {
                     ))}
                   </View>
                 )}
-                {currentDog?.bio ? <Text style={styles.bioText} numberOfLines={2}>{currentDog.bio}</Text> : null}
+                {currentDog?.bio ? <Text style={styles.bioText}>{currentDog.bio}</Text> : null}
               </View>
             )}
 

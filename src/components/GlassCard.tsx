@@ -13,18 +13,23 @@ interface Props {
   tint?: string;
   /** Shrinks the shadow proportionally for small elements (e.g. chat bubbles) — a full-size card shadow reads as a glowing blob on something this small. */
   compact?: boolean;
+  /** Skips the live iOS glass layer and uses a flat frost instead. Use for cards
+   * dominated by an opaque photo: Liquid Glass's dynamic rim highlight draws a
+   * grey band over the photo's top edge as the card moves on screen. */
+  plain?: boolean;
 }
 
 const isIOS = Platform.OS === 'ios';
 
-export function GlassCard({ children, style, padding = 28, radius = 28, tint, compact = false }: Props) {
+export function GlassCard({ children, style, padding = 28, radius = 28, tint, compact = false, plain = false }: Props) {
   const shadow = compact ? styles.shadowCompact : styles.shadow;
+  const liveGlass = isIOS && !plain;
   return (
     <View style={[shadow, { borderRadius: radius }, style]}>
-      <View style={[styles.clip, { borderRadius: radius }]}>
-        {isIOS && <GlassView glassEffectStyle="clear" style={StyleSheet.absoluteFill} />}
+      <View style={[styles.clip, { borderRadius: radius }, isIOS && plain && styles.frostPlain]}>
+        {liveGlass && <GlassView glassEffectStyle="clear" style={StyleSheet.absoluteFill} />}
         {tint && <View style={[StyleSheet.absoluteFill, { backgroundColor: tint, borderRadius: radius }]} />}
-        {isIOS && (
+        {liveGlass && (
           <LinearGradient
             colors={['rgba(255,255,255,0.78)', 'rgba(255,255,255,0.22)', 'rgba(255,255,255,0)']}
             locations={[0, 0.45, 1]}
@@ -69,4 +74,5 @@ const styles = StyleSheet.create({
     // the view's own background instead.
     ...(!isIOS && { backgroundColor: 'rgba(255,255,255,0.65)' }),
   },
+  frostPlain: { backgroundColor: 'rgba(255,255,255,0.65)' },
 });
