@@ -223,7 +223,8 @@
       "matchTitle": "È un match! 🐾",
       "matchSub": "Anche {{name}} ti ha dato un premio!",
       "chatNow": "Chatta ora 💬",
-      "keepSwiping": "Continua a scorrere"
+      "keepSwiping": "Continua a scorrere",
+      "adjustDistance": "Modifica la distanza di ricerca"
     },
     "filters": {
       "saveFailed": "Impossibile salvare le tue preferenze. Riprova.",

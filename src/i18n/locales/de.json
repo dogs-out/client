@@ -223,7 +223,8 @@
       "matchTitle": "Es ist ein Match! 🐾",
       "matchSub": "{{name}} hat dir auch ein Leckerli gegeben!",
       "chatNow": "Jetzt chatten 💬",
-      "keepSwiping": "Weiter wischen"
+      "keepSwiping": "Weiter wischen",
+      "adjustDistance": "Suchdistanz anpassen"
     },
     "filters": {
       "saveFailed": "Deine Einstellungen konnten nicht gespeichert werden. Bitte versuche es erneut.",

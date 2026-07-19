@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Animated, Dimensions, Easing, Image, PanResponder,
-  SafeAreaView, StyleSheet, Text, TouchableOpacity, View, ActivityIndicator,
+  StyleSheet, Text, TouchableOpacity, View, ActivityIndicator,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
@@ -305,6 +306,13 @@ export default function DiscoverScreen() {
           <TouchableOpacity style={styles.refreshBtn} onPress={loadFeed}>
             <Text style={styles.refreshBtnText}>{t('matching.discover.refresh')}</Text>
           </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.filtersLinkBtn}
+            onPress={() => navigation.navigate('DiscoverFilters')}
+          >
+            <Ionicons name="options-outline" size={16} color={Colors.primary} style={{ marginRight: 6 }} />
+            <Text style={styles.filtersLinkText}>{t('matching.discover.adjustDistance')}</Text>
+          </TouchableOpacity>
         </View>
       </SafeAreaView>
     );
@@ -580,6 +588,12 @@ const styles = StyleSheet.create({
   emptySub:    { fontSize: 15, color: Colors.text, opacity: 0.6, textAlign: 'center', marginBottom: 24 },
   refreshBtn:  { backgroundColor: Colors.primary, paddingHorizontal: 32, paddingVertical: 12, borderRadius: 24 },
   refreshBtnText: { color: '#fff', fontWeight: '700', fontSize: 16 },
+  filtersLinkBtn: {
+    flexDirection: 'row', alignItems: 'center', marginTop: 16,
+    paddingHorizontal: 24, paddingVertical: 10, borderRadius: 24,
+    borderWidth: 1.5, borderColor: Colors.primary,
+  },
+  filtersLinkText: { color: Colors.primary, fontWeight: '700', fontSize: 15 },
 
   matchOverlay: {
     ...StyleSheet.absoluteFill,

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import Navigation from './src/app/Navigation';
 import { initI18n } from './src/i18n';
 
@@ -16,5 +17,9 @@ export default function App() {
     );
   }
 
-  return <Navigation />;
+  return (
+    <SafeAreaProvider>
+      <Navigation />
+    </SafeAreaProvider>
+  );
 }
