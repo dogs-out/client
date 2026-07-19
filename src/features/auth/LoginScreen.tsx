@@ -17,6 +17,7 @@ import { getApiError } from '../../utils/apiError';
 import { FloatingBackground } from '../../components/FloatingBackground';
 import { GlassCard } from '../../components/GlassCard';
 import { GlassButton } from '../../components/GlassButton';
+import { PasswordInput } from '../../components/PasswordInput';
 import { Colors } from '../../constants/colors';
 import { SUPPORTED_LANGUAGES, setLanguage } from '../../i18n';
 
@@ -175,13 +176,10 @@ export default function LoginScreen({ navigation }: Props) {
           keyboardType="email-address"
           autoComplete="email"
         />
-        <TextInput
-          style={styles.input}
+        <PasswordInput
           placeholder={t('auth.login.passwordPlaceholder')}
-          placeholderTextColor={Colors.textSecondary}
           value={password}
           onChangeText={setPassword}
-          secureTextEntry
           autoComplete="password"
         />
 

@@ -11,6 +11,7 @@ import { getApiError } from '../../utils/apiError';
 import { FloatingBackground } from '../../components/FloatingBackground';
 import { GlassCard } from '../../components/GlassCard';
 import { GlassButton } from '../../components/GlassButton';
+import { PasswordInput } from '../../components/PasswordInput';
 import { Colors } from '../../constants/colors';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ResetPassword'>;
@@ -75,13 +76,10 @@ export default function ResetPasswordScreen({ navigation }: Props) {
             autoCorrect={false}
             autoFocus
           />
-          <TextInput
-            style={styles.input}
+          <PasswordInput
             placeholder={t('auth.resetPassword.newPasswordPlaceholder')}
-            placeholderTextColor={Colors.textSecondary}
             value={password}
             onChangeText={setPassword}
-            secureTextEntry
             autoComplete="new-password"
           />
           {password.length > 0 && (
@@ -95,13 +93,10 @@ export default function ResetPasswordScreen({ navigation }: Props) {
               <Text style={[styles.strengthLabel, { color: strength.color }]}>{strengthLabels[strength.level]}</Text>
             </View>
           )}
-          <TextInput
-            style={styles.input}
+          <PasswordInput
             placeholder={t('auth.register.confirmPasswordPlaceholder')}
-            placeholderTextColor={Colors.textSecondary}
             value={confirm}
             onChangeText={setConfirm}
-            secureTextEntry
             autoComplete="new-password"
           />
 

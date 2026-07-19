@@ -12,6 +12,7 @@ import { getApiError } from '../../utils/apiError';
 import { FloatingBackground } from '../../components/FloatingBackground';
 import { GlassCard } from '../../components/GlassCard';
 import { GlassButton } from '../../components/GlassButton';
+import { PasswordInput } from '../../components/PasswordInput';
 import { Colors } from '../../constants/colors';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Register'>;
@@ -99,12 +100,10 @@ export default function RegisterScreen({ navigation, route }: Props) {
         keyboardType="email-address"
         autoComplete="email"
       />
-      <TextInput
-        style={styles.input}
+      <PasswordInput
         placeholder={t('auth.login.passwordPlaceholder')}
         value={password}
         onChangeText={setPassword}
-        secureTextEntry
         autoComplete="new-password"
       />
 
@@ -120,12 +119,10 @@ export default function RegisterScreen({ navigation, route }: Props) {
         </View>
       )}
 
-      <TextInput
-        style={styles.input}
+      <PasswordInput
         placeholder={t('auth.register.confirmPasswordPlaceholder')}
         value={confirmPassword}
         onChangeText={setConfirmPassword}
-        secureTextEntry
         autoComplete="new-password"
       />
 
