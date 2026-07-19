@@ -145,7 +145,7 @@ export default function LoginScreen({ navigation }: Props) {
   return (
     <View style={styles.screen}>
       <FloatingBackground />
-      <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      <KeyboardAvoidingView style={styles.container} behavior="padding">
 
         <View style={styles.languageRow}>
           {SUPPORTED_LANGUAGES.map(lang => (

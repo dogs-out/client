@@ -13,8 +13,35 @@
     "yearsOld": "{{age}} years old"
   },
   "settings": {
+    "headerTitle": "Settings",
     "language": {
       "title": "Language"
+    },
+    "signOutTitle": "Sign out",
+    "signOutConfirm": "Are you sure you want to sign out?",
+    "deleteAccountTitle": "Delete account",
+    "deleteAccountMessage": "This permanently deletes your account, all your dogs, and all your data. This cannot be undone.",
+    "deleteForever": "Delete forever",
+    "deleteAccountError": "Could not delete account. Please try again.",
+    "sections": {
+      "discover": "Discover",
+      "account": "Account",
+      "privacy": "Privacy",
+      "support": "Support",
+      "dangerZone": "Danger zone"
+    },
+    "rows": {
+      "discoveryPreferences": "Discovery preferences",
+      "editProfile": "Edit profile",
+      "changePassword": "Change password",
+      "notifications": "Notifications",
+      "locationSettings": "Location settings",
+      "blockedUsers": "Blocked users",
+      "sendFeedback": "Send Feedback",
+      "helpFaq": "Help & FAQ",
+      "termsPrivacy": "Terms & Privacy",
+      "aboutDogsOut": "About Dogs Out",
+      "deleteAccount": "Delete account"
     }
   },
   "auth": {
@@ -157,7 +184,7 @@
       "kidsComfort": "Comfort around small children",
       "kidsComfortHint": "1 = Avoids them · 5 = Loves them",
       "tags": "Tags",
-      "tagsHint": "Pick one per category",
+      "tagsHint": "Pick up to two per category",
       "personalityCategory": "Personality",
       "playStyleCategory": "Play style",
       "socialCategory": "Social",
@@ -230,8 +257,8 @@
       "subtitle": "Update your details"
     },
     "setup": {
-      "title": "Set up your profile",
-      "subtitle": "Tell us a bit about yourself"
+      "title": "Create your profile",
+      "subtitle": "Step 1 of 2 — this is about you, the human 🧍 You’ll add your dog in the next step 🐶"
     },
     "form": {
       "maxPhotos": "Maximum 3 photos per profile.",
@@ -250,7 +277,7 @@
       "bio": "Bio",
       "optional": "(optional)",
       "bioPlaceholder": "Tell other dog owners about yourself...",
-      "dob": "Date of birth",
+      "dob": "Your date of birth (not your dog’s!)",
       "selectDob": "Select your date of birth",
       "location": "Location",
       "locationDetected": "Location detected",
@@ -378,38 +405,6 @@
         "title": "7. Contact",
         "body": "Questions about these terms or your data? Contact us at help@dogsout.app."
       }
-    }
-  },
-  "settings": {
-    "headerTitle": "Settings",
-    "language": {
-      "title": "Language"
-    },
-    "signOutTitle": "Sign out",
-    "signOutConfirm": "Are you sure you want to sign out?",
-    "deleteAccountTitle": "Delete account",
-    "deleteAccountMessage": "This permanently deletes your account, all your dogs, and all your data. This cannot be undone.",
-    "deleteForever": "Delete forever",
-    "deleteAccountError": "Could not delete account. Please try again.",
-    "sections": {
-      "discover": "Discover",
-      "account": "Account",
-      "privacy": "Privacy",
-      "support": "Support",
-      "dangerZone": "Danger zone"
-    },
-    "rows": {
-      "discoveryPreferences": "Discovery preferences",
-      "editProfile": "Edit profile",
-      "changePassword": "Change password",
-      "notifications": "Notifications",
-      "locationSettings": "Location settings",
-      "blockedUsers": "Blocked users",
-      "sendFeedback": "Send Feedback",
-      "helpFaq": "Help & FAQ",
-      "termsPrivacy": "Terms & Privacy",
-      "aboutDogsOut": "About Dogs Out",
-      "deleteAccount": "Delete account"
     }
   },
   "home": {

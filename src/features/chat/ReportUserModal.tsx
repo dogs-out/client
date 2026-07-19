@@ -48,7 +48,7 @@ export function ReportUserModal({ visible, name, onClose, onSubmit }: Props) {
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
       <KeyboardAvoidingView
         style={styles.backdropWrap}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        behavior="padding"
       >
         <Pressable style={styles.backdrop} onPress={onClose} />
 

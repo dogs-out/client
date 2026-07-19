@@ -58,7 +58,7 @@ export default function ResetPasswordScreen({ navigation }: Props) {
   return (
     <View style={styles.screen}>
       <FloatingBackground />
-      <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      <KeyboardAvoidingView style={styles.container} behavior="padding">
         <GlassCard style={styles.card}>
           <Text style={styles.title}>{t('auth.resetPassword.title')}</Text>
           <Text style={styles.subtitle}>{t('auth.resetPassword.subtitle')}</Text>

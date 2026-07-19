@@ -76,7 +76,7 @@ export default function RegisterScreen({ navigation, route }: Props) {
   return (
     <View style={styles.screen}>
       <FloatingBackground />
-      <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      <KeyboardAvoidingView style={styles.container} behavior="padding">
       <GlassCard style={styles.card}>
       <Text style={styles.title}>{t('auth.register.title')}</Text>
       <Text style={styles.subtitle}>{t('auth.register.subtitle')}</Text>

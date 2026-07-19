@@ -255,6 +255,9 @@ export default function DiscoverScreen() {
   const panResponder = useRef(
     PanResponder.create({
       onMoveShouldSetPanResponder: (_, g) => Math.abs(g.dx) > 12 && Math.abs(g.dy) < 40,
+      // Capture phase too: without it, Android lets the photo tap zones keep the
+      // touch and horizontal swipes only work outside them (e.g. over the name).
+      onMoveShouldSetPanResponderCapture: (_, g) => Math.abs(g.dx) > 12 && Math.abs(g.dy) < 40,
       onPanResponderMove: Animated.event([null, { dx: pan.x, dy: pan.y }], { useNativeDriver: false }),
       onPanResponderRelease: (_, g) => {
         if (g.dx > SWIPE_THRESHOLD)       handleSwipeRef.current('LIKE', g.dy);
@@ -355,8 +358,11 @@ export default function DiscoverScreen() {
           </Animated.View>
         )}
 
-        {/* Foreground (current) card */}
+        {/* Foreground (current) card — keyed per profile so advancing fully
+            remounts the subtree; reusing it can leave a stale ghost of the
+            previous owner/dog info block on Android */}
         <Animated.View
+          key={profile.userId}
           style={[styles.card, { transform: [{ translateX: pan.x }, { translateY: pan.y }, { rotate }] }]}
           {...panResponder.panHandlers}
         >
@@ -405,7 +411,7 @@ export default function DiscoverScreen() {
             style={styles.gradient}
           >
             {showOwner ? (
-              <View style={styles.infoContent}>
+              <View key="owner-info" style={styles.infoContent}>
                 <Text style={styles.mainName}>
                   {profile.name}{ownerAge !== null ? `, ${ownerAge}` : ''}
                 </Text>
@@ -424,7 +430,7 @@ export default function DiscoverScreen() {
                 {profile.bio ? <Text style={styles.bioText} numberOfLines={2}>{profile.bio}</Text> : null}
               </View>
             ) : (
-              <View style={styles.infoContent}>
+              <View key="dog-info" style={styles.infoContent}>
                 <View style={styles.dogNameRow}>
                   {profile.dogs.map((dog, di) => {
                     const age = getAge(dog.dateOfBirth);

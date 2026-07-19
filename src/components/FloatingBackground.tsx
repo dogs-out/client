@@ -21,7 +21,7 @@ const SHAPES: ShapeConfig[] = [
   // — Front layer —
   { emoji: '🦴',    x: 5,  y: 8,  size: 38, opacity: 0.62, dur: 3500, ty: 35, tx: 10, rot: 20 },
   { emoji: '🐾',    x: 80, y: 5,  size: 30, opacity: 0.64, dur: 4500, ty: 40, tx: 12, rot: 15 },
-  { emoji: '🎾',    x: 18, y: 52, size: 34, opacity: 0.58, dur: 3800, ty: 32, tx: 22, rot: 0,  style: 'spin' },
+  { emoji: '⚽',    x: 18, y: 52, size: 34, opacity: 0.58, dur: 3800, ty: 32, tx: 22, rot: 0,  style: 'spin' },
   { emoji: '🐕',    x: 86, y: 28, size: 42, opacity: 0.55, dur: 5500, ty: 45, tx: 8,  rot: 10 },
   { emoji: '🐶',    x: 38, y: 36, size: 38, opacity: 0.50, dur: 5000, ty: 40, tx: 14, rot: 8  },
 
@@ -30,7 +30,7 @@ const SHAPES: ShapeConfig[] = [
   { emoji: '🐩',    x: 8,  y: 66, size: 30, opacity: 0.50, dur: 4400, ty: 28, tx: 0,  rot: 0,  style: 'breathe' },
   { emoji: '🦴',    x: 62, y: 62, size: 28, opacity: 0.48, dur: 4800, ty: 38, tx: 10, rot: 25, style: 'diagonal' },
   { emoji: '🐾',    x: 33, y: 77, size: 24, opacity: 0.48, dur: 3700, ty: 30, tx: 8,  rot: 12 },
-  { emoji: '🎾',    x: 84, y: 72, size: 30, opacity: 0.46, dur: 5500, ty: 0,  tx: 20, rot: 0,  style: 'spin' },
+  { emoji: '⚽',    x: 84, y: 72, size: 30, opacity: 0.46, dur: 5500, ty: 0,  tx: 20, rot: 0,  style: 'spin' },
 
   // — Back layer (smaller, slower) —
   { emoji: '🐕‍🦺', x: 70, y: 18, size: 26, opacity: 0.40, dur: 6800, ty: 26, tx: 12, rot: 6  },

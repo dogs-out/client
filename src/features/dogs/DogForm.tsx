@@ -110,11 +110,11 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Pr
     const category = DOG_PERSONALITY_TAGS.includes(tag) ? DOG_PERSONALITY_TAGS
       : DOG_PLAY_TAGS.includes(tag) ? DOG_PLAY_TAGS
       : DOG_SOCIAL_TAGS;
-    setDogTags(prev =>
-      prev.includes(tag)
-        ? prev.filter(t => t !== tag)
-        : [...prev.filter(t => !category.includes(t)), tag]
-    );
+    setDogTags(prev => {
+      if (prev.includes(tag)) return prev.filter(t => t !== tag);
+      if (prev.filter(t => category.includes(t)).length >= 2) return prev;
+      return [...prev, tag];
+    });
   };
 
   const handleSave = async () => {
@@ -202,7 +202,7 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Pr
   return (
     <View style={styles.screen}>
       <FloatingBackground />
-      <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      <KeyboardAvoidingView style={styles.flex} behavior="padding">
         <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
 
           {(onBack || !fromOnboarding) && (
@@ -414,6 +414,7 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Pr
 
           {/* ACTIONS */}
           <GlassCard style={styles.card}>
+            {error && <Text style={styles.error} testID="form-error-bottom">{error}</Text>}
             {loading ? (
               <ActivityIndicator color={Colors.primary} />
             ) : (

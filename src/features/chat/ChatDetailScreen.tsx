@@ -18,6 +18,7 @@ import { containsProfanity } from '../../utils/profanityFilter';
 import { RootStackParamList } from '../../types/navigation';
 import { Colors } from '../../constants/colors';
 import { FloatingBackground } from '../../components/FloatingBackground';
+import { invertedListCounterTransform } from '../../utils/invertedList';
 import { GlassCard } from '../../components/GlassCard';
 import { ReportUserModal } from './ReportUserModal';
 
@@ -256,7 +257,7 @@ export default function ChatDetailScreen() {
 
       <KeyboardAvoidingView
         style={styles.flex}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        behavior="padding"
         keyboardVerticalOffset={Platform.OS === 'ios' ? 8 : 0}
       >
         {loading ? (
@@ -385,8 +386,12 @@ const styles = StyleSheet.create({
   },
   dateSeparatorText: { fontSize: 11, fontWeight: '600', color: Colors.textSecondary },
 
-  // inverted list flips children, so flip the empty state back
-  emptyChat:      { flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 32, transform: [{ scaleY: -1 }] },
+  // Inverted list flips children, so flip the empty state back (per-platform,
+  // see invertedListCounterTransform).
+  emptyChat:      {
+    flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 32,
+    transform: invertedListCounterTransform(),
+  },
   emptyChatCard:  { alignItems: 'center' },
   emptyChatEmoji: { fontSize: 48, marginBottom: 12 },
   emptyChatText:  { fontSize: 15, color: Colors.textSecondary, textAlign: 'center', lineHeight: 22 },

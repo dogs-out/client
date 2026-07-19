@@ -28,6 +28,8 @@ interface Props {
 
 const MIN_AGE = 18;
 const NAME_REGEX = /^[a-zA-ZÀ-ÿ\s'\-]+$/;
+// Without an explicit minimum the Android picker bottoms out at the Unix epoch (1970)
+const MIN_DOB = new Date(1900, 0, 1);
 
 function isOldEnough(date: Date): boolean {
   const cutoff = new Date();
@@ -156,6 +158,16 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: P
     }
   };
 
+  const MAX_TAGS_PER_CATEGORY = 2;
+
+  const toggleTag = (setter: React.Dispatch<React.SetStateAction<string[]>>, tag: string) => {
+    setter(prev =>
+      prev.includes(tag)
+        ? prev.filter(t => t !== tag)
+        : prev.length >= MAX_TAGS_PER_CATEGORY ? prev : [...prev, tag]
+    );
+  };
+
   const formatDate = (date: Date) =>
     date.toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
 
@@ -172,7 +184,7 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: P
     <View style={styles.flex}>
       <FloatingBackground />
       <View style={styles.dimOverlay} />
-      <KeyboardAvoidingView style={styles.kav} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      <KeyboardAvoidingView style={styles.kav} behavior="padding">
         <ScrollView
           style={styles.kav}
           contentContainerStyle={styles.container}
@@ -293,7 +305,7 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: P
                 <TouchableOpacity
                   key={tag}
                   style={[styles.chip, sel && styles.chipActive]}
-                  onPress={() => setLifestyleTags(sel ? [] : [tag])}
+                  onPress={() => toggleTag(setLifestyleTags, tag)}
                 >
                   <Text style={[styles.chipText, sel && styles.chipTextActive]}>{translateTag(tag, t)}</Text>
                 </TouchableOpacity>
@@ -309,7 +321,7 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: P
                 <TouchableOpacity
                   key={tag}
                   style={[styles.chip, sel && styles.chipActive]}
-                  onPress={() => setPersonalityTags(sel ? [] : [tag])}
+                  onPress={() => toggleTag(setPersonalityTags, tag)}
                 >
                   <Text style={[styles.chipText, sel && styles.chipTextActive]}>{translateTag(tag, t)}</Text>
                 </TouchableOpacity>
@@ -332,6 +344,8 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: P
               );
             })}
           </View>
+
+          {error && <Text style={styles.error} testID="form-error-bottom">{error}</Text>}
 
           {loading ? (
             <ActivityIndicator style={{ marginTop: 24 }} color={Colors.primary} />
@@ -363,6 +377,7 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: P
                 mode="date"
                 display="spinner"
                 maximumDate={new Date()}
+                minimumDate={MIN_DOB}
                 onChange={(_, date) => { if (date) setDateOfBirth(date); }}
               />
             </View>
@@ -375,6 +390,7 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: P
           value={dateOfBirth ?? defaultPickerDate}
           mode="date"
           maximumDate={new Date()}
+          minimumDate={MIN_DOB}
           onChange={(_, date) => {
             setShowPicker(false);
             if (date) setDateOfBirth(date);
