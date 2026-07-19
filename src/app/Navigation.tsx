@@ -82,7 +82,15 @@ export default function Navigation() {
 
   return (
     <NavigationContainer ref={navigationRef}>
-      <Stack.Navigator initialRouteName={initialRoute} screenOptions={{ headerShown: false }}>
+      <Stack.Navigator
+        initialRouteName={initialRoute}
+        screenOptions={{
+          headerShown: false,
+          // iOS 26 dims the area above scroll views by default ("scroll edge
+          // effect") — reads as a grey band over our custom headers/cards.
+          scrollEdgeEffects: { top: 'hidden' },
+        }}
+      >
         {/* Auth */}
         <Stack.Screen name="Login"          component={LoginScreen} />
         <Stack.Screen name="Register"       component={RegisterScreen} />
