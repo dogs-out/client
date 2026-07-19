@@ -57,6 +57,9 @@ export const userService = {
     api.post<UserPhoto>('/users/me/photos', { imageData }).then(r => r.data),
   deletePhoto: (photoId: number): Promise<void> =>
     api.delete(`/users/me/photos/${photoId}`).then(() => {}),
+  /** Persists photo order; the first id becomes the main photo / profile picture. */
+  reorderPhotos: (photoIds: number[]): Promise<void> =>
+    api.put('/users/me/photos/order', { photoIds }).then(() => {}),
   changePassword: async (currentPassword: string, newPassword: string): Promise<void> => {
     // The server revokes all previous tokens and returns a fresh one
     const { data } = await api.put<{ token: string }>('/users/me/password', { currentPassword, newPassword });

@@ -100,6 +100,11 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Pr
     setPhotos(prev => prev.filter((_, i) => i !== index));
   };
 
+  // The first photo is always the main one — "make main" just moves it to the front
+  const makeMainPhoto = (index: number) => {
+    setPhotos(prev => [prev[index], ...prev.filter((_, i) => i !== index)]);
+  };
+
   const toggleLove = (item: string) => {
     setLoves(prev =>
       prev.includes(item) ? prev.filter(l => l !== item) : prev.length < 3 ? [...prev, item] : prev
@@ -125,13 +130,12 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Pr
     setLoading(true);
     setError(null);
     try {
-      const firstNewPhoto = photos.find(p => p.kind === 'new');
       const payload = {
         name: name.trim(),
         breed: breed ?? undefined,
         dateOfBirth: dateOfBirth ? dateOfBirth.toISOString().split('T')[0] : undefined,
         bio: bio.trim() || undefined,
-        profilePicture: firstNewPhoto?.uri ?? (photos[0]?.uri ?? undefined),
+        profilePicture: photos[0]?.uri ?? undefined,
         energyLevel: energyLevel ?? undefined,
         socialBehavior: socialBehavior ?? undefined,
         loves: loves.length ? loves : undefined,
@@ -152,9 +156,20 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Pr
       // Delete removed photos
       await Promise.all(removedIds.map(pid => dogService.deletePhoto(savedDogId, pid)));
 
-      // Upload new photos
-      const newPhotos = photos.filter(p => p.kind === 'new') as { kind: 'new'; uri: string }[];
-      await Promise.all(newPhotos.map(p => dogService.addPhoto(savedDogId, p.uri)));
+      // Upload new photos sequentially (parallel uploads race the server-side
+      // sort order) and persist the display order — first photo = main photo.
+      const orderedIds: number[] = [];
+      for (const p of photos) {
+        if (p.kind === 'existing') {
+          orderedIds.push(p.photoId);
+        } else {
+          const saved = await dogService.addPhoto(savedDogId, p.uri);
+          orderedIds.push(saved.id);
+        }
+      }
+      if (orderedIds.length > 0) {
+        await dogService.reorderPhotos(savedDogId, orderedIds);
+      }
 
       onSaved();
     } catch (e) {
@@ -238,6 +253,16 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Pr
                           <Ionicons name="close-circle" size={22} color="#e53e3e" />
                         </TouchableOpacity>
                         {i === 0 && <View style={styles.primaryBadge}><Text style={styles.primaryText}>{t('dogs.form.mainBadge')}</Text></View>}
+                        {i > 0 && (
+                          <TouchableOpacity
+                            style={styles.makeMainBtn}
+                            onPress={() => makeMainPhoto(i)}
+                            testID={`make-main-${i}`}
+                            hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
+                          >
+                            <Ionicons name="star" size={14} color="#fff" />
+                          </TouchableOpacity>
+                        )}
                       </>
                     ) : (
                       <TouchableOpacity style={styles.photoAdd} onPress={pickPhoto}>
@@ -505,6 +530,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(46,158,107,0.05)',
   },
   photoRemove:  { position: 'absolute', top: -6, right: -6, backgroundColor: Colors.background, borderRadius: 12 },
+  makeMainBtn: {
+    position: 'absolute', bottom: 4, left: 4,
+    width: 24, height: 24, borderRadius: 12,
+    backgroundColor: 'rgba(13,40,24,0.55)',
+    alignItems: 'center', justifyContent: 'center',
+  },
   primaryBadge: {
     position: 'absolute', bottom: 4, left: 4,
     backgroundColor: Colors.primary, borderRadius: 6, paddingHorizontal: 6, paddingVertical: 2,

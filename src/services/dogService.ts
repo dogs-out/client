@@ -62,6 +62,10 @@ export const dogService = {
   deletePhoto: (dogId: number, photoId: number): Promise<void> =>
     api.delete(`/dogs/${dogId}/photos/${photoId}`).then(() => undefined),
 
+  /** Persists photo order; the first id becomes the main photo / profile picture. */
+  reorderPhotos: (dogId: number, photoIds: number[]): Promise<void> =>
+    api.put(`/dogs/${dogId}/photos/order`, { photoIds }).then(() => undefined),
+
   pickImageAsBase64: async (uri: string): Promise<string> => {
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();

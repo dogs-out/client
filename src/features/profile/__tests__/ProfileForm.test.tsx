@@ -13,7 +13,13 @@ jest.mock('../../../i18n/translateTag', () => ({
 }));
 
 jest.mock('../../../services/userService', () => ({
-  userService: { getMe: jest.fn() },
+  userService: {
+    getMe: jest.fn(),
+    addPhoto: jest.fn(),
+    deletePhoto: jest.fn(),
+    reorderPhotos: jest.fn(),
+    updateProfile: jest.fn(),
+  },
 }));
 
 jest.mock('expo-image-picker', () => ({
@@ -124,6 +130,30 @@ describe('ProfileForm', () => {
     expect(screen.getByText(first)).not.toHaveStyle({ color: Colors.primary });
     expect(screen.getByText(second)).toHaveStyle({ color: Colors.primary });
     expect(screen.getByText(third)).toHaveStyle({ color: Colors.primary });
+  });
+
+  it('make-main moves a photo to the front and persists that order on save', async () => {
+    getMeMock.mockResolvedValue({
+      name: 'Joel',
+      dateOfBirth: '1990-01-01',
+      latitude: 47.4,
+      longitude: 8.5,
+      photos: [
+        { id: 11, imageData: 'data:one' },
+        { id: 22, imageData: 'data:two' },
+      ],
+    });
+    (userService.updateProfile as jest.Mock).mockResolvedValue({});
+    (userService.reorderPhotos as jest.Mock).mockResolvedValue(undefined);
+    await renderForm();
+    const submit = await screen.findByText('SUBMIT');
+
+    await fireEvent.press(screen.getByTestId('make-main-1'));
+    // the promoted photo now sits in slot 0, so its slot no longer offers make-main
+    expect(screen.queryByTestId('make-main-0')).toBeNull();
+
+    await fireEvent.press(submit);
+    await waitFor(() => expect(userService.reorderPhotos).toHaveBeenCalledWith([22, 11]));
   });
 
   it('gives the date picker an explicit minimum well before 1970', async () => {

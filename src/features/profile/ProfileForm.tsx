@@ -103,6 +103,11 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: P
     setPhotos(prev => prev.filter((_, i) => i !== index));
   };
 
+  // The first photo is always the main one — "make main" just moves it to the front
+  const makeMainPhoto = (index: number) => {
+    setPhotos(prev => [prev[index], ...prev.filter((_, i) => i !== index)]);
+  };
+
   const detectLocation = async () => {
     setLocating(true);
     setError(null);
@@ -137,8 +142,19 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: P
         .map(p => p.photoId);
       const deletedIds = originalPhotoIds.current.filter(id => !currentExistingIds.includes(id));
       await Promise.all(deletedIds.map(id => userService.deletePhoto(id)));
-      for (const p of photos.filter(p => p.kind === 'new')) {
-        await userService.addPhoto(p.uri);
+      // Upload new photos sequentially and collect ids in display order, then
+      // persist that order — the first photo becomes the profile picture.
+      const orderedIds: number[] = [];
+      for (const p of photos) {
+        if (p.kind === 'existing') {
+          orderedIds.push(p.photoId);
+        } else {
+          const saved = await userService.addPhoto(p.uri);
+          orderedIds.push(saved.id);
+        }
+      }
+      if (orderedIds.length > 0) {
+        await userService.reorderPhotos(orderedIds);
       }
       await userService.updateProfile({
         name: name.trim(),
@@ -209,6 +225,16 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: P
                     <>
                       <Image source={{ uri: photo.uri }} style={styles.photoThumb} />
                       {i === 0 && <View style={styles.mainBadge}><Text style={styles.mainBadgeText}>{t('dogs.form.mainBadge')}</Text></View>}
+                      {i > 0 && (
+                        <TouchableOpacity
+                          style={styles.makeMainBtn}
+                          onPress={() => makeMainPhoto(i)}
+                          testID={`make-main-${i}`}
+                          hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
+                        >
+                          <Ionicons name="star" size={14} color="#fff" />
+                        </TouchableOpacity>
+                      )}
                       <TouchableOpacity style={styles.photoRemove} onPress={() => removePhoto(i)}>
                         <Ionicons name="close-circle" size={22} color="#e53e3e" />
                       </TouchableOpacity>
@@ -421,6 +447,12 @@ const styles = StyleSheet.create({
     borderRadius: 12, backgroundColor: 'rgba(46,158,107,0.04)',
   },
   photoRemove: { position: 'absolute', top: 4, right: 4 },
+  makeMainBtn: {
+    position: 'absolute', bottom: 4, left: 4,
+    width: 24, height: 24, borderRadius: 12,
+    backgroundColor: 'rgba(13,40,24,0.55)',
+    alignItems: 'center', justifyContent: 'center',
+  },
   mainBadge:   { position: 'absolute', bottom: 4, left: 4, backgroundColor: Colors.primary, borderRadius: 6, paddingHorizontal: 6, paddingVertical: 2 },
   mainBadgeText: { fontSize: 10, color: '#fff', fontWeight: '700' },
 
