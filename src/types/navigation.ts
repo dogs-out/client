@@ -1,3 +1,5 @@
+import type { PlaceResult } from '../services/playdateService';
+
 export type RootStackParamList = {
   Login: undefined;
   Register: { prefillEmail?: string; prefillPassword?: string } | undefined;
@@ -23,4 +25,8 @@ export type RootStackParamList = {
   About: undefined;
   Feedback: undefined;
   Language: undefined;
+  CreatePlaydate: { playdateId?: number; pickedPark?: PlaceResult } | undefined;
+  ParkPicker: { initialLat?: number; initialLng?: number } | undefined;
+  PlaydateDetail: { playdateId: number };
+  PlaydateChat: { playdateId: number; title: string };
 };

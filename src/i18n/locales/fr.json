@@ -543,5 +543,71 @@
       "experienceYears": "ans",
       "availability": "Disponible le :"
     }
+  },
+  "playdates": {
+    "tabTitle": "Playdates",
+    "headerTitle": "Playdates",
+    "empty": "Aucun playdate à venir. Organises-en un dans ton parc préféré — touche le bouton + !",
+    "loadError": "Impossible de charger les playdates.",
+    "create": {
+      "title": "Organiser un playdate",
+      "editTitle": "Modifier le playdate",
+      "parkLabel": "Où ?",
+      "pickPark": "Choisis un parc sur la carte",
+      "parkRequired": "Choisis d'abord un parc.",
+      "whenLabel": "Quand ?",
+      "detailsLabel": "Détails",
+      "titleLabel": "Titre (facultatif)",
+      "descriptionLabel": "Description — que faut-il savoir ? (facultatif)",
+      "limitLabel": "Limiter les participants",
+      "limitValue": "Max. {{count}} participants",
+      "visibilityLabel": "Qui peut le voir ?",
+      "invitees": "Inviter parmi tes matchs",
+      "noMatches": "Tu n'as pas encore de matchs.",
+      "save": "Créer le playdate 🐾",
+      "saveChanges": "Enregistrer les modifications"
+    },
+    "visibility": {
+      "public": "Tout le monde à proximité",
+      "publicHint": "Les propriétaires de chiens dans leur rayon de distance peuvent le voir et participer.",
+      "matchesOnly": "Mes matchs",
+      "matchesOnlyHint": "Seules les personnes avec qui tu as matché peuvent le voir et participer.",
+      "inviteOnly": "Personnes spécifiques",
+      "inviteOnlyHint": "Seules les personnes invitées peuvent le voir et participer."
+    },
+    "parkPicker": {
+      "searchPlaceholder": "Rechercher un parc…",
+      "noResults": "Aucun parc trouvé — essaie une autre recherche ou fais un appui long sur la carte.",
+      "searchUnavailable": "La recherche de parcs n'est pas disponible pour le moment — fais un appui long sur la carte pour poser un repère.",
+      "searchFailed": "La recherche a échoué — fais un appui long sur la carte pour poser un repère.",
+      "droppedPin": "Lieu choisi",
+      "longPressHint": "Astuce : appui long sur la carte pour poser un repère où tu veux",
+      "confirm": "Utiliser ce lieu"
+    },
+    "detail": {
+      "hostedBy": "Organisé par {{name}}",
+      "attendees": "Participants",
+      "join": "Participer",
+      "leave": "Quitter le playdate",
+      "accept": "Accepter l'invitation",
+      "decline": "Refuser",
+      "full": "Playdate complet",
+      "edit": "Modifier le playdate",
+      "cancel": "Annuler le playdate",
+      "cancelConfirm": "Cela annule le playdate pour tout le monde et prévient tous les participants. Tu es sûr·e ?",
+      "cancelled": "Ce playdate a été annulé",
+      "openChat": "Ouvrir le chat de groupe",
+      "hosting": "Organisateur",
+      "going": "Participe",
+      "invited": "Invité·e"
+    },
+    "chat": {
+      "placeholder": "Message au groupe…",
+      "empty": "Dis bonjour et réglez les détails de votre playdate ! 🐾"
+    },
+    "errors": {
+      "past": "Le playdate doit être dans le futur.",
+      "full": "Ce playdate est déjà complet."
+    }
   }
 }

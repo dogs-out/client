@@ -30,6 +30,10 @@ import TermsPrivacyScreen from '../features/profile/TermsPrivacyScreen';
 import AboutScreen from '../features/profile/AboutScreen';
 import FeedbackScreen from '../features/profile/FeedbackScreen';
 import LanguageScreen from '../features/profile/LanguageScreen';
+import CreatePlaydateScreen from '../features/playdates/CreatePlaydateScreen';
+import ParkPickerScreen from '../features/playdates/ParkPickerScreen';
+import PlaydateDetailScreen from '../features/playdates/PlaydateDetailScreen';
+import PlaydateChatScreen from '../features/playdates/PlaydateChatScreen';
 import TabNavigator from './TabNavigator';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -51,6 +55,10 @@ export default function Navigation() {
         });
       } else if (data.type === 'NEW_MATCH') {
         navigationRef.navigate('MainTabs', { screen: 'Chats' } as never);
+      } else if (data.type === 'PLAYDATE_MESSAGE' && data.playdateId) {
+        navigationRef.navigate('PlaydateChat', { playdateId: data.playdateId, title: '' });
+      } else if (data.type?.startsWith('PLAYDATE') && data.playdateId) {
+        navigationRef.navigate('PlaydateDetail', { playdateId: data.playdateId });
       }
     }), []);
 
@@ -118,6 +126,10 @@ export default function Navigation() {
         <Stack.Screen name="About"                component={AboutScreen} />
         <Stack.Screen name="Feedback"              component={FeedbackScreen} />
         <Stack.Screen name="Language"               component={LanguageScreen} />
+        <Stack.Screen name="CreatePlaydate"         component={CreatePlaydateScreen} />
+        <Stack.Screen name="ParkPicker"             component={ParkPickerScreen} />
+        <Stack.Screen name="PlaydateDetail"         component={PlaydateDetailScreen} />
+        <Stack.Screen name="PlaydateChat"           component={PlaydateChatScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

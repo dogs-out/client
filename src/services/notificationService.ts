@@ -15,10 +15,13 @@ Notifications.setNotificationHandler({
 });
 
 export interface PushData {
-  type?: 'NEW_MESSAGE' | 'NEW_MATCH';
+  type?: 'NEW_MESSAGE' | 'NEW_MATCH'
+    | 'PLAYDATE_INVITE' | 'PLAYDATE_JOINED' | 'PLAYDATE_UPDATED'
+    | 'PLAYDATE_CANCELLED' | 'PLAYDATE_MESSAGE';
   matchId?: number;
   otherUserId?: number;
   name?: string;
+  playdateId?: number;
 }
 
 export const notificationService = {

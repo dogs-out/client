@@ -38,7 +38,12 @@
         "backgroundColor": "#2E9E6B"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyD2NMYRgYr7O72xHLgvmnylObOrSB8CMsQ"
+        }
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"

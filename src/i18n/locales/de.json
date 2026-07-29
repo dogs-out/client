@@ -543,5 +543,71 @@
       "experienceYears": "Jahre",
       "availability": "Verfügbar am:"
     }
+  },
+  "playdates": {
+    "tabTitle": "Playdates",
+    "headerTitle": "Playdates",
+    "empty": "Keine anstehenden Playdates. Plane eins in deinem Lieblingspark — tippe auf +!",
+    "loadError": "Playdates konnten nicht geladen werden.",
+    "create": {
+      "title": "Playdate planen",
+      "editTitle": "Playdate bearbeiten",
+      "parkLabel": "Wo?",
+      "pickPark": "Wähle einen Park auf der Karte",
+      "parkRequired": "Bitte wähle zuerst einen Park.",
+      "whenLabel": "Wann?",
+      "detailsLabel": "Details",
+      "titleLabel": "Titel (optional)",
+      "descriptionLabel": "Beschreibung — was sollten alle wissen? (optional)",
+      "limitLabel": "Teilnehmer begrenzen",
+      "limitValue": "Max. {{count}} Teilnehmer",
+      "visibilityLabel": "Wer kann es sehen?",
+      "invitees": "Aus deinen Matches einladen",
+      "noMatches": "Du hast noch keine Matches.",
+      "save": "Playdate erstellen 🐾",
+      "saveChanges": "Änderungen speichern"
+    },
+    "visibility": {
+      "public": "Alle in der Nähe",
+      "publicHint": "Hundehalter innerhalb ihrer Distanz-Einstellung können es sehen und mitmachen.",
+      "matchesOnly": "Meine Matches",
+      "matchesOnlyHint": "Nur Personen, mit denen du gematcht bist, können es sehen und mitmachen.",
+      "inviteOnly": "Bestimmte Personen",
+      "inviteOnlyHint": "Nur eingeladene Personen können es sehen und mitmachen."
+    },
+    "parkPicker": {
+      "searchPlaceholder": "Park suchen…",
+      "noResults": "Keine Parks gefunden — versuch eine andere Suche oder halte die Karte gedrückt.",
+      "searchUnavailable": "Die Parksuche ist gerade nicht verfügbar — halte die Karte gedrückt, um einen Pin zu setzen.",
+      "searchFailed": "Suche fehlgeschlagen — halte die Karte gedrückt, um einen Pin zu setzen.",
+      "droppedPin": "Gewählter Ort",
+      "longPressHint": "Tipp: Karte gedrückt halten, um irgendwo einen Pin zu setzen",
+      "confirm": "Diesen Ort verwenden"
+    },
+    "detail": {
+      "hostedBy": "Organisiert von {{name}}",
+      "attendees": "Teilnehmer",
+      "join": "Mitmachen",
+      "leave": "Playdate verlassen",
+      "accept": "Einladung annehmen",
+      "decline": "Ablehnen",
+      "full": "Playdate ist voll",
+      "edit": "Playdate bearbeiten",
+      "cancel": "Playdate absagen",
+      "cancelConfirm": "Das sagt das Playdate für alle ab und benachrichtigt alle Teilnehmer. Bist du sicher?",
+      "cancelled": "Dieses Playdate wurde abgesagt",
+      "openChat": "Gruppenchat öffnen",
+      "hosting": "Organisierst du",
+      "going": "Dabei",
+      "invited": "Eingeladen"
+    },
+    "chat": {
+      "placeholder": "Nachricht an die Gruppe…",
+      "empty": "Sag hallo und klärt die Details für euer Playdate! 🐾"
+    },
+    "errors": {
+      "past": "Das Playdate muss in der Zukunft liegen.",
+      "full": "Dieses Playdate ist schon voll."
+    }
   }
 }

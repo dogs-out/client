@@ -7,6 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import DiscoverScreen from '../features/matching/DiscoverScreen';
 import FindSitterScreen from '../features/sitter/FindSitterScreen';
+import PlaydatesScreen from '../features/playdates/PlaydatesScreen';
 import ChatsScreen from '../features/chat/ChatsScreen';
 import HomeScreen from '../screens/HomeScreen';
 import { glassTabBarStyles as styles } from '../components/GlassTabBar';
@@ -15,6 +16,7 @@ import { Colors } from '../constants/colors';
 export type MainTabParamList = {
   Discover: undefined;
   FindSitter: undefined;
+  Playdates: undefined;
   Chats: undefined;
   Profile: undefined;
 };
@@ -24,6 +26,7 @@ const Tab = createBottomTabNavigator<MainTabParamList>();
 const TAB_ITEMS: { name: keyof MainTabParamList; labelKey: string; icon: string; iconActive: string }[] = [
   { name: 'Discover',   labelKey: 'matching.discover.headerTitle', icon: 'paw-outline',       iconActive: 'paw' },
   { name: 'FindSitter', labelKey: 'sitter.tabTitle',                icon: 'people-outline',     iconActive: 'people' },
+  { name: 'Playdates',  labelKey: 'playdates.tabTitle',             icon: 'calendar-outline',   iconActive: 'calendar' },
   { name: 'Chats',      labelKey: 'chat.chatsScreen.headerTitle',  icon: 'chatbubble-outline', iconActive: 'chatbubble' },
   { name: 'Profile',    labelKey: 'home.profileTab',                icon: 'person-outline',     iconActive: 'person' },
 ];
@@ -81,6 +84,7 @@ export default function TabNavigator() {
     >
       <Tab.Screen name="Discover"   component={DiscoverScreen} />
       <Tab.Screen name="FindSitter" component={FindSitterScreen} />
+      <Tab.Screen name="Playdates"  component={PlaydatesScreen} />
       <Tab.Screen name="Chats"      component={ChatsScreen} />
       <Tab.Screen name="Profile"  component={HomeScreen} />
     </Tab.Navigator>

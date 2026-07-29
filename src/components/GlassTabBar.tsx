@@ -13,6 +13,7 @@ type Tab = { name: keyof MainTabParamList; labelKey: string; icon: string; iconA
 const TABS: Tab[] = [
   { name: 'Discover',   labelKey: 'matching.discover.headerTitle', icon: 'paw-outline',        iconActive: 'paw' },
   { name: 'FindSitter', labelKey: 'sitter.tabTitle',                icon: 'people-outline',      iconActive: 'people' },
+  { name: 'Playdates',  labelKey: 'playdates.tabTitle',             icon: 'calendar-outline',    iconActive: 'calendar' },
   { name: 'Chats',      labelKey: 'chat.chatsScreen.headerTitle',  icon: 'chatbubble-outline',  iconActive: 'chatbubble' },
   { name: 'Profile',    labelKey: 'home.profileTab',               icon: 'person-outline',      iconActive: 'person' },
 ];

@@ -1,10 +1,13 @@
 import { ChatMessage } from './chatService';
+import { PlaydateMessage } from './playdateService';
 import { tokenStorage } from '../utils/tokenStorage';
 
 export interface ChatSocketEvent {
-  type: 'NEW_MESSAGE' | 'NEW_MATCH';
-  matchId: number;
+  type: 'NEW_MESSAGE' | 'NEW_MATCH' | 'PLAYDATE_MESSAGE' | 'PLAYDATE_UPDATED';
+  matchId?: number;
   message?: ChatMessage;
+  playdateId?: number;
+  playdateMessage?: PlaydateMessage;
 }
 
 type Listener = (event: ChatSocketEvent) => void;

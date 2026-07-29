@@ -468,5 +468,71 @@
       "experienceYears": "years",
       "availability": "Available on:"
     }
+  },
+  "playdates": {
+    "tabTitle": "Playdates",
+    "headerTitle": "Playdates",
+    "empty": "No playdates coming up. Plan one at your favourite park — tap the + button!",
+    "loadError": "Couldn't load playdates.",
+    "create": {
+      "title": "Plan a playdate",
+      "editTitle": "Edit playdate",
+      "parkLabel": "Where?",
+      "pickPark": "Pick a park on the map",
+      "parkRequired": "Please pick a park first.",
+      "whenLabel": "When?",
+      "detailsLabel": "Details",
+      "titleLabel": "Title (optional)",
+      "descriptionLabel": "Description — what should people know? (optional)",
+      "limitLabel": "Limit participants",
+      "limitValue": "Max {{count}} participants",
+      "visibilityLabel": "Who can see it?",
+      "invitees": "Invite from your matches",
+      "noMatches": "You don't have any matches yet.",
+      "save": "Create playdate 🐾",
+      "saveChanges": "Save changes"
+    },
+    "visibility": {
+      "public": "Anyone nearby",
+      "publicHint": "Dog owners within their distance setting can see and join.",
+      "matchesOnly": "My matches",
+      "matchesOnlyHint": "Only people you matched with can see and join.",
+      "inviteOnly": "Specific people",
+      "inviteOnlyHint": "Only people you invite can see and join."
+    },
+    "parkPicker": {
+      "searchPlaceholder": "Search for a park…",
+      "noResults": "No parks found — try another search or long-press the map.",
+      "searchUnavailable": "Park search is not available right now — long-press the map to drop a pin instead.",
+      "searchFailed": "Search failed — long-press the map to drop a pin instead.",
+      "droppedPin": "Chosen spot",
+      "longPressHint": "Tip: long-press the map to drop a pin anywhere",
+      "confirm": "Use this spot"
+    },
+    "detail": {
+      "hostedBy": "Hosted by {{name}}",
+      "attendees": "Attendees",
+      "join": "Join playdate",
+      "leave": "Leave playdate",
+      "accept": "Accept invite",
+      "decline": "Decline",
+      "full": "Playdate is full",
+      "edit": "Edit playdate",
+      "cancel": "Cancel playdate",
+      "cancelConfirm": "This cancels the playdate for everyone and notifies all attendees. Are you sure?",
+      "cancelled": "This playdate was cancelled",
+      "openChat": "Open group chat",
+      "hosting": "Hosting",
+      "going": "Going",
+      "invited": "Invited"
+    },
+    "chat": {
+      "placeholder": "Message the group…",
+      "empty": "Say hi and sort out the details for your playdate! 🐾"
+    },
+    "errors": {
+      "past": "The playdate must be in the future.",
+      "full": "This playdate is already full."
+    }
   }
 }

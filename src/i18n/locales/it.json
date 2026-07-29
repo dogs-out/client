@@ -543,5 +543,71 @@
       "experienceYears": "anni",
       "availability": "Disponibile il:"
     }
+  },
+  "playdates": {
+    "tabTitle": "Playdate",
+    "headerTitle": "Playdate",
+    "empty": "Nessun playdate in programma. Organizzane uno nel tuo parco preferito — tocca il pulsante +!",
+    "loadError": "Impossibile caricare i playdate.",
+    "create": {
+      "title": "Organizza un playdate",
+      "editTitle": "Modifica playdate",
+      "parkLabel": "Dove?",
+      "pickPark": "Scegli un parco sulla mappa",
+      "parkRequired": "Prima scegli un parco.",
+      "whenLabel": "Quando?",
+      "detailsLabel": "Dettagli",
+      "titleLabel": "Titolo (facoltativo)",
+      "descriptionLabel": "Descrizione — cosa bisogna sapere? (facoltativo)",
+      "limitLabel": "Limita i partecipanti",
+      "limitValue": "Max {{count}} partecipanti",
+      "visibilityLabel": "Chi può vederlo?",
+      "invitees": "Invita dai tuoi match",
+      "noMatches": "Non hai ancora nessun match.",
+      "save": "Crea playdate 🐾",
+      "saveChanges": "Salva le modifiche"
+    },
+    "visibility": {
+      "public": "Tutti nelle vicinanze",
+      "publicHint": "I proprietari di cani entro la loro distanza impostata possono vederlo e partecipare.",
+      "matchesOnly": "I miei match",
+      "matchesOnlyHint": "Solo le persone con cui hai fatto match possono vederlo e partecipare.",
+      "inviteOnly": "Persone specifiche",
+      "inviteOnlyHint": "Solo le persone invitate possono vederlo e partecipare."
+    },
+    "parkPicker": {
+      "searchPlaceholder": "Cerca un parco…",
+      "noResults": "Nessun parco trovato — prova un'altra ricerca o tieni premuto sulla mappa.",
+      "searchUnavailable": "La ricerca dei parchi non è disponibile al momento — tieni premuto sulla mappa per posizionare un segnaposto.",
+      "searchFailed": "Ricerca non riuscita — tieni premuto sulla mappa per posizionare un segnaposto.",
+      "droppedPin": "Luogo scelto",
+      "longPressHint": "Suggerimento: tieni premuto sulla mappa per posizionare un segnaposto ovunque",
+      "confirm": "Usa questo luogo"
+    },
+    "detail": {
+      "hostedBy": "Organizzato da {{name}}",
+      "attendees": "Partecipanti",
+      "join": "Partecipa",
+      "leave": "Lascia il playdate",
+      "accept": "Accetta l'invito",
+      "decline": "Rifiuta",
+      "full": "Playdate al completo",
+      "edit": "Modifica playdate",
+      "cancel": "Annulla playdate",
+      "cancelConfirm": "Questo annulla il playdate per tutti e avvisa tutti i partecipanti. Sei sicuro?",
+      "cancelled": "Questo playdate è stato annullato",
+      "openChat": "Apri la chat di gruppo",
+      "hosting": "Organizzi tu",
+      "going": "Partecipi",
+      "invited": "Invitato"
+    },
+    "chat": {
+      "placeholder": "Messaggio al gruppo…",
+      "empty": "Saluta e definite i dettagli del vostro playdate! 🐾"
+    },
+    "errors": {
+      "past": "Il playdate deve essere nel futuro.",
+      "full": "Questo playdate è già al completo."
+    }
   }
 }
