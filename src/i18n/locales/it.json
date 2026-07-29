@@ -377,6 +377,14 @@
         "q": "Perché non vedo nessuno in Scopri?",
         "a": "Scopri mostra solo le persone entro la distanza impostata che corrispondono ai tuoi filtri. Prova ad aumentare la distanza massima o ad ampliare i filtri per età in Impostazioni → Preferenze di scoperta. La tua posizione deve essere impostata perché il matching per distanza funzioni."
       },
+      "findSitter": {
+        "q": "Come funziona «Trova un sitter»?",
+        "a": "I proprietari di cani possono attivare «Cerco un dogsitter» nel loro profilo — compariranno così nella scheda «Trova un sitter». Gli utenti con la modalità sitter attiva possono contattarli lì; si apre semplicemente una chat. Dogs Out ti aiuta solo a entrare in contatto: non controlliamo né impieghiamo i sitter e non facciamo parte del vostro accordo. Consigliamo vivamente un colloquio di persona e un incontro di prova con il cane prima di concordare qualsiasi cosa — tutto ciò che organizzate è sotto la vostra responsabilità."
+      },
+      "becomeSitter": {
+        "q": "Come divento dogsitter?",
+        "a": "Apri le impostazioni del profilo e attiva «Sono disponibile come dogsitter». Puoi indicare i giorni in cui sei disponibile, la tua esperienza con i cani e tag da sitter come «Addestratore di cani» o «Più cani possibili». Non serve avere un cane — senza cane il tuo account funziona semplicemente come profilo da sitter (Discover resta disattivato finché non aggiungi un cane)."
+      },
       "editDogs": {
         "q": "Come aggiungo o modifico i miei cani?",
         "a": "Vai nella scheda Profilo. Lì puoi aggiungere un nuovo cane o toccarne uno esistente per modificarne foto, razza, bio, personalità e tag."
@@ -404,26 +412,30 @@
       },
       "contentBehaviour": {
         "title": "2. I tuoi contenuti e il tuo comportamento",
-        "body": "Sii gentile. Non sono ammessi contenuti offensivi, discriminatori, sessualmente espliciti, ingannevoli o non pertinenti all'incontro con altri proprietari di cani. Filtriamo automaticamente il linguaggio volgare evidente ed esaminiamo ogni segnalazione degli utenti. Potremmo rimuovere contenuti o sospendere account che violano queste regole. Puoi segnalare o bloccare qualsiasi utente dalla vostra chat."
+        "body": "Sii gentile. Non sono ammessi contenuti offensivi, discriminatori, sessualmente espliciti, ingannevoli o non pertinenti all'incontro con altri proprietari di cani o all'organizzazione del dogsitting. Filtriamo automaticamente il linguaggio volgare evidente ed esaminiamo ogni segnalazione degli utenti. Potremmo rimuovere contenuti o sospendere account che violano queste regole. Puoi segnalare o bloccare qualsiasi utente dalla vostra chat."
       },
       "meetingInPerson": {
         "title": "3. Incontrarsi di persona",
         "body": "Dogs Out ti aiuta a incontrare altri proprietari di cani, ma gli incontri avvengono sotto la tua responsabilità. Incontratevi in luoghi pubblici come i parchi e assicurati che il tuo cane sia a suo agio con altri cani."
       },
+      "dogsitting": {
+        "title": "4. Dogsitting",
+        "body": "Dogs Out si limita a permettere a proprietari e sitter di trovarsi e mettersi in contatto. Non siamo parte di alcun accordo di custodia: non impieghiamo, controlliamo, raccomandiamo né supervisioniamo i sitter e non verifichiamo le informazioni dichiarate dagli utenti (esperienza, qualifiche). Se e a quali condizioni organizzare un dogsitting è una decisione che spetta esclusivamente a te e all'altro utente. Consigliamo vivamente un colloquio di persona e un incontro di prova con il cane, oltre a concordare in anticipo tutti i dettagli (orari, istruzioni di cura, compenso, emergenze). I proprietari restano responsabili dei loro cani, i sitter della custodia concordata. Nella misura massima consentita dalla legge applicabile, Dogs Out non è responsabile di lesioni, perdite o danni derivanti da dogsitting organizzati tramite l'app."
+      },
       "dataStored": {
-        "title": "4. Quali dati conserviamo",
+        "title": "5. Quali dati conserviamo",
         "body": "Il tuo account (nome, e-mail, data di nascita), il tuo profilo e i profili dei cani incluse le foto, la tua posizione approssimativa (usata solo per il matching basato sulla distanza — gli altri utenti non vedono mai la tua posizione esatta), i tuoi match e i messaggi di chat, e le tue preferenze di notifica."
       },
       "dataUse": {
-        "title": "5. Come vengono usati i tuoi dati",
+        "title": "6. Come vengono usati i tuoi dati",
         "body": "I tuoi dati vengono usati esclusivamente per far funzionare Dogs Out: mostrare il tuo profilo agli utenti nelle vicinanze, consegnare i messaggi e inviare notifiche push che puoi disattivare in qualsiasi momento. Non vendiamo i tuoi dati né li condividiamo con inserzionisti. Le chat segnalate vengono esaminate dal nostro team di moderazione."
       },
       "deletingData": {
-        "title": "6. Eliminare i tuoi dati",
+        "title": "7. Eliminare i tuoi dati",
         "body": "Impostazioni → Elimina account rimuove definitivamente il tuo profilo, le foto, i cani, i match, i messaggi e i blocchi. L'operazione è immediata e non può essere annullata."
       },
       "contact": {
-        "title": "7. Contatti",
+        "title": "8. Contatti",
         "body": "Domande su questi termini o sui tuoi dati? Contattaci a help@dogsout.app."
       }
     }

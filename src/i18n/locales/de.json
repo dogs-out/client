@@ -377,6 +377,14 @@
         "q": "Warum sehe ich niemanden in „Entdecken\"?",
         "a": "„Entdecken\" zeigt nur Personen innerhalb deiner Entfernungseinstellung, die zu deinen Filtern passen. Versuche, die maximale Entfernung zu erhöhen oder die Altersfilter unter Einstellungen → Entdecken-Einstellungen zu erweitern. Dein eigener Standort muss festgelegt sein, damit das entfernungsbasierte Matching funktioniert."
       },
+      "findSitter": {
+        "q": "Wie funktioniert „Sitter finden“?",
+        "a": "Hundehalter können in ihrem Profil „Ich suche einen Dogsitter“ aktivieren — dann erscheinen sie im Tab „Sitter finden“. Nutzer mit aktiviertem Sitter-Modus können sie dort kontaktieren; das öffnet einfach einen Chat. Dogs Out hilft nur beim Herstellen des Kontakts: Wir prüfen oder beschäftigen keine Sitter und sind nicht Teil eurer Vereinbarung. Wir empfehlen dringend ein persönliches Kennenlerngespräch und ein Probetreffen mit dem Hund, bevor ihr etwas vereinbart — alles, was ihr abmacht, liegt in eurer eigenen Verantwortung."
+      },
+      "becomeSitter": {
+        "q": "Wie werde ich Dogsitter?",
+        "a": "Öffne deine Profileinstellungen und aktiviere „Ich bin als Dogsitter verfügbar“. Du kannst die Wochentage angeben, an denen du Zeit hast, deine Erfahrung mit Hunden und Sitter-Tags wie „Hundetrainer“ oder „Mehrere Hunde möglich“. Du brauchst keinen eigenen Hund — ohne Hund funktioniert dein Konto einfach als Sitter-Profil (Discover bleibt aus, bis du einen Hund hinzufügst)."
+      },
       "editDogs": {
         "q": "Wie füge ich meine Hunde hinzu oder bearbeite sie?",
         "a": "Gehe zu deinem Profil-Tab. Dort kannst du einen neuen Hund hinzufügen oder auf einen vorhandenen tippen, um seine Fotos, Rasse, Biografie, Persönlichkeit und Tags zu bearbeiten."
@@ -404,26 +412,30 @@
       },
       "contentBehaviour": {
         "title": "2. Deine Inhalte & dein Verhalten",
-        "body": "Sei nett. Inhalte, die beleidigend, diskriminierend, sexuell explizit, irreführend oder nicht damit verbunden sind, andere Hundehalter zu treffen, sind nicht erlaubt. Wir filtern offensichtliche Vulgärsprache automatisch und prüfen jede Nutzermeldung. Wir können Inhalte entfernen oder Konten sperren, die gegen diese Regeln verstoßen. Du kannst jeden Nutzer aus eurem Chat heraus melden oder blockieren."
+        "body": "Sei nett. Inhalte, die beleidigend, diskriminierend, sexuell explizit, irreführend oder nicht damit verbunden sind, andere Hundehalter zu treffen oder Dogsitting zu vereinbaren, sind nicht erlaubt. Wir filtern offensichtliche Vulgärsprache automatisch und prüfen jede Nutzermeldung. Wir können Inhalte entfernen oder Konten sperren, die gegen diese Regeln verstoßen. Du kannst jeden Nutzer aus eurem Chat heraus melden oder blockieren."
       },
       "meetingInPerson": {
         "title": "3. Sich persönlich treffen",
         "body": "Dogs Out hilft dir, andere Hundehalter zu treffen, aber Treffen erfolgen in deiner eigenen Verantwortung. Trefft euch an öffentlichen Orten wie Parks und stellt sicher, dass sich euer Hund im Umgang mit anderen Hunden wohlfühlt."
       },
+      "dogsitting": {
+        "title": "4. Dogsitting",
+        "body": "Dogs Out stellt lediglich die Möglichkeit bereit, dass Halter und Sitter einander finden und kontaktieren können. Wir sind an keiner Betreuungsvereinbarung beteiligt: Wir beschäftigen, prüfen, empfehlen oder beaufsichtigen keine Sitter und verifizieren keine Angaben der Nutzer zu Erfahrung oder Qualifikation. Ob und zu welchen Bedingungen ein Dogsitting zustande kommt, entscheidet ihr ausschließlich untereinander. Wir empfehlen dringend ein persönliches Kennenlerngespräch und ein Probetreffen mit dem Hund sowie die vorherige Absprache aller Details (Zeiten, Pflegehinweise, Vergütung, Notfälle). Halter bleiben für ihre Hunde verantwortlich, Sitter für die vereinbarte Betreuung. Soweit gesetzlich zulässig, haftet Dogs Out nicht für Verletzungen, Verluste oder Schäden im Zusammenhang mit über die App vereinbartem Dogsitting."
+      },
       "dataStored": {
-        "title": "4. Welche Daten wir speichern",
+        "title": "5. Welche Daten wir speichern",
         "body": "Dein Konto (Name, E-Mail, Geburtsdatum), dein Profil und Hundeprofile inklusive Fotos, dein ungefährer Standort (nur für entfernungsbasiertes Matching verwendet — andere Nutzer sehen niemals deine genaue Position), deine Matches und Chat-Nachrichten sowie deine Benachrichtigungseinstellungen."
       },
       "dataUse": {
-        "title": "5. Wie deine Daten verwendet werden",
+        "title": "6. Wie deine Daten verwendet werden",
         "body": "Deine Daten werden ausschließlich zum Betrieb von Dogs Out verwendet: um dein Profil Nutzern in deiner Nähe zu zeigen, Nachrichten zuzustellen und Push-Benachrichtigungen zu senden, die du jederzeit ausschalten kannst. Wir verkaufen deine Daten nicht und geben sie nicht an Werbetreibende weiter. Gemeldete Chats werden von unserem Moderationsteam geprüft."
       },
       "deletingData": {
-        "title": "6. Deine Daten löschen",
+        "title": "7. Deine Daten löschen",
         "body": "Einstellungen → Konto löschen entfernt dauerhaft dein Profil, deine Fotos, Hunde, Matches, Nachrichten und Blockierungen. Dies geschieht sofort und kann nicht rückgängig gemacht werden."
       },
       "contact": {
-        "title": "7. Kontakt",
+        "title": "8. Kontakt",
         "body": "Fragen zu diesen Bedingungen oder deinen Daten? Kontaktiere uns unter help@dogsout.app."
       }
     }

@@ -11,7 +11,7 @@ import { GlassCard } from '../../components/GlassCard';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'HelpFaq'>;
 
-const FAQ_KEYS = ['matching', 'discoverEmpty', 'editDogs', 'reportBlock', 'privateMessages', 'deleteAccount'] as const;
+const FAQ_KEYS = ['matching', 'discoverEmpty', 'findSitter', 'becomeSitter', 'editDogs', 'reportBlock', 'privateMessages', 'deleteAccount'] as const;
 
 export default function HelpFaqScreen({ navigation }: Props) {
   const { t } = useTranslation();

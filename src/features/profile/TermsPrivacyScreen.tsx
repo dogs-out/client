@@ -10,7 +10,7 @@ import { GlassCard } from '../../components/GlassCard';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'TermsPrivacy'>;
 
-const SECTION_KEYS = ['whoCanUse', 'contentBehaviour', 'meetingInPerson', 'dataStored', 'dataUse', 'deletingData', 'contact'] as const;
+const SECTION_KEYS = ['whoCanUse', 'contentBehaviour', 'meetingInPerson', 'dogsitting', 'dataStored', 'dataUse', 'deletingData', 'contact'] as const;
 
 export default function TermsPrivacyScreen({ navigation }: Props) {
   const { t } = useTranslation();

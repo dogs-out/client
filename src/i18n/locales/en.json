@@ -377,6 +377,14 @@
         "q": "Why can't I see anyone in Discover?",
         "a": "Discover only shows people within your distance setting who match your filters. Try increasing the maximum distance or widening the age filters under Settings → Discovery preferences. Your own location must be set for distance matching to work."
       },
+      "findSitter": {
+        "q": "How does Find a Sitter work?",
+        "a": "Dog owners can turn on \"I'm looking for a dogsitter\" in their profile — they then appear in the Find a Sitter tab. Users who enabled sitter mode can contact them there, which simply opens a chat. Dogs Out only helps you get in contact: we don't vet or employ sitters and we're not part of your arrangement. We strongly recommend a personal interview and a trial meet-and-greet with the dog before agreeing to anything — everything you arrange is at your own responsibility."
+      },
+      "becomeSitter": {
+        "q": "How do I become a dogsitter?",
+        "a": "Open your profile settings and enable \"I'm available as a dog sitter\". You can set the weekdays you're free, your experience with dogs, and sitter tags like \"Dog trainer\" or \"Multiple dogs OK\". You don't need to own a dog — without one, your account simply works as a sitter profile (Discover stays off until you add a dog)."
+      },
       "editDogs": {
         "q": "How do I add or edit my dogs?",
         "a": "Go to your Profile tab. There you can add a new dog or tap an existing one to edit its photos, breed, bio, personality, and tags."
@@ -404,26 +412,30 @@
       },
       "contentBehaviour": {
         "title": "2. Your content & behaviour",
-        "body": "Be kind. Content that is abusive, discriminatory, sexually explicit, misleading, or unrelated to meeting other dog owners is not allowed. We filter obvious profanity automatically and review every user report. We may remove content or suspend accounts that violate these rules. You can report or block any user from your chat with them."
+        "body": "Be kind. Content that is abusive, discriminatory, sexually explicit, misleading, or unrelated to meeting other dog owners or arranging dogsitting is not allowed. We filter obvious profanity automatically and review every user report. We may remove content or suspend accounts that violate these rules. You can report or block any user from your chat with them."
       },
       "meetingInPerson": {
         "title": "3. Meeting in person",
         "body": "Dogs Out helps you meet other dog owners, but meetings happen at your own responsibility. Meet in public places like parks, and make sure your dog is comfortable around other dogs."
       },
+      "dogsitting": {
+        "title": "4. Dogsitting",
+        "body": "Dogs Out only provides a way for owners and sitters to find and contact each other. We are not a party to any sitting arrangement: we do not employ, vet, endorse, or supervise sitters, and we do not verify any user's experience, qualifications, or other self-declared information. Whether, and on what terms, you arrange dogsitting is decided entirely between you and the other user. We strongly recommend a personal interview and a trial meet-and-greet with the dog first, and agreeing on all details (times, care instructions, compensation, emergencies) in advance. Owners remain responsible for their dogs, and sitters for the care they agree to provide. To the maximum extent permitted by applicable law, Dogs Out is not liable for any injury, loss, or damage arising from dogsitting arrangements made through the app."
+      },
       "dataStored": {
-        "title": "4. What data we store",
+        "title": "5. What data we store",
         "body": "Your account (name, email, date of birth), your profile and dog profiles including photos, your approximate location (used only for distance-based matching — other users never see your exact position), your matches and chat messages, and your notification preferences."
       },
       "dataUse": {
-        "title": "5. How your data is used",
+        "title": "6. How your data is used",
         "body": "Your data is used solely to run Dogs Out: showing your profile to nearby users, delivering messages, and sending push notifications you can switch off at any time. We do not sell your data or share it with advertisers. Reported chats are reviewed by our moderation team."
       },
       "deletingData": {
-        "title": "6. Deleting your data",
+        "title": "7. Deleting your data",
         "body": "Settings → Delete account permanently removes your profile, photos, dogs, matches, messages, and blocks. This is immediate and cannot be undone."
       },
       "contact": {
-        "title": "7. Contact",
+        "title": "8. Contact",
         "body": "Questions about these terms or your data? Contact us at help@dogsout.app."
       }
     }
