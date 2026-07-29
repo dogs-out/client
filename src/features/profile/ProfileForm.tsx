@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator, Image, KeyboardAvoidingView, Modal,
-  Platform, ScrollView, StyleSheet, Text, TextInput,
+  Platform, ScrollView, StyleSheet, Switch, Text, TextInput,
   TouchableOpacity, View,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -10,12 +10,16 @@ import * as Location from 'expo-location';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { userService, UserPhoto } from '../../services/userService';
-import { OWNER_LIFESTYLE_TAGS, OWNER_PERSONALITY_TAGS, RELATIONSHIP_STATUS_OPTIONS } from '../../constants/tags';
+import {
+  OWNER_LIFESTYLE_TAGS, OWNER_PERSONALITY_TAGS, RELATIONSHIP_STATUS_OPTIONS,
+  SITTER_TAGS, WEEKDAYS,
+} from '../../constants/tags';
 import { translateTag } from '../../i18n/translateTag';
 import { getApiError } from '../../utils/apiError';
 import { containsProfanity } from '../../utils/profanityFilter';
 import { FloatingBackground } from '../../components/FloatingBackground';
 import { GlassButton } from '../../components/GlassButton';
+import { CustomSlider } from '../../components/CustomSlider';
 import { Colors } from '../../constants/colors';
 
 interface Props {
@@ -23,7 +27,7 @@ interface Props {
   subtitle: string;
   submitLabel: string;
   onBack?: () => void;
-  onSaved: () => void;
+  onSaved: (saved: { hasDog: boolean }) => void;
 }
 
 const MIN_AGE = 18;
@@ -58,6 +62,12 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: P
   const [lifestyleTags, setLifestyleTags]   = useState<string[]>([]);
   const [personalityTags, setPersonalityTags] = useState<string[]>([]);
   const [relationshipStatus, setRelationshipStatus] = useState<string | null>(null);
+  const [hasDog, setHasDog]                 = useState(true);
+  const [isSitter, setIsSitter]             = useState(false);
+  const [lookingForSitter, setLookingForSitter] = useState(false);
+  const [sitterWeekdays, setSitterWeekdays] = useState<string[]>([]);
+  const [sitterExperienceYears, setSitterExperienceYears] = useState(0);
+  const [sitterTags, setSitterTags]         = useState<string[]>([]);
   const [locating, setLocating]             = useState(false);
   const [loading, setLoading]               = useState(false);
   const [fetching, setFetching]             = useState(true);
@@ -75,6 +85,12 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: P
       if (user.lifestyleTags?.length) setLifestyleTags(user.lifestyleTags);
       if (user.personalityTags?.length) setPersonalityTags(user.personalityTags);
       if (user.relationshipStatus) setRelationshipStatus(user.relationshipStatus);
+      setHasDog(user.hasDog ?? true);
+      setIsSitter(user.isSitter ?? false);
+      setLookingForSitter(user.lookingForSitter ?? false);
+      if (user.sitterWeekdays?.length) setSitterWeekdays(user.sitterWeekdays);
+      if (user.sitterExperienceYears != null) setSitterExperienceYears(user.sitterExperienceYears);
+      if (user.sitterTags?.length) setSitterTags(user.sitterTags);
       if (user.photos?.length) {
         const loaded = user.photos.map(p => ({ kind: 'existing' as const, photoId: p.id, uri: p.imageData }));
         setPhotos(loaded);
@@ -126,6 +142,24 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: P
     }
   };
 
+  // A user without a dog must be a sitter — otherwise the account has no purpose
+  const toggleHasDog = (value: boolean) => {
+    setHasDog(value);
+    if (!value) setIsSitter(true);
+  };
+
+  const toggleSitterTag = (tag: string) => {
+    setSitterTags(prev =>
+      prev.includes(tag) ? prev.filter(t => t !== tag) : prev.length >= 4 ? prev : [...prev, tag]
+    );
+  };
+
+  const toggleWeekday = (day: string) => {
+    setSitterWeekdays(prev =>
+      prev.includes(day) ? prev.filter(d => d !== day) : [...prev, day]
+    );
+  };
+
   const handleSubmit = async () => {
     if (!name.trim()) { setError(t('profile.form.nameRequired')); return; }
     if (!NAME_REGEX.test(name.trim())) { setError(t('auth.register.invalidName')); return; }
@@ -165,8 +199,14 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: P
         lifestyleTags: lifestyleTags.length ? lifestyleTags : undefined,
         personalityTags: personalityTags.length ? personalityTags : undefined,
         relationshipStatus: relationshipStatus ?? undefined,
+        hasDog,
+        isSitter,
+        lookingForSitter,
+        sitterWeekdays,
+        sitterExperienceYears: isSitter ? sitterExperienceYears : undefined,
+        sitterTags,
       });
-      onSaved();
+      onSaved({ hasDog });
     } catch (e) {
       setError(getApiError(e));
     } finally {
@@ -318,20 +358,109 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: P
             )}
           </GlassButton>
 
+          {/* DOGSITTING */}
+          <Text style={[styles.label, { marginTop: 8 }]}>{t('profile.form.dogsitting')}</Text>
+
+          <View style={styles.switchRow}>
+            <Text style={styles.switchLabel}>{t('profile.form.hasDog')}</Text>
+            <Switch
+              value={hasDog}
+              onValueChange={toggleHasDog}
+              trackColor={{ true: Colors.primary }}
+              testID="has-dog-switch"
+            />
+          </View>
+          {!hasDog && <Text style={styles.switchHint}>{t('profile.form.hasDogHint')}</Text>}
+
+          <View style={styles.switchRow}>
+            <Text style={styles.switchLabel}>{t('profile.form.isSitter')}</Text>
+            <Switch
+              value={isSitter}
+              onValueChange={setIsSitter}
+              disabled={!hasDog}
+              trackColor={{ true: Colors.primary }}
+              testID="is-sitter-switch"
+            />
+          </View>
+          {!hasDog && <Text style={styles.switchHint}>{t('profile.form.sitterMustStayOn')}</Text>}
+
+          {isSitter && (
+            <View style={styles.sitterBox}>
+              <Text style={styles.tagCat}>{t('profile.form.weekdaysLabel')}</Text>
+              <View style={styles.chipRow}>
+                {WEEKDAYS.map(day => {
+                  const sel = sitterWeekdays.includes(day);
+                  return (
+                    <TouchableOpacity
+                      key={day}
+                      style={[styles.chip, sel && styles.chipActive]}
+                      onPress={() => toggleWeekday(day)}
+                    >
+                      <Text style={[styles.chipText, sel && styles.chipTextActive]}>{translateTag(day, t)}</Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+
+              <Text style={styles.tagCat}>
+                {t('profile.form.experienceLabel')}
+                {'  '}
+                <Text style={styles.experienceValue}>
+                  {sitterExperienceYears >= 10 ? '10+' : sitterExperienceYears} {t('profile.form.experienceYears')}
+                </Text>
+              </Text>
+              <CustomSlider
+                value={sitterExperienceYears}
+                min={0}
+                max={10}
+                step={1}
+                onChange={setSitterExperienceYears}
+              />
+
+              <Text style={styles.tagCat}>{t('profile.form.sitterTagsLabel')} <Text style={styles.tagCatHint}>{t('profile.form.sitterTagsHint')}</Text></Text>
+              <View style={styles.chipRow}>
+                {SITTER_TAGS.map(tag => {
+                  const sel = sitterTags.includes(tag);
+                  const maxed = sitterTags.length >= 4 && !sel;
+                  return (
+                    <TouchableOpacity
+                      key={tag}
+                      style={[styles.chip, sel && styles.chipActive, maxed && styles.chipDisabled]}
+                      onPress={() => !maxed && toggleSitterTag(tag)}
+                    >
+                      <Text style={[styles.chipText, sel && styles.chipTextActive]}>{translateTag(tag, t)}</Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+            </View>
+          )}
+
+          <View style={styles.switchRow}>
+            <Text style={styles.switchLabel}>{t('profile.form.lookingForSitter')}</Text>
+            <Switch
+              value={lookingForSitter}
+              onValueChange={setLookingForSitter}
+              trackColor={{ true: Colors.primary }}
+              testID="looking-for-sitter-switch"
+            />
+          </View>
+
           {/* OWNER TAGS */}
-          <Text style={[styles.label, { marginTop: 8 }]}>
+          <Text style={[styles.label, { marginTop: 24 }]}>
             {t('profile.form.tags')} <Text style={styles.optional}>{t('profile.form.optional')}</Text>
           </Text>
 
-          <Text style={styles.tagCat}>{t('profile.form.lifestyle')}</Text>
+          <Text style={styles.tagCat}>{t('profile.form.lifestyle')} <Text style={styles.tagCatHint}>{t('dogs.form.tagsCountHint')}</Text></Text>
           <View style={styles.chipRow}>
             {OWNER_LIFESTYLE_TAGS.map(tag => {
               const sel = lifestyleTags.includes(tag);
+              const maxed = lifestyleTags.length >= MAX_TAGS_PER_CATEGORY && !sel;
               return (
                 <TouchableOpacity
                   key={tag}
-                  style={[styles.chip, sel && styles.chipActive]}
-                  onPress={() => toggleTag(setLifestyleTags, tag)}
+                  style={[styles.chip, sel && styles.chipActive, maxed && styles.chipDisabled]}
+                  onPress={() => !maxed && toggleTag(setLifestyleTags, tag)}
                 >
                   <Text style={[styles.chipText, sel && styles.chipTextActive]}>{translateTag(tag, t)}</Text>
                 </TouchableOpacity>
@@ -339,15 +468,16 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: P
             })}
           </View>
 
-          <Text style={styles.tagCat}>{t('profile.form.personality')}</Text>
+          <Text style={styles.tagCat}>{t('profile.form.personality')} <Text style={styles.tagCatHint}>{t('dogs.form.tagsCountHint')}</Text></Text>
           <View style={styles.chipRow}>
             {OWNER_PERSONALITY_TAGS.map(tag => {
               const sel = personalityTags.includes(tag);
+              const maxed = personalityTags.length >= MAX_TAGS_PER_CATEGORY && !sel;
               return (
                 <TouchableOpacity
                   key={tag}
-                  style={[styles.chip, sel && styles.chipActive]}
-                  onPress={() => toggleTag(setPersonalityTags, tag)}
+                  style={[styles.chip, sel && styles.chipActive, maxed && styles.chipDisabled]}
+                  onPress={() => !maxed && toggleTag(setPersonalityTags, tag)}
                 >
                   <Text style={[styles.chipText, sel && styles.chipTextActive]}>{translateTag(tag, t)}</Text>
                 </TouchableOpacity>
@@ -471,6 +601,15 @@ const styles = StyleSheet.create({
   datePlaceholder: { fontSize: 16, color: Colors.textSecondary },
 
   locationButton:          { marginBottom: 32 },
+
+  switchRow: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    paddingVertical: 10,
+  },
+  switchLabel: { fontSize: 15, color: Colors.text, flexShrink: 1, marginRight: 12 },
+  switchHint:  { fontSize: 12, color: Colors.textSecondary, marginBottom: 6 },
+  sitterBox:   { marginBottom: 8 },
+  experienceValue: { color: Colors.primary, fontWeight: '700', textTransform: 'none', letterSpacing: 0 },
   locationButtonText:      { color: Colors.text, fontSize: 16, fontWeight: '600' },
   locationButtonTextActive: { color: '#48bb78' },
 
@@ -487,9 +626,11 @@ const styles = StyleSheet.create({
   modalDone:     { fontSize: 16, color: Colors.primary, fontWeight: '700' },
 
   tagCat:       { fontSize: 12, fontWeight: '600', color: Colors.textSecondary, marginTop: 12, marginBottom: 8, textTransform: 'uppercase', letterSpacing: 0.5 },
+  tagCatHint:   { fontWeight: '400', textTransform: 'none', letterSpacing: 0 },
   chipRow:      { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 4 },
   chip:         { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 16, borderWidth: 1.5, borderColor: Colors.border, backgroundColor: Colors.glass.inputBg },
   chipActive:   { borderColor: Colors.primary, backgroundColor: 'rgba(46,158,107,0.12)' },
+  chipDisabled: { opacity: 0.4 },
   chipText:     { fontSize: 12, color: Colors.textSecondary },
   chipTextActive: { color: Colors.primary, fontWeight: '600' },
 });

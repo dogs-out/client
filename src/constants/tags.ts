@@ -43,6 +43,15 @@ export const OWNER_PERSONALITY_TAGS = [
   'Responsible pup parent', 'Will talk about my dog for hours',
 ];
 
+export const SITTER_TAGS = [
+  'Dog trainer', 'Certified sitter', 'Multiple dogs OK', 'Puppy experience',
+  'Senior dog experience', 'Has a yard', 'Can give medication', 'Overnight stays OK',
+];
+
+export const WEEKDAYS = [
+  'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday',
+];
+
 export const RELATIONSHIP_STATUS_OPTIONS = [
   'Single', 'In a relationship', 'Married', "It's complicated", 'Prefer not to say',
 ];

@@ -6,6 +6,7 @@ import { BlurView } from 'expo-blur';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import DiscoverScreen from '../features/matching/DiscoverScreen';
+import FindSitterScreen from '../features/sitter/FindSitterScreen';
 import ChatsScreen from '../features/chat/ChatsScreen';
 import HomeScreen from '../screens/HomeScreen';
 import { glassTabBarStyles as styles } from '../components/GlassTabBar';
@@ -13,6 +14,7 @@ import { Colors } from '../constants/colors';
 
 export type MainTabParamList = {
   Discover: undefined;
+  FindSitter: undefined;
   Chats: undefined;
   Profile: undefined;
 };
@@ -20,9 +22,10 @@ export type MainTabParamList = {
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
 const TAB_ITEMS: { name: keyof MainTabParamList; labelKey: string; icon: string; iconActive: string }[] = [
-  { name: 'Discover', labelKey: 'matching.discover.headerTitle', icon: 'paw-outline',       iconActive: 'paw' },
-  { name: 'Chats',    labelKey: 'chat.chatsScreen.headerTitle',  icon: 'chatbubble-outline', iconActive: 'chatbubble' },
-  { name: 'Profile',  labelKey: 'home.profileTab',                icon: 'person-outline',     iconActive: 'person' },
+  { name: 'Discover',   labelKey: 'matching.discover.headerTitle', icon: 'paw-outline',       iconActive: 'paw' },
+  { name: 'FindSitter', labelKey: 'sitter.tabTitle',                icon: 'people-outline',     iconActive: 'people' },
+  { name: 'Chats',      labelKey: 'chat.chatsScreen.headerTitle',  icon: 'chatbubble-outline', iconActive: 'chatbubble' },
+  { name: 'Profile',    labelKey: 'home.profileTab',                icon: 'person-outline',     iconActive: 'person' },
 ];
 
 function GlassTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
@@ -76,8 +79,9 @@ export default function TabNavigator() {
       tabBar={props => <GlassTabBar {...props} />}
       screenOptions={{ headerShown: false }}
     >
-      <Tab.Screen name="Discover" component={DiscoverScreen} />
-      <Tab.Screen name="Chats"    component={ChatsScreen} />
+      <Tab.Screen name="Discover"   component={DiscoverScreen} />
+      <Tab.Screen name="FindSitter" component={FindSitterScreen} />
+      <Tab.Screen name="Chats"      component={ChatsScreen} />
       <Tab.Screen name="Profile"  component={HomeScreen} />
     </Tab.Navigator>
   );

@@ -21,6 +21,12 @@ export interface UserProfile {
   lifestyleTags: string[];
   personalityTags: string[];
   relationshipStatus: string | null;
+  hasDog: boolean;
+  isSitter: boolean;
+  lookingForSitter: boolean;
+  sitterWeekdays: string[];
+  sitterExperienceYears: number | null;
+  sitterTags: string[];
   createdAt: string;
   photos: UserPhoto[];
   maxDistanceKm: number | null;
@@ -41,6 +47,12 @@ export interface UpdateProfilePayload {
   lifestyleTags?: string[];
   personalityTags?: string[];
   relationshipStatus?: string;
+  hasDog?: boolean;
+  isSitter?: boolean;
+  lookingForSitter?: boolean;
+  sitterWeekdays?: string[];
+  sitterExperienceYears?: number;
+  sitterTags?: string[];
   maxDistanceKm?: number | null;
   minAge?: number | null;
   maxAge?: number | null;

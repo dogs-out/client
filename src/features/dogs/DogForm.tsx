@@ -409,32 +409,33 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Pr
             <Text style={styles.sectionLabel}>{t('dogs.form.tags')}</Text>
             <Text style={styles.sectionHint}>{t('dogs.form.tagsHint')}</Text>
 
-            <Text style={styles.tagCategory}>{t('dogs.form.personalityCategory')}</Text>
-            <View style={styles.chipWrap}>
-              {DOG_PERSONALITY_TAGS.map(tag => (
-                <TouchableOpacity key={tag} style={[styles.chip, dogTags.includes(tag) && styles.chipActive]} onPress={() => toggleTag(tag)}>
-                  <Text style={[styles.chipText, dogTags.includes(tag) && styles.chipTextActive]}>{translateTag(tag, t)}</Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-
-            <Text style={styles.tagCategory}>{t('dogs.form.playStyleCategory')}</Text>
-            <View style={styles.chipWrap}>
-              {DOG_PLAY_TAGS.map(tag => (
-                <TouchableOpacity key={tag} style={[styles.chip, dogTags.includes(tag) && styles.chipActive]} onPress={() => toggleTag(tag)}>
-                  <Text style={[styles.chipText, dogTags.includes(tag) && styles.chipTextActive]}>{translateTag(tag, t)}</Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-
-            <Text style={styles.tagCategory}>{t('dogs.form.socialCategory')}</Text>
-            <View style={styles.chipWrap}>
-              {DOG_SOCIAL_TAGS.map(tag => (
-                <TouchableOpacity key={tag} style={[styles.chip, dogTags.includes(tag) && styles.chipActive]} onPress={() => toggleTag(tag)}>
-                  <Text style={[styles.chipText, dogTags.includes(tag) && styles.chipTextActive]}>{translateTag(tag, t)}</Text>
-                </TouchableOpacity>
-              ))}
-            </View>
+            {([
+              ['dogs.form.personalityCategory', DOG_PERSONALITY_TAGS],
+              ['dogs.form.playStyleCategory', DOG_PLAY_TAGS],
+              ['dogs.form.socialCategory', DOG_SOCIAL_TAGS],
+            ] as const).map(([labelKey, category]) => {
+              const categoryFull = dogTags.filter(dt => category.includes(dt)).length >= 2;
+              return (
+                <View key={labelKey}>
+                  <Text style={styles.tagCategory}>{t(labelKey)} <Text style={styles.questionHint}>{t('dogs.form.tagsCountHint')}</Text></Text>
+                  <View style={styles.chipWrap}>
+                    {category.map(tag => {
+                      const sel = dogTags.includes(tag);
+                      const maxed = categoryFull && !sel;
+                      return (
+                        <TouchableOpacity
+                          key={tag}
+                          style={[styles.chip, sel && styles.chipActive, maxed && styles.chipDisabled]}
+                          onPress={() => !maxed && toggleTag(tag)}
+                        >
+                          <Text style={[styles.chipText, sel && styles.chipTextActive]}>{translateTag(tag, t)}</Text>
+                        </TouchableOpacity>
+                      );
+                    })}
+                  </View>
+                </View>
+              );
+            })}
           </GlassCard>
 
           {/* ACTIONS */}

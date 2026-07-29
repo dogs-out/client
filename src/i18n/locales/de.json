@@ -185,6 +185,7 @@
       "kidsComfortHint": "1 = Meidet sie · 5 = Liebt sie",
       "tags": "Tags",
       "tagsHint": "Wähle bis zu zwei pro Kategorie",
+      "tagsCountHint": "(bis zu 2)",
       "personalityCategory": "Persönlichkeit",
       "playStyleCategory": "Spielstil",
       "socialCategory": "Sozial",
@@ -224,7 +225,10 @@
       "matchSub": "{{name}} hat dir auch ein Leckerli gegeben!",
       "chatNow": "Jetzt chatten 💬",
       "keepSwiping": "Weiter wischen",
-      "adjustDistance": "Suchdistanz anpassen"
+      "adjustDistance": "Suchdistanz anpassen",
+      "lockedTitle": "Discover ist für Hundebesitzer",
+      "lockedBody": "Dein Profil ist auf „kein Hund“ eingestellt, daher ist das Swipen deaktiviert. Dogsitting-Jobs findest du im Tab „Sitter finden“ — oder füge einen Hund hinzu, um Discover freizuschalten.",
+      "lockedCta": "Zu „Sitter finden“"
     },
     "filters": {
       "saveFailed": "Deine Einstellungen konnten nicht gespeichert werden. Bitte versuche es erneut.",
@@ -286,14 +290,30 @@
       "tags": "Tags",
       "lifestyle": "Lebensstil",
       "personality": "Persönlichkeit",
-      "relationshipStatus": "Beziehungsstatus"
+      "relationshipStatus": "Beziehungsstatus",
+      "dogsitting": "Dogsitting",
+      "hasDog": "Ich habe einen Hund",
+      "hasDogHint": "Kein Hund? Du kannst trotzdem als Dogsitter dabei sein — Discover bleibt aus, bis du einen Hund hinzufügst.",
+      "isSitter": "Ich bin als Dogsitter verfügbar",
+      "sitterMustStayOn": "Ohne Hund funktioniert dein Konto als Sitter-Profil — deshalb bleibt das an.",
+      "lookingForSitter": "Ich suche einen Dogsitter",
+      "weekdaysLabel": "Tage, an denen ich Zeit habe",
+      "experienceLabel": "Erfahrung mit Hunden:",
+      "experienceYears": "Jahre",
+      "sitterTagsLabel": "Sitter-Tags",
+      "sitterTagsHint": "(bis zu 4)"
     },
     "userProfile": {
       "profileFallback": "Profil",
       "notAvailable": "Dieses Profil ist nicht mehr verfügbar.",
       "lovesPrefix": "Liebt: ",
+      "energyLabel": "Energie",
+      "socialLabel": "Mit neuen Hunden",
+      "offLeashLabel": "Ohne Leine",
+      "kidsLabel": "Mit Kindern",
       "theirDog_one": "Ihr Hund",
-      "theirDog_other": "Ihre Hunde"
+      "theirDog_other": "Ihre Hunde",
+      "contactError": "Chat konnte nicht geöffnet werden. Bitte versuch es erneut."
     },
     "changePassword": {
       "headerTitle": "Passwort ändern",
@@ -478,6 +498,38 @@
     "Spam or scam": "Spam oder Betrug",
     "Fake profile": "Gefälschtes Profil",
     "Safety concern": "Sicherheitsbedenken",
-    "Other": "Sonstiges"
+    "Other": "Sonstiges",
+    "Monday": "Montag",
+    "Tuesday": "Dienstag",
+    "Wednesday": "Mittwoch",
+    "Thursday": "Donnerstag",
+    "Friday": "Freitag",
+    "Saturday": "Samstag",
+    "Sunday": "Sonntag",
+    "Dog trainer": "Hundetrainer",
+    "Certified sitter": "Zertifizierter Sitter",
+    "Multiple dogs OK": "Mehrere Hunde möglich",
+    "Puppy experience": "Welpen-Erfahrung",
+    "Senior dog experience": "Erfahrung mit Senioren-Hunden",
+    "Has a yard": "Hat einen Garten",
+    "Can give medication": "Kann Medikamente geben",
+    "Overnight stays OK": "Übernachtung möglich"
+  },
+  "sitter": {
+    "tabTitle": "Sitter finden",
+    "list": {
+      "title": "Sitter finden",
+      "subtitle": "Hundebesitzer in deiner Nähe, die einen Dogsitter suchen",
+      "empty": "Gerade sucht niemand in deiner Nähe einen Dogsitter. Schau später wieder vorbei!",
+      "contact": "Kontaktieren",
+      "enableSitterHint": "Du möchtest Besitzer kontaktieren? Aktiviere „Ich bin als Dogsitter verfügbar“ in deinem Profil. Tippe hier zum Bearbeiten.",
+      "error": "Liste konnte nicht geladen werden."
+    },
+    "profile": {
+      "badge": "Als Dogsitter verfügbar",
+      "experience": "Erfahrung mit Hunden:",
+      "experienceYears": "Jahre",
+      "availability": "Verfügbar am:"
+    }
   }
 }

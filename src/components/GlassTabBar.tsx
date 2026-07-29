@@ -11,9 +11,10 @@ import { Colors } from '../constants/colors';
 type Tab = { name: keyof MainTabParamList; labelKey: string; icon: string; iconActive: string };
 
 const TABS: Tab[] = [
-  { name: 'Discover', labelKey: 'matching.discover.headerTitle', icon: 'paw-outline',        iconActive: 'paw' },
-  { name: 'Chats',    labelKey: 'chat.chatsScreen.headerTitle',  icon: 'chatbubble-outline',  iconActive: 'chatbubble' },
-  { name: 'Profile',  labelKey: 'home.profileTab',               icon: 'person-outline',      iconActive: 'person' },
+  { name: 'Discover',   labelKey: 'matching.discover.headerTitle', icon: 'paw-outline',        iconActive: 'paw' },
+  { name: 'FindSitter', labelKey: 'sitter.tabTitle',                icon: 'people-outline',      iconActive: 'people' },
+  { name: 'Chats',      labelKey: 'chat.chatsScreen.headerTitle',  icon: 'chatbubble-outline',  iconActive: 'chatbubble' },
+  { name: 'Profile',    labelKey: 'home.profileTab',               icon: 'person-outline',      iconActive: 'person' },
 ];
 
 type Props = { activeTab?: keyof MainTabParamList };

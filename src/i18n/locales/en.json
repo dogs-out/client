@@ -185,6 +185,7 @@
       "kidsComfortHint": "1 = Avoids them · 5 = Loves them",
       "tags": "Tags",
       "tagsHint": "Pick up to two per category",
+      "tagsCountHint": "(up to 2)",
       "personalityCategory": "Personality",
       "playStyleCategory": "Play style",
       "socialCategory": "Social",
@@ -224,7 +225,10 @@
       "matchSub": "{{name}} also gave you a treat!",
       "chatNow": "Chat now 💬",
       "keepSwiping": "Keep Swiping",
-      "adjustDistance": "Adjust search distance"
+      "adjustDistance": "Adjust search distance",
+      "lockedTitle": "Discover is for dog owners",
+      "lockedBody": "Your profile is set to \"no dog\", so the swipe deck is off. You can find dogsitting jobs in the Find a Sitter tab — or add a dog to unlock Discover.",
+      "lockedCta": "Go to Find a Sitter"
     },
     "filters": {
       "saveFailed": "Your preferences could not be saved. Please try again.",
@@ -286,14 +290,30 @@
       "tags": "Tags",
       "lifestyle": "Lifestyle",
       "personality": "Personality",
-      "relationshipStatus": "Relationship status"
+      "relationshipStatus": "Relationship status",
+      "dogsitting": "Dogsitting",
+      "hasDog": "I have a dog",
+      "hasDogHint": "No dog? You can still join as a dogsitter — Discover stays off until you add a dog.",
+      "isSitter": "I'm available as a dog sitter",
+      "sitterMustStayOn": "Without a dog, your account works as a sitter profile — so this stays on.",
+      "lookingForSitter": "I'm looking for a dogsitter",
+      "weekdaysLabel": "Days I'm free to sit",
+      "experienceLabel": "Experience with dogs:",
+      "experienceYears": "years",
+      "sitterTagsLabel": "Sitter tags",
+      "sitterTagsHint": "(up to 4)"
     },
     "userProfile": {
       "profileFallback": "Profile",
       "notAvailable": "This profile is no longer available.",
       "lovesPrefix": "Loves: ",
+      "energyLabel": "Energy",
+      "socialLabel": "With new dogs",
+      "offLeashLabel": "Off-leash",
+      "kidsLabel": "With kids",
       "theirDog_one": "Their dog",
-      "theirDog_other": "Their dogs"
+      "theirDog_other": "Their dogs",
+      "contactError": "Couldn't open the chat. Please try again."
     },
     "changePassword": {
       "headerTitle": "Change password",
@@ -373,7 +393,7 @@
         "q": "How do I delete my account?",
         "a": "Settings → Delete account. This permanently removes your profile, dogs, matches, and messages. It cannot be undone."
       },
-      "contact": "Still stuck? Write to us at noreply.dogsout@gmail.com🐾"
+      "contact": "Still stuck? Write to us at help@dogsout.app🐾"
     },
     "termsPrivacy": {
       "headerTitle": "Terms & Privacy",
@@ -419,5 +439,22 @@
     "yearAbbrev_other": "{{count}} yrs",
     "previewMyDog_one": "Preview my Dog",
     "previewMyDog_other": "Preview my Dogs"
+  },
+  "sitter": {
+    "tabTitle": "Find a Sitter",
+    "list": {
+      "title": "Find a Sitter",
+      "subtitle": "Dog owners nearby who are looking for a dogsitter",
+      "empty": "No one nearby is looking for a dogsitter right now. Check back later!",
+      "contact": "Contact",
+      "enableSitterHint": "Want to contact owners? Enable \"I'm available as a dog sitter\" in your profile. Tap here to edit.",
+      "error": "Couldn't load the list."
+    },
+    "profile": {
+      "badge": "Available as dogsitter",
+      "experience": "Experience with dogs:",
+      "experienceYears": "years",
+      "availability": "Available on:"
+    }
   }
 }

@@ -14,6 +14,11 @@ export interface DiscoverProfile {
   relationshipStatus: string | null;
   dogs: Dog[];
   distanceKm: number;
+  isSitter: boolean;
+  sitterWeekdays: string[];
+  sitterExperienceYears: number | null;
+  sitterTags: string[];
+  lookingForSitter: boolean;
 }
 
 export interface SwipeResponse {

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import {
-  ActivityIndicator, Dimensions, Image, ScrollView,
+  ActivityIndicator, Alert, Dimensions, Image, ScrollView,
   StyleSheet, Text, TouchableOpacity, View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -8,6 +8,8 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { discoverService, DiscoverProfile } from '../../services/discoverService';
+import { sitterService } from '../../services/sitterService';
+import { userService } from '../../services/userService';
 import { Dog } from '../../services/dogService';
 import { RootStackParamList } from '../../types/navigation';
 import { Colors } from '../../constants/colors';
@@ -66,12 +68,24 @@ function PhotoCarousel({ uris, placeholder }: { uris: string[]; placeholder: str
   );
 }
 
+function LevelDots({ level }: { level: number }) {
+  return (
+    <View style={styles.levelDots}>
+      {[1, 2, 3, 4, 5].map(n => (
+        <View key={n} style={[styles.levelDot, n <= level && styles.levelDotFilled]} />
+      ))}
+    </View>
+  );
+}
+
 function DogCard({ dog }: { dog: Dog }) {
   const { t, i18n } = useTranslation();
   const age = getAge(dog.dateOfBirth);
   const photos = dog.photos.length > 0
     ? dog.photos.map(p => p.imageData)
     : dog.profilePicture ? [dog.profilePicture] : [];
+  const hasPersonality = dog.energyLevel !== null || dog.socialBehavior !== null
+    || dog.offLeash !== null || dog.kidsComfort !== null;
 
   return (
     <GlassCard padding={0} plain style={styles.dogCard}>
@@ -88,8 +102,40 @@ function DogCard({ dog }: { dog: Dog }) {
             ))}
           </View>
         )}
+        {hasPersonality && (
+          <View style={styles.personalityBox}>
+            {dog.energyLevel !== null && (
+              <View style={styles.personalityRow}>
+                <Ionicons name="flash-outline" size={15} color={Colors.primary} />
+                <Text style={styles.personalityLabel}>{t('profile.userProfile.energyLabel')}</Text>
+                <LevelDots level={dog.energyLevel} />
+              </View>
+            )}
+            {dog.socialBehavior !== null && (
+              <View style={styles.personalityRow}>
+                <Ionicons name="paw-outline" size={15} color={Colors.primary} />
+                <Text style={styles.personalityLabel}>{t('profile.userProfile.socialLabel')}</Text>
+                <Text style={styles.personalityValue}>{translateTag(dog.socialBehavior, t)}</Text>
+              </View>
+            )}
+            {dog.offLeash !== null && (
+              <View style={styles.personalityRow}>
+                <Ionicons name="walk-outline" size={15} color={Colors.primary} />
+                <Text style={styles.personalityLabel}>{t('profile.userProfile.offLeashLabel')}</Text>
+                <Text style={styles.personalityValue}>{translateTag(dog.offLeash, t)}</Text>
+              </View>
+            )}
+            {dog.kidsComfort !== null && (
+              <View style={styles.personalityRow}>
+                <Ionicons name="happy-outline" size={15} color={Colors.primary} />
+                <Text style={styles.personalityLabel}>{t('profile.userProfile.kidsLabel')}</Text>
+                <LevelDots level={dog.kidsComfort} />
+              </View>
+            )}
+          </View>
+        )}
         {dog.loves.length > 0 && (
-          <Text style={styles.detailLine}>{t('profile.userProfile.lovesPrefix')}{dog.loves.join(', ')}</Text>
+          <Text style={styles.detailLine}>{t('profile.userProfile.lovesPrefix')}{dog.loves.map(l => translateTag(l, t)).join(', ')}</Text>
         )}
         {dog.bio ? <Text style={styles.bioText}>{dog.bio}</Text> : null}
       </View>
@@ -101,13 +147,35 @@ export default function UserProfileScreen({ navigation, route }: Props) {
   const { t } = useTranslation();
   const { userId } = route.params;
   const [profile, setProfile] = useState<DiscoverProfile | null>(null);
+  const [amSitter, setAmSitter] = useState(false);
+  const [myId, setMyId] = useState<number | null>(null);
+  const [contacting, setContacting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     discoverService.getUserProfile(userId)
       .then(setProfile)
       .catch(() => setError(t('profile.userProfile.notAvailable')));
+    userService.getMe()
+      .then(me => { setAmSitter(me.isSitter); setMyId(me.id); })
+      .catch(() => {});
   }, [userId, t]);
+
+  const contactSeeker = () => {
+    if (!profile || contacting) return;
+    setContacting(true);
+    sitterService.contact(profile.userId)
+      .then(({ matchId }) => {
+        navigation.navigate('ChatDetail', {
+          matchId,
+          otherUserId: profile.userId,
+          name: profile.name,
+          profilePicture: profile.profilePicture,
+        });
+      })
+      .catch(() => Alert.alert(t('common.error'), t('profile.userProfile.contactError')))
+      .finally(() => setContacting(false));
+  };
 
   const ownerPhotos = profile
     ? (profile.photos.length > 0
@@ -160,6 +228,55 @@ export default function UserProfileScreen({ navigation, route }: Props) {
             </View>
           </GlassCard>
 
+          {/* Sitter info */}
+          {profile.isSitter && (
+            <GlassCard style={styles.sitterCard}>
+              <View style={styles.sitterBadgeRow}>
+                <Ionicons name="shield-checkmark" size={18} color={Colors.primary} />
+                <Text style={styles.sitterBadgeText}>{t('sitter.profile.badge')}</Text>
+              </View>
+              {profile.sitterExperienceYears !== null && (
+                <Text style={styles.sitterLine}>
+                  {t('sitter.profile.experience')}{' '}
+                  <Text style={styles.sitterValue}>
+                    {profile.sitterExperienceYears >= 10 ? '10+' : profile.sitterExperienceYears} {t('sitter.profile.experienceYears')}
+                  </Text>
+                </Text>
+              )}
+              {profile.sitterWeekdays.length > 0 && (
+                <>
+                  <Text style={styles.sitterLine}>{t('sitter.profile.availability')}</Text>
+                  <View style={styles.tagRow}>
+                    {profile.sitterWeekdays.map(day => (
+                      <View key={day} style={styles.tag}><Text style={styles.tagText}>{translateTag(day, t)}</Text></View>
+                    ))}
+                  </View>
+                </>
+              )}
+              {profile.sitterTags.length > 0 && (
+                <View style={styles.tagRow}>
+                  {profile.sitterTags.map(tag => (
+                    <View key={tag} style={styles.tag}><Text style={styles.tagText}>{translateTag(tag, t)}</Text></View>
+                  ))}
+                </View>
+              )}
+            </GlassCard>
+          )}
+
+          {/* Contact as sitter */}
+          {profile.lookingForSitter && amSitter && myId !== null && myId !== profile.userId && (
+            <TouchableOpacity style={styles.contactBtn} onPress={contactSeeker} disabled={contacting}>
+              {contacting ? (
+                <ActivityIndicator size="small" color="#fff" />
+              ) : (
+                <>
+                  <Ionicons name="chatbubble-outline" size={16} color="#fff" style={{ marginRight: 6 }} />
+                  <Text style={styles.contactText}>{t('sitter.list.contact')}</Text>
+                </>
+              )}
+            </TouchableOpacity>
+          )}
+
           {/* Dogs */}
           {profile.dogs.length > 0 && (
             <Text style={styles.sectionTitle}>
@@ -203,10 +320,32 @@ const styles = StyleSheet.create({
   },
   tagText: { fontSize: 12, color: Colors.primary, fontWeight: '600' },
 
+  personalityBox: { marginBottom: 10, gap: 7 },
+  personalityRow: { flexDirection: 'row', alignItems: 'center', gap: 7 },
+  personalityLabel: { fontSize: 13, color: Colors.textSecondary },
+  personalityValue: { fontSize: 13, color: Colors.text, fontWeight: '600', flexShrink: 1 },
+
+  levelDots:      { flexDirection: 'row', gap: 4 },
+  levelDot:       { width: 8, height: 8, borderRadius: 4, backgroundColor: 'rgba(46,158,107,0.18)' },
+  levelDotFilled: { backgroundColor: Colors.primary },
+
   detailLine: { fontSize: 13, color: Colors.textSecondary, marginBottom: 6 },
   bioText:    { fontSize: 14, color: Colors.text, lineHeight: 20 },
 
   sectionTitle: { fontSize: 17, fontWeight: '800', color: Colors.text, marginTop: 24, marginBottom: 2 },
+
+  sitterCard:      { marginTop: 16 },
+  sitterBadgeRow:  { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 10 },
+  sitterBadgeText: { fontSize: 15, fontWeight: '700', color: Colors.primary },
+  sitterLine:      { fontSize: 13, color: Colors.textSecondary, marginBottom: 6 },
+  sitterValue:     { color: Colors.text, fontWeight: '700' },
+
+  contactBtn: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
+    marginTop: 16, paddingVertical: 12, borderRadius: 16,
+    backgroundColor: Colors.primary,
+  },
+  contactText: { color: '#fff', fontSize: 15, fontWeight: '700' },
 
   emptyEmoji: { fontSize: 56, marginBottom: 12 },
   emptyText:  { fontSize: 15, color: Colors.textSecondary, textAlign: 'center' },

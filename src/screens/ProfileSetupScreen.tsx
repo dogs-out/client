@@ -12,8 +12,12 @@ export default function ProfileSetupScreen({ navigation }: Props) {
       title={t('profile.setup.title')}
       subtitle={t('profile.setup.subtitle')}
       submitLabel={t('dogs.form.letsGo')}
-      onSaved={() =>
-        navigation.reset({ index: 0, routes: [{ name: 'AddDog', params: { fromOnboarding: true } }] })
+      onSaved={({ hasDog }) =>
+        // Sitter-only accounts have no dog to introduce — go straight to the app
+        navigation.reset({
+          index: 0,
+          routes: [hasDog ? { name: 'AddDog', params: { fromOnboarding: true } } : { name: 'MainTabs' }],
+        })
       }
     />
   );

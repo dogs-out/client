@@ -177,9 +177,16 @@ export default function DiscoverScreen() {
   const [showBoneCatch, setShowBoneCatch] = useState(false);
   const [myPicture, setMyPicture] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  // Sitter-only accounts (no dog) don't get the swipe feed — they see a locked state
+  const [locked, setLocked] = useState(false);
+  const lockedRef = useRef(false);
 
   useEffect(() => {
-    userService.getMe().then(u => setMyPicture(u.profilePicture)).catch(() => {});
+    userService.getMe().then(u => {
+      setMyPicture(u.profilePicture);
+      lockedRef.current = u.hasDog === false;
+      setLocked(lockedRef.current);
+    }).catch(() => {});
   }, []);
 
   const pan = useRef(new Animated.ValueXY()).current;
@@ -193,7 +200,14 @@ export default function DiscoverScreen() {
     setError(null);
     discoverService.getFeed()
       .then(data => { setFeed(data); setIdx(0); })
-      .catch(err => setError(err?.response?.data?.message ?? t('matching.discover.loadError')))
+      .catch(err => {
+        if (err?.response?.status === 403) {
+          lockedRef.current = true;
+          setLocked(true);
+        } else {
+          setError(err?.response?.data?.message ?? t('matching.discover.loadError'));
+        }
+      })
       .finally(() => setLoading(false));
   }, [t]);
 
@@ -207,6 +221,13 @@ export default function DiscoverScreen() {
         filtersVersionRef.current = getDiscoverFiltersVersion();
         loadFeed();
       }
+      // The user may have toggled "I have a dog" in their profile meanwhile
+      userService.getMe().then(u => {
+        const isLocked = u.hasDog === false;
+        if (lockedRef.current && !isLocked) loadFeed();
+        lockedRef.current = isLocked;
+        setLocked(isLocked);
+      }).catch(() => {});
     }, [loadFeed])
   );
 
@@ -267,6 +288,25 @@ export default function DiscoverScreen() {
       },
     })
   ).current;
+
+  if (locked) {
+    return (
+      <SafeAreaView style={styles.safe}>
+        <FloatingBackground />
+        <View style={styles.centered}>
+          <Text style={styles.emptyEmoji}>🔒</Text>
+          <Text style={styles.emptyTitle}>{t('matching.discover.lockedTitle')}</Text>
+          <Text style={styles.emptySub}>{t('matching.discover.lockedBody')}</Text>
+          <TouchableOpacity
+            style={styles.refreshBtn}
+            onPress={() => navigation.navigate('MainTabs', { screen: 'FindSitter' } as never)}
+          >
+            <Text style={styles.refreshBtnText}>{t('matching.discover.lockedCta')}</Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   if (loading) {
     return (
