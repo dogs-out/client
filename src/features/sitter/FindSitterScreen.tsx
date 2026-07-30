@@ -41,16 +41,28 @@ export default function FindSitterScreen() {
   const [contactingId, setContactingId] = useState<number | null>(null);
 
   const load = useCallback(() => {
-    Promise.all([userService.getMe(), sitterService.getSeekers(), sitterService.getAvailableSitters()])
-      .then(([me, seekerPool, sitterPool]) => {
+    userService.getMe()
+      .then(me => {
         setAmSitter(me.isSitter);
         setAmSeeking(me.lookingForSitter);
-        setSeekers(seekerPool.filter(p => p.userId !== me.id));
-        setSitters(sitterPool.filter(p => p.userId !== me.id));
-        // Land on the side that matches the single role they enabled; once they've
-        // tapped the switcher themselves, leave their choice alone on refocus.
-        if (!modePinned) setMode(me.isSitter ? 'jobs' : 'requests');
-        setError(false);
+        // Each pool is served only to the matching role (403 otherwise) — you can't
+        // browse sitters until you're looking for one, or jobs until you are one.
+        // Don't ask for a pool we aren't entitled to.
+        return Promise.all([
+          me.isSitter ? sitterService.getSeekers() : Promise.resolve([]),
+          me.lookingForSitter ? sitterService.getAvailableSitters() : Promise.resolve([]),
+        ]).then(([seekerPool, sitterPool]) => {
+          setSeekers(seekerPool.filter(p => p.userId !== me.id));
+          setSitters(sitterPool.filter(p => p.userId !== me.id));
+          // Land on the side that matches the single role they enabled; once they've
+          // tapped the switcher themselves, leave their choice alone on refocus.
+          // Requests is only reachable while lookingForSitter holds, so a pinned
+          // choice is dropped if that toggle goes off.
+          if (!modePinned || (!me.lookingForSitter)) {
+            setMode(me.lookingForSitter && !me.isSitter ? 'requests' : 'jobs');
+          }
+          setError(false);
+        });
       })
       .catch(() => setError(true))
       .finally(() => setLoading(false));
@@ -83,6 +95,9 @@ export default function FindSitterScreen() {
   const canContact = mode === 'jobs' ? amSitter : amSeeking;
   const data = mode === 'jobs' ? seekers : sitters;
   const showSwitcher = amSitter && amSeeking;
+  // With neither toggle on both pools are withheld, so the empty list needs to say
+  // "you haven't opted in" rather than "nobody is nearby".
+  const hasAnyRole = amSitter || amSeeking;
 
   const selectMode = (next: SitterMode) => { setModePinned(true); setMode(next); };
 
@@ -194,7 +209,9 @@ export default function FindSitterScreen() {
             <View style={styles.centered}>
               <Text style={styles.emptyEmoji}>🐾</Text>
               <Text style={styles.emptyText}>
-                {t(mode === 'jobs' ? 'sitter.list.empty' : 'sitter.list.emptySitters')}
+                {!hasAnyRole
+                  ? t('sitter.list.emptyNoRole')
+                  : t(mode === 'jobs' ? 'sitter.list.empty' : 'sitter.list.emptySitters')}
               </Text>
             </View>
           }
