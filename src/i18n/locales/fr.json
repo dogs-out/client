@@ -533,9 +533,14 @@
     "list": {
       "title": "Trouver un sitter",
       "subtitle": "Propriétaires de chiens près de chez toi qui cherchent un dogsitter",
+      "subtitleJobs": "Propriétaires de chiens près de chez toi qui cherchent un dogsitter",
+      "subtitleRequests": "Dogsitters près de chez toi que tu peux contacter",
+      "tabJobs": "Missions",
+      "tabRequests": "Demandes",
       "empty": "Personne ne cherche de dogsitter près de chez toi pour le moment. Reviens plus tard !",
+      "emptySitters": "Aucun dogsitter près de chez toi pour le moment. Reviens plus tard !",
       "contact": "Contacter",
-      "enableSitterHint": "Tu veux contacter des propriétaires ? Active « Je suis disponible comme dogsitter » dans ton profil. Touche ici pour modifier.",
+      "enableSitterHint": "Active « Je suis disponible comme dogsitter » ou « Je cherche un dogsitter » dans ton profil pour discuter. Touche ici pour modifier.",
       "error": "Impossible de charger la liste."
     },
     "profile": {

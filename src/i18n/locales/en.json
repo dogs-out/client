@@ -458,9 +458,14 @@
     "list": {
       "title": "Find a Sitter",
       "subtitle": "Dog owners nearby who are looking for a dogsitter",
+      "subtitleJobs": "Dog owners nearby who are looking for a dogsitter",
+      "subtitleRequests": "Dogsitters nearby you can reach out to",
+      "tabJobs": "Jobs",
+      "tabRequests": "Requests",
       "empty": "No one nearby is looking for a dogsitter right now. Check back later!",
+      "emptySitters": "No dogsitters nearby right now. Check back later!",
       "contact": "Contact",
-      "enableSitterHint": "Want to contact owners? Enable \"I'm available as a dog sitter\" in your profile. Tap here to edit.",
+      "enableSitterHint": "Turn on “I’m available as a dog sitter” or “I’m looking for a dogsitter” in your profile to start chatting. Tap here to edit.",
       "error": "Couldn't load the list."
     },
     "profile": {

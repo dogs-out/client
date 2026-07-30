@@ -18,6 +18,8 @@ import { FloatingBackground } from '../../components/FloatingBackground';
 import { GlassCard } from '../../components/GlassCard';
 import { translateBreed } from '../../i18n/translateBreed';
 
+type SitterMode = 'jobs' | 'requests';
+
 function formatDistance(km: number, t: TFunction): string {
   if (km < 0) return '';
   if (km < 1) return t('matching.discover.lessThanOneKm');
@@ -28,21 +30,31 @@ export default function FindSitterScreen() {
   const { t, i18n } = useTranslation();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [seekers, setSeekers] = useState<DiscoverProfile[]>([]);
+  const [sitters, setSitters] = useState<DiscoverProfile[]>([]);
   const [amSitter, setAmSitter] = useState(false);
+  const [amSeeking, setAmSeeking] = useState(false);
+  // 'jobs' = owners who need a sitter, 'requests' = sitters an owner can ask.
+  const [mode, setMode] = useState<SitterMode>('jobs');
+  const [modePinned, setModePinned] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [contactingId, setContactingId] = useState<number | null>(null);
 
   const load = useCallback(() => {
-    Promise.all([userService.getMe(), sitterService.getSeekers()])
-      .then(([me, pool]) => {
+    Promise.all([userService.getMe(), sitterService.getSeekers(), sitterService.getAvailableSitters()])
+      .then(([me, seekerPool, sitterPool]) => {
         setAmSitter(me.isSitter);
-        setSeekers(pool.filter(p => p.userId !== me.id));
+        setAmSeeking(me.lookingForSitter);
+        setSeekers(seekerPool.filter(p => p.userId !== me.id));
+        setSitters(sitterPool.filter(p => p.userId !== me.id));
+        // Land on the side that matches the single role they enabled; once they've
+        // tapped the switcher themselves, leave their choice alone on refocus.
+        if (!modePinned) setMode(me.isSitter ? 'jobs' : 'requests');
         setError(false);
       })
       .catch(() => setError(true))
       .finally(() => setLoading(false));
-  }, []);
+  }, [modePinned]);
 
   useFocusEffect(useCallback(() => { load(); }, [load]));
 
@@ -65,6 +77,14 @@ export default function FindSitterScreen() {
       .catch(() => setError(true))
       .finally(() => setContactingId(null));
   };
+
+  // You can only start a chat from the side your own toggle backs: sitters answer
+  // jobs, owners looking for a sitter reach out to sitters.
+  const canContact = mode === 'jobs' ? amSitter : amSeeking;
+  const data = mode === 'jobs' ? seekers : sitters;
+  const showSwitcher = amSitter && amSeeking;
+
+  const selectMode = (next: SitterMode) => { setModePinned(true); setMode(next); };
 
   const renderSeeker = ({ item }: { item: DiscoverProfile }) => {
     const dist = formatDistance(item.distanceKm, t);
@@ -93,7 +113,7 @@ export default function FindSitterScreen() {
           </View>
           <Ionicons name="chevron-forward" size={20} color={Colors.textSecondary} />
         </TouchableOpacity>
-        {amSitter && (
+        {canContact && (
           <TouchableOpacity
             style={styles.contactBtn}
             onPress={() => contact(item)}
@@ -119,10 +139,34 @@ export default function FindSitterScreen() {
 
       <View style={styles.header}>
         <Text style={styles.headerTitle}>{t('sitter.list.title')}</Text>
-        <Text style={styles.headerSubtitle}>{t('sitter.list.subtitle')}</Text>
+        <Text style={styles.headerSubtitle}>
+          {t(mode === 'jobs' ? 'sitter.list.subtitleJobs' : 'sitter.list.subtitleRequests')}
+        </Text>
       </View>
 
-      {!loading && !amSitter && (
+      {showSwitcher && (
+        <View style={styles.segmented}>
+          {(['requests', 'jobs'] as SitterMode[]).map(m => (
+            <TouchableOpacity
+              key={m}
+              style={[styles.segment, mode === m && styles.segmentActive]}
+              onPress={() => selectMode(m)}
+            >
+              <Text
+                style={[styles.segmentText, mode === m && styles.segmentTextActive]}
+                numberOfLines={1}
+                adjustsFontSizeToFit
+                minimumFontScale={0.8}
+                maxFontSizeMultiplier={1.2}
+              >
+                {t(m === 'jobs' ? 'sitter.list.tabJobs' : 'sitter.list.tabRequests')}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      )}
+
+      {!loading && !amSitter && !amSeeking && (
         <TouchableOpacity style={styles.hintBanner} onPress={() => navigation.navigate('EditProfile')}>
           <Ionicons name="information-circle-outline" size={18} color={Colors.primary} style={{ marginRight: 8 }} />
           <Text style={styles.hintText}>{t('sitter.list.enableSitterHint')}</Text>
@@ -141,7 +185,7 @@ export default function FindSitterScreen() {
         </View>
       ) : (
         <FlatList
-          data={seekers}
+          data={data}
           keyExtractor={item => String(item.userId)}
           renderItem={renderSeeker}
           contentContainerStyle={styles.list}
@@ -149,7 +193,9 @@ export default function FindSitterScreen() {
           ListEmptyComponent={
             <View style={styles.centered}>
               <Text style={styles.emptyEmoji}>🐾</Text>
-              <Text style={styles.emptyText}>{t('sitter.list.empty')}</Text>
+              <Text style={styles.emptyText}>
+                {t(mode === 'jobs' ? 'sitter.list.empty' : 'sitter.list.emptySitters')}
+              </Text>
             </View>
           }
         />
@@ -174,6 +220,15 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(46,158,107,0.08)',
   },
   hintText: { flex: 1, fontSize: 13, color: Colors.text, lineHeight: 18 },
+
+  segmented: {
+    flexDirection: 'row', marginHorizontal: 20, marginBottom: 8,
+    borderRadius: 14, borderWidth: 1.5, borderColor: Colors.border, overflow: 'hidden',
+  },
+  segment:           { flex: 1, paddingVertical: 9, paddingHorizontal: 6, alignItems: 'center' },
+  segmentActive:     { backgroundColor: 'rgba(46,158,107,0.12)' },
+  segmentText:       { fontSize: 13, fontWeight: '700', color: Colors.textSecondary },
+  segmentTextActive: { color: Colors.primary },
 
   list: { paddingHorizontal: 20, paddingBottom: 120, flexGrow: 1 },
 
