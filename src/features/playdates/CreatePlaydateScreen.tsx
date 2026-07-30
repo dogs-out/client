@@ -278,19 +278,24 @@ export default function CreatePlaydateScreen({ navigation, route }: Props) {
             </GlassCard>
           )}
 
-          {/* ACTIONS */}
-          <GlassCard style={styles.card}>
-            {error && <Text style={styles.error}>{error}</Text>}
-            {loading ? (
-              <ActivityIndicator color={Colors.primary} />
-            ) : (
-              <GlassButton onPress={handleSave}>
-                <Text style={styles.saveText}>
-                  {playdateId ? t('playdates.create.saveChanges') : t('playdates.create.save')}
-                </Text>
-              </GlassButton>
-            )}
-          </GlassCard>
+          {/* ACTIONS — bare button, no GlassCard wrapper: a glass button inside a
+              glass card reads as two stacked panes rather than one control. */}
+          {error && <Text style={styles.error}>{error}</Text>}
+          {loading ? (
+            <ActivityIndicator color={Colors.primary} style={styles.card} />
+          ) : (
+            <GlassButton onPress={handleSave} style={styles.card}>
+              <Text
+                style={styles.saveText}
+                numberOfLines={1}
+                adjustsFontSizeToFit
+                minimumFontScale={0.75}
+                maxFontSizeMultiplier={1.2}
+              >
+                {playdateId ? t('playdates.create.saveChanges') : t('playdates.create.save')}
+              </Text>
+            </GlassButton>
+          )}
 
           <View style={{ height: 40 }} />
         </ScrollView>

@@ -41,15 +41,17 @@ export function CustomSlider({ value, min, max, step, onChange, onDragStart, onD
     >
       <View style={sliderStyles.rail} />
       <View style={[sliderStyles.fill, { width: `${fillPct}%` }]} />
-      <View style={[sliderStyles.thumb, { left: `${fillPct}%`, transform: [{ translateX: -12 }] }]} />
+      <View style={[sliderStyles.thumb, { left: `${fillPct}%`, transform: [{ translateX: -14 }] }]} />
     </View>
   );
 }
 
 export const sliderStyles = StyleSheet.create({
-  track: { height: 44, justifyContent: 'center', position: 'relative' },
+  // Tall track + generous thumb: the rail itself is only 4pt, so the touch target
+  // has to come from the container or the drag is easy to miss.
+  track: { height: 56, justifyContent: 'center', position: 'relative' },
   rail:  { height: 4, backgroundColor: Colors.border, borderRadius: 2, position: 'absolute', left: 0, right: 0 },
   fill:  { height: 4, backgroundColor: Colors.primary, borderRadius: 2, position: 'absolute', left: 0 },
-  thumb: { width: 24, height: 24, borderRadius: 12, backgroundColor: Colors.primary, position: 'absolute', top: 10, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.2, shadowRadius: 4, elevation: 4 },
+  thumb: { width: 28, height: 28, borderRadius: 14, backgroundColor: Colors.primary, position: 'absolute', top: 14, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.2, shadowRadius: 4, elevation: 4 },
   multiThumb: { width: 24, height: 24, borderRadius: 12, backgroundColor: Colors.primary, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.2, shadowRadius: 4, elevation: 4 },
 });

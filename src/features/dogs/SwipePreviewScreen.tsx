@@ -35,6 +35,14 @@ export default function SwipePreviewScreen({ navigation }: Props) {
   const [showOwner, setShowOwner] = useState(false);
   const [swipeResult, setSwipeResult] = useState<'treat' | 'notreat' | null>(null);
 
+  // Card swiping is the same horizontal drag as iOS's swipe-to-go-back, and the
+  // system edge recognizer wins the race often enough to make swipes feel dead.
+  // The screen has its own close button, so trade the pop gesture away entirely.
+  useEffect(() => {
+    navigation.setOptions({ gestureEnabled: false });
+    return () => navigation.setOptions({ gestureEnabled: true });
+  }, [navigation]);
+
   const pan = useRef(new Animated.ValueXY()).current;
   const treatOpacity   = pan.x.interpolate({ inputRange: [30, 100],   outputRange: [0, 1], extrapolate: 'clamp' });
   const noTreatOpacity = pan.x.interpolate({ inputRange: [-100, -30], outputRange: [1, 0], extrapolate: 'clamp' });

@@ -172,7 +172,9 @@ const styles = StyleSheet.create({
   emptyText:  { fontSize: 15, color: Colors.textSecondary, textAlign: 'center', lineHeight: 22 },
 
   fab: {
-    position: 'absolute', right: 20, bottom: 110,
+    // Clears the floating tab bar (~94pt tall incl. its bottom inset) with margin
+    // to spare — at 110 the + sat under the bar's top edge on iOS.
+    position: 'absolute', right: 20, bottom: 128,
     width: 56, height: 56, borderRadius: 28,
     backgroundColor: Colors.primary,
     alignItems: 'center', justifyContent: 'center',

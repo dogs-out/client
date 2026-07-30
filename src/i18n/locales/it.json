@@ -294,6 +294,7 @@
       "dogsitting": "Dogsitting",
       "hasDog": "Ho un cane",
       "hasDogHint": "Nessun cane? Puoi comunque partecipare come dogsitter — Discover resta disattivato finché non aggiungi un cane.",
+      "hasDogLocked": "Hai un cane nel profilo, quindi questa opzione resta attiva. Rimuovi prima il tuo cane per disattivarla.",
       "isSitter": "Sono disponibile come dogsitter",
       "sitterMustStayOn": "Senza un cane il tuo account funziona come profilo da sitter — quindi questa opzione resta attiva.",
       "lookingForSitter": "Cerco un dogsitter",
@@ -532,9 +533,14 @@
     "list": {
       "title": "Trova un sitter",
       "subtitle": "Proprietari di cani vicino a te che cercano un dogsitter",
+      "subtitleJobs": "Proprietari di cani vicino a te che cercano un dogsitter",
+      "subtitleRequests": "Dogsitter vicino a te che puoi contattare",
+      "tabJobs": "Lavori",
+      "tabRequests": "Richieste",
       "empty": "Al momento nessuno vicino a te cerca un dogsitter. Riprova più tardi!",
+      "emptySitters": "Al momento non ci sono dogsitter vicino a te. Riprova più tardi!",
       "contact": "Contatta",
-      "enableSitterHint": "Vuoi contattare i proprietari? Attiva «Sono disponibile come dogsitter» nel tuo profilo. Tocca qui per modificare.",
+      "enableSitterHint": "Attiva «Sono disponibile come dogsitter» o «Cerco un dogsitter» nel tuo profilo per chattare. Tocca qui per modificare.",
       "error": "Impossibile caricare la lista."
     },
     "profile": {

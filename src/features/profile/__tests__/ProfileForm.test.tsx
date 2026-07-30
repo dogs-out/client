@@ -22,6 +22,16 @@ jest.mock('../../../services/userService', () => ({
   },
 }));
 
+// ProfileForm freezes the screen's pop gesture while a slider is dragged, so it
+// reads navigation from context — which the bare render() here doesn't provide.
+jest.mock('@react-navigation/native', () => ({
+  useNavigation: () => ({ setOptions: jest.fn() }),
+}));
+
+jest.mock('../../../services/dogService', () => ({
+  dogService: { getMyDogs: jest.fn(() => Promise.resolve([])) },
+}));
+
 jest.mock('expo-image-picker', () => ({
   requestMediaLibraryPermissionsAsync: jest.fn(),
   launchImageLibraryAsync: jest.fn(),

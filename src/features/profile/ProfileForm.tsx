@@ -4,12 +4,14 @@ import {
   Platform, ScrollView, StyleSheet, Switch, Text, TextInput,
   TouchableOpacity, View,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import * as ImagePicker from 'expo-image-picker';
 import * as Location from 'expo-location';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { userService, UserPhoto } from '../../services/userService';
+import { dogService } from '../../services/dogService';
 import {
   OWNER_LIFESTYLE_TAGS, OWNER_PERSONALITY_TAGS, RELATIONSHIP_STATUS_OPTIONS,
   SITTER_TAGS, WEEKDAYS,
@@ -53,6 +55,7 @@ type PhotoItem =
 
 export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: Props) {
   const { t } = useTranslation();
+  const navigation = useNavigation();
   const [name, setName]                     = useState('');
   const [bio, setBio]                       = useState('');
   const [dateOfBirth, setDateOfBirth]       = useState<Date | null>(null);
@@ -68,6 +71,8 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: P
   const [sitterWeekdays, setSitterWeekdays] = useState<string[]>([]);
   const [sitterExperienceYears, setSitterExperienceYears] = useState(0);
   const [sitterTags, setSitterTags]         = useState<string[]>([]);
+  const [dogCount, setDogCount]             = useState(0);
+  const [scrollEnabled, setScrollEnabled]   = useState(true);
   const [locating, setLocating]             = useState(false);
   const [loading, setLoading]               = useState(false);
   const [fetching, setFetching]             = useState(true);
@@ -97,6 +102,12 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: P
         originalPhotoIds.current = user.photos.map(p => p.id);
       }
     }).catch(() => {}).finally(() => setFetching(false));
+
+    // Owning a dog is what the flag claims, so a registered dog settles it —
+    // the toggle is locked on rather than letting the two contradict each other.
+    dogService.getMyDogs()
+      .then(dogs => setDogCount(dogs.length))
+      .catch(() => {});
   }, []);
 
   const addPhoto = async () => {
@@ -140,6 +151,17 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: P
     } finally {
       setLocating(false);
     }
+  };
+
+  // Dragging a slider left-to-right is the same motion as iOS's swipe-to-go-back,
+  // so freeze both the scroll view and the screen's pop gesture for the drag.
+  const lockScroll = () => {
+    setScrollEnabled(false);
+    navigation.setOptions({ gestureEnabled: false });
+  };
+  const unlockScroll = () => {
+    setScrollEnabled(true);
+    navigation.setOptions({ gestureEnabled: true });
   };
 
   // A user without a dog must be a sitter — otherwise the account has no purpose
@@ -245,6 +267,7 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: P
           style={styles.kav}
           contentContainerStyle={styles.container}
           keyboardShouldPersistTaps="handled"
+          scrollEnabled={scrollEnabled}
         >
           {onBack && (
             <TouchableOpacity style={styles.backButton} onPress={onBack}>
@@ -362,15 +385,20 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: P
           <Text style={[styles.label, { marginTop: 8 }]}>{t('profile.form.dogsitting')}</Text>
 
           <View style={styles.switchRow}>
-            <Text style={styles.switchLabel}>{t('profile.form.hasDog')}</Text>
+            <Text style={[styles.switchLabel, dogCount > 0 && styles.switchLabelDisabled]}>
+              {t('profile.form.hasDog')}
+            </Text>
             <Switch
               value={hasDog}
               onValueChange={toggleHasDog}
+              disabled={dogCount > 0}
               trackColor={{ true: Colors.primary }}
               testID="has-dog-switch"
             />
           </View>
-          {!hasDog && <Text style={styles.switchHint}>{t('profile.form.hasDogHint')}</Text>}
+          {dogCount > 0
+            ? <Text style={styles.switchHint}>{t('profile.form.hasDogLocked')}</Text>
+            : !hasDog && <Text style={styles.switchHint}>{t('profile.form.hasDogHint')}</Text>}
 
           <View style={styles.switchRow}>
             <Text style={styles.switchLabel}>{t('profile.form.isSitter')}</Text>
@@ -415,6 +443,8 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: P
                 max={10}
                 step={1}
                 onChange={setSitterExperienceYears}
+                onDragStart={lockScroll}
+                onDragEnd={unlockScroll}
               />
 
               <Text style={styles.tagCat}>{t('profile.form.sitterTagsLabel')} <Text style={styles.tagCatHint}>{t('profile.form.sitterTagsHint')}</Text></Text>
@@ -607,6 +637,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   switchLabel: { fontSize: 15, color: Colors.text, flexShrink: 1, marginRight: 12 },
+  switchLabelDisabled: { color: Colors.textSecondary },
   switchHint:  { fontSize: 12, color: Colors.textSecondary, marginBottom: 6 },
   sitterBox:   { marginBottom: 8 },
   experienceValue: { color: Colors.primary, fontWeight: '700', textTransform: 'none', letterSpacing: 0 },

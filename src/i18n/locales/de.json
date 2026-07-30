@@ -294,6 +294,7 @@
       "dogsitting": "Dogsitting",
       "hasDog": "Ich habe einen Hund",
       "hasDogHint": "Kein Hund? Du kannst trotzdem als Dogsitter dabei sein — Discover bleibt aus, bis du einen Hund hinzufügst.",
+      "hasDogLocked": "Du hast einen Hund im Profil, daher bleibt das aktiviert. Entferne zuerst deinen Hund, um es auszuschalten.",
       "isSitter": "Ich bin als Dogsitter verfügbar",
       "sitterMustStayOn": "Ohne Hund funktioniert dein Konto als Sitter-Profil — deshalb bleibt das an.",
       "lookingForSitter": "Ich suche einen Dogsitter",
@@ -532,9 +533,14 @@
     "list": {
       "title": "Sitter finden",
       "subtitle": "Hundebesitzer in deiner Nähe, die einen Dogsitter suchen",
+      "subtitleJobs": "Hundebesitzer in deiner Nähe, die einen Dogsitter suchen",
+      "subtitleRequests": "Dogsitter in deiner Nähe, die du anfragen kannst",
+      "tabJobs": "Jobs",
+      "tabRequests": "Anfragen",
       "empty": "Gerade sucht niemand in deiner Nähe einen Dogsitter. Schau später wieder vorbei!",
+      "emptySitters": "Gerade gibt es keine Dogsitter in deiner Nähe. Schau später wieder vorbei!",
       "contact": "Kontaktieren",
-      "enableSitterHint": "Du möchtest Besitzer kontaktieren? Aktiviere „Ich bin als Dogsitter verfügbar“ in deinem Profil. Tippe hier zum Bearbeiten.",
+      "enableSitterHint": "Aktiviere „Ich bin als Dogsitter verfügbar“ oder „Ich suche einen Dogsitter“ in deinem Profil, um zu chatten. Tippe hier zum Bearbeiten.",
       "error": "Liste konnte nicht geladen werden."
     },
     "profile": {

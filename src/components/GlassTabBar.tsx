@@ -6,6 +6,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useTranslation } from 'react-i18next';
 import { RootStackParamList } from '../types/navigation';
 import { MainTabParamList } from '../app/TabNavigator';
+import { useHasDog } from '../hooks/useHasDog';
 import { Colors } from '../constants/colors';
 
 type Tab = { name: keyof MainTabParamList; labelKey: string; icon: string; iconActive: string };
@@ -23,12 +24,15 @@ type Props = { activeTab?: keyof MainTabParamList };
 export function GlassTabBar({ activeTab }: Props) {
   const { t } = useTranslation();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  // Keep in step with TabNavigator, which drops Discover for sitter-only accounts.
+  const hasDog = useHasDog();
+  const tabs = hasDog === false ? TABS.filter(tab => tab.name !== 'Discover') : TABS;
 
   return (
     <View style={glassTabBarStyles.wrapper} pointerEvents="box-none">
       <BlurView intensity={60} tint="light" style={glassTabBarStyles.blur}>
         <View style={glassTabBarStyles.tabBar}>
-          {TABS.map(tab => {
+          {tabs.map(tab => {
             const focused = tab.name === activeTab;
             return (
               <TouchableOpacity
@@ -43,7 +47,13 @@ export function GlassTabBar({ activeTab }: Props) {
                     size={22}
                     color={focused ? Colors.primary : Colors.textSecondary}
                   />
-                  <Text style={[glassTabBarStyles.tabLabel, focused && glassTabBarStyles.tabLabelActive]}>
+                  <Text
+                    style={[glassTabBarStyles.tabLabel, focused && glassTabBarStyles.tabLabelActive]}
+                    numberOfLines={1}
+                    adjustsFontSizeToFit
+                    minimumFontScale={0.75}
+                    maxFontSizeMultiplier={1.2}
+                  >
                     {t(tab.labelKey)}
                   </Text>
                 </View>
@@ -75,9 +85,11 @@ export const glassTabBarStyles = StyleSheet.create({
     paddingHorizontal: 8,
     backgroundColor: Colors.glass.overlay,
   },
-  tab:            { flex: 1, alignItems: 'center' },
-  tabInner:       { alignItems: 'center', paddingVertical: 6, paddingHorizontal: 16, borderRadius: 16, gap: 3 },
+  tab:            { flex: 1, alignItems: 'stretch' },
+  // Horizontal padding stays small so translated labels (DE/FR/IT run longer than
+  // EN) keep enough width to render on one line instead of wrapping mid-word.
+  tabInner:       { alignItems: 'center', paddingVertical: 6, paddingHorizontal: 4, borderRadius: 16, gap: 3 },
   tabInnerActive: { backgroundColor: 'rgba(46,158,107,0.12)' },
-  tabLabel:       { fontSize: 11, fontWeight: '600', color: Colors.textSecondary },
+  tabLabel:       { fontSize: 11, fontWeight: '600', color: Colors.textSecondary, textAlign: 'center' },
   tabLabelActive: { color: Colors.primary },
 });

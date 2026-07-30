@@ -11,6 +11,7 @@ import PlaydatesScreen from '../features/playdates/PlaydatesScreen';
 import ChatsScreen from '../features/chat/ChatsScreen';
 import HomeScreen from '../screens/HomeScreen';
 import { glassTabBarStyles as styles } from '../components/GlassTabBar';
+import { useHasDog } from '../hooks/useHasDog';
 import { Colors } from '../constants/colors';
 
 export type MainTabParamList = {
@@ -60,7 +61,13 @@ function GlassTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
                     size={22}
                     color={focused ? Colors.primary : Colors.textSecondary}
                   />
-                  <Text style={[styles.tabLabel, focused && styles.tabLabelActive]}>
+                  <Text
+                    style={[styles.tabLabel, focused && styles.tabLabelActive]}
+                    numberOfLines={1}
+                    adjustsFontSizeToFit
+                    minimumFontScale={0.75}
+                    maxFontSizeMultiplier={1.2}
+                  >
                     {label}
                   </Text>
                 </View>
@@ -77,12 +84,18 @@ export default function TabNavigator() {
   // The user is authenticated once the main tabs mount — register this device for push
   useEffect(() => { notificationService.register(); }, []);
 
+  // Swiping for dog owners is pointless without a dog of your own to match with,
+  // so non-owners (sitter-only accounts) don't get the tab at all.
+  const hasDog = useHasDog();
+  const showDiscover = hasDog !== false;
+
   return (
     <Tab.Navigator
       tabBar={props => <GlassTabBar {...props} />}
       screenOptions={{ headerShown: false }}
+      initialRouteName={showDiscover ? 'Discover' : 'FindSitter'}
     >
-      <Tab.Screen name="Discover"   component={DiscoverScreen} />
+      {showDiscover && <Tab.Screen name="Discover" component={DiscoverScreen} />}
       <Tab.Screen name="FindSitter" component={FindSitterScreen} />
       <Tab.Screen name="Playdates"  component={PlaydatesScreen} />
       <Tab.Screen name="Chats"      component={ChatsScreen} />
