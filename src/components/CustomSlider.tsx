@@ -36,12 +36,15 @@ export function CustomSlider({ value, min, max, step, onChange, onDragStart, onD
   return (
     <View
       style={sliderStyles.track}
+      // Reach past the visual bounds — `compute` clamps the ratio to 0..1, so a
+      // touch landing in the slop still resolves to a valid value.
+      hitSlop={{ top: 10, bottom: 10, left: 12, right: 12 }}
       onLayout={e => { const w = e.nativeEvent.layout.width; setTrackWidth(w); stateRef.current.trackWidth = w; }}
       {...pan.panHandlers}
     >
       <View style={sliderStyles.rail} />
       <View style={[sliderStyles.fill, { width: `${fillPct}%` }]} />
-      <View style={[sliderStyles.thumb, { left: `${fillPct}%`, transform: [{ translateX: -14 }] }]} />
+      <View style={[sliderStyles.thumb, { left: `${fillPct}%`, transform: [{ translateX: -16 }] }]} />
     </View>
   );
 }
@@ -49,9 +52,9 @@ export function CustomSlider({ value, min, max, step, onChange, onDragStart, onD
 export const sliderStyles = StyleSheet.create({
   // Tall track + generous thumb: the rail itself is only 4pt, so the touch target
   // has to come from the container or the drag is easy to miss.
-  track: { height: 56, justifyContent: 'center', position: 'relative' },
+  track: { height: 64, justifyContent: 'center', position: 'relative' },
   rail:  { height: 4, backgroundColor: Colors.border, borderRadius: 2, position: 'absolute', left: 0, right: 0 },
   fill:  { height: 4, backgroundColor: Colors.primary, borderRadius: 2, position: 'absolute', left: 0 },
-  thumb: { width: 28, height: 28, borderRadius: 14, backgroundColor: Colors.primary, position: 'absolute', top: 14, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.2, shadowRadius: 4, elevation: 4 },
+  thumb: { width: 32, height: 32, borderRadius: 16, backgroundColor: Colors.primary, position: 'absolute', top: 16, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.2, shadowRadius: 4, elevation: 4 },
   multiThumb: { width: 24, height: 24, borderRadius: 12, backgroundColor: Colors.primary, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.2, shadowRadius: 4, elevation: 4 },
 });

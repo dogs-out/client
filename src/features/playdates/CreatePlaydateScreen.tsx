@@ -53,6 +53,15 @@ export default function CreatePlaydateScreen({ navigation, route }: Props) {
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(!!playdateId);
   const [error, setError] = useState<string | null>(null);
+  const [scrollEnabled, setScrollEnabled] = useState(true);
+
+  // The participant slider is a horizontal drag, same motion as swipe-to-go-back,
+  // and the system edge recognizer wins that race at touch-down. Off for the whole
+  // screen (it has its own back button) — see ProfileForm and DiscoverFiltersScreen.
+  useEffect(() => {
+    navigation.setOptions({ gestureEnabled: false });
+    return () => navigation.setOptions({ gestureEnabled: true });
+  }, [navigation]);
 
   // ParkPicker returns its selection by navigating back with merged params
   useEffect(() => {
@@ -158,7 +167,11 @@ export default function CreatePlaydateScreen({ navigation, route }: Props) {
       </View>
 
       <KeyboardAvoidingView style={styles.flex} behavior="padding">
-        <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
+        <ScrollView
+          contentContainerStyle={styles.scroll}
+          keyboardShouldPersistTaps="handled"
+          scrollEnabled={scrollEnabled}
+        >
 
           {/* WHERE */}
           <GlassCard style={styles.card}>
@@ -223,7 +236,11 @@ export default function CreatePlaydateScreen({ navigation, route }: Props) {
             {hasLimit && (
               <>
                 <Text style={styles.limitValue}>{t('playdates.create.limitValue', { count: limit })}</Text>
-                <CustomSlider value={limit} min={2} max={20} step={1} onChange={setLimit} />
+                <CustomSlider
+                  value={limit} min={2} max={20} step={1} onChange={setLimit}
+                  onDragStart={() => setScrollEnabled(false)}
+                  onDragEnd={() => setScrollEnabled(true)}
+                />
               </>
             )}
           </GlassCard>
