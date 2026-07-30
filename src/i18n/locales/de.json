@@ -227,8 +227,8 @@
       "keepSwiping": "Weiter wischen",
       "adjustDistance": "Suchdistanz anpassen",
       "lockedTitle": "Discover ist für Hundebesitzer",
-      "lockedBody": "Dein Profil ist auf „kein Hund“ eingestellt, daher ist das Swipen deaktiviert. Dogsitting-Jobs findest du im Tab „Sitter finden“ — oder füge einen Hund hinzu, um Discover freizuschalten.",
-      "lockedCta": "Zu „Sitter finden“"
+      "lockedBody": "Dein Profil ist auf „kein Hund“ eingestellt, daher ist das Swipen deaktiviert. Dogsitting-Jobs findest du im Tab „Dogsitting“ — oder füge einen Hund hinzu, um Discover freizuschalten.",
+      "lockedCta": "Zu „Dogsitting“"
     },
     "filters": {
       "saveFailed": "Deine Einstellungen konnten nicht gespeichert werden. Bitte versuche es erneut.",
@@ -379,8 +379,8 @@
         "a": "„Entdecken\" zeigt nur Personen innerhalb deiner Entfernungseinstellung, die zu deinen Filtern passen. Versuche, die maximale Entfernung zu erhöhen oder die Altersfilter unter Einstellungen → Entdecken-Einstellungen zu erweitern. Dein eigener Standort muss festgelegt sein, damit das entfernungsbasierte Matching funktioniert."
       },
       "findSitter": {
-        "q": "Wie funktioniert „Sitter finden“?",
-        "a": "Hundehalter können in ihrem Profil „Ich suche einen Dogsitter“ aktivieren — dann erscheinen sie im Tab „Sitter finden“. Nutzer mit aktiviertem Sitter-Modus können sie dort kontaktieren; das öffnet einfach einen Chat. Dogs Out hilft nur beim Herstellen des Kontakts: Wir prüfen oder beschäftigen keine Sitter und sind nicht Teil eurer Vereinbarung. Wir empfehlen dringend ein persönliches Kennenlerngespräch und ein Probetreffen mit dem Hund, bevor ihr etwas vereinbart — alles, was ihr abmacht, liegt in eurer eigenen Verantwortung."
+        "q": "Wie funktioniert „Dogsitting“?",
+        "a": "Hundehalter können in ihrem Profil „Ich suche einen Dogsitter“ aktivieren — dann erscheinen sie im Tab „Dogsitting“. Nutzer mit aktiviertem Sitter-Modus können sie dort kontaktieren; das öffnet einfach einen Chat. Dogs Out hilft nur beim Herstellen des Kontakts: Wir prüfen oder beschäftigen keine Sitter und sind nicht Teil eurer Vereinbarung. Wir empfehlen dringend ein persönliches Kennenlerngespräch und ein Probetreffen mit dem Hund, bevor ihr etwas vereinbart — alles, was ihr abmacht, liegt in eurer eigenen Verantwortung."
       },
       "becomeSitter": {
         "q": "Wie werde ich Dogsitter?",
@@ -529,9 +529,9 @@
     "Overnight stays OK": "Übernachtung möglich"
   },
   "sitter": {
-    "tabTitle": "Sitter finden",
+    "tabTitle": "Dogsitting",
     "list": {
-      "title": "Sitter finden",
+      "title": "Dogsitting",
       "subtitle": "Hundebesitzer in deiner Nähe, die einen Dogsitter suchen",
       "subtitleJobs": "Hundebesitzer in deiner Nähe, die einen Dogsitter suchen",
       "subtitleRequests": "Dogsitter in deiner Nähe, die du anfragen kannst",

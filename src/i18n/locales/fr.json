@@ -227,8 +227,8 @@
       "keepSwiping": "Continuer",
       "adjustDistance": "Ajuster la distance de recherche",
       "lockedTitle": "Discover est réservé aux propriétaires de chiens",
-      "lockedBody": "Ton profil est réglé sur « pas de chien », le swipe est donc désactivé. Tu trouveras des jobs de dogsitting dans l'onglet « Trouver un sitter » — ou ajoute un chien pour débloquer Discover.",
-      "lockedCta": "Aller à « Trouver un sitter »"
+      "lockedBody": "Ton profil est réglé sur « pas de chien », le swipe est donc désactivé. Tu trouveras des jobs de dogsitting dans l'onglet « Dogsitting » — ou ajoute un chien pour débloquer Discover.",
+      "lockedCta": "Aller à « Dogsitting »"
     },
     "filters": {
       "saveFailed": "Tes préférences n'ont pas pu être enregistrées. Veuillez réessayer.",
@@ -379,8 +379,8 @@
         "a": "Découvrir n'affiche que les personnes dans ta zone de distance qui correspondent à tes filtres. Essaie d'augmenter la distance maximale ou d'élargir les filtres d'âge dans Réglages → Préférences de découverte. Ta propre position doit être définie pour que le matching par distance fonctionne."
       },
       "findSitter": {
-        "q": "Comment fonctionne « Trouver un sitter » ?",
-        "a": "Les propriétaires de chiens peuvent activer « Je cherche un dogsitter » dans leur profil — ils apparaissent alors dans l'onglet « Trouver un sitter ». Les utilisateurs ayant activé le mode sitter peuvent les y contacter ; cela ouvre simplement un chat. Dogs Out t'aide uniquement à entrer en contact : nous ne contrôlons ni n'employons les sitters et nous ne faisons pas partie de votre accord. Nous recommandons vivement un entretien en personne et une rencontre d'essai avec le chien avant de convenir de quoi que ce soit — tout ce que vous organisez relève de votre propre responsabilité."
+        "q": "Comment fonctionne « Dogsitting » ?",
+        "a": "Les propriétaires de chiens peuvent activer « Je cherche un dogsitter » dans leur profil — ils apparaissent alors dans l'onglet « Dogsitting ». Les utilisateurs ayant activé le mode sitter peuvent les y contacter ; cela ouvre simplement un chat. Dogs Out t'aide uniquement à entrer en contact : nous ne contrôlons ni n'employons les sitters et nous ne faisons pas partie de votre accord. Nous recommandons vivement un entretien en personne et une rencontre d'essai avec le chien avant de convenir de quoi que ce soit — tout ce que vous organisez relève de votre propre responsabilité."
       },
       "becomeSitter": {
         "q": "Comment devenir dogsitter ?",
@@ -529,9 +529,9 @@
     "Overnight stays OK": "Nuits possibles"
   },
   "sitter": {
-    "tabTitle": "Trouver un sitter",
+    "tabTitle": "Dogsitting",
     "list": {
-      "title": "Trouver un sitter",
+      "title": "Dogsitting",
       "subtitle": "Propriétaires de chiens près de chez toi qui cherchent un dogsitter",
       "subtitleJobs": "Propriétaires de chiens près de chez toi qui cherchent un dogsitter",
       "subtitleRequests": "Dogsitters près de chez toi que tu peux contacter",

@@ -41,16 +41,27 @@ export default function FindSitterScreen() {
   const [contactingId, setContactingId] = useState<number | null>(null);
 
   const load = useCallback(() => {
-    Promise.all([userService.getMe(), sitterService.getSeekers(), sitterService.getAvailableSitters()])
-      .then(([me, seekerPool, sitterPool]) => {
+    userService.getMe()
+      .then(me => {
         setAmSitter(me.isSitter);
         setAmSeeking(me.lookingForSitter);
-        setSeekers(seekerPool.filter(p => p.userId !== me.id));
-        setSitters(sitterPool.filter(p => p.userId !== me.id));
-        // Land on the side that matches the single role they enabled; once they've
-        // tapped the switcher themselves, leave their choice alone on refocus.
-        if (!modePinned) setMode(me.isSitter ? 'jobs' : 'requests');
-        setError(false);
+        // The sitter pool is only served to users looking for a sitter (403 otherwise),
+        // so don't ask for it unless we're entitled to it.
+        return Promise.all([
+          sitterService.getSeekers(),
+          me.lookingForSitter ? sitterService.getAvailableSitters() : Promise.resolve([]),
+        ]).then(([seekerPool, sitterPool]) => {
+          setSeekers(seekerPool.filter(p => p.userId !== me.id));
+          setSitters(sitterPool.filter(p => p.userId !== me.id));
+          // Land on the side that matches the single role they enabled; once they've
+          // tapped the switcher themselves, leave their choice alone on refocus.
+          // Requests is only reachable while lookingForSitter holds, so a pinned
+          // choice is dropped if that toggle goes off.
+          if (!modePinned || (!me.lookingForSitter)) {
+            setMode(me.lookingForSitter && !me.isSitter ? 'requests' : 'jobs');
+          }
+          setError(false);
+        });
       })
       .catch(() => setError(true))
       .finally(() => setLoading(false));

@@ -227,8 +227,8 @@
       "keepSwiping": "Continua a scorrere",
       "adjustDistance": "Modifica la distanza di ricerca",
       "lockedTitle": "Discover è per i proprietari di cani",
-      "lockedBody": "Il tuo profilo è impostato su «nessun cane», quindi lo swipe è disattivato. Trovi i lavori di dogsitting nella scheda «Trova un sitter» — oppure aggiungi un cane per sbloccare Discover.",
-      "lockedCta": "Vai a «Trova un sitter»"
+      "lockedBody": "Il tuo profilo è impostato su «nessun cane», quindi lo swipe è disattivato. Trovi i lavori di dogsitting nella scheda «Dogsitting» — oppure aggiungi un cane per sbloccare Discover.",
+      "lockedCta": "Vai a «Dogsitting»"
     },
     "filters": {
       "saveFailed": "Impossibile salvare le tue preferenze. Riprova.",
@@ -379,8 +379,8 @@
         "a": "Scopri mostra solo le persone entro la distanza impostata che corrispondono ai tuoi filtri. Prova ad aumentare la distanza massima o ad ampliare i filtri per età in Impostazioni → Preferenze di scoperta. La tua posizione deve essere impostata perché il matching per distanza funzioni."
       },
       "findSitter": {
-        "q": "Come funziona «Trova un sitter»?",
-        "a": "I proprietari di cani possono attivare «Cerco un dogsitter» nel loro profilo — compariranno così nella scheda «Trova un sitter». Gli utenti con la modalità sitter attiva possono contattarli lì; si apre semplicemente una chat. Dogs Out ti aiuta solo a entrare in contatto: non controlliamo né impieghiamo i sitter e non facciamo parte del vostro accordo. Consigliamo vivamente un colloquio di persona e un incontro di prova con il cane prima di concordare qualsiasi cosa — tutto ciò che organizzate è sotto la vostra responsabilità."
+        "q": "Come funziona «Dogsitting»?",
+        "a": "I proprietari di cani possono attivare «Cerco un dogsitter» nel loro profilo — compariranno così nella scheda «Dogsitting». Gli utenti con la modalità sitter attiva possono contattarli lì; si apre semplicemente una chat. Dogs Out ti aiuta solo a entrare in contatto: non controlliamo né impieghiamo i sitter e non facciamo parte del vostro accordo. Consigliamo vivamente un colloquio di persona e un incontro di prova con il cane prima di concordare qualsiasi cosa — tutto ciò che organizzate è sotto la vostra responsabilità."
       },
       "becomeSitter": {
         "q": "Come divento dogsitter?",
@@ -529,9 +529,9 @@
     "Overnight stays OK": "Pernottamento possibile"
   },
   "sitter": {
-    "tabTitle": "Trova un sitter",
+    "tabTitle": "Dogsitting",
     "list": {
-      "title": "Trova un sitter",
+      "title": "Dogsitting",
       "subtitle": "Proprietari di cani vicino a te che cercano un dogsitter",
       "subtitleJobs": "Proprietari di cani vicino a te che cercano un dogsitter",
       "subtitleRequests": "Dogsitter vicino a te che puoi contattare",

@@ -227,8 +227,8 @@
       "keepSwiping": "Keep Swiping",
       "adjustDistance": "Adjust search distance",
       "lockedTitle": "Discover is for dog owners",
-      "lockedBody": "Your profile is set to \"no dog\", so the swipe deck is off. You can find dogsitting jobs in the Find a Sitter tab — or add a dog to unlock Discover.",
-      "lockedCta": "Go to Find a Sitter"
+      "lockedBody": "Your profile is set to \"no dog\", so the swipe deck is off. You can find dogsitting jobs in the Dogsitting tab — or add a dog to unlock Discover.",
+      "lockedCta": "Go to Dogsitting"
     },
     "filters": {
       "saveFailed": "Your preferences could not be saved. Please try again.",
@@ -379,8 +379,8 @@
         "a": "Discover only shows people within your distance setting who match your filters. Try increasing the maximum distance or widening the age filters under Settings → Discovery preferences. Your own location must be set for distance matching to work."
       },
       "findSitter": {
-        "q": "How does Find a Sitter work?",
-        "a": "Dog owners can turn on \"I'm looking for a dogsitter\" in their profile — they then appear in the Find a Sitter tab. Users who enabled sitter mode can contact them there, which simply opens a chat. Dogs Out only helps you get in contact: we don't vet or employ sitters and we're not part of your arrangement. We strongly recommend a personal interview and a trial meet-and-greet with the dog before agreeing to anything — everything you arrange is at your own responsibility."
+        "q": "How does Dogsitting work?",
+        "a": "Dog owners can turn on \"I'm looking for a dogsitter\" in their profile — they then appear in the Dogsitting tab. Users who enabled sitter mode can contact them there, which simply opens a chat. Dogs Out only helps you get in contact: we don't vet or employ sitters and we're not part of your arrangement. We strongly recommend a personal interview and a trial meet-and-greet with the dog before agreeing to anything — everything you arrange is at your own responsibility."
       },
       "becomeSitter": {
         "q": "How do I become a dogsitter?",
@@ -454,9 +454,9 @@
     "previewMyDog_other": "Preview my Dogs"
   },
   "sitter": {
-    "tabTitle": "Find a Sitter",
+    "tabTitle": "Dogsitting",
     "list": {
-      "title": "Find a Sitter",
+      "title": "Dogsitting",
       "subtitle": "Dog owners nearby who are looking for a dogsitter",
       "subtitleJobs": "Dog owners nearby who are looking for a dogsitter",
       "subtitleRequests": "Dogsitters nearby you can reach out to",
