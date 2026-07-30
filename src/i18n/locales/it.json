@@ -294,6 +294,7 @@
       "dogsitting": "Dogsitting",
       "hasDog": "Ho un cane",
       "hasDogHint": "Nessun cane? Puoi comunque partecipare come dogsitter — Discover resta disattivato finché non aggiungi un cane.",
+      "hasDogLocked": "Hai un cane nel profilo, quindi questa opzione resta attiva. Rimuovi prima il tuo cane per disattivarla.",
       "isSitter": "Sono disponibile come dogsitter",
       "sitterMustStayOn": "Senza un cane il tuo account funziona come profilo da sitter — quindi questa opzione resta attiva.",
       "lookingForSitter": "Cerco un dogsitter",

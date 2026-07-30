@@ -294,6 +294,7 @@
       "dogsitting": "Dogsitting",
       "hasDog": "I have a dog",
       "hasDogHint": "No dog? You can still join as a dogsitter — Discover stays off until you add a dog.",
+      "hasDogLocked": "You have a dog on your profile, so this stays on. Remove your dog first to turn it off.",
       "isSitter": "I'm available as a dog sitter",
       "sitterMustStayOn": "Without a dog, your account works as a sitter profile — so this stays on.",
       "lookingForSitter": "I'm looking for a dogsitter",
