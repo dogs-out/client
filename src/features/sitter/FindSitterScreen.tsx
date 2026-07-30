@@ -45,10 +45,11 @@ export default function FindSitterScreen() {
       .then(me => {
         setAmSitter(me.isSitter);
         setAmSeeking(me.lookingForSitter);
-        // The sitter pool is only served to users looking for a sitter (403 otherwise),
-        // so don't ask for it unless we're entitled to it.
+        // Each pool is served only to the matching role (403 otherwise) — you can't
+        // browse sitters until you're looking for one, or jobs until you are one.
+        // Don't ask for a pool we aren't entitled to.
         return Promise.all([
-          sitterService.getSeekers(),
+          me.isSitter ? sitterService.getSeekers() : Promise.resolve([]),
           me.lookingForSitter ? sitterService.getAvailableSitters() : Promise.resolve([]),
         ]).then(([seekerPool, sitterPool]) => {
           setSeekers(seekerPool.filter(p => p.userId !== me.id));
@@ -94,6 +95,9 @@ export default function FindSitterScreen() {
   const canContact = mode === 'jobs' ? amSitter : amSeeking;
   const data = mode === 'jobs' ? seekers : sitters;
   const showSwitcher = amSitter && amSeeking;
+  // With neither toggle on both pools are withheld, so the empty list needs to say
+  // "you haven't opted in" rather than "nobody is nearby".
+  const hasAnyRole = amSitter || amSeeking;
 
   const selectMode = (next: SitterMode) => { setModePinned(true); setMode(next); };
 
@@ -205,7 +209,9 @@ export default function FindSitterScreen() {
             <View style={styles.centered}>
               <Text style={styles.emptyEmoji}>🐾</Text>
               <Text style={styles.emptyText}>
-                {t(mode === 'jobs' ? 'sitter.list.empty' : 'sitter.list.emptySitters')}
+                {!hasAnyRole
+                  ? t('sitter.list.emptyNoRole')
+                  : t(mode === 'jobs' ? 'sitter.list.empty' : 'sitter.list.emptySitters')}
               </Text>
             </View>
           }

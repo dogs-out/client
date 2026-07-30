@@ -539,6 +539,7 @@
       "tabRequests": "Richieste",
       "empty": "Al momento nessuno vicino a te cerca un dogsitter. Riprova più tardi!",
       "emptySitters": "Al momento non ci sono dogsitter vicino a te. Riprova più tardi!",
+      "emptyNoRole": "Attiva un ruolo di dogsitting nel tuo profilo per vedere chi c'è nelle vicinanze — dogsitter se ne cerchi uno, o proprietari in cerca di un sitter se vuoi fare da sitter.",
       "contact": "Contatta",
       "enableSitterHint": "Attiva «Sono disponibile come dogsitter» o «Cerco un dogsitter» nel tuo profilo per chattare. Tocca qui per modificare.",
       "error": "Impossibile caricare la lista."

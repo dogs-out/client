@@ -464,6 +464,7 @@
       "tabRequests": "Requests",
       "empty": "No one nearby is looking for a dogsitter right now. Check back later!",
       "emptySitters": "No dogsitters nearby right now. Check back later!",
+      "emptyNoRole": "Turn on a dogsitting role in your profile to see who's nearby — sitters if you need one, or owners looking for a sitter if you'd like to sit.",
       "contact": "Contact",
       "enableSitterHint": "Turn on “I’m available as a dog sitter” or “I’m looking for a dogsitter” in your profile to start chatting. Tap here to edit.",
       "error": "Couldn't load the list."

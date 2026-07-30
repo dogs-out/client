@@ -539,6 +539,7 @@
       "tabRequests": "Anfragen",
       "empty": "Gerade sucht niemand in deiner Nähe einen Dogsitter. Schau später wieder vorbei!",
       "emptySitters": "Gerade gibt es keine Dogsitter in deiner Nähe. Schau später wieder vorbei!",
+      "emptyNoRole": "Aktiviere eine Dogsitting-Rolle in deinem Profil, um zu sehen, wer in der Nähe ist — Dogsitter, wenn du einen brauchst, oder Besitzer auf Sitter-Suche, wenn du selbst sitten möchtest.",
       "contact": "Kontaktieren",
       "enableSitterHint": "Aktiviere „Ich bin als Dogsitter verfügbar“ oder „Ich suche einen Dogsitter“ in deinem Profil, um zu chatten. Tippe hier zum Bearbeiten.",
       "error": "Liste konnte nicht geladen werden."
