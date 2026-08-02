@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import {
-  ActivityIndicator, Image, KeyboardAvoidingView, Modal, Platform,
+  ActivityIndicator, Alert, Image, KeyboardAvoidingView, Modal, Platform,
   ScrollView, StyleSheet, Switch, Text, TextInput, TouchableOpacity, View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -53,6 +53,15 @@ export default function CreatePlaydateScreen({ navigation, route }: Props) {
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(!!playdateId);
   const [error, setError] = useState<string | null>(null);
+  const [scrollEnabled, setScrollEnabled] = useState(true);
+
+  // The participant slider is a horizontal drag, same motion as swipe-to-go-back,
+  // and the system edge recognizer wins that race at touch-down. Off for the whole
+  // screen (it has its own back button) — see ProfileForm and DiscoverFiltersScreen.
+  useEffect(() => {
+    navigation.setOptions({ gestureEnabled: false });
+    return () => navigation.setOptions({ gestureEnabled: true });
+  }, [navigation]);
 
   // ParkPicker returns its selection by navigating back with merged params
   useEffect(() => {
@@ -114,14 +123,26 @@ export default function CreatePlaydateScreen({ navigation, route }: Props) {
       };
       if (playdateId) {
         await playdateService.updatePlaydate(playdateId, payload);
-      } else {
-        await playdateService.createPlaydate({
-          ...payload,
-          visibility,
-          inviteUserIds: visibility === 'INVITE_ONLY' ? invitees : undefined,
-        });
+        navigation.goBack();
+        return;
       }
-      navigation.goBack();
+
+      await playdateService.createPlaydate({
+        ...payload,
+        visibility,
+        inviteUserIds: visibility === 'INVITE_ONLY' ? invitees : undefined,
+      });
+      // ParkPicker returns here via navigate(), so it can still be sitting under
+      // this screen — goBack() would drop the user back onto the map they already
+      // finished with. Send them to the list explicitly instead.
+      Alert.alert(
+        t('playdates.create.createdTitle'),
+        t('playdates.create.createdBody'),
+        [{
+          text: t('common.ok'),
+          onPress: () => navigation.popTo('MainTabs', { screen: 'Playdates' } as never),
+        }],
+      );
     } catch (e) {
       setError(getApiError(e));
     } finally {
@@ -158,7 +179,11 @@ export default function CreatePlaydateScreen({ navigation, route }: Props) {
       </View>
 
       <KeyboardAvoidingView style={styles.flex} behavior="padding">
-        <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
+        <ScrollView
+          contentContainerStyle={styles.scroll}
+          keyboardShouldPersistTaps="handled"
+          scrollEnabled={scrollEnabled}
+        >
 
           {/* WHERE */}
           <GlassCard style={styles.card}>
@@ -223,7 +248,11 @@ export default function CreatePlaydateScreen({ navigation, route }: Props) {
             {hasLimit && (
               <>
                 <Text style={styles.limitValue}>{t('playdates.create.limitValue', { count: limit })}</Text>
-                <CustomSlider value={limit} min={2} max={20} step={1} onChange={setLimit} />
+                <CustomSlider
+                  value={limit} min={2} max={20} step={1} onChange={setLimit}
+                  onDragStart={() => setScrollEnabled(false)}
+                  onDragEnd={() => setScrollEnabled(true)}
+                />
               </>
             )}
           </GlassCard>

@@ -153,16 +153,19 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: P
     }
   };
 
-  // Dragging a slider left-to-right is the same motion as iOS's swipe-to-go-back,
-  // so freeze both the scroll view and the screen's pop gesture for the drag.
-  const lockScroll = () => {
-    setScrollEnabled(false);
+  // Dragging the experience slider is the same motion as iOS's swipe-to-go-back, and
+  // the system edge recognizer starts tracking at touch-down — before the slider's
+  // PanResponder is granted. Disabling the pop gesture only for the drag therefore
+  // loses the race and the screen still closes, so it's off for the whole screen
+  // (which has its own back button), matching DiscoverFiltersScreen.
+  useEffect(() => {
     navigation.setOptions({ gestureEnabled: false });
-  };
-  const unlockScroll = () => {
-    setScrollEnabled(true);
-    navigation.setOptions({ gestureEnabled: true });
-  };
+    return () => navigation.setOptions({ gestureEnabled: true });
+  }, [navigation]);
+
+  // Separately, stop the scroll view stealing the vertical component of a drag.
+  const lockScroll = () => setScrollEnabled(false);
+  const unlockScroll = () => setScrollEnabled(true);
 
   // A user without a dog must be a sitter — otherwise the account has no purpose
   const toggleHasDog = (value: boolean) => {
