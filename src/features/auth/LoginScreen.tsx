@@ -48,7 +48,7 @@ const REDIRECT_URI = AuthSession.makeRedirectUri({
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
-export default function LoginScreen({ navigation }: Props) {
+export default function LoginScreen({ navigation }: Readonly<Props>) {
   const { t, i18n } = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

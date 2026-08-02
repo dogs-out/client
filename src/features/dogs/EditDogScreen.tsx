@@ -4,7 +4,7 @@ import { DogForm } from './DogForm';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'EditDog'>;
 
-export default function EditDogScreen({ navigation, route }: Props) {
+export default function EditDogScreen({ navigation, route }: Readonly<Props>) {
   return (
     <DogForm
       dogId={route.params.dogId}

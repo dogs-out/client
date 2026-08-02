@@ -13,7 +13,7 @@ import { Colors } from '../../constants/colors';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'VerifyEmail'>;
 
-export default function VerifyEmailScreen({ route, navigation }: Props) {
+export default function VerifyEmailScreen({ route, navigation }: Readonly<Props>) {
   const { t } = useTranslation();
   const { email, name, password } = route.params;
   const [code, setCode] = useState('');

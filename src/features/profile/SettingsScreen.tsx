@@ -21,7 +21,7 @@ type SettingsRow = {
   onPress: () => void;
 };
 
-export default function SettingsScreen({ navigation }: Props) {
+export default function SettingsScreen({ navigation }: Readonly<Props>) {
   const { t } = useTranslation();
   const [isLocalAuth, setIsLocalAuth] = useState(true);
 

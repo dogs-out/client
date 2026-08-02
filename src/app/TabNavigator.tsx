@@ -32,7 +32,7 @@ const TAB_ITEMS: { name: keyof MainTabParamList; labelKey: string; icon: string;
   { name: 'Profile',    labelKey: 'home.profileTab',                icon: 'person-outline',     iconActive: 'person' },
 ];
 
-function GlassTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
+function GlassTabBar({ state, descriptors, navigation }: Readonly<BottomTabBarProps>) {
   const { t } = useTranslation();
   return (
     <View style={styles.wrapper}>

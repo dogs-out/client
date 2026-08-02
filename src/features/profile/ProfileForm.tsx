@@ -10,7 +10,7 @@ import * as ImagePicker from 'expo-image-picker';
 import * as Location from 'expo-location';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
-import { userService, UserPhoto } from '../../services/userService';
+import { userService } from '../../services/userService';
 import { dogService } from '../../services/dogService';
 import {
   OWNER_LIFESTYLE_TAGS, OWNER_PERSONALITY_TAGS, RELATIONSHIP_STATUS_OPTIONS,
@@ -33,7 +33,7 @@ interface Props {
 }
 
 const MIN_AGE = 18;
-const NAME_REGEX = /^[a-zA-ZÀ-ÿ\s'\-]+$/;
+const NAME_REGEX = /^[a-zA-ZÀ-ÿ\s'-]+$/;
 // Without an explicit minimum the Android picker bottoms out at the Unix epoch (1970)
 const MIN_DOB = new Date(1900, 0, 1);
 
@@ -53,7 +53,7 @@ type PhotoItem =
   | { kind: 'existing'; photoId: number; uri: string }
   | { kind: 'new'; uri: string };
 
-export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: Props) {
+export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: Readonly<Props>) {
   const { t } = useTranslation();
   const navigation = useNavigation();
   const [name, setName]                     = useState('');

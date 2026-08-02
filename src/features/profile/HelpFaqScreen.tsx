@@ -13,7 +13,7 @@ type Props = NativeStackScreenProps<RootStackParamList, 'HelpFaq'>;
 
 const FAQ_KEYS = ['matching', 'discoverEmpty', 'findSitter', 'becomeSitter', 'editDogs', 'reportBlock', 'privateMessages', 'deleteAccount'] as const;
 
-export default function HelpFaqScreen({ navigation }: Props) {
+export default function HelpFaqScreen({ navigation }: Readonly<Props>) {
   const { t } = useTranslation();
   const [open, setOpen] = useState<number | null>(0);
 

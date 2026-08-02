@@ -5,7 +5,7 @@ import { ProfileForm } from '../features/profile/ProfileForm';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ProfileSetup'>;
 
-export default function ProfileSetupScreen({ navigation }: Props) {
+export default function ProfileSetupScreen({ navigation }: Readonly<Props>) {
   const { t } = useTranslation();
   return (
     <ProfileForm

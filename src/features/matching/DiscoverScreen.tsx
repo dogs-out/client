@@ -48,7 +48,7 @@ function buildFlatPhotos(profile: DiscoverProfile): FlatPhoto[] {
 }
 
 /** US-06: dog jumps up, catches the bone mid-air, lands and wags. */
-function BoneCatchOverlay({ onDone }: { onDone: () => void }) {
+function BoneCatchOverlay({ onDone }: Readonly<{ onDone: () => void }>) {
   const fade      = useRef(new Animated.Value(0)).current;
   const dogY      = useRef(new Animated.Value(0)).current;
   const wag       = useRef(new Animated.Value(0)).current;
@@ -98,12 +98,12 @@ function BoneCatchOverlay({ onDone }: { onDone: () => void }) {
 }
 
 /** US-07: two dogs run to each other, hearts pop, chat CTA. */
-function MatchOverlay({ profile, myPicture, onChat, onDismiss }: {
+function MatchOverlay({ profile, myPicture, onChat, onDismiss }: Readonly<{
   profile: DiscoverProfile;
   myPicture: string | null;
   onChat: () => void;
   onDismiss: () => void;
-}) {
+}>) {
   const { t } = useTranslation();
   const fade        = useRef(new Animated.Value(0)).current;
   const titleScale  = useRef(new Animated.Value(0.3)).current;

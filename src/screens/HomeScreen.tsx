@@ -24,7 +24,7 @@ type Props = CompositeScreenProps<
   NativeStackScreenProps<RootStackParamList>
 >;
 
-export default function HomeScreen({ navigation }: Props) {
+export default function HomeScreen({ navigation }: Readonly<Props>) {
   const { t, i18n } = useTranslation();
   const [user, setUser]             = useState<UserProfile | null>(null);
   const [dogs, setDogs]             = useState<Dog[]>([]);

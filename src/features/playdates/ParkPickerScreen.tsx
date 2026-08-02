@@ -21,7 +21,7 @@ const DEFAULT_REGION = {
   latitudeDelta: 0.05, longitudeDelta: 0.05,
 };
 
-export default function ParkPickerScreen({ navigation, route }: Props) {
+export default function ParkPickerScreen({ navigation, route }: Readonly<Props>) {
   const { t } = useTranslation();
   const mapRef = useRef<MapView>(null);
   const [region, setRegion] = useState(

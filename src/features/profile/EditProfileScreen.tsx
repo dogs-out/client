@@ -5,7 +5,7 @@ import { ProfileForm } from './ProfileForm';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'EditProfile'>;
 
-export default function EditProfileScreen({ navigation }: Props) {
+export default function EditProfileScreen({ navigation }: Readonly<Props>) {
   const { t } = useTranslation();
   return (
     <ProfileForm

@@ -29,7 +29,7 @@ function getAge(dob: string | null): number | null {
   return Math.floor((Date.now() - new Date(dob).getTime()) / (1000 * 60 * 60 * 24 * 365.25));
 }
 
-function PhotoCarousel({ uris, placeholder }: { uris: string[]; placeholder: string }) {
+function PhotoCarousel({ uris, placeholder }: Readonly<{ uris: string[]; placeholder: string }>) {
   const [index, setIndex] = useState(0);
   // pagingEnabled snaps by the *viewport* width. The card's border makes the
   // viewport a few px narrower than PHOTO_W, so fixed-width pages drift a bit
@@ -68,7 +68,7 @@ function PhotoCarousel({ uris, placeholder }: { uris: string[]; placeholder: str
   );
 }
 
-function LevelDots({ level }: { level: number }) {
+function LevelDots({ level }: Readonly<{ level: number }>) {
   return (
     <View style={styles.levelDots}>
       {[1, 2, 3, 4, 5].map(n => (
@@ -78,7 +78,7 @@ function LevelDots({ level }: { level: number }) {
   );
 }
 
-function DogCard({ dog }: { dog: Dog }) {
+function DogCard({ dog }: Readonly<{ dog: Dog }>) {
   const { t, i18n } = useTranslation();
   const age = getAge(dog.dateOfBirth);
   const photos = dog.photos.length > 0
@@ -143,7 +143,7 @@ function DogCard({ dog }: { dog: Dog }) {
   );
 }
 
-export default function UserProfileScreen({ navigation, route }: Props) {
+export default function UserProfileScreen({ navigation, route }: Readonly<Props>) {
   const { t } = useTranslation();
   const { userId } = route.params;
   const [profile, setProfile] = useState<DiscoverProfile | null>(null);

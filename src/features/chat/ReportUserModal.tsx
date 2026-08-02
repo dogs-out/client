@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import {
-  KeyboardAvoidingView, Modal, Platform, Pressable, StyleSheet,
+  KeyboardAvoidingView, Modal, Pressable, StyleSheet,
   Text, TextInput, TouchableOpacity, View,
 } from 'react-native';
 import { BlurView } from 'expo-blur';
@@ -17,7 +17,7 @@ interface Props {
   onSubmit: (reason: string, message: string) => Promise<void>;
 }
 
-export function ReportUserModal({ visible, name, onClose, onSubmit }: Props) {
+export function ReportUserModal({ visible, name, onClose, onSubmit }: Readonly<Props>) {
   const { t } = useTranslation();
   const [reason, setReason] = useState<string | null>(null);
   const [message, setMessage] = useState('');

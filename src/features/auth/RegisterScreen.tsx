@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import {
-  ActivityIndicator, KeyboardAvoidingView, Platform,
+  ActivityIndicator, KeyboardAvoidingView,
   StyleSheet, Text, TextInput, TouchableOpacity, View,
 } from 'react-native';
 import { AxiosError } from 'axios';
@@ -22,7 +22,7 @@ interface Strength { level: 0 | 1 | 2 | 3; color: string; }
 function getPasswordStrength(pwd: string): Strength {
   if (!pwd) return { level: 0, color: '#e0e0e0' };
   const hasLetters = /[a-zA-Z]/.test(pwd);
-  const hasNumbers = /[0-9]/.test(pwd);
+  const hasNumbers = /\d/.test(pwd);
   const hasSymbols = /[^a-zA-Z0-9]/.test(pwd);
   const types = [hasLetters, hasNumbers, hasSymbols].filter(Boolean).length;
   if (pwd.length < 8 || types < 2) return { level: 1, color: '#e53e3e' };
@@ -30,7 +30,7 @@ function getPasswordStrength(pwd: string): Strength {
   return                                    { level: 3, color: '#48bb78' };
 }
 
-export default function RegisterScreen({ navigation, route }: Props) {
+export default function RegisterScreen({ navigation, route }: Readonly<Props>) {
   const { t } = useTranslation();
   const [name, setName] = useState('');
   const [email, setEmail] = useState(route.params?.prefillEmail ?? '');
@@ -42,7 +42,7 @@ export default function RegisterScreen({ navigation, route }: Props) {
   const strength = getPasswordStrength(password);
   const strengthLabels = { 0: '', 1: t('auth.register.weak'), 2: t('auth.register.ok'), 3: t('auth.register.strong') };
 
-  const NAME_REGEX = /^[a-zA-ZÀ-ÿ\s'\-]+$/;
+  const NAME_REGEX = /^[a-zA-ZÀ-ÿ\s'-]+$/;
 
   const handleRegister = async () => {
     if (!name || !email || !password || !confirmPassword) {

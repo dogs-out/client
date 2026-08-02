@@ -11,7 +11,7 @@ import { SUPPORTED_LANGUAGES, setLanguage } from '../../i18n';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Language'>;
 
-export default function LanguageScreen({ navigation }: Props) {
+export default function LanguageScreen({ navigation }: Readonly<Props>) {
   const { t, i18n } = useTranslation();
 
   return (

@@ -4,7 +4,7 @@ import { DogForm } from './DogForm';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'AddDog'>;
 
-export default function AddDogScreen({ navigation, route }: Props) {
+export default function AddDogScreen({ navigation, route }: Readonly<Props>) {
   const fromOnboarding = route.params?.fromOnboarding ?? false;
   return (
     <DogForm

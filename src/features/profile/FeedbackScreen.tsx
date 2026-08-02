@@ -15,7 +15,7 @@ import { Colors } from '../../constants/colors';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Feedback'>;
 
-export default function FeedbackScreen({ navigation }: Props) {
+export default function FeedbackScreen({ navigation }: Readonly<Props>) {
   const [message, setMessage] = useState('');
   const [saving, setSaving] = useState(false);
 

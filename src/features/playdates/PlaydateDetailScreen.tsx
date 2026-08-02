@@ -20,7 +20,7 @@ import { formatPlaydateTime } from './PlaydatesScreen';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'PlaydateDetail'>;
 
-export default function PlaydateDetailScreen({ navigation, route }: Props) {
+export default function PlaydateDetailScreen({ navigation, route }: Readonly<Props>) {
   const { t, i18n } = useTranslation();
   const { playdateId } = route.params;
   const [playdate, setPlaydate] = useState<Playdate | null>(null);

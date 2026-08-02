@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '../constants/colors';
 
 /** Auth-style rounded password input with a show/hide (eye) toggle. */
-export function PasswordInput(props: TextInputProps) {
+export function PasswordInput(props: Readonly<TextInputProps>) {
   const [visible, setVisible] = useState(false);
   return (
     <View style={styles.wrap}>

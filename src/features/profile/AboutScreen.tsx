@@ -11,7 +11,7 @@ import { GlassCard } from '../../components/GlassCard';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'About'>;
 
-export default function AboutScreen({ navigation }: Props) {
+export default function AboutScreen({ navigation }: Readonly<Props>) {
   const { t } = useTranslation();
   const version = Constants.expoConfig?.version ?? '1.0.0';
 

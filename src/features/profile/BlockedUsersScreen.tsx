@@ -15,7 +15,7 @@ import { GlassCard } from '../../components/GlassCard';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'BlockedUsers'>;
 
-export default function BlockedUsersScreen({ navigation }: Props) {
+export default function BlockedUsersScreen({ navigation }: Readonly<Props>) {
   const { t } = useTranslation();
   const [blocked, setBlocked] = useState<BlockedUser[]>([]);
   const [loaded, setLoaded] = useState(false);

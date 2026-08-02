@@ -41,7 +41,7 @@ const SHAPES: ShapeConfig[] = [
   { emoji: '🦮',    x: 58, y: 44, size: 20, opacity: 0.38, dur: 7200, ty: 28, tx: 14, rot: 6  },
 ];
 
-function FloatingShape({ cfg, sw, sh }: { cfg: ShapeConfig; sw: number; sh: number }) {
+function FloatingShape({ cfg, sw, sh }: Readonly<{ cfg: ShapeConfig; sw: number; sh: number }>) {
   const anim = useRef(new Animated.Value(0)).current;
   const style = cfg.style ?? 'float';
 
