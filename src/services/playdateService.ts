@@ -28,6 +28,9 @@ export interface Playdate {
   joinedCount: number;
   myStatus: PlaydateMyStatus;
   participants: PlaydateParticipant[] | null;
+  /** Group-chat preview for the Chats screen; null unless you're HOST or JOINED. */
+  lastMessageContent: string | null;
+  lastMessageSentAt: string | null;
 }
 
 export interface PlaydateMessage {

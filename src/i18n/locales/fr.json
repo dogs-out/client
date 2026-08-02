@@ -113,7 +113,10 @@
       "timeNow": "à l'instant",
       "timeMinutes": "{{count}} min",
       "timeHours": "{{count}} h",
-      "timeDays": "{{count}} j"
+      "timeDays": "{{count}} j",
+      "sectionDirect": "Messages privés",
+      "sectionGroups": "Groupes playdate",
+      "groupNoMessages": "Pas encore de messages · {{count}} participants"
     },
     "chatDetail": {
       "profanity": "Ton message contient un langage inapproprié.",
@@ -572,7 +575,9 @@
       "invitees": "Inviter parmi tes matchs",
       "noMatches": "Tu n'as pas encore de matchs.",
       "save": "Créer le playdate 🐾",
-      "saveChanges": "Enregistrer les modifications"
+      "saveChanges": "Enregistrer les modifications",
+      "createdTitle": "Playdate créée 🎉",
+      "createdBody": "Ta playdate est en ligne. Tu la trouveras dans Playdates."
     },
     "visibility": {
       "public": "Tout le monde à proximité",

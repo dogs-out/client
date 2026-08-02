@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import {
-  ActivityIndicator, Image, KeyboardAvoidingView, Modal, Platform,
+  ActivityIndicator, Alert, Image, KeyboardAvoidingView, Modal, Platform,
   ScrollView, StyleSheet, Switch, Text, TextInput, TouchableOpacity, View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -123,14 +123,26 @@ export default function CreatePlaydateScreen({ navigation, route }: Props) {
       };
       if (playdateId) {
         await playdateService.updatePlaydate(playdateId, payload);
-      } else {
-        await playdateService.createPlaydate({
-          ...payload,
-          visibility,
-          inviteUserIds: visibility === 'INVITE_ONLY' ? invitees : undefined,
-        });
+        navigation.goBack();
+        return;
       }
-      navigation.goBack();
+
+      await playdateService.createPlaydate({
+        ...payload,
+        visibility,
+        inviteUserIds: visibility === 'INVITE_ONLY' ? invitees : undefined,
+      });
+      // ParkPicker returns here via navigate(), so it can still be sitting under
+      // this screen — goBack() would drop the user back onto the map they already
+      // finished with. Send them to the list explicitly instead.
+      Alert.alert(
+        t('playdates.create.createdTitle'),
+        t('playdates.create.createdBody'),
+        [{
+          text: t('common.ok'),
+          onPress: () => navigation.popTo('MainTabs', { screen: 'Playdates' } as never),
+        }],
+      );
     } catch (e) {
       setError(getApiError(e));
     } finally {
