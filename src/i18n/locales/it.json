@@ -621,5 +621,18 @@
       "past": "Il playdate deve essere nel futuro.",
       "full": "Questo playdate è già al completo."
     }
+  },
+  "errors": {
+    "timeout": "Ci sta mettendo più del previsto. Controlla la connessione e riprova.",
+    "network": "Dogs Out non è raggiungibile al momento. Controlla la connessione internet e riprova.",
+    "badRequest": "Richiesta non valida. Controlla i tuoi dati.",
+    "invalidCredentials": "E-mail o password non corretti.",
+    "forbidden": "Accesso negato. Accedi di nuovo.",
+    "notFound": "Nessun account trovato con questa e-mail.",
+    "emailTaken": "Esiste già un account con questa e-mail.",
+    "tooManyAttempts": "Troppi tentativi. Attendi un momento e riprova.",
+    "server": "Errore del server. Riprova più tardi.",
+    "requestFailed": "Richiesta non riuscita ({{status}}).",
+    "unknown": "Qualcosa è andato storto. Riprova."
   }
 }
