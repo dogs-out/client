@@ -546,5 +546,18 @@
       "past": "The playdate must be in the future.",
       "full": "This playdate is already full."
     }
+  },
+  "errors": {
+    "timeout": "This is taking longer than expected. Check your connection and try again.",
+    "network": "Can't reach Dogs Out right now. Check your internet connection and try again.",
+    "badRequest": "Invalid request. Please check your details.",
+    "invalidCredentials": "Incorrect email or password.",
+    "forbidden": "Access denied. Please sign in again.",
+    "notFound": "No account found with that email.",
+    "emailTaken": "An account with this email already exists.",
+    "tooManyAttempts": "Too many attempts. Please wait a moment and try again.",
+    "server": "Server error. Please try again later.",
+    "requestFailed": "Request failed ({{status}}).",
+    "unknown": "Something went wrong. Please try again."
   }
 }
