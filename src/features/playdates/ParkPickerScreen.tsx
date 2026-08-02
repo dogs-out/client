@@ -21,7 +21,7 @@ const DEFAULT_REGION = {
   latitudeDelta: 0.05, longitudeDelta: 0.05,
 };
 
-export default function ParkPickerScreen({ navigation, route }: Props) {
+export default function ParkPickerScreen({ navigation, route }: Readonly<Props>) {
   const { t } = useTranslation();
   const mapRef = useRef<MapView>(null);
   const [region, setRegion] = useState(
@@ -29,9 +29,11 @@ export default function ParkPickerScreen({ navigation, route }: Props) {
       ? { latitude: route.params.initialLat, longitude: route.params.initialLng, latitudeDelta: 0.02, longitudeDelta: 0.02 }
       : DEFAULT_REGION
   );
-  const [selected, setSelected] = useState<PlaceResult | null>(
-    route.params?.initialLat != null && route.params?.initialLng != null ? null : null
-  );
+  // Always starts empty. Re-opening the picker for an existing playdate can't
+  // pre-select the current park: the route only carries lat/lng, not the name or
+  // address a PlaceResult needs. The initial coords still centre the map above,
+  // which is what actually shows you where the current park is.
+  const [selected, setSelected] = useState<PlaceResult | null>(null);
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<PlaceResult[]>([]);
   const [searching, setSearching] = useState(false);

@@ -21,7 +21,7 @@ interface Props {
 
 type Step = 'primary' | 'secondary';
 
-export function BreedPickerModal({ visible, value, onChange, onClose }: Props) {
+export function BreedPickerModal({ visible, value, onChange, onClose }: Readonly<Props>) {
   const { t, i18n } = useTranslation();
   const [step, setStep]         = useState<Step>('primary');
   const [primary, setPrimary]   = useState<string | null>(null);
@@ -30,7 +30,7 @@ export function BreedPickerModal({ visible, value, onChange, onClose }: Props) {
 
   useEffect(() => {
     if (!visible) return;
-    if (value && value.includes(' / ')) {
+    if (value?.includes(' / ')) {
       const [p, s] = value.split(' / ');
       setPrimary(p);
       setSecondary(s);

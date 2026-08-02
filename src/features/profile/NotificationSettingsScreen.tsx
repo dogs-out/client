@@ -13,7 +13,7 @@ import { notificationService } from '../../services/notificationService';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'NotificationSettings'>;
 
-export default function NotificationSettingsScreen({ navigation }: Props) {
+export default function NotificationSettingsScreen({ navigation }: Readonly<Props>) {
   const { t } = useTranslation();
   const [enabled, setEnabled] = useState<boolean | null>(null);
   const [error, setError] = useState<string | null>(null);

@@ -31,7 +31,7 @@ function dogAgeYears(dateOfBirth: string | null): number | null {
 
 // ──────────────────────────────────────────────────────────────────────────────
 
-export default function DiscoverFiltersScreen({ navigation }: Props) {
+export default function DiscoverFiltersScreen({ navigation }: Readonly<Props>) {
   const { t } = useTranslation();
   const [loading, setLoading]         = useState(true);
   const [saving, setSaving]           = useState(false);

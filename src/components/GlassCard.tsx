@@ -21,7 +21,7 @@ interface Props {
 
 const isIOS = Platform.OS === 'ios';
 
-export function GlassCard({ children, style, padding = 28, radius = 28, tint, compact = false, plain = false }: Props) {
+export function GlassCard({ children, style, padding = 28, radius = 28, tint, compact = false, plain = false }: Readonly<Props>) {
   const shadow = compact ? styles.shadowCompact : styles.shadow;
   const liveGlass = isIOS && !plain;
   return (

@@ -26,7 +26,7 @@ const SWIPE_THRESHOLD = 100;
 
 type FlatPhoto = { uri: string; dogIndex: number };
 
-export default function SwipePreviewScreen({ navigation }: Props) {
+export default function SwipePreviewScreen({ navigation }: Readonly<Props>) {
   const { t, i18n } = useTranslation();
   const [dogs, setDogs]           = useState<Dog[]>([]);
   const [user, setUser]           = useState<UserProfile | null>(null);

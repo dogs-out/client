@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import {
-  ActivityIndicator, KeyboardAvoidingView, Platform,
+  ActivityIndicator, KeyboardAvoidingView,
   StyleSheet, Text, TextInput, View,
 } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -21,7 +21,7 @@ interface Strength { level: 0 | 1 | 2 | 3; color: string; }
 function getPasswordStrength(pwd: string): Strength {
   if (!pwd) return { level: 0, color: '#e0e0e0' };
   const hasLetters = /[a-zA-Z]/.test(pwd);
-  const hasNumbers = /[0-9]/.test(pwd);
+  const hasNumbers = /\d/.test(pwd);
   const hasSymbols = /[^a-zA-Z0-9]/.test(pwd);
   const types = [hasLetters, hasNumbers, hasSymbols].filter(Boolean).length;
   if (pwd.length < 8 || types < 2) return { level: 1, color: '#e53e3e' };
@@ -29,7 +29,7 @@ function getPasswordStrength(pwd: string): Strength {
   return                                    { level: 3, color: '#48bb78' };
 }
 
-export default function ResetPasswordScreen({ navigation }: Props) {
+export default function ResetPasswordScreen({ navigation }: Readonly<Props>) {
   const { t } = useTranslation();
   const [token, setToken]       = useState('');
   const [password, setPassword] = useState('');

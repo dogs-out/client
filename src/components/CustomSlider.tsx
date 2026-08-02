@@ -3,12 +3,12 @@ import { PanResponder, StyleSheet, View } from 'react-native';
 import { Colors } from '../constants/colors';
 
 // ─── Pure-JS slider ────────────────────────────────────────────────────────────
-export function CustomSlider({ value, min, max, step, onChange, onDragStart, onDragEnd }: {
+export function CustomSlider({ value, min, max, step, onChange, onDragStart, onDragEnd }: Readonly<{
   value: number; min: number; max: number; step: number;
   onChange: (v: number) => void;
   onDragStart?: () => void;
   onDragEnd?: () => void;
-}) {
+}>) {
   const [trackWidth, setTrackWidth] = useState(0);
   const stateRef = useRef({ trackWidth: 0, min, max, step });
   const onChangeRef = useRef(onChange);

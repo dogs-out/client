@@ -9,7 +9,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { TFunction } from 'i18next';
-import { discoverService, DiscoverProfile } from '../../services/discoverService';
+import { DiscoverProfile } from '../../services/discoverService';
 import { sitterService } from '../../services/sitterService';
 import { userService } from '../../services/userService';
 import { RootStackParamList } from '../../types/navigation';

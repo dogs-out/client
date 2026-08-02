@@ -22,7 +22,7 @@ async function describe(latitude: number, longitude: number): Promise<string> {
   return `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
 }
 
-export default function LocationSettingsScreen({ navigation }: Props) {
+export default function LocationSettingsScreen({ navigation }: Readonly<Props>) {
   const { t } = useTranslation();
   const [place, setPlace] = useState<string | null>(null);
   const [loaded, setLoaded] = useState(false);

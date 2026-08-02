@@ -21,7 +21,7 @@ const TABS: Tab[] = [
 
 type Props = { activeTab?: keyof MainTabParamList };
 
-export function GlassTabBar({ activeTab }: Props) {
+export function GlassTabBar({ activeTab }: Readonly<Props>) {
   const { t } = useTranslation();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   // Keep in step with TabNavigator, which drops Discover for sitter-only accounts.

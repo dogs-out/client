@@ -23,8 +23,8 @@ const SUBSTRING_WORDS = [
 // Short/ambiguous words — whole-word matches only, so ordinary words
 // like "Wasser", "passt", "Barsch", "Cocker", "schwanken" stay clean.
 const WORD_PATTERN = new RegExp(
-  '\\b(ass|fag|kike|dick|cock|pussy|slut|twat|wank|prick|crap|shit|'
-  + 'fick|arsch|wichse|wixer|hure|nutte|kacke|kacken|bumsen|pisser|voegeln)\\b'
+  String.raw`\b(ass|fag|kike|dick|cock|pussy|slut|twat|wank|prick|crap|shit|`
+  + String.raw`fick|arsch|wichse|wixer|hure|nutte|kacke|kacken|bumsen|pisser|voegeln)\b`
 );
 
 const filter = new Filter();
@@ -32,10 +32,10 @@ const filter = new Filter();
 function normalize(text: string): string {
   return text
     .toLowerCase()
-    .replace(/ä/g, 'ae')
-    .replace(/ö/g, 'oe')
-    .replace(/ü/g, 'ue')
-    .replace(/ß/g, 'ss');
+    .replaceAll('ä', 'ae')
+    .replaceAll('ö', 'oe')
+    .replaceAll('ü', 'ue')
+    .replaceAll('ß', 'ss');
 }
 
 export function containsProfanity(text: string): boolean {

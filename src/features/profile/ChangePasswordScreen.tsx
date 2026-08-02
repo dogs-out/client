@@ -15,14 +15,14 @@ import { Colors } from '../../constants/colors';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ChangePassword'>;
 
-function PasswordField({ label, value, onChange, onSubmit, returnKeyType = 'next', inputRef }: {
+function PasswordField({ label, value, onChange, onSubmit, returnKeyType = 'next', inputRef }: Readonly<{
   label: string;
   value: string;
   onChange: (v: string) => void;
   onSubmit?: () => void;
   returnKeyType?: 'next' | 'done';
   inputRef?: RefObject<TextInput | null>;
-}) {
+}>) {
   const [visible, setVisible] = useState(false);
   return (
     <View style={fieldStyles.wrap}>
@@ -56,7 +56,7 @@ const fieldStyles = StyleSheet.create({
   input:    { flex: 1, fontSize: 16, color: Colors.text, paddingVertical: 4 },
 });
 
-export default function ChangePasswordScreen({ navigation }: Props) {
+export default function ChangePasswordScreen({ navigation }: Readonly<Props>) {
   const { t } = useTranslation();
   const [current, setCurrent]   = useState('');
   const [next, setNext]         = useState('');

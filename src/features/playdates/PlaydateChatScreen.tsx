@@ -52,7 +52,7 @@ type ListItem =
 
 type Props = NativeStackScreenProps<RootStackParamList, 'PlaydateChat'>;
 
-export default function PlaydateChatScreen({ navigation, route }: Props) {
+export default function PlaydateChatScreen({ navigation, route }: Readonly<Props>) {
   const { t, i18n } = useTranslation();
   const { playdateId, title } = route.params;
 
@@ -138,7 +138,7 @@ export default function PlaydateChatScreen({ navigation, route }: Props) {
       const next = messages[i + 1]; // chronologically previous message
       const isLastOfDay = !next || !isSameDay(new Date(message.sentAt), new Date(next.sentAt));
       const showSender = message.senderId !== myId
-        && (!next || next.senderId !== message.senderId || isLastOfDay);
+        && (next?.senderId !== message.senderId || isLastOfDay);
       result.push({ type: 'message', message, showSender });
       if (isLastOfDay) {
         result.push({ type: 'separator', key: `sep-${message.sentAt}-${message.id}`, label: formatDateLabel(message.sentAt, t, i18n.language) });

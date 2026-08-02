@@ -35,7 +35,7 @@ function defaultStart(): Date {
   return d;
 }
 
-export default function CreatePlaydateScreen({ navigation, route }: Props) {
+export default function CreatePlaydateScreen({ navigation, route }: Readonly<Props>) {
   const { t, i18n } = useTranslation();
   const playdateId = route.params?.playdateId;
 

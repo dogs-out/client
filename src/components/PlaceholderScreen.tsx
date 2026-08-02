@@ -4,7 +4,7 @@ import { Colors } from '../constants/colors';
 
 type Props = { emoji: string; title: string; subtitle: string };
 
-export function PlaceholderScreen({ emoji, title, subtitle }: Props) {
+export function PlaceholderScreen({ emoji, title, subtitle }: Readonly<Props>) {
   return (
     <View style={styles.screen}>
       <FloatingBackground />

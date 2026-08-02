@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ActivityIndicator, StyleSheet, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, View } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useTranslation } from 'react-i18next';
 import { RootStackParamList } from '../../types/navigation';
@@ -12,7 +12,7 @@ import { Colors } from '../../constants/colors';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ForgotPassword'>;
 
-export default function ForgotPasswordScreen({ navigation }: Props) {
+export default function ForgotPasswordScreen({ navigation }: Readonly<Props>) {
   const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);

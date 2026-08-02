@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   ActivityIndicator, Alert, Image, KeyboardAvoidingView, Modal,
   Platform, ScrollView, StyleSheet, Text, TextInput,
@@ -8,7 +8,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
-import { dogService, DogPhoto } from '../../services/dogService';
+import { dogService } from '../../services/dogService';
 import { getApiError } from '../../utils/apiError';
 import { containsProfanity } from '../../utils/profanityFilter';
 import { FloatingBackground } from '../../components/FloatingBackground';
@@ -35,14 +35,14 @@ type PhotoState =
   | { kind: 'existing'; photoId: number; uri: string }
   | { kind: 'new'; uri: string };
 
-const NAME_REGEX = /^[a-zA-ZÀ-ÿ\s'\-]+$/;
+const NAME_REGEX = /^[a-zA-ZÀ-ÿ\s'-]+$/;
 const MAX_DOB = new Date();
 const MIN_DOB = new Date();
 MIN_DOB.setFullYear(MIN_DOB.getFullYear() - 25);
 const DEFAULT_DOB = new Date();
 DEFAULT_DOB.setFullYear(DEFAULT_DOB.getFullYear() - 3);
 
-export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Props) {
+export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Readonly<Props>) {
   const { t, i18n } = useTranslation();
   const [name, setName]               = useState('');
   const [breed, setBreed]             = useState<string | null>(null);

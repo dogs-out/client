@@ -14,7 +14,7 @@ interface Props {
 
 const isIOS = Platform.OS === 'ios';
 
-export function GlassButton({ onPress, children, style, disabled, tint }: Props) {
+export function GlassButton({ onPress, children, style, disabled, tint }: Readonly<Props>) {
   return (
     <TouchableOpacity
       onPress={onPress}
