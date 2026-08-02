@@ -383,11 +383,11 @@
       },
       "findSitter": {
         "q": "Comment fonctionne « Dogsitting » ?",
-        "a": "Les propriétaires de chiens peuvent activer « Je cherche un dogsitter » dans leur profil — ils apparaissent alors dans l'onglet « Dogsitting ». Les utilisateurs ayant activé le mode sitter peuvent les y contacter ; cela ouvre simplement un chat. Dogs Out t'aide uniquement à entrer en contact : nous ne contrôlons ni n'employons les sitters et nous ne faisons pas partie de votre accord. Nous recommandons vivement un entretien en personne et une rencontre d'essai avec le chien avant de convenir de quoi que ce soit — tout ce que vous organisez relève de votre propre responsabilité."
+        "a": "Le dogsitting fonctionne dans les deux sens. Active « Je cherche un dogsitter » pour parcourir les sitters près de chez toi, ou « Je suis disponible comme dogsitter » pour voir les propriétaires qui en cherchent un. Si les deux sont activés, l'onglet « Dogsitting » affiche un sélecteur entre « Demandes » et « Missions ». Tu ne vois que la liste correspondant à ton propre réglage — active-en un pour voir quelque chose. Contacter quelqu'un ouvre simplement un chat. Dogs Out t'aide uniquement à entrer en contact : nous ne contrôlons ni n'employons les sitters et nous ne faisons pas partie de votre accord. Nous recommandons vivement un entretien en personne et une rencontre d'essai avec le chien avant de convenir de quoi que ce soit — tout ce que vous organisez relève de votre propre responsabilité."
       },
       "becomeSitter": {
         "q": "Comment devenir dogsitter ?",
-        "a": "Ouvre les réglages de ton profil et active « Je suis disponible comme dogsitter ». Tu peux indiquer les jours où tu es disponible, ton expérience avec les chiens et des tags de sitter comme « Éducateur canin » ou « Plusieurs chiens possibles ». Pas besoin d'avoir un chien — sans chien, ton compte fonctionne simplement comme profil de sitter (Discover reste désactivé tant que tu n'ajoutes pas de chien)."
+        "a": "Ouvre les réglages de ton profil et active « Je suis disponible comme dogsitter ». Tu peux indiquer les jours où tu es disponible, ton expérience avec les chiens et des tags de sitter comme « Éducateur canin » ou « Plusieurs chiens possibles ». Pas besoin d'avoir un chien — sans chien, ton compte fonctionne simplement comme profil de sitter (l'onglet Discover est masqué tant que tu n'ajoutes pas de chien)."
       },
       "editDogs": {
         "q": "Comment ajouter ou modifier mes chiens ?",

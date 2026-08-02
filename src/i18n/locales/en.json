@@ -383,11 +383,11 @@
       },
       "findSitter": {
         "q": "How does Dogsitting work?",
-        "a": "Dog owners can turn on \"I'm looking for a dogsitter\" in their profile — they then appear in the Dogsitting tab. Users who enabled sitter mode can contact them there, which simply opens a chat. Dogs Out only helps you get in contact: we don't vet or employ sitters and we're not part of your arrangement. We strongly recommend a personal interview and a trial meet-and-greet with the dog before agreeing to anything — everything you arrange is at your own responsibility."
+        "a": "Dogsitting works in both directions. Turn on \"I'm looking for a dogsitter\" to browse sitters near you, or \"I'm available as a dog sitter\" to browse owners who need one. With both on, the Dogsitting tab shows a switcher between Requests and Jobs. You only see the list your own setting covers, so turn one on to see anything. Contacting someone simply opens a chat. Dogs Out only helps you get in contact: we don't vet or employ sitters and we're not part of your arrangement. We strongly recommend a personal interview and a trial meet-and-greet with the dog before agreeing to anything — everything you arrange is at your own responsibility."
       },
       "becomeSitter": {
         "q": "How do I become a dogsitter?",
-        "a": "Open your profile settings and enable \"I'm available as a dog sitter\". You can set the weekdays you're free, your experience with dogs, and sitter tags like \"Dog trainer\" or \"Multiple dogs OK\". You don't need to own a dog — without one, your account simply works as a sitter profile (Discover stays off until you add a dog)."
+        "a": "Open your profile settings and enable \"I'm available as a dog sitter\". You can set the weekdays you're free, your experience with dogs, and sitter tags like \"Dog trainer\" or \"Multiple dogs OK\". You don't need to own a dog — without one, your account simply works as a sitter profile (the Discover tab is hidden until you add a dog)."
       },
       "editDogs": {
         "q": "How do I add or edit my dogs?",
