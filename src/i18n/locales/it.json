@@ -383,11 +383,11 @@
       },
       "findSitter": {
         "q": "Come funziona «Dogsitting»?",
-        "a": "I proprietari di cani possono attivare «Cerco un dogsitter» nel loro profilo — compariranno così nella scheda «Dogsitting». Gli utenti con la modalità sitter attiva possono contattarli lì; si apre semplicemente una chat. Dogs Out ti aiuta solo a entrare in contatto: non controlliamo né impieghiamo i sitter e non facciamo parte del vostro accordo. Consigliamo vivamente un colloquio di persona e un incontro di prova con il cane prima di concordare qualsiasi cosa — tutto ciò che organizzate è sotto la vostra responsabilità."
+        "a": "Il dogsitting funziona in entrambe le direzioni. Attiva «Cerco un dogsitter» per sfogliare i sitter vicino a te, oppure «Sono disponibile come dogsitter» per vedere i proprietari che ne cercano uno. Con entrambe attive, la scheda «Dogsitting» mostra un selettore tra «Richieste» e «Lavori». Vedi solo l'elenco coperto dalla tua impostazione — attivane una per vedere qualcosa. Contattare qualcuno apre semplicemente una chat. Dogs Out ti aiuta solo a entrare in contatto: non controlliamo né impieghiamo i sitter e non facciamo parte del vostro accordo. Consigliamo vivamente un colloquio di persona e un incontro di prova con il cane prima di concordare qualsiasi cosa — tutto ciò che organizzate è sotto la vostra responsabilità."
       },
       "becomeSitter": {
         "q": "Come divento dogsitter?",
-        "a": "Apri le impostazioni del profilo e attiva «Sono disponibile come dogsitter». Puoi indicare i giorni in cui sei disponibile, la tua esperienza con i cani e tag da sitter come «Addestratore di cani» o «Più cani possibili». Non serve avere un cane — senza cane il tuo account funziona semplicemente come profilo da sitter (Discover resta disattivato finché non aggiungi un cane)."
+        "a": "Apri le impostazioni del profilo e attiva «Sono disponibile come dogsitter». Puoi indicare i giorni in cui sei disponibile, la tua esperienza con i cani e tag da sitter come «Addestratore di cani» o «Più cani possibili». Non serve avere un cane — senza cane il tuo account funziona semplicemente come profilo da sitter (la scheda Discover è nascosta finché non aggiungi un cane)."
       },
       "editDogs": {
         "q": "Come aggiungo o modifico i miei cani?",

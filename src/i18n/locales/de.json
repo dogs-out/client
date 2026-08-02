@@ -383,11 +383,11 @@
       },
       "findSitter": {
         "q": "Wie funktioniert „Dogsitting“?",
-        "a": "Hundehalter können in ihrem Profil „Ich suche einen Dogsitter“ aktivieren — dann erscheinen sie im Tab „Dogsitting“. Nutzer mit aktiviertem Sitter-Modus können sie dort kontaktieren; das öffnet einfach einen Chat. Dogs Out hilft nur beim Herstellen des Kontakts: Wir prüfen oder beschäftigen keine Sitter und sind nicht Teil eurer Vereinbarung. Wir empfehlen dringend ein persönliches Kennenlerngespräch und ein Probetreffen mit dem Hund, bevor ihr etwas vereinbart — alles, was ihr abmacht, liegt in eurer eigenen Verantwortung."
+        "a": "Dogsitting funktioniert in beide Richtungen. Aktiviere „Ich suche einen Dogsitter“, um Sitter in deiner Nähe zu durchsuchen, oder „Ich bin als Dogsitter verfügbar“, um Besitzer zu sehen, die einen suchen. Sind beide aktiv, zeigt der Tab „Dogsitting“ einen Umschalter zwischen „Anfragen“ und „Jobs“. Du siehst nur die Liste, die deine eigene Einstellung abdeckt — aktiviere eine, um überhaupt etwas zu sehen. Jemanden zu kontaktieren öffnet einfach einen Chat. Dogs Out hilft nur beim Herstellen des Kontakts: Wir prüfen oder beschäftigen keine Sitter und sind nicht Teil eurer Vereinbarung. Wir empfehlen dringend ein persönliches Kennenlerngespräch und ein Probetreffen mit dem Hund, bevor ihr etwas vereinbart — alles, was ihr abmacht, liegt in eurer eigenen Verantwortung."
       },
       "becomeSitter": {
         "q": "Wie werde ich Dogsitter?",
-        "a": "Öffne deine Profileinstellungen und aktiviere „Ich bin als Dogsitter verfügbar“. Du kannst die Wochentage angeben, an denen du Zeit hast, deine Erfahrung mit Hunden und Sitter-Tags wie „Hundetrainer“ oder „Mehrere Hunde möglich“. Du brauchst keinen eigenen Hund — ohne Hund funktioniert dein Konto einfach als Sitter-Profil (Discover bleibt aus, bis du einen Hund hinzufügst)."
+        "a": "Öffne deine Profileinstellungen und aktiviere „Ich bin als Dogsitter verfügbar“. Du kannst die Wochentage angeben, an denen du Zeit hast, deine Erfahrung mit Hunden und Sitter-Tags wie „Hundetrainer“ oder „Mehrere Hunde möglich“. Du brauchst keinen eigenen Hund — ohne Hund funktioniert dein Konto einfach als Sitter-Profil (der Discover-Tab ist ausgeblendet, bis du einen Hund hinzufügst)."
       },
       "editDogs": {
         "q": "Wie füge ich meine Hunde hinzu oder bearbeite sie?",
