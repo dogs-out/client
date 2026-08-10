@@ -573,7 +573,10 @@ const styles = StyleSheet.create({
   },
   cardNext: { top: 10, zIndex: 0 },
 
-  photo:            { width: '100%', height: '100%', position: 'absolute' },
+  // Filled with explicit insets rather than width/height 100%. React Native's Image
+  // resolved the percentages against the card, but expo-image lays out as 0x0 and
+  // renders nothing — which looked like a grey card with no photo.
+  photo:            { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 },
   photoPlaceholder: { backgroundColor: '#2a2a2a', alignItems: 'center', justifyContent: 'center' },
 
   progressRow:       { position: 'absolute', top: 14, left: 14, right: 14, flexDirection: 'row', gap: 4 },

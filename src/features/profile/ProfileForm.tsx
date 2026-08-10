@@ -606,7 +606,9 @@ const styles = StyleSheet.create({
 
   photoGrid:   { flexDirection: 'row', gap: 10, marginBottom: 24 },
   photoSlot:   { flex: 1, aspectRatio: 1, borderRadius: 12, overflow: 'hidden' },
-  photoThumb:  { width: '100%', height: '100%' },
+  // Insets rather than 100% — see the note in DogForm; the slot is sized by
+  // aspectRatio, which leaves percentages with nothing to resolve against.
+  photoThumb:  { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 },
   photoAdd:    {
     flex: 1, alignItems: 'center', justifyContent: 'center',
     borderWidth: 1.5, borderColor: Colors.border, borderStyle: 'dashed',
