@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import {
-  ActivityIndicator, Alert, Dimensions, Image, ScrollView,
+  ActivityIndicator, Alert, Dimensions, ScrollView,
   StyleSheet, Text, TouchableOpacity, View,
 } from 'react-native';
+import { RemoteImage } from '../../components/ui/RemoteImage';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
@@ -54,7 +55,7 @@ function PhotoCarousel({ uris, placeholder }: Readonly<{ uris: string[]; placeho
         onMomentumScrollEnd={e => setIndex(Math.round(e.nativeEvent.contentOffset.x / pageW))}
       >
         {uris.map((uri, i) => (
-          <Image key={i} source={{ uri }} style={[styles.photo, { width: pageW }]} resizeMode="cover" />
+          <RemoteImage key={i} source={{ uri }} style={[styles.photo, { width: pageW }]} resizeMode="cover" />
         ))}
       </ScrollView>
       {uris.length > 1 && (
@@ -81,9 +82,7 @@ function LevelDots({ level }: Readonly<{ level: number }>) {
 function DogCard({ dog }: Readonly<{ dog: Dog }>) {
   const { t, i18n } = useTranslation();
   const age = getAge(dog.dateOfBirth);
-  const photos = dog.photos.length > 0
-    ? dog.photos.map(p => p.imageData)
-    : dog.profilePicture ? [dog.profilePicture] : [];
+  const photos = dog.photos.map(p => p.url);
   const hasPersonality = dog.energyLevel !== null || dog.socialBehavior !== null
     || dog.offLeash !== null || dog.kidsComfort !== null;
 
@@ -177,11 +176,7 @@ export default function UserProfileScreen({ navigation, route }: Readonly<Props>
       .finally(() => setContacting(false));
   };
 
-  const ownerPhotos = profile
-    ? (profile.photos.length > 0
-        ? profile.photos.map(p => p.imageData)
-        : profile.profilePicture ? [profile.profilePicture] : [])
-    : [];
+  const ownerPhotos = profile?.photos.map(p => p.url) ?? [];
   const ownerTags = profile ? [...(profile.lifestyleTags ?? []), ...(profile.personalityTags ?? [])] : [];
 
   return (

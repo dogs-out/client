@@ -1,8 +1,9 @@
 import { useCallback, useState } from 'react';
 import {
-  ActivityIndicator, FlatList, Image, RefreshControl, StyleSheet,
+  ActivityIndicator, FlatList, RefreshControl, StyleSheet,
   Text, TouchableOpacity, View,
 } from 'react-native';
+import { RemoteImage } from '../../components/ui/RemoteImage';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -82,7 +83,7 @@ export default function PlaydatesScreen() {
           <View style={styles.cardFooter}>
             <View style={styles.hostWrap}>
               {item.hostProfilePicture
-                ? <Image source={{ uri: item.hostProfilePicture }} style={styles.hostAvatar} />
+                ? <RemoteImage source={{ uri: item.hostProfilePicture }} style={styles.hostAvatar} />
                 : <View style={[styles.hostAvatar, styles.avatarPlaceholder]}><Text style={{ fontSize: 12 }}>🐶</Text></View>
               }
               <Text style={styles.hostName} numberOfLines={1}>{item.hostName}</Text>

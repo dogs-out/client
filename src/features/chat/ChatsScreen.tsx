@@ -1,7 +1,8 @@
 import { useCallback, useRef, useState } from 'react';
 import {
-  Image, RefreshControl, SectionList, StyleSheet, Text, TouchableOpacity, View,
+  RefreshControl, SectionList, StyleSheet, Text, TouchableOpacity, View,
 } from 'react-native';
+import { RemoteImage } from '../../components/ui/RemoteImage';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -99,7 +100,7 @@ export default function ChatsScreen() {
         <GlassCard padding={0} style={styles.card}>
           <View style={styles.row}>
             {item.otherUserProfilePicture
-          ? <Image source={{ uri: item.otherUserProfilePicture }} style={styles.avatar} />
+          ? <RemoteImage source={{ uri: item.otherUserProfilePicture }} style={styles.avatar} />
           : <View style={[styles.avatar, styles.avatarPlaceholder]}><Text style={{ fontSize: 24 }}>🐶</Text></View>
         }
         <View style={styles.rowBody}>

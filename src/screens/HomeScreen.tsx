@@ -1,8 +1,9 @@
 import { useCallback, useState } from 'react';
 import {
-  ActivityIndicator, Image, RefreshControl, ScrollView,
+  ActivityIndicator, RefreshControl, ScrollView,
   StyleSheet, Text, TouchableOpacity, View,
 } from 'react-native';
+import { RemoteImage } from '../components/ui/RemoteImage';
 import { useFocusEffect } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
@@ -88,7 +89,7 @@ export default function HomeScreen({ navigation }: Readonly<Props>) {
         <GlassCard style={styles.profileCard}>
           <View style={styles.profileRow}>
             {user?.profilePicture ? (
-              <Image source={{ uri: user.profilePicture }} style={styles.avatar} />
+              <RemoteImage source={{ uri: user.profilePicture }} style={styles.avatar} />
             ) : (
               <View style={styles.avatarPlaceholder}>
                 <Ionicons name="person" size={36} color={Colors.primary} />
@@ -139,12 +140,13 @@ export default function HomeScreen({ navigation }: Readonly<Props>) {
         ) : (
           <>
             {dogs.map(dog => {
-              const coverPhoto = dog.photos[0]?.imageData ?? dog.profilePicture;
+              // A small row thumbnail, so the thumb rendition is the right size.
+              const coverPhoto = dog.photos[0]?.thumbUrl ?? dog.profilePicture;
               return (
                 <GlassCard key={dog.id} style={styles.dogCard} padding={0}>
                   <View style={styles.dogRow}>
                     {coverPhoto ? (
-                      <Image source={{ uri: coverPhoto }} style={styles.dogPhoto} />
+                      <RemoteImage source={{ uri: coverPhoto }} style={styles.dogPhoto} />
                     ) : (
                       <View style={styles.dogPhotoPlaceholder}>
                         <Text style={styles.dogEmoji}>🐶</Text>

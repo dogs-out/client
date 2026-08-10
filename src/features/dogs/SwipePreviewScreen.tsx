@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import {
-  Animated, Dimensions, Image, PanResponder,
+  Animated, Dimensions, PanResponder,
   StyleSheet, Text, TouchableOpacity, View,
 } from 'react-native';
+import { RemoteImage } from '../../components/ui/RemoteImage';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -84,18 +85,15 @@ export default function SwipePreviewScreen({ navigation }: Readonly<Props>) {
 
   // Build flat photo array across all dogs
   const flatPhotos: FlatPhoto[] = dogs.flatMap((dog, di) => {
-    const photos = dog.photos.length > 0
-      ? dog.photos.map(p => p.imageData)
-      : dog.profilePicture ? [dog.profilePicture] : [''];
+    // Full-size renditions — these fill the preview card.
+    const photos = dog.photos.length > 0 ? dog.photos.map(p => p.url) : [''];
     return photos.map(uri => ({ uri, dogIndex: di }));
   });
 
   const currentDogIndex = flatPhotos[photoIndex]?.dogIndex ?? 0;
   const currentDog = dogs[currentDogIndex];
 
-  const ownerPhotos = user.photos?.length > 0
-    ? user.photos.map(p => p.imageData)
-    : user.profilePicture ? [user.profilePicture] : [];
+  const ownerPhotos = user.photos?.map(p => p.url) ?? [];
 
   const getAge = (dob: string | null) => dob
     ? Math.floor((Date.now() - new Date(dob).getTime()) / (1000 * 60 * 60 * 24 * 365.25))
@@ -141,11 +139,11 @@ export default function SwipePreviewScreen({ navigation }: Readonly<Props>) {
           {/* Background photo */}
           {showOwner ? (
             ownerPhotos.length > 0
-              ? <Image source={{ uri: ownerPhotos[ownerPhotoIndex] }} style={styles.photo} resizeMode="cover" />
+              ? <RemoteImage source={{ uri: ownerPhotos[ownerPhotoIndex] }} style={styles.photo} resizeMode="cover" />
               : <View style={[styles.photo, styles.photoPlaceholder]}><Text style={{ fontSize: 64 }}>👤</Text></View>
           ) : (
             flatPhotos[photoIndex]?.uri
-              ? <Image source={{ uri: flatPhotos[photoIndex].uri }} style={styles.photo} resizeMode="cover" />
+              ? <RemoteImage source={{ uri: flatPhotos[photoIndex].uri }} style={styles.photo} resizeMode="cover" />
               : <View style={[styles.photo, styles.photoPlaceholder]}><Text style={{ fontSize: 64 }}>🐶</Text></View>
           )}
 
@@ -243,11 +241,11 @@ export default function SwipePreviewScreen({ navigation }: Readonly<Props>) {
             <TouchableOpacity style={styles.toggleBtn} onPress={() => setShowOwner(v => !v)}>
               {showOwner ? (
                 flatPhotos[0]?.uri
-                  ? <Image source={{ uri: flatPhotos[0].uri }} style={styles.toggleAvatar} resizeMode="cover" />
+                  ? <RemoteImage source={{ uri: flatPhotos[0].uri }} style={styles.toggleAvatar} resizeMode="cover" />
                   : <Ionicons name="paw" size={18} color="#fff" />
               ) : (
                 user.profilePicture
-                  ? <Image source={{ uri: user.profilePicture }} style={styles.toggleAvatar} resizeMode="cover" />
+                  ? <RemoteImage source={{ uri: user.profilePicture }} style={styles.toggleAvatar} resizeMode="cover" />
                   : <Ionicons name="person" size={18} color="#fff" />
               )}
             </TouchableOpacity>

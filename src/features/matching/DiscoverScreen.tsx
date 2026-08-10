@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
-  Animated, Dimensions, Easing, Image, PanResponder,
+  Animated, Dimensions, Easing, PanResponder,
   StyleSheet, Text, TouchableOpacity, View, ActivityIndicator,
 } from 'react-native';
+import { RemoteImage } from '../../components/ui/RemoteImage';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
@@ -40,9 +41,10 @@ function formatDistance(km: number, t: TFunction): string {
 
 function buildFlatPhotos(profile: DiscoverProfile): FlatPhoto[] {
   return profile.dogs.flatMap((dog, di) => {
-    const uris = dog.photos.length > 0
-      ? dog.photos.map(p => p.imageData)
-      : dog.profilePicture ? [dog.profilePicture] : [''];
+    // Full-size renditions: these fill the card. An empty string keeps the
+    // placeholder card for a dog with no photos — profilePicture is derived from
+    // the first photo, so there is never one to fall back to when photos is empty.
+    const uris = dog.photos.length > 0 ? dog.photos.map(p => p.url) : [''];
     return uris.map(uri => ({ uri, dogIndex: di }));
   });
 }
@@ -143,11 +145,11 @@ function MatchOverlay({ profile, myPicture, onChat, onDismiss }: Readonly<{
       <Animated.View style={{ opacity: restOpacity, alignItems: 'center' }}>
         <View style={styles.matchAvatarRow}>
           {myPicture
-            ? <Image source={{ uri: myPicture }} style={styles.matchAvatar} resizeMode="cover" />
+            ? <RemoteImage source={{ uri: myPicture }} style={styles.matchAvatar} resizeMode="cover" />
             : <View style={[styles.matchAvatar, styles.photoPlaceholder]}><Text style={{ fontSize: 36 }}>👤</Text></View>
           }
           {profile.profilePicture
-            ? <Image source={{ uri: profile.profilePicture }} style={styles.matchAvatar} resizeMode="cover" />
+            ? <RemoteImage source={{ uri: profile.profilePicture }} style={styles.matchAvatar} resizeMode="cover" />
             : <View style={[styles.matchAvatar, styles.photoPlaceholder]}><Text style={{ fontSize: 36 }}>👤</Text></View>
           }
         </View>
@@ -361,9 +363,7 @@ export default function DiscoverScreen() {
   const flatPhotos = buildFlatPhotos(profile);
   const currentDogIndex = flatPhotos[photoIndex]?.dogIndex ?? 0;
   const currentDog: Dog | undefined = profile.dogs[currentDogIndex];
-  const ownerPhotos = profile.photos.length > 0
-    ? profile.photos.map(p => p.imageData)
-    : profile.profilePicture ? [profile.profilePicture] : [];
+  const ownerPhotos = profile.photos.map(p => p.url);
   const ownerAge = profile.age;
   const ownerTags = [...(profile.lifestyleTags ?? []), ...(profile.personalityTags ?? [])];
   const nextProfile = feed[idx + 1];
@@ -399,8 +399,10 @@ export default function DiscoverScreen() {
         {/* Background (next) card */}
         {nextProfile && (
           <Animated.View style={[styles.card, styles.cardNext, { transform: [{ scale: nextCardScale }] }]}>
-            {nextProfile.dogs[0]?.profilePicture
-              ? <Image source={{ uri: nextProfile.dogs[0].profilePicture }} style={styles.photo} resizeMode="cover" />
+            {/* Full-size, not profilePicture: this fills a whole card, and
+                profilePicture is only a 256px avatar rendition. */}
+            {nextProfile.dogs[0]?.photos[0]?.url
+              ? <RemoteImage source={{ uri: nextProfile.dogs[0].photos[0].url }} style={styles.photo} resizeMode="cover" />
               : <View style={[styles.photo, styles.photoPlaceholder]}><Text style={{ fontSize: 64 }}>🐶</Text></View>
             }
           </Animated.View>
@@ -416,11 +418,11 @@ export default function DiscoverScreen() {
         >
           {showOwner ? (
             ownerPhotos.length > 0
-              ? <Image source={{ uri: ownerPhotos[ownerPhotoIndex] }} style={styles.photo} resizeMode="cover" />
+              ? <RemoteImage source={{ uri: ownerPhotos[ownerPhotoIndex] }} style={styles.photo} resizeMode="cover" />
               : <View style={[styles.photo, styles.photoPlaceholder]}><Text style={{ fontSize: 64 }}>👤</Text></View>
           ) : (
             flatPhotos[photoIndex]?.uri
-              ? <Image source={{ uri: flatPhotos[photoIndex].uri }} style={styles.photo} resizeMode="cover" />
+              ? <RemoteImage source={{ uri: flatPhotos[photoIndex].uri }} style={styles.photo} resizeMode="cover" />
               : <View style={[styles.photo, styles.photoPlaceholder]}><Text style={{ fontSize: 64 }}>🐶</Text></View>
           )}
 
@@ -507,11 +509,11 @@ export default function DiscoverScreen() {
             <TouchableOpacity style={styles.toggleBtn} onPress={() => setShowOwner(v => !v)}>
               {showOwner ? (
                 flatPhotos[0]?.uri
-                  ? <Image source={{ uri: flatPhotos[0].uri }} style={styles.toggleAvatar} resizeMode="cover" />
+                  ? <RemoteImage source={{ uri: flatPhotos[0].uri }} style={styles.toggleAvatar} resizeMode="cover" />
                   : <Ionicons name="paw" size={18} color="#fff" />
               ) : (
                 profile.profilePicture
-                  ? <Image source={{ uri: profile.profilePicture }} style={styles.toggleAvatar} resizeMode="cover" />
+                  ? <RemoteImage source={{ uri: profile.profilePicture }} style={styles.toggleAvatar} resizeMode="cover" />
                   : <Ionicons name="person" size={18} color="#fff" />
               )}
             </TouchableOpacity>

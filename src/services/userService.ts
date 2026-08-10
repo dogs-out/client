@@ -1,9 +1,13 @@
 import api from './api';
 import { tokenStorage } from '../utils/tokenStorage';
+import { MULTIPART_CONFIG, prepareForUpload } from './photoUpload';
 
 export interface UserPhoto {
   id: number;
-  imageData: string;
+  /** Full-size rendition, for carousels and full-bleed cards. */
+  url: string;
+  /** Small rendition, for avatars and list rows. */
+  thumbUrl: string;
   sortOrder: number;
 }
 
@@ -43,7 +47,6 @@ export interface UpdateProfilePayload {
   dateOfBirth?: string;
   latitude?: number;
   longitude?: number;
-  profilePicture?: string;
   lifestyleTags?: string[];
   personalityTags?: string[];
   relationshipStatus?: string;
@@ -65,8 +68,12 @@ export const userService = {
     api.get<UserProfile>('/users/me').then(r => r.data),
   updateProfile: (payload: UpdateProfilePayload): Promise<UserProfile> =>
     api.put<UserProfile>('/users/me', payload).then(r => r.data),
-  addPhoto: (imageData: string): Promise<UserPhoto> =>
-    api.post<UserPhoto>('/users/me/photos', { imageData }).then(r => r.data),
+  /** Takes a local image URI from the picker; resizes and uploads it as multipart. */
+  addPhoto: async (uri: string): Promise<UserPhoto> => {
+    const form = await prepareForUpload(uri);
+    const { data } = await api.post<UserPhoto>('/users/me/photos', form, MULTIPART_CONFIG);
+    return data;
+  },
   deletePhoto: (photoId: number): Promise<void> =>
     api.delete(`/users/me/photos/${photoId}`).then(() => {}),
   /** Persists photo order; the first id becomes the main photo / profile picture. */

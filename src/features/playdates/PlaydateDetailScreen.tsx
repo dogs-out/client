@@ -1,8 +1,9 @@
 import { useCallback, useState } from 'react';
 import {
-  ActivityIndicator, Alert, Image, Platform, ScrollView, StyleSheet,
+  ActivityIndicator, Alert, Platform, ScrollView, StyleSheet,
   Text, TouchableOpacity, View,
 } from 'react-native';
+import { RemoteImage } from '../../components/ui/RemoteImage';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { useFocusEffect } from '@react-navigation/native';
@@ -156,7 +157,7 @@ export default function PlaydateDetailScreen({ navigation, route }: Readonly<Pro
             onPress={() => navigation.navigate('UserProfile', { userId: playdate.hostId })}
           >
             {playdate.hostProfilePicture
-              ? <Image source={{ uri: playdate.hostProfilePicture }} style={styles.hostAvatar} />
+              ? <RemoteImage source={{ uri: playdate.hostProfilePicture }} style={styles.hostAvatar} />
               : <View style={[styles.hostAvatar, styles.avatarPlaceholder]}><Text style={{ fontSize: 16 }}>🐶</Text></View>
             }
             <Text style={styles.hostText}>{t('playdates.detail.hostedBy', { name: playdate.hostName })}</Text>
@@ -177,7 +178,7 @@ export default function PlaydateDetailScreen({ navigation, route }: Readonly<Pro
                 onPress={() => navigation.navigate('UserProfile', { userId: p.userId })}
               >
                 {p.profilePicture
-                  ? <Image source={{ uri: p.profilePicture }} style={styles.attendeeAvatar} />
+                  ? <RemoteImage source={{ uri: p.profilePicture }} style={styles.attendeeAvatar} />
                   : <View style={[styles.attendeeAvatar, styles.avatarPlaceholder]}><Text style={{ fontSize: 18 }}>🐶</Text></View>
                 }
                 <Text style={styles.attendeeName} numberOfLines={1}>{p.name}</Text>
