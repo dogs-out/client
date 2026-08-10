@@ -279,7 +279,9 @@ const styles = StyleSheet.create({
     shadowColor: '#000', shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.3, shadowRadius: 14, elevation: 10,
   },
 
-  photo:            { width: '100%', height: '100%', position: 'absolute' },
+  // Explicit insets, not width/height 100% — see the note in DiscoverScreen: expo-image
+  // does not resolve percentage sizing here and lays out as 0x0.
+  photo:            { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 },
   photoPlaceholder: { backgroundColor: '#2a2a2a', alignItems: 'center', justifyContent: 'center' },
 
   progressRow:       { position: 'absolute', top: 14, left: 14, right: 14, flexDirection: 'row', gap: 4 },

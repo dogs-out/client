@@ -527,7 +527,9 @@ const styles = StyleSheet.create({
 
   photoGrid:  { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   photoSlot:  { width: '31%', aspectRatio: 3 / 4, borderRadius: 10, overflow: 'visible' },
-  photoThumb: { width: '100%', height: '100%', borderRadius: 10 },
+  // Insets rather than 100%: the slot is sized by aspectRatio, so there is no
+  // concrete height for a percentage to resolve against and expo-image lays out 0x0.
+  photoThumb: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, borderRadius: 10 },
   photoAdd:   {
     width: '100%', height: '100%', borderRadius: 10,
     borderWidth: 1.5, borderColor: Colors.border, borderStyle: 'dashed',
