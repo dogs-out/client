@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import {
-  ActivityIndicator, Alert, Image, KeyboardAvoidingView, Modal, Platform,
+  ActivityIndicator, Alert, KeyboardAvoidingView, Modal, Platform,
   ScrollView, StyleSheet, Switch, Text, TextInput, TouchableOpacity, View,
 } from 'react-native';
+import { RemoteImage } from '../../components/ui/RemoteImage';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -290,7 +291,7 @@ export default function CreatePlaydateScreen({ navigation, route }: Readonly<Pro
                     return (
                       <TouchableOpacity key={match.matchId} style={styles.inviteeRow} onPress={() => toggleInvitee(match.otherUserId)}>
                         {match.otherUserProfilePicture
-                          ? <Image source={{ uri: match.otherUserProfilePicture }} style={styles.inviteeAvatar} />
+                          ? <RemoteImage source={{ uri: match.otherUserProfilePicture }} style={styles.inviteeAvatar} />
                           : <View style={[styles.inviteeAvatar, styles.avatarPlaceholder]}><Text style={{ fontSize: 14 }}>🐶</Text></View>
                         }
                         <Text style={styles.inviteeName} numberOfLines={1}>{match.otherUserName}</Text>

@@ -1,8 +1,9 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 import {
-  ActivityIndicator, FlatList, Image, KeyboardAvoidingView,
+  ActivityIndicator, FlatList, KeyboardAvoidingView,
   Platform, StyleSheet, Text, TextInput, TouchableOpacity, View,
 } from 'react-native';
+import { RemoteImage } from '../../components/ui/RemoteImage';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { BlurView } from 'expo-blur';
 import { useFocusEffect } from '@react-navigation/native';
@@ -164,7 +165,7 @@ export default function PlaydateChatScreen({ navigation, route }: Readonly<Props
         {item.showSender && (
           <View style={styles.senderRow}>
             {message.senderProfilePicture
-              ? <Image source={{ uri: message.senderProfilePicture }} style={styles.senderAvatar} />
+              ? <RemoteImage source={{ uri: message.senderProfilePicture }} style={styles.senderAvatar} />
               : <View style={[styles.senderAvatar, styles.avatarPlaceholder]}><Text style={{ fontSize: 10 }}>🐶</Text></View>
             }
             <Text style={styles.senderName}>{message.senderName}</Text>

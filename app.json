@@ -72,7 +72,8 @@
         {
           "color": "#2E9E6B"
         }
-      ]
+      ],
+      "expo-image"
     ],
     "extra": {
       "eas": {

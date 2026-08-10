@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import {
-  ActivityIndicator, Alert, Image, KeyboardAvoidingView, Modal,
+  ActivityIndicator, Alert, KeyboardAvoidingView, Modal,
   Platform, ScrollView, StyleSheet, Text, TextInput,
   TouchableOpacity, View,
 } from 'react-native';
+import { RemoteImage } from '../../components/ui/RemoteImage';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from '@expo/vector-icons';
@@ -69,7 +70,8 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Re
       setBreed(dog.breed);
       if (dog.dateOfBirth) setDateOfBirth(new Date(dog.dateOfBirth));
       setBio(dog.bio ?? '');
-      setPhotos(dog.photos.map(p => ({ kind: 'existing', photoId: p.id, uri: p.imageData })));
+      // Thumbs: these render as small grid tiles, never full size.
+      setPhotos(dog.photos.map(p => ({ kind: 'existing', photoId: p.id, uri: p.thumbUrl })));
       setEnergyLevel(dog.energyLevel);
       setSocialBehavior(dog.socialBehavior);
       setLoves(dog.loves ?? []);
@@ -84,11 +86,12 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Re
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') { setError(t('dogs.form.photoPermission')); return; }
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ['images'], allowsEditing: true, aspect: [3, 4], quality: 0.6, base64: true,
+      // No base64 and no quality cut: the file URI goes to the upload helper, which
+      // does the downscaling. Compressing here as well only lost a second generation.
+      mediaTypes: ['images'], allowsEditing: true, aspect: [3, 4],
     });
-    if (!result.canceled && result.assets[0].base64) {
-      const uri = `data:image/jpeg;base64,${result.assets[0].base64}`;
-      setPhotos(prev => [...prev, { kind: 'new', uri }]);
+    if (!result.canceled && result.assets[0]) {
+      setPhotos(prev => [...prev, { kind: 'new', uri: result.assets[0].uri }]);
     }
   };
 
@@ -135,7 +138,8 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Re
         breed: breed ?? undefined,
         dateOfBirth: dateOfBirth ? dateOfBirth.toISOString().split('T')[0] : undefined,
         bio: bio.trim() || undefined,
-        profilePicture: photos[0]?.uri ?? undefined,
+        // profilePicture is no longer sent: the server derives it from the first
+        // photo once the uploads below have run.
         energyLevel: energyLevel ?? undefined,
         socialBehavior: socialBehavior ?? undefined,
         loves: loves.length ? loves : undefined,
@@ -248,7 +252,7 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Re
                   <View key={i} style={styles.photoSlot}>
                     {photo ? (
                       <>
-                        <Image source={{ uri: photo.uri }} style={styles.photoThumb} />
+                        <RemoteImage source={{ uri: photo.uri }} style={styles.photoThumb} />
                         <TouchableOpacity style={styles.photoRemove} onPress={() => removePhoto(i)}>
                           <Ionicons name="close-circle" size={22} color="#e53e3e" />
                         </TouchableOpacity>

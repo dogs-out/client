@@ -149,8 +149,8 @@ describe('ProfileForm', () => {
       latitude: 47.4,
       longitude: 8.5,
       photos: [
-        { id: 11, imageData: 'data:one' },
-        { id: 22, imageData: 'data:two' },
+        { id: 11, url: 'https://cdn.test/1/feed.jpg', thumbUrl: 'https://cdn.test/1/thumb.jpg', sortOrder: 0 },
+        { id: 22, url: 'https://cdn.test/2/feed.jpg', thumbUrl: 'https://cdn.test/2/thumb.jpg', sortOrder: 1 },
       ],
     });
     (userService.updateProfile as jest.Mock).mockResolvedValue({});

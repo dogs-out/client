@@ -1,8 +1,9 @@
 import { useCallback, useState } from 'react';
 import {
-  ActivityIndicator, FlatList, Image, StyleSheet, Text,
+  ActivityIndicator, FlatList, StyleSheet, Text,
   TouchableOpacity, View,
 } from 'react-native';
+import { RemoteImage } from '../../components/ui/RemoteImage';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -110,7 +111,7 @@ export default function FindSitterScreen() {
       <GlassCard style={styles.card}>
         <TouchableOpacity style={styles.cardTop} activeOpacity={0.7} onPress={() => openProfile(item)}>
           {item.profilePicture
-            ? <Image source={{ uri: item.profilePicture }} style={styles.avatar} />
+            ? <RemoteImage source={{ uri: item.profilePicture }} style={styles.avatar} />
             : <View style={[styles.avatar, styles.avatarPlaceholder]}><Text style={{ fontSize: 26 }}>👤</Text></View>
           }
           <View style={styles.cardInfo}>

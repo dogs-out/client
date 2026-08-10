@@ -1,7 +1,8 @@
 import { useCallback, useState } from 'react';
 import {
-  ActivityIndicator, Alert, FlatList, Image, StyleSheet, Text, TouchableOpacity, View,
+  ActivityIndicator, Alert, FlatList, StyleSheet, Text, TouchableOpacity, View,
 } from 'react-native';
+import { RemoteImage } from '../../components/ui/RemoteImage';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -74,7 +75,7 @@ export default function BlockedUsersScreen({ navigation }: Readonly<Props>) {
             <GlassCard padding={0} style={styles.card}>
               <View style={styles.row}>
                 {item.profilePicture
-                  ? <Image source={{ uri: item.profilePicture }} style={styles.avatar} />
+                  ? <RemoteImage source={{ uri: item.profilePicture }} style={styles.avatar} />
                   : <View style={[styles.avatar, styles.avatarPlaceholder]}><Text style={{ fontSize: 20 }}>🐶</Text></View>
                 }
                 <Text style={styles.name} numberOfLines={1}>{item.name}</Text>

@@ -1,12 +1,11 @@
 import axios from 'axios';
 import { tokenStorage } from '../utils/tokenStorage';
 
-// 10s was too tight for this API's payloads. Photos are stored and returned as
-// inline base64, so /discover is ~18 MB for 15 profiles and a dog/profile save
-// uploads megabytes of it back. On a mid-speed connection either overruns 10s,
-// and axios reports the abort as a network error — which the screens render as
-// "Cannot reach the server", making a working backend look down.
-// This is a mitigation, not the fix: the payload itself needs to shrink.
+// Raised from 10s when photos were inline base64 and /discover was ~18 MB, which
+// overran the timeout on a normal connection and surfaced as "Cannot reach the
+// server" against a healthy backend. Photos are URLs now and the feed is a few KB,
+// so that pressure is gone — but this still covers the one genuinely large request
+// left, a photo upload on a slow mobile connection.
 const REQUEST_TIMEOUT_MS = 30000;
 
 const api = axios.create({

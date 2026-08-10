@@ -1,8 +1,12 @@
 import api from './api';
+import { MULTIPART_CONFIG, prepareForUpload } from './photoUpload';
 
 export interface DogPhoto {
   id: number;
-  imageData: string;
+  /** Full-size rendition, for carousels and full-bleed cards. */
+  url: string;
+  /** Small rendition, for avatars and list rows. */
+  thumbUrl: string;
   sortOrder: number;
 }
 
@@ -31,7 +35,6 @@ export interface DogPayload {
   breed?: string;
   dateOfBirth?: string;
   bio?: string;
-  profilePicture?: string;
   energyLevel?: number;
   socialBehavior?: string;
   loves?: string[];
@@ -56,8 +59,12 @@ export const dogService = {
   deleteDog: (id: number): Promise<void> =>
     api.delete(`/dogs/${id}`).then(() => undefined),
 
-  addPhoto: (dogId: number, imageData: string): Promise<DogPhoto> =>
-    api.post<DogPhoto>(`/dogs/${dogId}/photos`, { imageData }).then(r => r.data),
+  /** Takes a local image URI from the picker; resizes and uploads it as multipart. */
+  addPhoto: async (dogId: number, uri: string): Promise<DogPhoto> => {
+    const form = await prepareForUpload(uri);
+    const { data } = await api.post<DogPhoto>(`/dogs/${dogId}/photos`, form, MULTIPART_CONFIG);
+    return data;
+  },
 
   deletePhoto: (dogId: number, photoId: number): Promise<void> =>
     api.delete(`/dogs/${dogId}/photos/${photoId}`).then(() => undefined),
@@ -65,19 +72,4 @@ export const dogService = {
   /** Persists photo order; the first id becomes the main photo / profile picture. */
   reorderPhotos: (dogId: number, photoIds: number[]): Promise<void> =>
     api.put(`/dogs/${dogId}/photos/order`, { photoIds }).then(() => undefined),
-
-  pickImageAsBase64: async (uri: string): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const xhr = new XMLHttpRequest();
-      xhr.onload = () => {
-        const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result as string);
-        reader.readAsDataURL(xhr.response);
-      };
-      xhr.onerror = reject;
-      xhr.open('GET', uri);
-      xhr.responseType = 'blob';
-      xhr.send();
-    });
-  },
 };

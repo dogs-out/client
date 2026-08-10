@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import {
-  ActivityIndicator, Image, KeyboardAvoidingView, Modal,
+  ActivityIndicator, KeyboardAvoidingView, Modal,
   Platform, ScrollView, StyleSheet, Switch, Text, TextInput,
   TouchableOpacity, View,
 } from 'react-native';
+import { RemoteImage } from '../../components/ui/RemoteImage';
 import { useNavigation } from '@react-navigation/native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import * as ImagePicker from 'expo-image-picker';
@@ -97,7 +98,8 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: R
       if (user.sitterExperienceYears != null) setSitterExperienceYears(user.sitterExperienceYears);
       if (user.sitterTags?.length) setSitterTags(user.sitterTags);
       if (user.photos?.length) {
-        const loaded = user.photos.map(p => ({ kind: 'existing' as const, photoId: p.id, uri: p.imageData }));
+        // Thumbs: these render as small grid tiles, never full size.
+        const loaded = user.photos.map(p => ({ kind: 'existing' as const, photoId: p.id, uri: p.thumbUrl }));
         setPhotos(loaded);
         originalPhotoIds.current = user.photos.map(p => p.id);
       }
@@ -118,11 +120,12 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: R
       mediaTypes: ['images'],
       allowsEditing: true,
       aspect: [1, 1],
-      quality: 0.5,
-      base64: true,
+      // No base64 and no quality cut: the file URI is handed to the upload helper,
+      // which does the downscaling. Reading a multi-MB image into a JS string was
+      // pure overhead, and compressing twice only lost quality.
     });
-    if (!result.canceled && result.assets[0].base64) {
-      setPhotos(prev => [...prev, { kind: 'new', uri: `data:image/jpeg;base64,${result.assets[0].base64}` }]);
+    if (!result.canceled && result.assets[0]) {
+      setPhotos(prev => [...prev, { kind: 'new', uri: result.assets[0].uri }]);
     }
   };
 
@@ -289,7 +292,7 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: R
                 <View key={i} style={styles.photoSlot}>
                   {photo ? (
                     <>
-                      <Image source={{ uri: photo.uri }} style={styles.photoThumb} />
+                      <RemoteImage source={{ uri: photo.uri }} style={styles.photoThumb} />
                       {i === 0 && <View style={styles.mainBadge}><Text style={styles.mainBadgeText}>{t('dogs.form.mainBadge')}</Text></View>}
                       {i > 0 && (
                         <TouchableOpacity
