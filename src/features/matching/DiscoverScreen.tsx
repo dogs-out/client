@@ -20,6 +20,7 @@ import { Colors } from '../../constants/colors';
 import { FloatingBackground } from '../../components/FloatingBackground';
 import { translateTag } from '../../i18n/translateTag';
 import { translateBreed } from '../../i18n/translateBreed';
+import { DiscoveryLocationChip } from './DiscoveryLocationChip';
 
 const { width: SW } = Dimensions.get('window');
 const CARD_W = SW - 32;
@@ -178,6 +179,11 @@ export default function DiscoverScreen() {
   const [matchInfo, setMatchInfo] = useState<{ profile: DiscoverProfile; matchId: number } | null>(null);
   const [showBoneCatch, setShowBoneCatch] = useState(false);
   const [myPicture, setMyPicture] = useState<string | null>(null);
+  // Where the feed is centred and how far it reaches — surfaced in the header so a
+  // stale or missing location is visible rather than silently shaping the deck.
+  const [origin, setOrigin] = useState<{ latitude: number | null; longitude: number | null; radiusKm: number | null }>(
+    { latitude: null, longitude: null, radiusKm: null }
+  );
   const [error, setError] = useState<string | null>(null);
   // Sitter-only accounts (no dog) don't get the swipe feed — they see a locked state
   const [locked, setLocked] = useState(false);
@@ -186,6 +192,7 @@ export default function DiscoverScreen() {
   useEffect(() => {
     userService.getMe().then(u => {
       setMyPicture(u.profilePicture);
+      setOrigin({ latitude: u.latitude, longitude: u.longitude, radiusKm: u.maxDistanceKm });
       lockedRef.current = u.hasDog === false;
       setLocked(lockedRef.current);
     }).catch(() => {});
@@ -223,8 +230,10 @@ export default function DiscoverScreen() {
         filtersVersionRef.current = getDiscoverFiltersVersion();
         loadFeed();
       }
-      // The user may have toggled "I have a dog" in their profile meanwhile
+      // The user may have toggled "I have a dog" in their profile meanwhile, or
+      // changed the location/radius the feed is centred on
       userService.getMe().then(u => {
+        setOrigin({ latitude: u.latitude, longitude: u.longitude, radiusKm: u.maxDistanceKm });
         const isLocked = u.hasDog === false;
         if (lockedRef.current && !isLocked) loadFeed();
         lockedRef.current = isLocked;
@@ -345,6 +354,16 @@ export default function DiscoverScreen() {
           <Text style={styles.emptyEmoji}>🐾</Text>
           <Text style={styles.emptyTitle}>{t('matching.discover.noMoreDogsTitle')}</Text>
           <Text style={styles.emptySub}>{t('matching.discover.noMoreDogsSub')}</Text>
+          {/* An empty deck is most often the search area, not a lack of dogs —
+              so say where we looked before offering to widen it. */}
+          <View style={styles.emptyLocation}>
+            <DiscoveryLocationChip
+              latitude={origin.latitude}
+              longitude={origin.longitude}
+              radiusKm={origin.radiusKm}
+              onPress={() => navigation.navigate('DiscoverFilters')}
+            />
+          </View>
           <TouchableOpacity style={styles.refreshBtn} onPress={loadFeed}>
             <Text style={styles.refreshBtnText}>{t('matching.discover.refresh')}</Text>
           </TouchableOpacity>
@@ -387,6 +406,15 @@ export default function DiscoverScreen() {
         {profile.distanceKm >= 0 && (
           <Text style={styles.headerDist}>{formatDistance(profile.distanceKm, t)}</Text>
         )}
+      </View>
+
+      <View style={styles.locationRow}>
+        <DiscoveryLocationChip
+          latitude={origin.latitude}
+          longitude={origin.longitude}
+          radiusKm={origin.radiusKm}
+          onPress={() => navigation.navigate('DiscoverFilters')}
+        />
       </View>
 
       <Text style={styles.hint}>
@@ -561,6 +589,8 @@ const styles = StyleSheet.create({
   header:      { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingTop: 8, paddingBottom: 4 },
   headerTitle: { fontSize: 22, fontWeight: '800', color: Colors.text },
   headerDist:  { fontSize: 13, color: Colors.text, opacity: 0.55 },
+  locationRow:   { alignItems: 'center', paddingHorizontal: 16, paddingBottom: 6 },
+  emptyLocation: { marginTop: 4, marginBottom: 18 },
   hint:        { textAlign: 'center', fontSize: 13, marginBottom: 8 },
   hintNo:      { color: '#e53e3e', fontWeight: '600' },
   hintYes:     { color: Colors.primary, fontWeight: '600' },

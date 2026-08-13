@@ -231,7 +231,10 @@
       "adjustDistance": "Ajuster la distance de recherche",
       "lockedTitle": "Discover est réservé aux propriétaires de chiens",
       "lockedBody": "Ton profil est réglé sur « pas de chien », le swipe est donc désactivé. Tu trouveras des jobs de dogsitting dans l'onglet « Dogsitting » — ou ajoute un chien pour débloquer Discover.",
-      "lockedCta": "Aller à « Dogsitting »"
+      "lockedCta": "Aller à « Dogsitting »",
+      "searchingNear": "Près de {{place}} · dans un rayon de {{km}} km",
+      "searchingWithin": "Dans un rayon de {{km}} km autour de votre position",
+      "locationMissing": "Aucune position définie — touchez pour en ajouter une"
     },
     "filters": {
       "saveFailed": "Tes préférences n'ont pas pu être enregistrées. Veuillez réessayer.",
@@ -256,7 +259,13 @@
       "toleranceValue_other": "±{{count}} ans",
       "sixYrsEdge": "±6 ans",
       "noBirthday": "Pas de date de naissance pour {{name}} — plage affichée comme ±{{tolerance}} ans",
-      "savePreferences": "Enregistrer les préférences"
+      "savePreferences": "Enregistrer les préférences",
+      "location": "Position",
+      "locationSet": "Votre position enregistrée",
+      "locationMissing": "Aucune position définie",
+      "locationHint": "Découvrir affiche les chiens autour de ce point. Mettez-le à jour si vous avez déménagé.",
+      "locationMissingHint": "Sans position, Découvrir ne peut ni trier ni limiter les chiens par distance.",
+      "useCurrentLocation": "Utiliser ma position actuelle"
     }
   },
   "profile": {
