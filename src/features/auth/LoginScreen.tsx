@@ -130,10 +130,18 @@ export default function LoginScreen({ navigation }: Readonly<Props>) {
 
     if (!credential.identityToken) { setError(t('auth.login.appleSignInFailed')); return; }
 
+    // Apple hands over the name only on the very first authorization and never again,
+    // so it has to be forwarded now — otherwise the account is stuck with a name taken
+    // from the email address, which for a Hide My Email user is a random relay string.
+    const appleName = [credential.fullName?.givenName, credential.fullName?.familyName]
+      .filter(Boolean)
+      .join(' ')
+      .trim();
+
     // Step 2: exchange token with our backend — errors here are Axios errors
     setLoading(true);
     try {
-      const res = await authService.appleAuth(credential.identityToken);
+      const res = await authService.appleAuth(credential.identityToken, appleName || undefined);
       await tokenStorage.set(res.token);
       navigation.reset({ index: 0, routes: [{ name: res.isNewUser ? 'ProfileSetup' : 'MainTabs' }] });
     } catch (e) {
