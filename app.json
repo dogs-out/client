@@ -44,8 +44,10 @@
           "apiKey": "AIzaSyD2NMYRgYr7O72xHLgvmnylObOrSB8CMsQ"
         }
       },
-      "blockedPermissions": ["com.google.android.gms.permission.AD_ID"],
-      "versionCode": 2
+      "blockedPermissions": [
+        "com.google.android.gms.permission.AD_ID"
+      ],
+      "versionCode": 3
     },
     "web": {
       "favicon": "./assets/favicon.png"
