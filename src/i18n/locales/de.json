@@ -231,7 +231,10 @@
       "adjustDistance": "Suchdistanz anpassen",
       "lockedTitle": "Discover ist für Hundebesitzer",
       "lockedBody": "Dein Profil ist auf „kein Hund“ eingestellt, daher ist das Swipen deaktiviert. Dogsitting-Jobs findest du im Tab „Dogsitting“ — oder füge einen Hund hinzu, um Discover freizuschalten.",
-      "lockedCta": "Zu „Dogsitting“"
+      "lockedCta": "Zu „Dogsitting“",
+      "searchingNear": "Bei {{place}} · im Umkreis von {{km}} km",
+      "searchingWithin": "Im Umkreis von {{km}} km um deinen Standort",
+      "locationMissing": "Kein Standort gesetzt — zum Hinzufügen tippen"
     },
     "filters": {
       "saveFailed": "Deine Einstellungen konnten nicht gespeichert werden. Bitte versuche es erneut.",
@@ -256,7 +259,13 @@
       "toleranceValue_other": "±{{count}} Jahre",
       "sixYrsEdge": "±6 Jahre",
       "noBirthday": "Kein Geburtsdatum für {{name}} — Bereich als ±{{tolerance}} Jahre angezeigt",
-      "savePreferences": "Einstellungen speichern"
+      "savePreferences": "Einstellungen speichern",
+      "location": "Standort",
+      "locationSet": "Dein gespeicherter Standort",
+      "locationMissing": "Kein Standort gesetzt",
+      "locationHint": "Entdecken zeigt Hunde rund um diesen Punkt. Aktualisiere ihn, wenn du umgezogen bist.",
+      "locationMissingHint": "Ohne Standort kann Entdecken Hunde nicht nach Entfernung sortieren oder begrenzen.",
+      "useCurrentLocation": "Meinen aktuellen Standort verwenden"
     }
   },
   "profile": {

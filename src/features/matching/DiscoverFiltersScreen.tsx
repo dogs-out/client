@@ -6,6 +6,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
+import * as Location from 'expo-location';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import { useTranslation } from 'react-i18next';
 import { RootStackParamList } from '../../types/navigation';
@@ -15,6 +16,8 @@ import { bumpDiscoverFiltersVersion } from '../../utils/discoverFilters';
 import { FloatingBackground } from '../../components/FloatingBackground';
 import { GlassCard } from '../../components/GlassCard';
 import { CustomSlider, sliderStyles } from '../../components/CustomSlider';
+import { usePlaceName } from '../../hooks/usePlaceName';
+import { DEFAULT_RADIUS_KM } from '../../constants/discover';
 import { Colors } from '../../constants/colors';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'DiscoverFilters'>;
@@ -37,8 +40,15 @@ export default function DiscoverFiltersScreen({ navigation }: Readonly<Props>) {
   const [saving, setSaving]           = useState(false);
   const [scrollEnabled, setScrollEnabled] = useState(true);
 
-  // Distance — always on
-  const [distance, setDistance]       = useState(25);
+  // Distance — always on. Starts at the radius the server falls back to when none
+  // is saved (DiscoverService.MAX_DISTANCE_KM). It used to start at 25, so a user
+  // who had never set a distance and simply opened this screen and saved had their
+  // search area silently halved from the 50 km they were actually getting.
+  const [distance, setDistance]       = useState(DEFAULT_RADIUS_KM);
+
+  // Where the feed is centred
+  const [location, setLocation] = useState<{ latitude: number; longitude: number } | null>(null);
+  const [locating, setLocating] = useState(false);
 
   // Owner age
   const [ageOn, setAgeOn]             = useState(false);
@@ -56,6 +66,11 @@ export default function DiscoverFiltersScreen({ navigation }: Readonly<Props>) {
     Promise.all([userService.getMe(), dogService.getMyDogs()]).then(([u, myDogs]) => {
       // Distance
       if (u.maxDistanceKm != null) setDistance(Math.max(1, Math.min(50, u.maxDistanceKm)));
+
+      // Location the feed is centred on
+      if (u.latitude != null && u.longitude != null) {
+        setLocation({ latitude: u.latitude, longitude: u.longitude });
+      }
 
       // Owner age
       if (u.minAge != null || u.maxAge != null) {
@@ -99,6 +114,37 @@ export default function DiscoverFiltersScreen({ navigation }: Readonly<Props>) {
 
   const lockScroll = useCallback(() => setScrollEnabled(false), []);
   const unlockScroll = useCallback(() => setScrollEnabled(true), []);
+
+  const placeName = usePlaceName(location?.latitude, location?.longitude);
+
+  /**
+   * Re-centres the feed on where the user is now. Kept here rather than only in
+   * Edit Profile because this is the screen you reach when the deck looks wrong,
+   * and a stale location is one of the two reasons it can be (the other is the
+   * radius, right below).
+   */
+  const detectLocation = async () => {
+    setLocating(true);
+    try {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert(t('common.error'), t('profile.form.locationPermission'));
+        return;
+      }
+      const pos = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
+      const next = { latitude: pos.coords.latitude, longitude: pos.coords.longitude };
+      // Saved immediately rather than on Save: the deck is rebuilt from the
+      // server's copy, so an unsaved location would show a place name that the
+      // feed underneath it isn't actually using.
+      await userService.updateProfile(next);
+      setLocation(next);
+      bumpDiscoverFiltersVersion();
+    } catch {
+      Alert.alert(t('common.error'), t('profile.form.locationError'));
+    } finally {
+      setLocating(false);
+    }
+  };
 
   const handleDistanceChange   = useCallback((v: number) => setDistance(v), []);
   const handleDogAgeChange     = useCallback((v: number) => setDogAgeTolerance(v), []);
@@ -154,6 +200,45 @@ export default function DiscoverFiltersScreen({ navigation }: Readonly<Props>) {
       </View>
 
       <ScrollView scrollEnabled={scrollEnabled} contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
+
+        {/* ── Location the feed is centred on ── */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>{t('matching.filters.location')}</Text>
+          <GlassCard>
+            <View style={styles.locationRow}>
+              <Ionicons
+                name={location ? 'location' : 'location-outline'}
+                size={18}
+                color={location ? Colors.primary : '#e53e3e'}
+              />
+              <Text style={styles.locationName} numberOfLines={1}>
+                {location
+                  ? (placeName ?? t('matching.filters.locationSet'))
+                  : t('matching.filters.locationMissing')}
+              </Text>
+            </View>
+            <Text style={styles.locationHint}>
+              {location
+                ? t('matching.filters.locationHint')
+                : t('matching.filters.locationMissingHint')}
+            </Text>
+            <TouchableOpacity
+              style={styles.locationBtn}
+              onPress={detectLocation}
+              disabled={locating}
+              activeOpacity={0.7}
+            >
+              {locating
+                ? <ActivityIndicator size="small" color={Colors.primary} />
+                : (
+                  <>
+                    <Ionicons name="navigate-outline" size={16} color={Colors.primary} />
+                    <Text style={styles.locationBtnText}>{t('matching.filters.useCurrentLocation')}</Text>
+                  </>
+                )}
+            </TouchableOpacity>
+          </GlassCard>
+        </View>
 
         {/* ── Distance (always on) ── */}
         <View style={styles.section}>
@@ -328,6 +413,11 @@ const styles = StyleSheet.create({
   scroll:       { padding: 20, paddingTop: 12 },
   section:      { marginBottom: 24 },
   sectionTitle: { fontSize: 12, fontWeight: '700', color: Colors.textSecondary, textTransform: 'uppercase', letterSpacing: 0.8, marginBottom: 8, marginLeft: 4 },
+  locationRow:     { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  locationName:    { flexShrink: 1, fontSize: 16, fontWeight: '700', color: Colors.text },
+  locationHint:    { fontSize: 13, color: Colors.textSecondary, marginTop: 6, lineHeight: 18 },
+  locationBtn:     { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, marginTop: 12, paddingVertical: 10, borderRadius: 12, backgroundColor: 'rgba(46,158,107,0.10)' },
+  locationBtnText: { fontSize: 14, fontWeight: '700', color: Colors.primary },
 
   toggleRow:   { flexDirection: 'row', alignItems: 'center' },
   toggleLabel: { fontSize: 15, fontWeight: '600', color: Colors.text },

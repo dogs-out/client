@@ -231,7 +231,10 @@
       "adjustDistance": "Adjust search distance",
       "lockedTitle": "Discover is for dog owners",
       "lockedBody": "Your profile is set to \"no dog\", so the swipe deck is off. You can find dogsitting jobs in the Dogsitting tab — or add a dog to unlock Discover.",
-      "lockedCta": "Go to Dogsitting"
+      "lockedCta": "Go to Dogsitting",
+      "searchingNear": "Near {{place}} · within {{km}} km",
+      "searchingWithin": "Within {{km}} km of your location",
+      "locationMissing": "No location set — tap to add one"
     },
     "filters": {
       "saveFailed": "Your preferences could not be saved. Please try again.",
@@ -256,7 +259,13 @@
       "toleranceValue_other": "±{{count}} yrs",
       "sixYrsEdge": "±6 yrs",
       "noBirthday": "No birthday set for {{name}} — range shown as ±{{tolerance}} yrs",
-      "savePreferences": "Save preferences"
+      "savePreferences": "Save preferences",
+      "location": "Location",
+      "locationSet": "Your saved location",
+      "locationMissing": "No location set",
+      "locationHint": "Discover shows dogs around this point. Update it if you've moved.",
+      "locationMissingHint": "Without a location, Discover can't sort or limit dogs by distance.",
+      "useCurrentLocation": "Use my current location"
     }
   },
   "profile": {
