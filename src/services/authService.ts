@@ -37,6 +37,12 @@ export const authService = {
   googleAuth: (payload: GoogleAuthPayload): Promise<AuthResponse> =>
     api.post<AuthResponse>('/auth/google', payload).then(r => r.data),
 
-  appleAuth: (identityToken: string): Promise<AuthResponse> =>
-    api.post<AuthResponse>('/auth/apple', { identityToken }).then(r => r.data),
+  /**
+   * @param fullName name from the Apple credential. Apple only provides it on the
+   *   user's first authorization and never again, so it has to be forwarded then or
+   *   the account keeps a name derived from the email address forever. The server
+   *   uses it for display only — identity always comes from the signed token.
+   */
+  appleAuth: (identityToken: string, fullName?: string): Promise<AuthResponse> =>
+    api.post<AuthResponse>('/auth/apple', { identityToken, fullName }).then(r => r.data),
 };
