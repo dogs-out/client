@@ -3,7 +3,7 @@ import {
   ActivityIndicator, FlatList, Keyboard, Platform, StyleSheet,
   Text, TextInput, TouchableOpacity, View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -23,6 +23,7 @@ const DEFAULT_REGION = {
 
 export default function ParkPickerScreen({ navigation, route }: Readonly<Props>) {
   const { t } = useTranslation();
+  const insets = useSafeAreaInsets();
   const mapRef = useRef<MapView>(null);
   const [region, setRegion] = useState(
     route.params?.initialLat != null && route.params?.initialLng != null
@@ -116,7 +117,7 @@ export default function ParkPickerScreen({ navigation, route }: Readonly<Props>)
   };
 
   return (
-    <SafeAreaView style={styles.safe} edges={['top']}>
+    <View style={styles.safe}>
       <MapView
         ref={mapRef}
         style={StyleSheet.absoluteFill}
@@ -135,8 +136,12 @@ export default function ParkPickerScreen({ navigation, route }: Readonly<Props>)
         )}
       </MapView>
 
-      {/* Header + search */}
-      <View style={styles.topOverlay}>
+      {/* Header + search. Both overlays are absolutely positioned, so a SafeAreaView
+          wrapper would not move them — absolute children sit against the parent's
+          padding box. The insets have to be applied here instead, or the search row
+          lands under the status bar and the confirm button under the navigation bar
+          on Android, where the app draws edge to edge. */}
+      <View style={[styles.topOverlay, { top: insets.top + 12 }]}>
         <View style={styles.searchRow}>
           <TouchableOpacity style={styles.backBtn} onPress={() => navigation.goBack()}>
             <Ionicons name="chevron-back" size={24} color={Colors.text} />
@@ -180,7 +185,7 @@ export default function ParkPickerScreen({ navigation, route }: Readonly<Props>)
       </View>
 
       {/* Bottom confirm */}
-      <View style={styles.bottomOverlay}>
+      <View style={[styles.bottomOverlay, { bottom: insets.bottom + 16 }]}>
         <Text style={styles.hint}>{t('playdates.parkPicker.longPressHint')}</Text>
         {selected && (
           <View style={styles.selectedBox}>
@@ -196,14 +201,17 @@ export default function ParkPickerScreen({ navigation, route }: Readonly<Props>)
           <Text style={styles.confirmText}>{t('playdates.parkPicker.confirm')}</Text>
         </TouchableOpacity>
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: Colors.background },
 
-  topOverlay: { position: 'absolute', top: Platform.OS === 'ios' ? 56 : 16, left: 12, right: 12 },
+  // `top` and `bottom` come from the safe-area insets at render time; the hardcoded
+  // 56/40 that used to live here were iPhone measurements that had nothing to say
+  // about an Android device's status and navigation bars.
+  topOverlay: { position: 'absolute', left: 12, right: 12 },
   searchRow:  { flexDirection: 'row', alignItems: 'center', gap: 8 },
   backBtn: {
     width: 44, height: 44, borderRadius: 22,
@@ -231,7 +239,7 @@ const styles = StyleSheet.create({
   resultAddress: { fontSize: 12, color: Colors.textSecondary, marginTop: 1 },
   searchError:   { padding: 14, fontSize: 13, color: Colors.textSecondary, textAlign: 'center' },
 
-  bottomOverlay: { position: 'absolute', left: 16, right: 16, bottom: Platform.OS === 'ios' ? 40 : 24 },
+  bottomOverlay: { position: 'absolute', left: 16, right: 16 },
   hint: {
     alignSelf: 'center', fontSize: 12, color: Colors.text,
     backgroundColor: 'rgba(255,255,255,0.85)', paddingHorizontal: 12, paddingVertical: 5,
