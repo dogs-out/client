@@ -36,6 +36,9 @@ type PhotoState =
   | { kind: 'existing'; photoId: number; uri: string }
   | { kind: 'new'; uri: string };
 
+/** Server allows six photos per dog (DogService.addPhoto). */
+const MAX_DOG_PHOTOS = 6;
+
 const NAME_REGEX = /^[a-zA-ZÀ-ÿ\s'-]+$/;
 const MAX_DOB = new Date();
 const MIN_DOB = new Date();
@@ -82,17 +85,21 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Re
   }, [dogId]);
 
   const pickPhoto = async () => {
-    if (photos.length >= 6) { setError(t('dogs.form.maxPhotos')); return; }
+    const remaining = MAX_DOG_PHOTOS - photos.length;
+    if (remaining <= 0) { setError(t('dogs.form.maxPhotos')); return; }
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') { setError(t('dogs.form.photoPermission')); return; }
+    // See ProfileForm.addPhoto: the picker gives us multi-select or the crop step,
+    // not both, and the server renders its own 3:4 and square versions anyway.
     const result = await ImagePicker.launchImageLibraryAsync({
       // No base64 and no quality cut: the file URI goes to the upload helper, which
       // does the downscaling. Compressing here as well only lost a second generation.
-      mediaTypes: ['images'], allowsEditing: true, aspect: [3, 4],
+      mediaTypes: ['images'], allowsMultipleSelection: true, selectionLimit: remaining,
     });
-    if (!result.canceled && result.assets[0]) {
-      setPhotos(prev => [...prev, { kind: 'new', uri: result.assets[0].uri }]);
-    }
+    if (result.canceled) return;
+    // selectionLimit is advisory on some Android pickers, so clamp it here too.
+    const picked = result.assets.slice(0, remaining).map(a => ({ kind: 'new' as const, uri: a.uri }));
+    if (picked.length > 0) setPhotos(prev => [...prev, ...picked]);
   };
 
   const removePhoto = (index: number) => {

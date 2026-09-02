@@ -15,7 +15,7 @@ import { dogService, Dog } from '../../services/dogService';
 import { bumpDiscoverFiltersVersion } from '../../utils/discoverFilters';
 import { FloatingBackground } from '../../components/FloatingBackground';
 import { GlassCard } from '../../components/GlassCard';
-import { CustomSlider, sliderStyles } from '../../components/CustomSlider';
+import { CustomSlider, GlassRangeMarker } from '../../components/CustomSlider';
 import { usePlaceName } from '../../hooks/usePlaceName';
 import { DEFAULT_RADIUS_KM } from '../../constants/discover';
 import { Colors } from '../../constants/colors';
@@ -302,8 +302,7 @@ export default function DiscoverFiltersScreen({ navigation }: Readonly<Props>) {
                       selectedStyle={{ backgroundColor: Colors.primary }}
                       unselectedStyle={{ backgroundColor: Colors.border }}
                       trackStyle={{ height: 4, borderRadius: 2 }}
-                      markerStyle={sliderStyles.multiThumb}
-                      pressedMarkerStyle={sliderStyles.multiThumb}
+                      customMarker={marker => <GlassRangeMarker pressed={marker.pressed ?? false} />}
                       containerStyle={styles.rangeSliderContainer}
                     />
                   )}

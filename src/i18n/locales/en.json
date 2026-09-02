@@ -73,7 +73,8 @@
       "confirmPasswordPlaceholder": "Confirm password",
       "register": "Register",
       "haveAccount": "Already have an account?",
-      "signIn": "Sign in"
+      "signIn": "Sign in",
+      "passwordRequirements": "Your password doesn't meet all the requirements yet."
     },
     "forgotPassword": {
       "enterEmail": "Please enter your email.",
@@ -97,7 +98,17 @@
       "verify": "Verify",
       "codeResent": "Code resent — check your inbox",
       "resend": "Didn't get the code? Resend",
-      "wrongEmail": "Wrong email? Go back"
+      "wrongEmail": "Wrong email? Go back",
+      "deliveryFailed": "We couldn't deliver the code to that address. Check your spam folder, or go back and use a different email."
+    },
+    "passwordRules": {
+      "title": "Your password needs",
+      "length": "8–50 characters",
+      "lower": "a lowercase letter",
+      "upper": "an uppercase letter",
+      "digit": "a number",
+      "special": "a symbol",
+      "noSpace": "no spaces"
     }
   },
   "chat": {
@@ -479,6 +490,8 @@
       "emptyNoRole": "Turn on a dogsitting role in your profile to see who's nearby — sitters if you need one, or owners looking for a sitter if you'd like to sit.",
       "contact": "Contact",
       "enableSitterHint": "Turn on “I’m available as a dog sitter” or “I’m looking for a dogsitter” in your profile to start chatting. Tap here to edit.",
+      "withinKm": "Within {{km}} km",
+      "radiusHint": "Only people inside this distance are shown here. It is the same search distance Discover uses.",
       "error": "Couldn't load the list."
     },
     "profile": {

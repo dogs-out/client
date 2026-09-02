@@ -46,3 +46,4 @@ yarn-error.*
 
 # Local build artifacts
 build-*.apk
+build-*.ipa

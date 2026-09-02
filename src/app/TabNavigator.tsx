@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { AppState, Text, TouchableOpacity, View } from 'react-native';
 import { createBottomTabNavigator, BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { notificationService } from '../services/notificationService';
+import { chatSocket } from '../services/socket';
 import { BlurView } from 'expo-blur';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
@@ -83,6 +84,29 @@ function GlassTabBar({ state, descriptors, navigation }: Readonly<BottomTabBarPr
 export default function TabNavigator() {
   // The user is authenticated once the main tabs mount — register this device for push
   useEffect(() => { notificationService.register(); }, []);
+
+  // Hold the socket open for as long as the app is in the foreground.
+  //
+  // The server only sends a push when the recipient is *not* connected, and until
+  // now the socket lived only while a chat or playdate screen was mounted — so
+  // someone swiping in Discover counted as away and got pushed about a match they
+  // were watching happen on screen, which then surfaced when they came back to the
+  // app. Anchoring the connection to the app's foreground state instead makes
+  // "online" mean what the server assumes it means. Backgrounding closes it, so
+  // push still reaches people who really have left.
+  useEffect(() => {
+    let unsubscribe: (() => void) | null = null;
+    // A listener that does nothing on purpose: screens subscribe for their own
+    // updates, this one exists only to keep the connection alive.
+    const open = () => { unsubscribe ??= chatSocket.subscribe(() => {}); };
+    const close = () => { unsubscribe?.(); unsubscribe = null; };
+
+    open();
+    const sub = AppState.addEventListener('change', state => {
+      if (state === 'active') open(); else close();
+    });
+    return () => { sub.remove(); close(); };
+  }, []);
 
   // Swiping for dog owners is pointless without a dog of your own to match with,
   // so non-owners (sitter-only accounts) don't get the tab at all.

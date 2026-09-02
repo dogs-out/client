@@ -13,6 +13,8 @@ import { FloatingBackground } from '../../components/FloatingBackground';
 import { GlassCard } from '../../components/GlassCard';
 import { GlassButton } from '../../components/GlassButton';
 import { PasswordInput } from '../../components/PasswordInput';
+import { PasswordRules } from '../../components/PasswordRules';
+import { isPasswordValid } from '../../utils/passwordRules';
 import { Colors } from '../../constants/colors';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Register'>;
@@ -54,14 +56,19 @@ export default function RegisterScreen({ navigation, route }: Readonly<Props>) {
     if (password !== confirmPassword) {
       setError(t('auth.register.passwordMismatch')); return;
     }
-    if (strength.level < 2) {
-      setError(t('auth.register.passwordTooWeak')); return;
+    // The strength meter is advisory; these are the rules the server enforces,
+    // and passing one but not the other is how a valid-looking password used to
+    // come back rejected.
+    if (!isPasswordValid(password)) {
+      setError(t('auth.register.passwordRequirements')); return;
     }
     setLoading(true);
     setError(null);
     try {
-      await authService.register(email, name, password);
-      navigation.navigate('VerifyEmail', { email, name, password });
+      const result = await authService.register(email, name, password);
+      // The account exists either way; the screen just shouldn't promise an email
+      // that the provider refused to accept.
+      navigation.navigate('VerifyEmail', { email, name, password, emailFailed: result.emailSent === false });
     } catch (e) {
       // 403 means the email exists but is unverified — just go straight to VerifyEmail
       if (e instanceof AxiosError && e.response?.status === 403) {
@@ -87,6 +94,9 @@ export default function RegisterScreen({ navigation, route }: Readonly<Props>) {
       <TextInput
         style={styles.input}
         placeholder={t('auth.register.namePlaceholder')}
+        // Without this Android paints the placeholder from the *system* theme, so
+        // in dark mode "Name" and "Email" came out near-white on the light card.
+        placeholderTextColor={Colors.textSecondary}
         value={name}
         onChangeText={setName}
         autoComplete="name"
@@ -94,6 +104,7 @@ export default function RegisterScreen({ navigation, route }: Readonly<Props>) {
       <TextInput
         style={styles.input}
         placeholder={t('auth.login.emailPlaceholder')}
+        placeholderTextColor={Colors.textSecondary}
         value={email}
         onChangeText={setEmail}
         autoCapitalize="none"
@@ -118,6 +129,8 @@ export default function RegisterScreen({ navigation, route }: Readonly<Props>) {
           <Text style={[styles.strengthLabel, { color: strength.color }]}>{strengthLabels[strength.level]}</Text>
         </View>
       )}
+
+      {password.length > 0 && !isPasswordValid(password) && <PasswordRules password={password} />}
 
       <PasswordInput
         placeholder={t('auth.register.confirmPasswordPlaceholder')}

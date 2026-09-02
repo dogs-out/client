@@ -9,6 +9,8 @@ export interface AuthResponse {
 
 export interface MessageResponse {
   message: string;
+  /** false when the server could not hand the mail to its provider at all. */
+  emailSent?: boolean;
 }
 
 export interface GoogleAuthPayload {

@@ -15,7 +15,7 @@ import { userService } from '../../services/userService';
 import { dogService } from '../../services/dogService';
 import {
   OWNER_LIFESTYLE_TAGS, OWNER_PERSONALITY_TAGS, RELATIONSHIP_STATUS_OPTIONS,
-  SITTER_TAGS, WEEKDAYS,
+  SITTER_LIFESTYLE_TAGS, SITTER_PERSONALITY_TAGS, SITTER_TAGS, WEEKDAYS,
 } from '../../constants/tags';
 import { translateTag } from '../../i18n/translateTag';
 import { getApiError } from '../../utils/apiError';
@@ -34,6 +34,8 @@ interface Props {
 }
 
 const MIN_AGE = 18;
+/** Profile photo slots — the server accepts more, the layout is built for three. */
+const MAX_PHOTOS = 3;
 const NAME_REGEX = /^[a-zA-ZÀ-ÿ\s'-]+$/;
 // Without an explicit minimum the Android picker bottoms out at the Unix epoch (1970)
 const MIN_DOB = new Date(1900, 0, 1);
@@ -113,20 +115,26 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: R
   }, []);
 
   const addPhoto = async () => {
-    if (photos.length >= 3) { setError(t('profile.form.maxPhotos')); return; }
+    const remaining = MAX_PHOTOS - photos.length;
+    if (remaining <= 0) { setError(t('profile.form.maxPhotos')); return; }
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') { setError(t('profile.form.photoPermission')); return; }
+    // Multi-select rules out the crop step — the picker offers one or the other —
+    // which is the better trade: the server already renders a 3:4 feed image and a
+    // square thumbnail from whatever it is given, so the crop was mostly ceremony,
+    // and setting up a profile no longer means opening the picker three times.
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ['images'],
-      allowsEditing: true,
-      aspect: [1, 1],
+      allowsMultipleSelection: true,
+      selectionLimit: remaining,
       // No base64 and no quality cut: the file URI is handed to the upload helper,
       // which does the downscaling. Reading a multi-MB image into a JS string was
       // pure overhead, and compressing twice only lost quality.
     });
-    if (!result.canceled && result.assets[0]) {
-      setPhotos(prev => [...prev, { kind: 'new', uri: result.assets[0].uri }]);
-    }
+    if (result.canceled) return;
+    // selectionLimit is advisory on some Android pickers, so clamp it here too.
+    const picked = result.assets.slice(0, remaining).map(a => ({ kind: 'new' as const, uri: a.uri }));
+    if (picked.length > 0) setPhotos(prev => [...prev, ...picked]);
   };
 
   const removePhoto = (index: number) => {
@@ -169,6 +177,15 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: R
   // Separately, stop the scroll view stealing the vertical component of a drag.
   const lockScroll = () => setScrollEnabled(false);
   const unlockScroll = () => setScrollEnabled(true);
+
+  // Someone without a dog gets the sitter vocabulary: the owner tags are all
+  // written about a dog they don't have. Anything already saved stays in the list
+  // even if it belongs to the other set, or a tag picked before a dog was removed
+  // would render as unselected and be impossible to clear.
+  const withSelected = (options: string[], selected: string[]) =>
+    [...options, ...selected.filter(tag => !options.includes(tag))];
+  const lifestyleOptions   = withSelected(hasDog ? OWNER_LIFESTYLE_TAGS : SITTER_LIFESTYLE_TAGS, lifestyleTags);
+  const personalityOptions = withSelected(hasDog ? OWNER_PERSONALITY_TAGS : SITTER_PERSONALITY_TAGS, personalityTags);
 
   // A user without a dog must be a sitter — otherwise the account has no purpose
   const toggleHasDog = (value: boolean) => {
@@ -284,7 +301,7 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: R
           <Text style={styles.title}>{title}</Text>
           <Text style={styles.subtitle}>{subtitle}</Text>
 
-          <Text style={styles.label}>{t('profile.form.photosLabel')} <Text style={styles.optional}>({photos.length}/3)</Text></Text>
+          <Text style={styles.label}>{t('profile.form.photosLabel')} <Text style={styles.optional}>({photos.length}/{MAX_PHOTOS})</Text></Text>
           <View style={styles.photoGrid}>
             {Array.from({ length: 3 }).map((_, i) => {
               const photo = photos[i];
@@ -489,7 +506,7 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: R
 
           <Text style={styles.tagCat}>{t('profile.form.lifestyle')} <Text style={styles.tagCatHint}>{t('dogs.form.tagsCountHint')}</Text></Text>
           <View style={styles.chipRow}>
-            {OWNER_LIFESTYLE_TAGS.map(tag => {
+            {lifestyleOptions.map(tag => {
               const sel = lifestyleTags.includes(tag);
               const maxed = lifestyleTags.length >= MAX_TAGS_PER_CATEGORY && !sel;
               return (
@@ -506,7 +523,7 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: R
 
           <Text style={styles.tagCat}>{t('profile.form.personality')} <Text style={styles.tagCatHint}>{t('dogs.form.tagsCountHint')}</Text></Text>
           <View style={styles.chipRow}>
-            {OWNER_PERSONALITY_TAGS.map(tag => {
+            {personalityOptions.map(tag => {
               const sel = personalityTags.includes(tag);
               const maxed = personalityTags.length >= MAX_TAGS_PER_CATEGORY && !sel;
               return (

@@ -1,17 +1,25 @@
-import { Platform } from 'react-native';
+import { AppState, Platform } from 'react-native';
 import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
 import Constants from 'expo-constants';
 import api from './api';
 
-// Show pushes as banners even while the app is foregrounded
+// Show pushes as banners even while the app is foregrounded — with one exception.
 Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowBanner: true,
-    shouldShowList: true,
-    shouldPlaySound: false,
-    shouldSetBadge: false,
-  }),
+  handleNotification: async notification => {
+    const data = (notification.request.content.data ?? {}) as PushData;
+    // "It's a Match!" while the app is open is always a repeat: the match either
+    // just happened on screen, or arrived over the socket and is already sitting
+    // in Chats. Banner-ing it anyway is what made the notification look like it
+    // was announcing a conversation the user had already started.
+    const alreadySeen = data.type === 'NEW_MATCH' && AppState.currentState === 'active';
+    return {
+      shouldShowBanner: !alreadySeen,
+      shouldShowList: !alreadySeen,
+      shouldPlaySound: false,
+      shouldSetBadge: false,
+    };
+  },
 });
 
 export interface PushData {
