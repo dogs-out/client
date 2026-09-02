@@ -27,8 +27,25 @@ api.interceptors.request.use(async config => {
   return config;
 });
 
+/**
+ * The server hands back a renewed token once the current one is a day old, and
+ * this is where it gets picked up. Without it a session would still die on the
+ * token's own expiry — which is how everyone ended up logging in again every
+ * morning, back when that expiry was 24 hours.
+ */
+const REFRESHED_TOKEN_HEADER = 'x-refreshed-token';
+
 api.interceptors.response.use(
-  res => res,
+  res => {
+    const renewed = res.headers?.[REFRESHED_TOKEN_HEADER];
+    if (typeof renewed === 'string' && renewed.length > 0) {
+      // Fire and forget: the in-memory cache updates synchronously inside set(),
+      // so the next request already carries the new token even if the Keychain
+      // write is still in flight.
+      tokenStorage.set(renewed).catch(() => { /* keep using the old token */ });
+    }
+    return res;
+  },
   err => {
     if (__DEV__) {
       console.error('[API ERROR]', err?.response?.status, err?.config?.url, JSON.stringify(err?.response?.data));
