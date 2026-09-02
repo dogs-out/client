@@ -66,6 +66,14 @@ export function GlassTabBar({ activeTab }: Readonly<Props>) {
   );
 }
 
+/**
+ * Vertical space the floating tab bar occupies, measured from the bottom of the
+ * screen: the bar itself plus the wrapper's bottom padding. Screens that place
+ * content at the bottom of a full-height layout must reserve this much, minus
+ * whatever the safe-area inset already gives them, or it sits underneath the bar.
+ */
+export const TAB_BAR_HEIGHT = Platform.OS === 'ios' ? 88 : 78;
+
 export const glassTabBarStyles = StyleSheet.create({
   wrapper: {
     position: 'absolute', bottom: 0, left: 0, right: 0,

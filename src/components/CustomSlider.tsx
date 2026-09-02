@@ -109,8 +109,16 @@ export function CustomSlider({ value, min, max, step, onChange, onDragStart, onD
   const [trackWidth, setTrackWidth] = useState(0);
   const [pressed, setPressed] = useState(false);
   const stateRef = useRef({ trackWidth: 0, min, max, step });
+  // The PanResponder below is built once, so every callback it closes over is
+  // frozen at first render. Anything reading state from inside one would read the
+  // value it had on mount — which is how the dogsitting radius slider always saved
+  // 50 km no matter where it was dragged. Route them all through refs.
   const onChangeRef = useRef(onChange);
+  const onDragStartRef = useRef(onDragStart);
+  const onDragEndRef = useRef(onDragEnd);
   useEffect(() => { onChangeRef.current = onChange; }, [onChange]);
+  useEffect(() => { onDragStartRef.current = onDragStart; }, [onDragStart]);
+  useEffect(() => { onDragEndRef.current = onDragEnd; }, [onDragEnd]);
   useEffect(() => { stateRef.current = { trackWidth, min, max, step }; }, [trackWidth, min, max, step]);
 
   const compute = (x: number) => {
@@ -123,10 +131,10 @@ export function CustomSlider({ value, min, max, step, onChange, onDragStart, onD
   const pan = useRef(PanResponder.create({
     onStartShouldSetPanResponder: () => true,
     onMoveShouldSetPanResponder: () => true,
-    onPanResponderGrant: e => { setPressed(true); onDragStart?.(); compute(e.nativeEvent.locationX); },
+    onPanResponderGrant: e => { setPressed(true); onDragStartRef.current?.(); compute(e.nativeEvent.locationX); },
     onPanResponderMove: e => compute(e.nativeEvent.locationX),
-    onPanResponderRelease: () => { setPressed(false); onDragEnd?.(); },
-    onPanResponderTerminate: () => { setPressed(false); onDragEnd?.(); },
+    onPanResponderRelease: () => { setPressed(false); onDragEndRef.current?.(); },
+    onPanResponderTerminate: () => { setPressed(false); onDragEndRef.current?.(); },
   })).current;
 
   const fillPct = trackWidth > 0 ? ((value - min) / (max - min)) * 100 : 0;
