@@ -388,8 +388,10 @@ export default function DiscoverScreen() {
   const flatPhotos = buildFlatPhotos(profile);
   const insets = useSafeAreaInsets();
   // SafeAreaView already inset us by the home indicator, so only the rest of the
-  // floating tab bar still has to be reserved.
-  const tabClearance = Math.max(12, TAB_BAR_HEIGHT - insets.bottom);
+  // floating tab bar still has to be reserved — plus a gap, or the buttons end up
+  // flush against it and the first attempt at this left them touching.
+  const TAB_BAR_GAP = 16;
+  const tabClearance = Math.max(16, TAB_BAR_HEIGHT + TAB_BAR_GAP - insets.bottom);
   const cardH = cardAreaH > 0 ? Math.min(CARD_H, cardAreaH - 10) : CARD_H;
 
   const currentDogIndex = flatPhotos[photoIndex]?.dogIndex ?? 0;

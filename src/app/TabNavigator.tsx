@@ -11,7 +11,7 @@ import FindSitterScreen from '../features/sitter/FindSitterScreen';
 import PlaydatesScreen from '../features/playdates/PlaydatesScreen';
 import ChatsScreen from '../features/chat/ChatsScreen';
 import HomeScreen from '../screens/HomeScreen';
-import { glassTabBarStyles as styles } from '../components/GlassTabBar';
+import { glassTabBarStyles as styles, TAB_ICON_SIZE } from '../components/GlassTabBar';
 import { useHasDog } from '../hooks/useHasDog';
 import { Colors } from '../constants/colors';
 
@@ -59,7 +59,7 @@ function GlassTabBar({ state, descriptors, navigation }: Readonly<BottomTabBarPr
                 <View style={[styles.tabInner, focused && styles.tabInnerActive]}>
                   <Ionicons
                     name={(focused ? item.iconActive : item.icon) as any}
-                    size={22}
+                    size={TAB_ICON_SIZE}
                     color={focused ? Colors.primary : Colors.textSecondary}
                   />
                   <Text
