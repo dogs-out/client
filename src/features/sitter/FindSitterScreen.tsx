@@ -17,6 +17,8 @@ import { RootStackParamList } from '../../types/navigation';
 import { Colors } from '../../constants/colors';
 import { FloatingBackground } from '../../components/FloatingBackground';
 import { GlassCard } from '../../components/GlassCard';
+import { CustomSlider } from '../../components/CustomSlider';
+import { DEFAULT_RADIUS_KM } from '../../constants/discover';
 import { translateBreed } from '../../i18n/translateBreed';
 
 type SitterMode = 'jobs' | 'requests';
@@ -40,12 +42,19 @@ export default function FindSitterScreen() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [contactingId, setContactingId] = useState<number | null>(null);
+  // Search distance lives on the user, shared with Discover — but Discover is
+  // closed to sitters without a dog, so its filter screen (the only other place
+  // this can be changed) is unreachable for exactly the people who live in this
+  // tab. Without this control their radius is stuck on the 50 km default.
+  const [radiusKm, setRadiusKm] = useState(DEFAULT_RADIUS_KM);
+  const [radiusOpen, setRadiusOpen] = useState(false);
 
   const load = useCallback(() => {
     userService.getMe()
       .then(me => {
         setAmSitter(me.isSitter);
         setAmSeeking(me.lookingForSitter);
+        setRadiusKm(me.maxDistanceKm ?? DEFAULT_RADIUS_KM);
         // Each pool is served only to the matching role (403 otherwise) — you can't
         // browse sitters until you're looking for one, or jobs until you are one.
         // Don't ask for a pool we aren't entitled to.
@@ -70,6 +79,14 @@ export default function FindSitterScreen() {
   }, [modePinned]);
 
   useFocusEffect(useCallback(() => { load(); }, [load]));
+
+  // Persist on release rather than on every step, then reload: the lists are
+  // filtered server-side, so a new radius means a new request either way.
+  const commitRadius = () => {
+    userService.updateProfile({ maxDistanceKm: radiusKm })
+      .then(() => load())
+      .catch(() => setError(true));
+  };
 
   const openProfile = (profile: DiscoverProfile) => {
     navigation.navigate('UserProfile', { userId: profile.userId });
@@ -189,6 +206,45 @@ export default function FindSitterScreen() {
         </TouchableOpacity>
       )}
 
+      {hasAnyRole && (
+        <View style={styles.radiusBlock}>
+          <TouchableOpacity
+            style={styles.radiusPill}
+            onPress={() => setRadiusOpen(open => !open)}
+            activeOpacity={0.7}
+          >
+            <Ionicons name="location-outline" size={15} color={Colors.primary} />
+            <Text style={styles.radiusPillText}>
+              {t('sitter.list.withinKm', { km: radiusKm })}
+            </Text>
+            <Ionicons
+              name={radiusOpen ? 'chevron-up' : 'chevron-down'}
+              size={15}
+              color={Colors.textSecondary}
+            />
+          </TouchableOpacity>
+
+          {radiusOpen && (
+            <GlassCard style={styles.radiusCard} padding={16}>
+              <View style={styles.radiusLabels}>
+                <Text style={styles.radiusEdge}>1 km</Text>
+                <Text style={styles.radiusValue}>{t('sitter.list.withinKm', { km: radiusKm })}</Text>
+                <Text style={styles.radiusEdge}>{DEFAULT_RADIUS_KM} km</Text>
+              </View>
+              <CustomSlider
+                value={radiusKm}
+                min={1}
+                max={DEFAULT_RADIUS_KM}
+                step={1}
+                onChange={setRadiusKm}
+                onDragEnd={commitRadius}
+              />
+              <Text style={styles.radiusHint}>{t('sitter.list.radiusHint')}</Text>
+            </GlassCard>
+          )}
+        </View>
+      )}
+
       {loading ? (
         <View style={styles.centered}><ActivityIndicator size="large" color={Colors.primary} /></View>
       ) : error ? (
@@ -247,6 +303,20 @@ const styles = StyleSheet.create({
   segmentActive:     { backgroundColor: 'rgba(46,158,107,0.12)' },
   segmentText:       { fontSize: 13, fontWeight: '700', color: Colors.textSecondary },
   segmentTextActive: { color: Colors.primary },
+
+  radiusBlock: { paddingHorizontal: 20, marginBottom: 4 },
+  radiusPill: {
+    flexDirection: 'row', alignItems: 'center', alignSelf: 'flex-start', gap: 6,
+    paddingHorizontal: 12, paddingVertical: 7,
+    borderRadius: 14, borderWidth: 1.5, borderColor: Colors.border,
+    backgroundColor: 'rgba(46,158,107,0.08)',
+  },
+  radiusPillText: { fontSize: 13, fontWeight: '700', color: Colors.text },
+  radiusCard:  { marginTop: 10 },
+  radiusLabels: { flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between' },
+  radiusEdge:  { fontSize: 12, color: Colors.textSecondary },
+  radiusValue: { fontSize: 15, fontWeight: '700', color: Colors.text },
+  radiusHint:  { fontSize: 12, color: Colors.textSecondary, lineHeight: 17, marginTop: 4 },
 
   list: { paddingHorizontal: 20, paddingBottom: 120, flexGrow: 1 },
 

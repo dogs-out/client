@@ -18,6 +18,7 @@ import { chatSocket } from '../../services/socket';
 import { containsProfanity } from '../../utils/profanityFilter';
 import { RootStackParamList } from '../../types/navigation';
 import { Colors } from '../../constants/colors';
+import { scaledLineHeight } from '../../utils/typography';
 import { FloatingBackground } from '../../components/FloatingBackground';
 import { invertedListCounterTransform } from '../../utils/invertedList';
 import { GlassCard } from '../../components/GlassCard';
@@ -286,7 +287,7 @@ const styles = StyleSheet.create({
   senderAvatar: { width: 18, height: 18, borderRadius: 9 },
   avatarPlaceholder: { backgroundColor: 'rgba(46,158,107,0.12)', alignItems: 'center', justifyContent: 'center' },
   senderName:   { fontSize: 11, fontWeight: '700', color: Colors.primary },
-  bubbleText: { color: Colors.text, fontSize: 15, lineHeight: 20 },
+  bubbleText: { color: Colors.text, fontSize: 15, lineHeight: scaledLineHeight(20) },
   bubbleTime: { fontSize: 10, color: Colors.textSecondary, marginTop: 2, marginHorizontal: 4 },
 
   dateSeparatorRow:  { alignItems: 'center', marginVertical: 12 },
@@ -304,7 +305,7 @@ const styles = StyleSheet.create({
   },
   emptyChatCard:  { alignItems: 'center' },
   emptyChatEmoji: { fontSize: 48, marginBottom: 12 },
-  emptyChatText:  { fontSize: 15, color: Colors.textSecondary, textAlign: 'center', lineHeight: 22 },
+  emptyChatText:  { fontSize: 15, color: Colors.textSecondary, textAlign: 'center', lineHeight: scaledLineHeight(22) },
 
   errorText: { color: Colors.error, fontSize: 13, textAlign: 'center', paddingHorizontal: 16, paddingBottom: 4 },
 

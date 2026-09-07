@@ -33,6 +33,7 @@ export const OFF_LEASH_OPTIONS = [
   'No, always on leash',
 ];
 
+// ─── Owners ───────────────────────────────────────────────────────────────────
 export const OWNER_LIFESTYLE_TAGS = [
   'Early bird walks', 'Night owl walks', 'Weekend warrior',
   'Hiking buddy wanted', 'Café-with-dog person', 'Beach walker',
@@ -43,9 +44,29 @@ export const OWNER_PERSONALITY_TAGS = [
   'Responsible pup parent', 'Will talk about my dog for hours',
 ];
 
+// ─── Sitters ──────────────────────────────────────────────────────────────────
+// Everything above is written from a dog owner's side — "my dog does this". A
+// sitter without a dog of their own had nothing honest to pick, which left the
+// half of the app that exists for them unable to say anything about themselves.
+// These two lists are the same idea, phrased about the person instead.
+
+export const SITTER_LIFESTYLE_TAGS = [
+  'Early riser', 'Free in the evenings', 'Weekends free', 'Works from home',
+  'Hiking enthusiast', 'Café regular',
+];
+
+export const SITTER_PERSONALITY_TAGS = [
+  'Calm and patient', 'Active and outdoorsy', 'Reliable and punctual',
+  'Good with anxious dogs', 'Would adopt them all',
+];
+
+/** What a sitter offers, shown on their profile and in the Dogsitting list. */
 export const SITTER_TAGS = [
   'Dog trainer', 'Certified sitter', 'Multiple dogs OK', 'Puppy experience',
   'Senior dog experience', 'Has a yard', 'Can give medication', 'Overnight stays OK',
+  'Grew up with dogs', 'Comes to your home', 'Can host at my place',
+  'Reactive dogs welcome', 'Happy with long walks', 'Flexible at short notice',
+  'Has a car',
 ];
 
 export const WEEKDAYS = [

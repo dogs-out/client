@@ -73,7 +73,8 @@
       "confirmPasswordPlaceholder": "Conferma password",
       "register": "Registrati",
       "haveAccount": "Hai già un account?",
-      "signIn": "Accedi"
+      "signIn": "Accedi",
+      "passwordRequirements": "La tua password non soddisfa ancora tutti i requisiti."
     },
     "forgotPassword": {
       "enterEmail": "Inserisci la tua e-mail.",
@@ -97,7 +98,17 @@
       "verify": "Verifica",
       "codeResent": "Codice inviato di nuovo — controlla la tua casella di posta",
       "resend": "Non hai ricevuto il codice? Invia di nuovo",
-      "wrongEmail": "E-mail sbagliata? Torna indietro"
+      "wrongEmail": "E-mail sbagliata? Torna indietro",
+      "deliveryFailed": "Non siamo riusciti a inviare il codice a questo indirizzo. Controlla lo spam oppure torna indietro e usa un'altra email."
+    },
+    "passwordRules": {
+      "title": "La tua password richiede",
+      "length": "8–50 caratteri",
+      "lower": "una minuscola",
+      "upper": "una maiuscola",
+      "digit": "un numero",
+      "special": "un simbolo",
+      "noSpace": "nessuno spazio"
     }
   },
   "chat": {
@@ -538,7 +549,25 @@
     "Senior dog experience": "Esperienza con cani anziani",
     "Has a yard": "Ha un giardino",
     "Can give medication": "Può somministrare farmaci",
-    "Overnight stays OK": "Pernottamento possibile"
+    "Overnight stays OK": "Pernottamento possibile",
+    "Early riser": "Mattiniero",
+    "Free in the evenings": "Libero la sera",
+    "Weekends free": "Weekend liberi",
+    "Works from home": "Lavora da casa",
+    "Hiking enthusiast": "Appassionato di escursioni",
+    "Café regular": "Habitué del bar",
+    "Calm and patient": "Calmo e paziente",
+    "Active and outdoorsy": "Attivo e all'aria aperta",
+    "Reliable and punctual": "Affidabile e puntuale",
+    "Good with anxious dogs": "Bravo con i cani ansiosi",
+    "Would adopt them all": "Li adotterebbe tutti",
+    "Grew up with dogs": "Cresciuto con i cani",
+    "Comes to your home": "Viene a casa tua",
+    "Can host at my place": "Può ospitare a casa mia",
+    "Reactive dogs welcome": "Anche cani reattivi",
+    "Happy with long walks": "Volentieri lunghe passeggiate",
+    "Flexible at short notice": "Disponibile all'ultimo momento",
+    "Has a car": "Ha un'auto"
   },
   "sitter": {
     "tabTitle": "Dogsitting",
@@ -554,6 +583,8 @@
       "emptyNoRole": "Attiva un ruolo di dogsitting nel tuo profilo per vedere chi c'è nelle vicinanze — dogsitter se ne cerchi uno, o proprietari in cerca di un sitter se vuoi fare da sitter.",
       "contact": "Contatta",
       "enableSitterHint": "Attiva «Sono disponibile come dogsitter» o «Cerco un dogsitter» nel tuo profilo per chattare. Tocca qui per modificare.",
+      "withinKm": "Entro {{km}} km",
+      "radiusHint": "Qui vengono mostrate solo le persone entro questa distanza. È la stessa distanza di ricerca usata da Scopri.",
       "error": "Impossibile caricare la lista."
     },
     "profile": {

@@ -4,7 +4,7 @@ import {
   StyleSheet, Text, TouchableOpacity, View, ActivityIndicator,
 } from 'react-native';
 import { RemoteImage } from '../../components/ui/RemoteImage';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
@@ -17,6 +17,7 @@ import { userService } from '../../services/userService';
 import { getDiscoverFiltersVersion } from '../../utils/discoverFilters';
 import { RootStackParamList } from '../../types/navigation';
 import { Colors } from '../../constants/colors';
+import { TAB_BAR_HEIGHT } from '../../components/GlassTabBar';
 import { FloatingBackground } from '../../components/FloatingBackground';
 import { translateTag } from '../../i18n/translateTag';
 import { translateBreed } from '../../i18n/translateBreed';
@@ -24,6 +25,7 @@ import { DiscoveryLocationChip } from './DiscoveryLocationChip';
 
 const { width: SW } = Dimensions.get('window');
 const CARD_W = SW - 32;
+/** The card's preferred height; it shrinks below this on shorter screens. */
 const CARD_H = CARD_W * 1.42;
 const SWIPE_THRESHOLD = 100;
 
@@ -174,6 +176,10 @@ export default function DiscoverScreen() {
   const [loading, setLoading] = useState(true);
   const [swiping, setSwiping] = useState(false);
   const [showOwner, setShowOwner] = useState(false);
+  // The card used to be a fixed 1.42 aspect ratio, which on shorter phones pushed
+  // the pass/treat buttons down behind the floating tab bar. Measure the space
+  // that is actually left and cap the card to it.
+  const [cardAreaH, setCardAreaH] = useState(0);
   const [photoIndex, setPhotoIndex] = useState(0);
   const [ownerPhotoIndex, setOwnerPhotoIndex] = useState(0);
   const [matchInfo, setMatchInfo] = useState<{ profile: DiscoverProfile; matchId: number } | null>(null);
@@ -380,6 +386,14 @@ export default function DiscoverScreen() {
   }
 
   const flatPhotos = buildFlatPhotos(profile);
+  const insets = useSafeAreaInsets();
+  // SafeAreaView already inset us by the home indicator, so only the rest of the
+  // floating tab bar still has to be reserved — plus a gap, or the buttons end up
+  // flush against it and the first attempt at this left them touching.
+  const TAB_BAR_GAP = 16;
+  const tabClearance = Math.max(16, TAB_BAR_HEIGHT + TAB_BAR_GAP - insets.bottom);
+  const cardH = cardAreaH > 0 ? Math.min(CARD_H, cardAreaH - 10) : CARD_H;
+
   const currentDogIndex = flatPhotos[photoIndex]?.dogIndex ?? 0;
   const currentDog: Dog | undefined = profile.dogs[currentDogIndex];
   const ownerPhotos = profile.photos.map(p => p.url);
@@ -423,10 +437,13 @@ export default function DiscoverScreen() {
         <Text style={styles.hintYes}>{t('dogs.swipePreview.treatHint')}</Text>
       </Text>
 
-      <View style={styles.cardWrap}>
+      <View
+        style={styles.cardWrap}
+        onLayout={e => setCardAreaH(e.nativeEvent.layout.height)}
+      >
         {/* Background (next) card */}
         {nextProfile && (
-          <Animated.View style={[styles.card, styles.cardNext, { transform: [{ scale: nextCardScale }] }]}>
+          <Animated.View style={[styles.card, styles.cardNext, { height: cardH, transform: [{ scale: nextCardScale }] }]}>
             {/* Full-size, not profilePicture: this fills a whole card, and
                 profilePicture is only a 256px avatar rendition. */}
             {nextProfile.dogs[0]?.photos[0]?.url
@@ -441,7 +458,7 @@ export default function DiscoverScreen() {
             previous owner/dog info block on Android */}
         <Animated.View
           key={profile.userId}
-          style={[styles.card, { transform: [{ translateX: pan.x }, { translateY: pan.y }, { rotate }] }]}
+          style={[styles.card, { height: cardH, transform: [{ translateX: pan.x }, { translateY: pan.y }, { rotate }] }]}
           {...panResponder.panHandlers}
         >
           {showOwner ? (
@@ -487,9 +504,13 @@ export default function DiscoverScreen() {
             colors={['transparent', 'rgba(0,0,0,0.30)', 'rgba(0,0,0,0.82)']}
             locations={[0, 0.4, 1]}
             style={styles.gradient}
+            // box-none: the gradient never takes a touch itself, so the photo tap
+            // zones behind it stay reachable over the name, tags and bio — but the
+            // owner avatar inside it still gets its own taps.
+            pointerEvents="box-none"
           >
             {showOwner ? (
-              <View key="owner-info" style={styles.infoContent}>
+              <View key="owner-info" style={styles.infoContent} pointerEvents="none">
                 <Text style={styles.mainName}>
                   {profile.name}{ownerAge !== null ? `, ${ownerAge}` : ''}
                 </Text>
@@ -508,7 +529,7 @@ export default function DiscoverScreen() {
                 {profile.bio ? <Text style={styles.bioText}>{profile.bio}</Text> : null}
               </View>
             ) : (
-              <View key="dog-info" style={styles.infoContent}>
+              <View key="dog-info" style={styles.infoContent} pointerEvents="none">
                 <View style={styles.dogNameRow}>
                   {profile.dogs.map((dog, di) => {
                     const age = getAge(dog.dateOfBirth);
@@ -550,7 +571,7 @@ export default function DiscoverScreen() {
       </View>
 
       {/* Action buttons */}
-      <View style={styles.actionRow}>
+      <View style={[styles.actionRow, { paddingBottom: tabClearance }]}>
         <TouchableOpacity
           style={[styles.actionBtn, styles.actionPass]}
           onPress={() => !swiping && handleSwipe('PASS', 0)}
@@ -595,9 +616,11 @@ const styles = StyleSheet.create({
   hintNo:      { color: '#e53e3e', fontWeight: '600' },
   hintYes:     { color: Colors.primary, fontWeight: '600' },
 
-  cardWrap: { alignItems: 'center', paddingHorizontal: 16, height: CARD_H + 10 },
+  // Flexes to whatever is left between the hint row and the action buttons; the
+  // card's own height is derived from the measured result.
+  cardWrap: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 16 },
   card: {
-    width: CARD_W, height: CARD_H, borderRadius: 22, overflow: 'hidden',
+    width: CARD_W, borderRadius: 22, overflow: 'hidden',
     backgroundColor: '#111', position: 'absolute', zIndex: 1,
     shadowColor: '#000', shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.3, shadowRadius: 14, elevation: 10,
   },
@@ -613,8 +636,11 @@ const styles = StyleSheet.create({
   progressBar:       { flex: 1, height: 3, borderRadius: 2, backgroundColor: 'rgba(255,255,255,0.35)' },
   progressBarActive: { backgroundColor: '#fff' },
 
-  tapLeft:  { position: 'absolute', left: 0,  top: 0, width: '40%', height: '85%' },
-  tapRight: { position: 'absolute', right: 0, top: 0, width: '40%', height: '85%' },
+  // Half the card each, full height. The gradient and its text sit on top but pass
+  // touches through (box-none / none), so the name, tags and bio are tappable too —
+  // only the owner avatar, which is a real button, takes its own taps.
+  tapLeft:  { position: 'absolute', left: 0,  top: 0, bottom: 0, width: '50%' },
+  tapRight: { position: 'absolute', right: 0, top: 0, bottom: 0, width: '50%' },
 
   treatBadge:   { position: 'absolute', top: 40, left: 16, borderWidth: 3, borderColor: Colors.primary, borderRadius: 8, paddingHorizontal: 10, paddingVertical: 4, transform: [{ rotate: '-15deg' }] },
   treatText:    { fontSize: 22, fontWeight: '900', color: Colors.primary },
@@ -648,7 +674,7 @@ const styles = StyleSheet.create({
 
   actionRow: {
     flexDirection: 'row', justifyContent: 'center', gap: 40,
-    marginTop: 20, paddingBottom: 16,
+    marginTop: 16,
   },
   actionBtn: {
     width: 64, height: 64, borderRadius: 32,

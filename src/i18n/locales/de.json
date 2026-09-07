@@ -73,7 +73,8 @@
       "confirmPasswordPlaceholder": "Passwort bestätigen",
       "register": "Registrieren",
       "haveAccount": "Schon ein Konto?",
-      "signIn": "Anmelden"
+      "signIn": "Anmelden",
+      "passwordRequirements": "Dein Passwort erfüllt noch nicht alle Anforderungen."
     },
     "forgotPassword": {
       "enterEmail": "Bitte gib deine E-Mail-Adresse ein.",
@@ -97,7 +98,17 @@
       "verify": "Bestätigen",
       "codeResent": "Code erneut gesendet — überprüfe dein Postfach",
       "resend": "Keinen Code erhalten? Erneut senden",
-      "wrongEmail": "Falsche E-Mail? Zurück"
+      "wrongEmail": "Falsche E-Mail? Zurück",
+      "deliveryFailed": "Wir konnten den Code nicht an diese Adresse zustellen. Schau im Spam-Ordner nach oder gehe zurück und nutze eine andere E-Mail."
+    },
+    "passwordRules": {
+      "title": "Dein Passwort braucht",
+      "length": "8–50 Zeichen",
+      "lower": "einen Kleinbuchstaben",
+      "upper": "einen Grossbuchstaben",
+      "digit": "eine Zahl",
+      "special": "ein Sonderzeichen",
+      "noSpace": "keine Leerzeichen"
     }
   },
   "chat": {
@@ -538,7 +549,25 @@
     "Senior dog experience": "Erfahrung mit Senioren-Hunden",
     "Has a yard": "Hat einen Garten",
     "Can give medication": "Kann Medikamente geben",
-    "Overnight stays OK": "Übernachtung möglich"
+    "Overnight stays OK": "Übernachtung möglich",
+    "Early riser": "Frühaufsteher",
+    "Free in the evenings": "Abends frei",
+    "Weekends free": "Wochenenden frei",
+    "Works from home": "Arbeitet von zu Hause",
+    "Hiking enthusiast": "Wanderbegeistert",
+    "Café regular": "Stammgast im Café",
+    "Calm and patient": "Ruhig und geduldig",
+    "Active and outdoorsy": "Aktiv und draussen unterwegs",
+    "Reliable and punctual": "Zuverlässig und pünktlich",
+    "Good with anxious dogs": "Gut mit ängstlichen Hunden",
+    "Would adopt them all": "Würde sie alle adoptieren",
+    "Grew up with dogs": "Mit Hunden aufgewachsen",
+    "Comes to your home": "Kommt zu dir nach Hause",
+    "Can host at my place": "Betreuung bei mir zu Hause",
+    "Reactive dogs welcome": "Auch reaktive Hunde willkommen",
+    "Happy with long walks": "Gerne lange Spaziergänge",
+    "Flexible at short notice": "Kurzfristig flexibel",
+    "Has a car": "Hat ein Auto"
   },
   "sitter": {
     "tabTitle": "Dogsitting",
@@ -554,6 +583,8 @@
       "emptyNoRole": "Aktiviere eine Dogsitting-Rolle in deinem Profil, um zu sehen, wer in der Nähe ist — Dogsitter, wenn du einen brauchst, oder Besitzer auf Sitter-Suche, wenn du selbst sitten möchtest.",
       "contact": "Kontaktieren",
       "enableSitterHint": "Aktiviere „Ich bin als Dogsitter verfügbar“ oder „Ich suche einen Dogsitter“ in deinem Profil, um zu chatten. Tippe hier zum Bearbeiten.",
+      "withinKm": "Im Umkreis von {{km}} km",
+      "radiusHint": "Hier werden nur Personen innerhalb dieser Entfernung angezeigt. Es ist dieselbe Suchdistanz wie bei Entdecken.",
       "error": "Liste konnte nicht geladen werden."
     },
     "profile": {

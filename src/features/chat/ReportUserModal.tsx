@@ -8,6 +8,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { REPORT_REASONS } from '../../services/moderationService';
 import { Colors } from '../../constants/colors';
+import { scaledLineHeight } from '../../utils/typography';
 import { translateTag } from '../../i18n/translateTag';
 
 interface Props {
@@ -129,7 +130,7 @@ const styles = StyleSheet.create({
 
   titleRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 },
   title:    { fontSize: 19, fontWeight: '800', color: Colors.text },
-  subtitle: { fontSize: 13, color: Colors.textSecondary, marginBottom: 14, lineHeight: 18 },
+  subtitle: { fontSize: 13, color: Colors.textSecondary, marginBottom: 14, lineHeight: scaledLineHeight(18) },
 
   reasonRow:          { flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 9 },
   reasonText:         { fontSize: 15, color: Colors.text },

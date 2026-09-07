@@ -16,6 +16,9 @@ type Props = NativeStackScreenProps<RootStackParamList, 'VerifyEmail'>;
 export default function VerifyEmailScreen({ route, navigation }: Readonly<Props>) {
   const { t } = useTranslation();
   const { email, name, password } = route.params;
+  // Set when the server told us it could not hand the mail to its provider — a
+  // silent failure here reads as "the code is taking a while" forever.
+  const [deliveryFailed, setDeliveryFailed] = useState(route.params.emailFailed === true);
   const [code, setCode] = useState('');
   const [loading, setLoading] = useState(false);
   const [resending, setResending] = useState(false);
@@ -42,7 +45,8 @@ export default function VerifyEmailScreen({ route, navigation }: Readonly<Props>
     setResending(true);
     setError(null);
     try {
-      await authService.register(email, name, password);
+      const result = await authService.register(email, name, password);
+      setDeliveryFailed(result.emailSent === false);
     } catch {
       // 403 just means the email is already pending — code was resent, that's fine
     } finally {
@@ -62,6 +66,10 @@ export default function VerifyEmailScreen({ route, navigation }: Readonly<Props>
           {t('auth.verifyEmail.subtitle')}{'\n'}
           <Text style={styles.emailText}>{email}</Text>
         </Text>
+
+        {deliveryFailed && (
+          <Text style={styles.warning}>{t('auth.verifyEmail.deliveryFailed')}</Text>
+        )}
 
         {error && <Text style={styles.error}>{error}</Text>}
 
@@ -114,6 +122,7 @@ const styles = StyleSheet.create({
   subtitle:    { fontSize: 15, color: Colors.textSecondary, marginBottom: 24, lineHeight: 22 },
   emailText:   { color: Colors.primary, fontWeight: '700' },
   error:       { color: Colors.error, marginBottom: 12, textAlign: 'center', fontSize: 14 },
+  warning: { color: Colors.accent, fontSize: 13, textAlign: 'center', marginBottom: 10, lineHeight: 18 },
   input:       { borderWidth: 1.5, borderColor: Colors.glass.inputBorder, borderRadius: 12, padding: 14, fontSize: 28, marginBottom: 16, letterSpacing: 0, color: Colors.text, backgroundColor: Colors.glass.inputBg, textAlign: 'center' },
   button:      { marginBottom: 12 },
   buttonText:  { color: Colors.text, fontSize: 16, fontWeight: '700' },

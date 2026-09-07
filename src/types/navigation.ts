@@ -3,7 +3,7 @@ import type { PlaceResult } from '../services/playdateService';
 export type RootStackParamList = {
   Login: undefined;
   Register: { prefillEmail?: string; prefillPassword?: string } | undefined;
-  VerifyEmail: { email: string; name?: string; password?: string };
+  VerifyEmail: { email: string; name?: string; password?: string; emailFailed?: boolean };
   ForgotPassword: undefined;
   ResetPassword: { email: string };
   ProfileSetup: undefined;

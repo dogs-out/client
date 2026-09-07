@@ -12,6 +12,8 @@ import { FloatingBackground } from '../../components/FloatingBackground';
 import { GlassCard } from '../../components/GlassCard';
 import { GlassButton } from '../../components/GlassButton';
 import { PasswordInput } from '../../components/PasswordInput';
+import { PasswordRules } from '../../components/PasswordRules';
+import { isPasswordValid } from '../../utils/passwordRules';
 import { Colors } from '../../constants/colors';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ResetPassword'>;
@@ -42,7 +44,8 @@ export default function ResetPasswordScreen({ navigation }: Readonly<Props>) {
 
   const handleReset = async () => {
     if (!token.trim())        { setError(t('auth.resetPassword.pasteToken')); return; }
-    if (strength.level < 2)   { setError(t('auth.register.passwordTooWeak')); return; }
+    // Same rule set the server applies to a reset — see RegisterScreen.
+    if (!isPasswordValid(password)) { setError(t('auth.register.passwordRequirements')); return; }
     if (password !== confirm) { setError(t('auth.register.passwordMismatch')); return; }
     setLoading(true);
     setError(null);
@@ -93,6 +96,8 @@ export default function ResetPasswordScreen({ navigation }: Readonly<Props>) {
               <Text style={[styles.strengthLabel, { color: strength.color }]}>{strengthLabels[strength.level]}</Text>
             </View>
           )}
+
+          {password.length > 0 && !isPasswordValid(password) && <PasswordRules password={password} />}
           <PasswordInput
             placeholder={t('auth.register.confirmPasswordPlaceholder')}
             value={confirm}

@@ -36,6 +36,12 @@ type PhotoState =
   | { kind: 'existing'; photoId: number; uri: string }
   | { kind: 'new'; uri: string };
 
+/** Server allows six photos per dog (DogService.addPhoto). */
+const MAX_DOG_PHOTOS = 6;
+/** Three across, two rows. */
+const PHOTO_COLUMNS = 3;
+const PHOTO_GAP = 8;
+
 const NAME_REGEX = /^[a-zA-ZÀ-ÿ\s'-]+$/;
 const MAX_DOB = new Date();
 const MIN_DOB = new Date();
@@ -50,6 +56,12 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Re
   const [dateOfBirth, setDateOfBirth] = useState<Date | null>(null);
   const [bio, setBio]                 = useState('');
   const [photos, setPhotos]           = useState<PhotoState[]>([]);
+  // The grid used to size its tiles with a percentage width and an aspectRatio,
+  // and derived nothing concrete for the line height — so once a second row was
+  // needed (four photos or more) the two rows were laid out on top of each other,
+  // add tiles over photos, with every tile's badges piled up at the same spot.
+  // Measuring once and handing out pixel sizes leaves nothing to be inferred.
+  const [gridWidth, setGridWidth]     = useState(0);
   const [removedIds, setRemovedIds]   = useState<number[]>([]);
   const [energyLevel, setEnergyLevel] = useState<number | null>(null);
   const [socialBehavior, setSocialBehavior] = useState<string | null>(null);
@@ -81,18 +93,27 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Re
     }).catch(() => setError(t('dogs.form.loadFailed'))).finally(() => setFetching(false));
   }, [dogId]);
 
+  const slotWidth = gridWidth > 0
+    ? Math.floor((gridWidth - PHOTO_GAP * (PHOTO_COLUMNS - 1)) / PHOTO_COLUMNS)
+    : 0;
+  const slotHeight = Math.round(slotWidth * 4 / 3);
+
   const pickPhoto = async () => {
-    if (photos.length >= 6) { setError(t('dogs.form.maxPhotos')); return; }
+    const remaining = MAX_DOG_PHOTOS - photos.length;
+    if (remaining <= 0) { setError(t('dogs.form.maxPhotos')); return; }
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') { setError(t('dogs.form.photoPermission')); return; }
+    // See ProfileForm.addPhoto: the picker gives us multi-select or the crop step,
+    // not both, and the server renders its own 3:4 and square versions anyway.
     const result = await ImagePicker.launchImageLibraryAsync({
       // No base64 and no quality cut: the file URI goes to the upload helper, which
       // does the downscaling. Compressing here as well only lost a second generation.
-      mediaTypes: ['images'], allowsEditing: true, aspect: [3, 4],
+      mediaTypes: ['images'], allowsMultipleSelection: true, selectionLimit: remaining,
     });
-    if (!result.canceled && result.assets[0]) {
-      setPhotos(prev => [...prev, { kind: 'new', uri: result.assets[0].uri }]);
-    }
+    if (result.canceled) return;
+    // selectionLimit is advisory on some Android pickers, so clamp it here too.
+    const picked = result.assets.slice(0, remaining).map(a => ({ kind: 'new' as const, uri: a.uri }));
+    if (picked.length > 0) setPhotos(prev => [...prev, ...picked]);
   };
 
   const removePhoto = (index: number) => {
@@ -245,11 +266,14 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Re
           <GlassCard style={styles.card}>
             <Text style={styles.sectionLabel}>{t('dogs.form.photosLabel', { count: photos.length })}</Text>
             <Text style={styles.sectionHint}>{t('dogs.form.photosHint')}</Text>
-            <View style={styles.photoGrid}>
-              {Array.from({ length: 6 }).map((_, i) => {
+            <View
+              style={styles.photoGrid}
+              onLayout={e => setGridWidth(e.nativeEvent.layout.width)}
+            >
+              {slotWidth > 0 && Array.from({ length: MAX_DOG_PHOTOS }).map((_, i) => {
                 const photo = photos[i];
                 return (
-                  <View key={i} style={styles.photoSlot}>
+                  <View key={i} style={[styles.photoSlot, { width: slotWidth, height: slotHeight }]}>
                     {photo ? (
                       <>
                         <RemoteImage source={{ uri: photo.uri }} style={styles.photoThumb} />
@@ -525,10 +549,11 @@ const styles = StyleSheet.create({
   sectionLabel: { fontSize: 16, fontWeight: '700', color: Colors.text, marginBottom: 4 },
   sectionHint:  { fontSize: 12, color: Colors.textSecondary, marginBottom: 16 },
 
-  photoGrid:  { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
-  photoSlot:  { width: '31%', aspectRatio: 3 / 4, borderRadius: 10, overflow: 'visible' },
-  // Insets rather than 100%: the slot is sized by aspectRatio, so there is no
-  // concrete height for a percentage to resolve against and expo-image lays out 0x0.
+  photoGrid:  { flexDirection: 'row', flexWrap: 'wrap', gap: PHOTO_GAP },
+  // Width and height both come from the measured grid — see the note on gridWidth.
+  photoSlot:  { borderRadius: 10, overflow: 'visible' },
+  // Insets rather than 100%: expo-image lays out 0x0 when asked for a percentage
+  // it cannot resolve, and insets never depend on the parent's height being known.
   photoThumb: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, borderRadius: 10 },
   photoAdd:   {
     width: '100%', height: '100%', borderRadius: 10,
