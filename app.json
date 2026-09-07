@@ -47,7 +47,7 @@
       "blockedPermissions": [
         "com.google.android.gms.permission.AD_ID"
       ],
-      "versionCode": 4
+      "versionCode": 5
     },
     "web": {
       "favicon": "./assets/favicon.png"
