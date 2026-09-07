@@ -651,7 +651,9 @@
       "calendarAddedBody": "Le playdate est dans ton calendrier.",
       "calendarDenied": "Dogs Out a besoin d'accéder à ton calendrier. Tu peux l'autoriser dans les Réglages.",
       "calendarFailedTitle": "Échec de l'ajout",
-      "calendarFailedBody": "Nous n'avons pas pu écrire dans ton calendrier. Réessaie."
+      "calendarFailedBody": "Nous n'avons pas pu écrire dans ton calendrier. Tu peux ouvrir le playdate dans Google Agenda à la place.",
+      "calendarNoneBody": "Ce téléphone n'a aucun calendrier accessible en écriture. Tu peux quand même ouvrir le playdate dans Google Agenda.",
+      "calendarOpenGoogle": "Ouvrir Google Agenda"
     },
     "chat": {
       "placeholder": "Message au groupe…",

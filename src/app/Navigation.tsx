@@ -46,7 +46,10 @@ export default function Navigation() {
   useEffect(() =>
     notificationService.onNotificationTap(data => {
       if (!navigationRef.isReady()) return;
-      if (data.type === 'NEW_MESSAGE' && data.matchId && data.otherUserId) {
+      // A birthday greeting is an invitation to write, so it lands in the chat
+      // itself rather than on a list the user then has to search.
+      if ((data.type === 'NEW_MESSAGE' || data.type === 'DOG_BIRTHDAY')
+          && data.matchId && data.otherUserId) {
         navigationRef.navigate('ChatDetail', {
           matchId: data.matchId,
           otherUserId: data.otherUserId,
