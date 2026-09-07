@@ -259,24 +259,18 @@
       "showOwnersAged": "Zeige Halter im Alter von {{min}}–{{max}}",
       "showingAllAges": "Zeigt alle Altersgruppen",
       "dogAge": "Alter des Hundes",
-      "addDogHint": "Füge einen Hund zu deinem Profil hinzu, um diesen Filter zu nutzen",
       "filterByDogAge": "Nach Alter des Hundes filtern",
       "showDogsAged": "Zeige Hunde im Alter von {{min}}–{{max}} Jahren",
-      "dogAgeToleranceUnset": "±{{tolerance}} Jahre (Hund hat kein Geburtsdatum)",
       "showingAllDogAges": "Zeigt alle Hundealter",
       "yearAbbrev": "{{count}} J.",
-      "oneYrEdge": "±1 Jahr",
-      "toleranceValue_one": "±{{count}} Jahr",
-      "toleranceValue_other": "±{{count}} Jahre",
-      "sixYrsEdge": "±6 Jahre",
-      "noBirthday": "Kein Geburtsdatum für {{name}} — Bereich als ±{{tolerance}} Jahre angezeigt",
       "savePreferences": "Einstellungen speichern",
       "location": "Standort",
       "locationSet": "Dein gespeicherter Standort",
       "locationMissing": "Kein Standort gesetzt",
       "locationHint": "Entdecken zeigt Hunde rund um diesen Punkt. Aktualisiere ihn, wenn du umgezogen bist.",
       "locationMissingHint": "Ohne Standort kann Entdecken Hunde nicht nach Entfernung sortieren oder begrenzen.",
-      "useCurrentLocation": "Meinen aktuellen Standort verwenden"
+      "useCurrentLocation": "Meinen aktuellen Standort verwenden",
+      "dogAgeHint": "Zeigt Hunde in diesem Altersbereich. 10+ schliesst alle älteren Hunde ein."
     }
   },
   "profile": {
@@ -651,7 +645,13 @@
       "openChat": "Gruppenchat öffnen",
       "hosting": "Organisierst du",
       "going": "Dabei",
-      "invited": "Eingeladen"
+      "invited": "Eingeladen",
+      "addToCalendar": "Zum Kalender hinzufügen",
+      "calendarAdded": "Hinzugefügt",
+      "calendarAddedBody": "Das Playdate ist in deinem Kalender.",
+      "calendarDenied": "Dogs Out braucht Zugriff auf deinen Kalender. Du kannst ihn in den Einstellungen erlauben.",
+      "calendarFailedTitle": "Hat nicht geklappt",
+      "calendarFailedBody": "Wir konnten nichts in deinen Kalender schreiben. Bitte versuche es nochmals."
     },
     "chat": {
       "placeholder": "Nachricht an die Gruppe…",

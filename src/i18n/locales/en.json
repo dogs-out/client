@@ -259,24 +259,18 @@
       "showOwnersAged": "Show owners aged {{min}}–{{max}}",
       "showingAllAges": "Showing all ages",
       "dogAge": "Dog age",
-      "addDogHint": "Add a dog to your profile to use this filter",
       "filterByDogAge": "Filter by dog age",
       "showDogsAged": "Show dogs aged {{min}}–{{max}} yrs",
-      "dogAgeToleranceUnset": "±{{tolerance}} years (dog has no birthday set)",
       "showingAllDogAges": "Showing all dog ages",
       "yearAbbrev": "{{count}} yr",
-      "oneYrEdge": "±1 yr",
-      "toleranceValue_one": "±{{count}} yr",
-      "toleranceValue_other": "±{{count}} yrs",
-      "sixYrsEdge": "±6 yrs",
-      "noBirthday": "No birthday set for {{name}} — range shown as ±{{tolerance}} yrs",
       "savePreferences": "Save preferences",
       "location": "Location",
       "locationSet": "Your saved location",
       "locationMissing": "No location set",
       "locationHint": "Discover shows dogs around this point. Update it if you've moved.",
       "locationMissingHint": "Without a location, Discover can't sort or limit dogs by distance.",
-      "useCurrentLocation": "Use my current location"
+      "useCurrentLocation": "Use my current location",
+      "dogAgeHint": "Matches dogs of any owner in this age band. 10+ includes every older dog."
     }
   },
   "profile": {
@@ -558,7 +552,13 @@
       "openChat": "Open group chat",
       "hosting": "Hosting",
       "going": "Going",
-      "invited": "Invited"
+      "invited": "Invited",
+      "addToCalendar": "Add to calendar",
+      "calendarAdded": "Added",
+      "calendarAddedBody": "The playdate is in your calendar.",
+      "calendarDenied": "Dogs Out needs calendar access to add the playdate. You can allow it in Settings.",
+      "calendarFailedTitle": "Couldn't add it",
+      "calendarFailedBody": "We couldn't write to your calendar. Please try again."
     },
     "chat": {
       "placeholder": "Message the group…",

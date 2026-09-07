@@ -259,24 +259,18 @@
       "showOwnersAged": "Afficher les propriétaires âgés de {{min}} à {{max}} ans",
       "showingAllAges": "Affiche tous les âges",
       "dogAge": "Âge du chien",
-      "addDogHint": "Ajoute un chien à ton profil pour utiliser ce filtre",
       "filterByDogAge": "Filtrer par âge du chien",
       "showDogsAged": "Afficher les chiens âgés de {{min}} à {{max}} ans",
-      "dogAgeToleranceUnset": "±{{tolerance}} ans (le chien n'a pas de date de naissance)",
       "showingAllDogAges": "Affiche tous les âges de chiens",
       "yearAbbrev": "{{count}} an",
-      "oneYrEdge": "±1 an",
-      "toleranceValue_one": "±{{count}} an",
-      "toleranceValue_other": "±{{count}} ans",
-      "sixYrsEdge": "±6 ans",
-      "noBirthday": "Pas de date de naissance pour {{name}} — plage affichée comme ±{{tolerance}} ans",
       "savePreferences": "Enregistrer les préférences",
       "location": "Position",
       "locationSet": "Votre position enregistrée",
       "locationMissing": "Aucune position définie",
       "locationHint": "Découvrir affiche les chiens autour de ce point. Mettez-le à jour si vous avez déménagé.",
       "locationMissingHint": "Sans position, Découvrir ne peut ni trier ni limiter les chiens par distance.",
-      "useCurrentLocation": "Utiliser ma position actuelle"
+      "useCurrentLocation": "Utiliser ma position actuelle",
+      "dogAgeHint": "Affiche les chiens dans cette tranche d'âge. 10+ inclut tous les chiens plus âgés."
     }
   },
   "profile": {
@@ -651,7 +645,13 @@
       "openChat": "Ouvrir le chat de groupe",
       "hosting": "Organisateur",
       "going": "Participe",
-      "invited": "Invité·e"
+      "invited": "Invité·e",
+      "addToCalendar": "Ajouter au calendrier",
+      "calendarAdded": "Ajouté",
+      "calendarAddedBody": "Le playdate est dans ton calendrier.",
+      "calendarDenied": "Dogs Out a besoin d'accéder à ton calendrier. Tu peux l'autoriser dans les Réglages.",
+      "calendarFailedTitle": "Échec de l'ajout",
+      "calendarFailedBody": "Nous n'avons pas pu écrire dans ton calendrier. Réessaie."
     },
     "chat": {
       "placeholder": "Message au groupe…",

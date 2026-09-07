@@ -259,24 +259,18 @@
       "showOwnersAged": "Mostra proprietari di {{min}}–{{max}} anni",
       "showingAllAges": "Mostra tutte le età",
       "dogAge": "Età del cane",
-      "addDogHint": "Aggiungi un cane al tuo profilo per usare questo filtro",
       "filterByDogAge": "Filtra per età del cane",
       "showDogsAged": "Mostra cani di {{min}}–{{max}} anni",
-      "dogAgeToleranceUnset": "±{{tolerance}} anni (il cane non ha una data di nascita)",
       "showingAllDogAges": "Mostra cani di tutte le età",
       "yearAbbrev": "{{count}} anno",
-      "oneYrEdge": "±1 anno",
-      "toleranceValue_one": "±{{count}} anno",
-      "toleranceValue_other": "±{{count}} anni",
-      "sixYrsEdge": "±6 anni",
-      "noBirthday": "Nessuna data di nascita per {{name}} — intervallo mostrato come ±{{tolerance}} anni",
       "savePreferences": "Salva preferenze",
       "location": "Posizione",
       "locationSet": "La tua posizione salvata",
       "locationMissing": "Nessuna posizione impostata",
       "locationHint": "Scopri mostra i cani intorno a questo punto. Aggiornalo se ti sei trasferito.",
       "locationMissingHint": "Senza posizione, Scopri non può ordinare né limitare i cani per distanza.",
-      "useCurrentLocation": "Usa la mia posizione attuale"
+      "useCurrentLocation": "Usa la mia posizione attuale",
+      "dogAgeHint": "Mostra i cani in questa fascia d'età. 10+ include tutti i cani più anziani."
     }
   },
   "profile": {
@@ -651,7 +645,13 @@
       "openChat": "Apri la chat di gruppo",
       "hosting": "Organizzi tu",
       "going": "Partecipi",
-      "invited": "Invitato"
+      "invited": "Invitato",
+      "addToCalendar": "Aggiungi al calendario",
+      "calendarAdded": "Aggiunto",
+      "calendarAddedBody": "Il playdate è nel tuo calendario.",
+      "calendarDenied": "Dogs Out ha bisogno di accedere al tuo calendario. Puoi consentirlo nelle Impostazioni.",
+      "calendarFailedTitle": "Non è riuscito",
+      "calendarFailedBody": "Non siamo riusciti a scrivere nel tuo calendario. Riprova."
     },
     "chat": {
       "placeholder": "Messaggio al gruppo…",

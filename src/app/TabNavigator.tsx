@@ -13,6 +13,7 @@ import ChatsScreen from '../features/chat/ChatsScreen';
 import HomeScreen from '../screens/HomeScreen';
 import { glassTabBarStyles as styles, TAB_ICON_SIZE } from '../components/GlassTabBar';
 import { useHasDog } from '../hooks/useHasDog';
+import { useUnreadCount } from '../hooks/useUnreadCount';
 import { Colors } from '../constants/colors';
 
 export type MainTabParamList = {
@@ -35,6 +36,7 @@ const TAB_ITEMS: { name: keyof MainTabParamList; labelKey: string; icon: string;
 
 function GlassTabBar({ state, descriptors, navigation }: Readonly<BottomTabBarProps>) {
   const { t } = useTranslation();
+  const unread = useUnreadCount();
   return (
     <View style={styles.wrapper}>
       <BlurView intensity={60} tint="light" style={styles.blur}>
@@ -57,11 +59,20 @@ function GlassTabBar({ state, descriptors, navigation }: Readonly<BottomTabBarPr
                 onLongPress={() => navigation.emit({ type: 'tabLongPress', target: route.key })}
               >
                 <View style={[styles.tabInner, focused && styles.tabInnerActive]}>
-                  <Ionicons
-                    name={(focused ? item.iconActive : item.icon) as any}
-                    size={TAB_ICON_SIZE}
-                    color={focused ? Colors.primary : Colors.textSecondary}
-                  />
+                  <View>
+                    <Ionicons
+                      name={(focused ? item.iconActive : item.icon) as any}
+                      size={TAB_ICON_SIZE}
+                      color={focused ? Colors.primary : Colors.textSecondary}
+                    />
+                    {route.name === 'Chats' && unread > 0 && (
+                      <View style={styles.badge}>
+                        <Text style={styles.badgeText} numberOfLines={1}>
+                          {unread > 99 ? '99+' : unread}
+                        </Text>
+                      </View>
+                    )}
+                  </View>
                   <Text
                     style={[styles.tabLabel, focused && styles.tabLabelActive]}
                     numberOfLines={1}
