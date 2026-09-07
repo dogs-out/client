@@ -115,5 +115,13 @@ export const glassTabBarStyles = StyleSheet.create({
   tabInner:       { alignItems: 'center', paddingVertical: TAB_INNER_PAD_V, paddingHorizontal: 4, borderRadius: 16, gap: TAB_INNER_GAP },
   tabInnerActive: { backgroundColor: 'rgba(46,158,107,0.12)' },
   tabLabel:       { fontSize: 11, fontWeight: '600', color: Colors.textSecondary, textAlign: 'center' },
+  // Anchored to the icon, not the tab, so it sits where the eye already looks for
+  // it in Mail or WhatsApp. minWidth keeps a single digit round rather than narrow.
+  badge: {
+    position: 'absolute', top: -5, left: TAB_ICON_SIZE - 8,
+    minWidth: 17, height: 17, borderRadius: 9, paddingHorizontal: 4,
+    backgroundColor: '#e53e3e', alignItems: 'center', justifyContent: 'center',
+  },
+  badgeText: { color: '#fff', fontSize: 10, fontWeight: '700' },
   tabLabelActive: { color: Colors.primary },
 });

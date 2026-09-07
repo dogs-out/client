@@ -11,7 +11,6 @@ import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import { useTranslation } from 'react-i18next';
 import { RootStackParamList } from '../../types/navigation';
 import { userService } from '../../services/userService';
-import { dogService, Dog } from '../../services/dogService';
 import { bumpDiscoverFiltersVersion } from '../../utils/discoverFilters';
 import { FloatingBackground } from '../../components/FloatingBackground';
 import { GlassCard } from '../../components/GlassCard';
@@ -22,15 +21,16 @@ import { Colors } from '../../constants/colors';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'DiscoverFilters'>;
 
-function dogAgeYears(dateOfBirth: string | null): number | null {
-  if (!dateOfBirth) return null;
-  const dob = new Date(dateOfBirth);
-  const now = new Date();
-  let age = now.getFullYear() - dob.getFullYear();
-  const m = now.getMonth() - dob.getMonth();
-  if (m < 0 || (m === 0 && now.getDate() < dob.getDate())) age--;
-  return age;
-}
+// Both ranges are open at the top: sitting the thumb on the maximum means "and
+// older", sent to the server as a cleared bound rather than a literal cap, so an
+// 81-year-old with a 12-year-old dog is not quietly excluded by the slider's edge.
+const OWNER_AGE_MIN = 18;
+const OWNER_AGE_MAX = 80;
+const DOG_AGE_MIN = 0;
+const DOG_AGE_MAX = 10;
+
+const openEnded = (value: number, max: number) => (value >= max ? `${max}+` : String(value));
+
 
 // ──────────────────────────────────────────────────────────────────────────────
 
@@ -52,18 +52,18 @@ export default function DiscoverFiltersScreen({ navigation }: Readonly<Props>) {
 
   // Owner age
   const [ageOn, setAgeOn]             = useState(false);
-  const [minAge, setMinAge]           = useState(18);
-  const [maxAge, setMaxAge]           = useState(50);
+  const [minAge, setMinAge]           = useState(OWNER_AGE_MIN);
+  const [maxAge, setMaxAge]           = useState(OWNER_AGE_MAX);
   const [ageSliderWidth, setAgeSliderWidth] = useState(0);
 
   // Dog age
-  const [dogs, setDogs]               = useState<Dog[]>([]);
-  const [selectedDogId, setSelectedDogId] = useState<number | null>(null);
   const [dogAgeOn, setDogAgeOn]       = useState(false);
-  const [dogAgeTolerance, setDogAgeTolerance] = useState(3);
+  const [minDogAge, setMinDogAge]     = useState(DOG_AGE_MIN);
+  const [maxDogAge, setMaxDogAge]     = useState(DOG_AGE_MAX);
+  const [dogAgeSliderWidth, setDogAgeSliderWidth] = useState(0);
 
   useEffect(() => {
-    Promise.all([userService.getMe(), dogService.getMyDogs()]).then(([u, myDogs]) => {
+    userService.getMe().then(u => {
       // Distance
       if (u.maxDistanceKm != null) setDistance(Math.max(1, Math.min(50, u.maxDistanceKm)));
 
@@ -75,29 +75,15 @@ export default function DiscoverFiltersScreen({ navigation }: Readonly<Props>) {
       // Owner age
       if (u.minAge != null || u.maxAge != null) {
         setAgeOn(true);
-        if (u.minAge != null) setMinAge(u.minAge);
-        if (u.maxAge != null) setMaxAge(u.maxAge);
+        setMinAge(u.minAge ?? OWNER_AGE_MIN);
+        setMaxAge(u.maxAge ?? OWNER_AGE_MAX);
       }
 
-      // Dogs + dog age tolerance
-      setDogs(myDogs);
-      if (myDogs.length > 0) {
-        setSelectedDogId(myDogs[0].id);
-        if (u.maxDogAge != null) {
-          setDogAgeOn(true);
-          // Find the dog whose age reproduces the saved min/max range,
-          // so reopening the screen restores the filter as it was saved
-          for (const dog of myDogs) {
-            const age = dogAgeYears(dog.dateOfBirth);
-            if (age === null) continue;
-            const tol = u.maxDogAge - age;
-            if (tol >= 1 && tol <= 6 && Math.max(0, age - tol) === (u.minDogAge ?? 0)) {
-              setSelectedDogId(dog.id);
-              setDogAgeTolerance(tol);
-              break;
-            }
-          }
-        }
+      // Dog age. A cleared bound on the server is the open end of the slider.
+      if (u.minDogAge != null || u.maxDogAge != null) {
+        setDogAgeOn(true);
+        setMinDogAge(u.minDogAge ?? DOG_AGE_MIN);
+        setMaxDogAge(u.maxDogAge ?? DOG_AGE_MAX);
       }
     }).finally(() => setLoading(false));
   }, []);
@@ -147,26 +133,18 @@ export default function DiscoverFiltersScreen({ navigation }: Readonly<Props>) {
   };
 
   const handleDistanceChange   = useCallback((v: number) => setDistance(v), []);
-  const handleDogAgeChange     = useCallback((v: number) => setDogAgeTolerance(v), []);
-
-  const selectedDog = dogs.find(d => d.id === selectedDogId) ?? null;
-  const selectedDogAge = selectedDog ? dogAgeYears(selectedDog.dateOfBirth) : null;
 
   const save = async () => {
     setSaving(true);
     try {
-      let minDogAge: number = -1;
-      let maxDogAge: number = 0;
-      if (dogAgeOn && selectedDogAge !== null) {
-        minDogAge = Math.max(0, selectedDogAge - dogAgeTolerance);
-        maxDogAge = selectedDogAge + dogAgeTolerance;
-      }
+      // 0 and -1 are the server's "clear this bound" sentinels (UserService), which
+      // is how both the switched-off case and the open top end are expressed.
       await userService.updateProfile({
         maxDistanceKm: distance,
-        minAge: ageOn ? minAge : 0,
-        maxAge: ageOn ? maxAge : 0,
-        minDogAge,
-        maxDogAge,
+        minAge:    ageOn ? minAge : 0,
+        maxAge:    ageOn && maxAge < OWNER_AGE_MAX ? maxAge : 0,
+        minDogAge: dogAgeOn ? minDogAge : -1,
+        maxDogAge: dogAgeOn && maxDogAge < DOG_AGE_MAX ? maxDogAge : 0,
       });
       bumpDiscoverFiltersVersion();
       navigation.goBack();
@@ -269,7 +247,10 @@ export default function DiscoverFiltersScreen({ navigation }: Readonly<Props>) {
               <View style={{ flex: 1, marginRight: 12 }}>
                 <Text style={styles.toggleLabel}>{t('matching.filters.filterByOwnerAge')}</Text>
                 <Text style={styles.toggleSub}>
-                  {ageOn ? t('matching.filters.showOwnersAged', { min: minAge, max: maxAge }) : t('matching.filters.showingAllAges')}
+                  {ageOn
+                    ? t('matching.filters.showOwnersAged', {
+                        min: minAge, max: openEnded(maxAge, OWNER_AGE_MAX) })
+                    : t('matching.filters.showingAllAges')}
                 </Text>
               </View>
               <Switch value={ageOn} onValueChange={setAgeOn}
@@ -278,9 +259,9 @@ export default function DiscoverFiltersScreen({ navigation }: Readonly<Props>) {
             {ageOn && (
               <View style={styles.sliderBlock}>
                 <View style={styles.sliderLabels}>
-                  <Text style={styles.sliderEdge}>18</Text>
-                  <Text style={styles.sliderValue}>{minAge}–{maxAge}</Text>
-                  <Text style={styles.sliderEdge}>80</Text>
+                  <Text style={styles.sliderEdge}>{OWNER_AGE_MIN}</Text>
+                  <Text style={styles.sliderValue}>{minAge}–{openEnded(maxAge, OWNER_AGE_MAX)}</Text>
+                  <Text style={styles.sliderEdge}>{OWNER_AGE_MAX}+</Text>
                 </View>
                 <View
                   style={styles.rangeSliderTrack}
@@ -289,8 +270,8 @@ export default function DiscoverFiltersScreen({ navigation }: Readonly<Props>) {
                   {ageSliderWidth > 0 && (
                     <MultiSlider
                       values={[minAge, maxAge]}
-                      min={18}
-                      max={80}
+                      min={OWNER_AGE_MIN}
+                      max={OWNER_AGE_MAX}
                       step={1}
                       sliderLength={ageSliderWidth}
                       allowOverlap={false}
@@ -316,75 +297,56 @@ export default function DiscoverFiltersScreen({ navigation }: Readonly<Props>) {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>{t('matching.filters.dogAge')}</Text>
           <GlassCard>
-            {dogs.length === 0 ? (
-              <View style={styles.noDogRow}>
-                <Ionicons name="paw-outline" size={20} color={Colors.textSecondary} />
-                <Text style={styles.noDogText}>{t('matching.filters.addDogHint')}</Text>
+            <View style={styles.toggleRow}>
+              <View style={{ flex: 1, marginRight: 12 }}>
+                <Text style={styles.toggleLabel}>{t('matching.filters.filterByDogAge')}</Text>
+                <Text style={styles.toggleSub}>
+                  {dogAgeOn
+                    ? t('matching.filters.showDogsAged', {
+                        min: minDogAge, max: openEnded(maxDogAge, DOG_AGE_MAX) })
+                    : t('matching.filters.showingAllDogAges')}
+                </Text>
               </View>
-            ) : (
-              <>
-                <View style={styles.toggleRow}>
-                  <View style={{ flex: 1, marginRight: 12 }}>
-                    <Text style={styles.toggleLabel}>{t('matching.filters.filterByDogAge')}</Text>
-                    <Text style={styles.toggleSub}>
-                      {dogAgeOn && selectedDogAge !== null
-                        ? t('matching.filters.showDogsAged', { min: Math.max(0, selectedDogAge - dogAgeTolerance), max: selectedDogAge + dogAgeTolerance })
-                        : dogAgeOn && selectedDogAge === null
-                        ? t('matching.filters.dogAgeToleranceUnset', { tolerance: dogAgeTolerance })
-                        : t('matching.filters.showingAllDogAges')}
-                    </Text>
-                  </View>
-                  <Switch value={dogAgeOn} onValueChange={setDogAgeOn}
-                    trackColor={{ false: Colors.border, true: Colors.primary }} thumbColor="#fff" />
+              <Switch value={dogAgeOn} onValueChange={setDogAgeOn}
+                trackColor={{ false: Colors.border, true: Colors.primary }} thumbColor="#fff" />
+            </View>
+
+            {dogAgeOn && (
+              <View style={styles.sliderBlock}>
+                <View style={styles.sliderLabels}>
+                  <Text style={styles.sliderEdge}>{DOG_AGE_MIN}</Text>
+                  <Text style={styles.sliderValue}>
+                    {minDogAge}–{openEnded(maxDogAge, DOG_AGE_MAX)}
+                  </Text>
+                  <Text style={styles.sliderEdge}>{DOG_AGE_MAX}+</Text>
                 </View>
-
-                {/* Dog picker — shown when filter is on and user has multiple dogs */}
-                {dogAgeOn && dogs.length > 1 && (
-                  <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.dogPicker} contentContainerStyle={styles.dogPickerContent}>
-                    {dogs.map(dog => {
-                      const selected = dog.id === selectedDogId;
-                      return (
-                        <TouchableOpacity
-                          key={dog.id}
-                          style={[styles.dogChip, selected && styles.dogChipSelected]}
-                          onPress={() => setSelectedDogId(dog.id)}
-                        >
-                          <Text style={[styles.dogChipText, selected && styles.dogChipTextSelected]}>
-                            {dog.name}
-                          </Text>
-                          {dogAgeYears(dog.dateOfBirth) !== null && (
-                            <Text style={[styles.dogChipAge, selected && styles.dogChipTextSelected]}>
-                              {t('matching.filters.yearAbbrev', { count: dogAgeYears(dog.dateOfBirth) })}
-                            </Text>
-                          )}
-                        </TouchableOpacity>
-                      );
-                    })}
-                  </ScrollView>
-                )}
-
-                {dogAgeOn && (
-                  <View style={styles.sliderBlock}>
-                    {selectedDogAge !== null ? (
-                      <View style={styles.sliderLabels}>
-                        <Text style={styles.sliderEdge}>{t('matching.filters.oneYrEdge')}</Text>
-                        <Text style={styles.sliderValue}>{t('matching.filters.toleranceValue', { count: dogAgeTolerance })}</Text>
-                        <Text style={styles.sliderEdge}>{t('matching.filters.sixYrsEdge')}</Text>
-                      </View>
-                    ) : (
-                      <Text style={[styles.toggleSub, { marginBottom: 8 }]}>
-                        {t('matching.filters.noBirthday', { name: selectedDog?.name, tolerance: dogAgeTolerance })}
-                      </Text>
-                    )}
-                    <CustomSlider
-                      value={dogAgeTolerance} min={1} max={6} step={1}
-                      onChange={handleDogAgeChange}
-                      onDragStart={lockScroll}
-                      onDragEnd={unlockScroll}
+                <View
+                  style={styles.rangeSliderTrack}
+                  onLayout={e => setDogAgeSliderWidth(e.nativeEvent.layout.width)}
+                >
+                  {dogAgeSliderWidth > 0 && (
+                    <MultiSlider
+                      values={[minDogAge, maxDogAge]}
+                      min={DOG_AGE_MIN}
+                      max={DOG_AGE_MAX}
+                      step={1}
+                      sliderLength={dogAgeSliderWidth}
+                      allowOverlap={false}
+                      minMarkerOverlapDistance={20}
+                      touchDimensions={{ height: 60, width: 60, borderRadius: 30, slipDisplacement: 300 }}
+                      onValuesChangeStart={lockScroll}
+                      onValuesChange={([lo, hi]) => { setMinDogAge(lo); setMaxDogAge(hi); }}
+                      onValuesChangeFinish={unlockScroll}
+                      selectedStyle={{ backgroundColor: Colors.primary }}
+                      unselectedStyle={{ backgroundColor: Colors.border }}
+                      trackStyle={{ height: 4, borderRadius: 2 }}
+                      customMarker={marker => <GlassRangeMarker pressed={marker.pressed ?? false} />}
+                      containerStyle={styles.rangeSliderContainer}
                     />
-                  </View>
-                )}
-              </>
+                  )}
+                </View>
+                <Text style={styles.toggleSub}>{t('matching.filters.dogAgeHint')}</Text>
+              </View>
             )}
           </GlassCard>
         </View>

@@ -47,7 +47,7 @@
       "blockedPermissions": [
         "com.google.android.gms.permission.AD_ID"
       ],
-      "versionCode": 3
+      "versionCode": 4
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -77,7 +77,15 @@
           "color": "#2E9E6B"
         }
       ],
-      "expo-image"
+      "expo-image",
+      [
+        "expo-calendar",
+        {
+          "calendarPermission": "DogsOut adds playdates you save to your calendar.",
+          "writeOnlyCalendarPermission": "DogsOut adds playdates you save to your calendar.",
+          "writeOnlyAccess": true
+        }
+      ]
     ],
     "extra": {
       "eas": {

@@ -25,7 +25,7 @@ Notifications.setNotificationHandler({
 export interface PushData {
   type?: 'NEW_MESSAGE' | 'NEW_MATCH'
     | 'PLAYDATE_INVITE' | 'PLAYDATE_JOINED' | 'PLAYDATE_UPDATED'
-    | 'PLAYDATE_CANCELLED' | 'PLAYDATE_MESSAGE';
+    | 'PLAYDATE_CANCELLED' | 'PLAYDATE_MESSAGE' | 'PLAYDATE_REMINDER';
   matchId?: number;
   otherUserId?: number;
   name?: string;

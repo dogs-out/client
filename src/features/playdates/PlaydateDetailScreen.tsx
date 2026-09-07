@@ -15,6 +15,7 @@ import { playdateService, Playdate } from '../../services/playdateService';
 import { chatSocket } from '../../services/socket';
 import { RootStackParamList } from '../../types/navigation';
 import { Colors } from '../../constants/colors';
+import { addPlaydateToCalendar } from '../../utils/addToCalendar';
 import { FloatingBackground } from '../../components/FloatingBackground';
 import { GlassCard } from '../../components/GlassCard';
 import { formatPlaydateTime } from './PlaydatesScreen';
@@ -25,6 +26,7 @@ export default function PlaydateDetailScreen({ navigation, route }: Readonly<Pro
   const { t, i18n } = useTranslation();
   const { playdateId } = route.params;
   const [playdate, setPlaydate] = useState<Playdate | null>(null);
+  const [savingToCalendar, setSavingToCalendar] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -96,6 +98,18 @@ export default function PlaydateDetailScreen({ navigation, route }: Readonly<Pro
   }
 
   const cancelled = playdate.status === 'CANCELLED';
+  const saveToCalendar = async () => {
+    setSavingToCalendar(true);
+    const result = await addPlaydateToCalendar(playdate);
+    setSavingToCalendar(false);
+    Alert.alert(
+      t(result === 'added' ? 'playdates.detail.calendarAdded' : 'playdates.detail.calendarFailedTitle'),
+      t(result === 'added' ? 'playdates.detail.calendarAddedBody'
+        : result === 'denied' ? 'playdates.detail.calendarDenied'
+        : 'playdates.detail.calendarFailedBody'),
+    );
+  };
+
   const isFull = playdate.maxParticipants != null && playdate.joinedCount >= playdate.maxParticipants;
   const joinedParticipants = (playdate.participants ?? []).filter(p => p.status === 'JOINED' || p.status === 'HOST');
 
@@ -151,6 +165,15 @@ export default function PlaydateDetailScreen({ navigation, route }: Readonly<Pro
             <Ionicons name="time-outline" size={15} color={Colors.primary} /> {formatPlaydateTime(playdate.startsAt, i18n.language)}
           </Text>
           {playdate.description && <Text style={styles.description}>{playdate.description}</Text>}
+
+          <TouchableOpacity
+            style={styles.calendarBtn}
+            onPress={saveToCalendar}
+            disabled={savingToCalendar}
+          >
+            <Ionicons name="calendar-outline" size={16} color={Colors.primary} />
+            <Text style={styles.calendarBtnText}>{t('playdates.detail.addToCalendar')}</Text>
+          </TouchableOpacity>
 
           <TouchableOpacity
             style={styles.hostRow}
@@ -293,6 +316,13 @@ const styles = StyleSheet.create({
 
   timeText:    { fontSize: 15, fontWeight: '700', color: Colors.text, marginBottom: 8 },
   description: { fontSize: 14, color: Colors.text, lineHeight: 20, marginBottom: 12 },
+  calendarBtn: {
+    flexDirection: 'row', alignItems: 'center', alignSelf: 'flex-start', gap: 6,
+    marginTop: 12, paddingHorizontal: 12, paddingVertical: 8,
+    borderRadius: 12, borderWidth: 1.5, borderColor: Colors.border,
+    backgroundColor: 'rgba(46,158,107,0.06)',
+  },
+  calendarBtnText: { fontSize: 13, fontWeight: '700', color: Colors.primary },
 
   hostRow:    { flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 2 },
   hostAvatar: { width: 34, height: 34, borderRadius: 17 },
