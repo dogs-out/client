@@ -651,7 +651,9 @@
       "calendarAddedBody": "Il playdate è nel tuo calendario.",
       "calendarDenied": "Dogs Out ha bisogno di accedere al tuo calendario. Puoi consentirlo nelle Impostazioni.",
       "calendarFailedTitle": "Non è riuscito",
-      "calendarFailedBody": "Non siamo riusciti a scrivere nel tuo calendario. Riprova."
+      "calendarFailedBody": "Non siamo riusciti a scrivere nel tuo calendario. Puoi aprire il playdate in Google Calendar.",
+      "calendarNoneBody": "Questo telefono non ha un calendario in cui le app possano scrivere. Puoi comunque aprire il playdate in Google Calendar.",
+      "calendarOpenGoogle": "Apri Google Calendar"
     },
     "chat": {
       "placeholder": "Messaggio al gruppo…",

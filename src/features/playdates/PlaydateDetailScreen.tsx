@@ -15,7 +15,7 @@ import { playdateService, Playdate } from '../../services/playdateService';
 import { chatSocket } from '../../services/socket';
 import { RootStackParamList } from '../../types/navigation';
 import { Colors } from '../../constants/colors';
-import { addPlaydateToCalendar } from '../../utils/addToCalendar';
+import { addPlaydateToCalendar, openInGoogleCalendar } from '../../utils/addToCalendar';
 import { FloatingBackground } from '../../components/FloatingBackground';
 import { GlassCard } from '../../components/GlassCard';
 import { formatPlaydateTime } from './PlaydatesScreen';
@@ -100,13 +100,30 @@ export default function PlaydateDetailScreen({ navigation, route }: Readonly<Pro
   const cancelled = playdate.status === 'CANCELLED';
   const saveToCalendar = async () => {
     setSavingToCalendar(true);
-    const result = await addPlaydateToCalendar(playdate);
+    const { result, reason } = await addPlaydateToCalendar(playdate);
     setSavingToCalendar(false);
+
+    if (result === 'added') {
+      Alert.alert(t('playdates.detail.calendarAdded'), t('playdates.detail.calendarAddedBody'));
+      return;
+    }
+    if (result === 'denied') {
+      Alert.alert(t('playdates.detail.calendarFailedTitle'), t('playdates.detail.calendarDenied'));
+      return;
+    }
+
+    // Writing to the device calendar did not work — say why, and offer the route
+    // that needs no permission and no synced account rather than dead-ending.
+    if (reason) console.warn('[calendar] write failed:', reason);
     Alert.alert(
-      t(result === 'added' ? 'playdates.detail.calendarAdded' : 'playdates.detail.calendarFailedTitle'),
-      t(result === 'added' ? 'playdates.detail.calendarAddedBody'
-        : result === 'denied' ? 'playdates.detail.calendarDenied'
+      t('playdates.detail.calendarFailedTitle'),
+      t(result === 'no-calendar'
+        ? 'playdates.detail.calendarNoneBody'
         : 'playdates.detail.calendarFailedBody'),
+      [
+        { text: t('common.cancel'), style: 'cancel' },
+        { text: t('playdates.detail.calendarOpenGoogle'), onPress: () => openInGoogleCalendar(playdate) },
+      ],
     );
   };
 
