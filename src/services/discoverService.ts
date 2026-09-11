@@ -19,6 +19,8 @@ export interface DiscoverProfile {
   sitterExperienceYears: number | null;
   sitterTags: string[];
   lookingForSitter: boolean;
+  /** This person, or one of their dogs, has a birthday today. */
+  celebratingToday: boolean;
 }
 
 export interface SwipeResponse {

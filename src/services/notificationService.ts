@@ -26,7 +26,7 @@ export interface PushData {
   type?: 'NEW_MESSAGE' | 'NEW_MATCH'
     | 'PLAYDATE_INVITE' | 'PLAYDATE_JOINED' | 'PLAYDATE_UPDATED'
     | 'PLAYDATE_CANCELLED' | 'PLAYDATE_MESSAGE' | 'PLAYDATE_REMINDER'
-    | 'DOG_BIRTHDAY';
+    | 'DOG_BIRTHDAY' | 'DOG_BIRTHDAY_OWN' | 'USER_BIRTHDAY';
   matchId?: number;
   otherUserId?: number;
   name?: string;

@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   ActivityIndicator, Alert, FlatList, KeyboardAvoidingView, Modal,
   Platform, Pressable, StyleSheet, Text, TextInput,
@@ -21,6 +21,7 @@ import { RootStackParamList } from '../../types/navigation';
 import { Colors } from '../../constants/colors';
 import { scaledLineHeight } from '../../utils/typography';
 import { FloatingBackground } from '../../components/FloatingBackground';
+import { discoverService } from '../../services/discoverService';
 import { invertedListCounterTransform } from '../../utils/invertedList';
 import { GlassCard } from '../../components/GlassCard';
 import { ReportUserModal } from './ReportUserModal';
@@ -66,6 +67,10 @@ export default function ChatDetailScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { params } = useRoute<RouteProp<RootStackParamList, 'ChatDetail'>>();
   const { matchId, otherUserId, name, profilePicture } = params;
+  // Cake, candles and confetti instead of the usual bones and paws, on the day.
+  // The server answers with a boolean rather than a date — nobody's birth date
+  // needs to travel for the chat to look festive.
+  const [celebrating, setCelebrating] = useState(false);
 
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [loading, setLoading] = useState(true);
@@ -134,6 +139,14 @@ export default function ChatDetailScreen() {
       .catch(err => setError(err?.response?.data?.message ?? t('chat.chatDetail.sendFailed')))
       .finally(() => setSending(false));
   };
+
+  useEffect(() => {
+    let stale = false;
+    discoverService.getUserProfile(otherUserId)
+      .then(p => { if (!stale) setCelebrating(p.celebratingToday); })
+      .catch(() => { /* the background simply stays ordinary */ });
+    return () => { stale = true; };
+  }, [otherUserId]);
 
   const openProfile = () => {
     setMenuOpen(false);
@@ -237,7 +250,7 @@ export default function ChatDetailScreen() {
 
   return (
     <SafeAreaView style={styles.safe}>
-      <FloatingBackground />
+      <FloatingBackground variant={celebrating ? 'birthday' : 'default'} />
 
       {/* Floating glass header */}
       <BlurView intensity={60} tint="light" style={styles.headerBlur}>

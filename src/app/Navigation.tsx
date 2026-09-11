@@ -49,8 +49,9 @@ export default function Navigation() {
       if (!navigationRef.isReady()) return;
       // A birthday greeting is an invitation to write, so it lands in the chat
       // itself rather than on a list the user then has to search.
-      if ((data.type === 'NEW_MESSAGE' || data.type === 'DOG_BIRTHDAY')
-          && data.matchId && data.otherUserId) {
+      const opensAChat = data.type === 'NEW_MESSAGE'
+        || data.type === 'DOG_BIRTHDAY' || data.type === 'USER_BIRTHDAY';
+      if (opensAChat && data.matchId && data.otherUserId) {
         navigationRef.navigate('ChatDetail', {
           matchId: data.matchId,
           otherUserId: data.otherUserId,
