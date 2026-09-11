@@ -41,7 +41,8 @@
       "helpFaq": "Help & FAQ",
       "termsPrivacy": "Terms & Privacy",
       "aboutDogsOut": "About Dogs Out",
-      "deleteAccount": "Delete account"
+      "deleteAccount": "Delete account",
+      "freezeBackground": "Freeze background animation"
     }
   },
   "auth": {
@@ -562,7 +563,8 @@
       "calendarFailedTitle": "Couldn't add it",
       "calendarFailedBody": "We couldn't write to your calendar. You can open the playdate in Google Calendar instead.",
       "calendarNoneBody": "This phone has no calendar that apps can write to. You can still open the playdate in Google Calendar.",
-      "calendarOpenGoogle": "Open Google Calendar"
+      "calendarOpenGoogle": "Open Google Calendar",
+      "openInMaps": "Open in Maps"
     },
     "chat": {
       "placeholder": "Message the group…",

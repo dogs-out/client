@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { Animated, Easing, StyleSheet, View, useWindowDimensions } from 'react-native';
+import { useAppPrefs } from '../utils/appPrefs';
 
 type AnimStyle = 'float' | 'breathe' | 'diagonal' | 'spin';
 
@@ -41,11 +42,27 @@ const SHAPES: ShapeConfig[] = [
   { emoji: '🦮',    x: 58, y: 44, size: 20, opacity: 0.38, dur: 7200, ty: 28, tx: 14, rot: 6  },
 ];
 
-function FloatingShape({ cfg, sw, sh }: Readonly<{ cfg: ShapeConfig; sw: number; sh: number }>) {
+/**
+ * Birthday dressing: the same layout and motion, different objects. Used in a
+ * chat on the day, so the conversation itself looks like the occasion.
+ */
+const BIRTHDAY_SHAPES: ShapeConfig[] = SHAPES.map((shape, i) => ({
+  ...shape,
+  emoji: ['🎂', '🎉', '🎈', '🕯️', '🎊', '🥳'][i % 6],
+}));
+
+export type BackgroundVariant = 'default' | 'birthday';
+
+function FloatingShape({ cfg, sw, sh, frozen }: Readonly<{
+  cfg: ShapeConfig; sw: number; sh: number; frozen: boolean;
+}>) {
   const anim = useRef(new Animated.Value(0)).current;
   const style = cfg.style ?? 'float';
 
   useEffect(() => {
+    // Frozen means never started, not paused mid-drift: a loop left running and
+    // merely hidden still wakes the UI thread sixty times a second.
+    if (frozen) return;
     if (style === 'spin') {
       Animated.loop(
         Animated.timing(anim, { toValue: 1, duration: cfg.dur, easing: Easing.linear, useNativeDriver: true })
@@ -58,7 +75,7 @@ function FloatingShape({ cfg, sw, sh }: Readonly<{ cfg: ShapeConfig; sw: number;
         ])
       ).start();
     }
-  }, []);
+  }, [frozen]);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let transforms: any[];
@@ -97,12 +114,15 @@ function FloatingShape({ cfg, sw, sh }: Readonly<{ cfg: ShapeConfig; sw: number;
   );
 }
 
-export function FloatingBackground() {
+export function FloatingBackground({ variant = 'default' }: Readonly<{ variant?: BackgroundVariant }> = {}) {
   const { width, height } = useWindowDimensions();
+  const { freezeBackground } = useAppPrefs();
+  const shapes = variant === 'birthday' ? BIRTHDAY_SHAPES : SHAPES;
+
   return (
     <View style={[StyleSheet.absoluteFill, { pointerEvents: 'none' }]}>
-      {SHAPES.map((s, i) => (
-        <FloatingShape key={i} cfg={s} sw={width} sh={height} />
+      {shapes.map((s, i) => (
+        <FloatingShape key={`${variant}-${i}`} cfg={s} sw={width} sh={height} frozen={freezeBackground} />
       ))}
     </View>
   );

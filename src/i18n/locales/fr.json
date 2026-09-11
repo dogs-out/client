@@ -41,7 +41,8 @@
       "helpFaq": "Aide & FAQ",
       "termsPrivacy": "Conditions & confidentialité",
       "aboutDogsOut": "À propos de Dogs Out",
-      "deleteAccount": "Supprimer le compte"
+      "deleteAccount": "Supprimer le compte",
+      "freezeBackground": "Figer l'animation de fond"
     }
   },
   "auth": {
@@ -655,7 +656,8 @@
       "calendarFailedTitle": "Échec de l'ajout",
       "calendarFailedBody": "Nous n'avons pas pu écrire dans ton calendrier. Tu peux ouvrir le playdate dans Google Agenda à la place.",
       "calendarNoneBody": "Ce téléphone n'a aucun calendrier accessible en écriture. Tu peux quand même ouvrir le playdate dans Google Agenda.",
-      "calendarOpenGoogle": "Ouvrir Google Agenda"
+      "calendarOpenGoogle": "Ouvrir Google Agenda",
+      "openInMaps": "Ouvrir dans Plans"
     },
     "chat": {
       "placeholder": "Message au groupe…",

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Switch, Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
@@ -8,6 +8,7 @@ import { RootStackParamList } from '../../types/navigation';
 import { FloatingBackground } from '../../components/FloatingBackground';
 import { GlassCard } from '../../components/GlassCard';
 import { Colors } from '../../constants/colors';
+import { appPrefs, useAppPrefs } from '../../utils/appPrefs';
 import { tokenStorage } from '../../utils/tokenStorage';
 import { userService } from '../../services/userService';
 import { notificationService } from '../../services/notificationService';
@@ -18,11 +19,14 @@ type SettingsRow = {
   icon: string;
   label: string;
   destructive?: boolean;
-  onPress: () => void;
+  onPress?: () => void;
+  /** Renders a switch in place of the chevron; the row itself stops navigating. */
+  toggle?: { value: boolean; onChange: (next: boolean) => void };
 };
 
 export default function SettingsScreen({ navigation }: Readonly<Props>) {
   const { t } = useTranslation();
+  const prefs = useAppPrefs();
   const [isLocalAuth, setIsLocalAuth] = useState(true);
 
   useEffect(() => {
@@ -65,6 +69,11 @@ export default function SettingsScreen({ navigation }: Readonly<Props>) {
       title: t('settings.sections.privacy'),
       rows: [
         { icon: 'location-outline',      label: t('settings.rows.locationSettings'),   onPress: () => navigation.navigate('LocationSettings') },
+        {
+          icon: 'sparkles-outline',
+          label: t('settings.rows.freezeBackground'),
+          toggle: { value: prefs.freezeBackground, onChange: v => appPrefs.set('freezeBackground', v) },
+        },
         { icon: 'eye-off-outline',        label: t('settings.rows.blockedUsers'),       onPress: () => navigation.navigate('BlockedUsers') },
       ],
     },
@@ -130,6 +139,8 @@ export default function SettingsScreen({ navigation }: Readonly<Props>) {
                   key={row.label}
                   style={[styles.row, i < section.rows.length - 1 && styles.rowBorder]}
                   onPress={row.onPress}
+                  disabled={!row.onPress}
+                  activeOpacity={row.onPress ? 0.7 : 1}
                 >
                   <View style={styles.rowLeft}>
                     <View style={[styles.iconWrap, row.destructive && styles.iconWrapDestructive]}>
@@ -143,7 +154,15 @@ export default function SettingsScreen({ navigation }: Readonly<Props>) {
                       {row.label}
                     </Text>
                   </View>
-                  <Ionicons name="chevron-forward" size={16} color={Colors.textSecondary} />
+                  {row.toggle
+                    ? <Switch
+                        value={row.toggle.value}
+                        onValueChange={row.toggle.onChange}
+                        trackColor={{ false: Colors.border, true: Colors.primary }}
+                        thumbColor="#fff"
+                      />
+                    : <Ionicons name="chevron-forward" size={16} color={Colors.textSecondary} />
+                  }
                 </TouchableOpacity>
               ))}
             </GlassCard>

@@ -5,6 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { AxiosError } from 'axios';
 import { RootStackParamList } from '../types/navigation';
 import { tokenStorage } from '../utils/tokenStorage';
+import { appPrefs } from '../utils/appPrefs';
 import { userService } from '../services/userService';
 import { notificationService } from '../services/notificationService';
 import LoginScreen from '../features/auth/LoginScreen';
@@ -64,6 +65,10 @@ export default function Navigation() {
         navigationRef.navigate('PlaydateDetail', { playdateId: data.playdateId });
       }
     }), []);
+
+  // Device preferences before the first screen paints, so the background does not
+  // start animating and then stop for someone who asked it not to.
+  useEffect(() => { appPrefs.load(); }, []);
 
   useEffect(() => {
     const resolve = async () => {

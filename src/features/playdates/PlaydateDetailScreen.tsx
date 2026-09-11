@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   ActivityIndicator, Alert, Platform, ScrollView, StyleSheet,
   Text, TouchableOpacity, View,
@@ -16,6 +16,8 @@ import { chatSocket } from '../../services/socket';
 import { RootStackParamList } from '../../types/navigation';
 import { Colors } from '../../constants/colors';
 import { addPlaydateToCalendar, openInGoogleCalendar } from '../../utils/addToCalendar';
+import { fullAddress, openInMaps } from '../../utils/placeAddress';
+import * as Clipboard from 'expo-clipboard';
 import { FloatingBackground } from '../../components/FloatingBackground';
 import { GlassCard } from '../../components/GlassCard';
 import { formatPlaydateTime } from './PlaydatesScreen';
@@ -27,6 +29,9 @@ export default function PlaydateDetailScreen({ navigation, route }: Readonly<Pro
   const { playdateId } = route.params;
   const [playdate, setPlaydate] = useState<Playdate | null>(null);
   const [savingToCalendar, setSavingToCalendar] = useState(false);
+  // The stored address is a short label; this is the postal version people paste.
+  const [copyableAddress, setCopyableAddress] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -127,6 +132,13 @@ export default function PlaydateDetailScreen({ navigation, route }: Readonly<Pro
     );
   };
 
+  useEffect(() => {
+    if (!playdate) return;
+    let cancelledLookup = false;
+    fullAddress(playdate).then(a => { if (!cancelledLookup) setCopyableAddress(a); });
+    return () => { cancelledLookup = true; };
+  }, [playdate]);
+
   const isFull = playdate.maxParticipants != null && playdate.joinedCount >= playdate.maxParticipants;
   const joinedParticipants = (playdate.participants ?? []).filter(p => p.status === 'JOINED' || p.status === 'HOST');
 
@@ -172,7 +184,29 @@ export default function PlaydateDetailScreen({ navigation, route }: Readonly<Pro
           </MapView>
           <View style={styles.mapInfo}>
             <Text style={styles.parkName}>{playdate.parkName}</Text>
-            {playdate.address && <Text style={styles.address}>{playdate.address}</Text>}
+            <View style={styles.addressRow}>
+              <Text style={styles.address} numberOfLines={2}>
+                {copyableAddress ?? playdate.address ?? ''}
+              </Text>
+              <TouchableOpacity
+                onPress={async () => {
+                  await Clipboard.setStringAsync(copyableAddress ?? playdate.address ?? playdate.parkName);
+                  setCopied(true);
+                  setTimeout(() => setCopied(false), 1800);
+                }}
+                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+              >
+                <Ionicons
+                  name={copied ? 'checkmark' : 'copy-outline'}
+                  size={16}
+                  color={copied ? Colors.primary : Colors.textSecondary}
+                />
+              </TouchableOpacity>
+            </View>
+            <TouchableOpacity style={styles.mapsBtn} onPress={() => openInMaps(playdate)}>
+              <Ionicons name="navigate-outline" size={15} color={Colors.primary} />
+              <Text style={styles.mapsBtnText}>{t('playdates.detail.openInMaps')}</Text>
+            </TouchableOpacity>
           </View>
         </GlassCard>
 
@@ -328,6 +362,14 @@ const styles = StyleSheet.create({
   mapInfo: { padding: 14 },
   parkName:{ fontSize: 16, fontWeight: '700', color: Colors.text },
   address: { fontSize: 13, color: Colors.textSecondary, marginTop: 2 },
+  addressRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 2 },
+  mapsBtn: {
+    flexDirection: 'row', alignItems: 'center', alignSelf: 'flex-start', gap: 6,
+    marginTop: 10, paddingHorizontal: 12, paddingVertical: 8,
+    borderRadius: 12, borderWidth: 1.5, borderColor: Colors.border,
+    backgroundColor: 'rgba(46,158,107,0.06)',
+  },
+  mapsBtnText: { fontSize: 13, fontWeight: '700', color: Colors.primary },
 
   card: { marginBottom: 16 },
 
