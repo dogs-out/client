@@ -120,6 +120,7 @@ export function WhosOutsideView() {
         data={friends}
         keyExtractor={item => String(item.userId)}
         renderItem={renderFriend}
+        style={styles.flex}
         contentContainerStyle={styles.list}
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={
@@ -167,6 +168,7 @@ export function WhosOutsideView() {
 }
 
 const styles = StyleSheet.create({
+  flex:     { flex: 1 },
   centered: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 32, paddingTop: 60 },
 
   statusBar: { flexDirection: 'row', alignItems: 'center', gap: 10, paddingHorizontal: 20, paddingBottom: 8 },
