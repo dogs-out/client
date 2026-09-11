@@ -706,5 +706,38 @@
     "hint": "Pince pour zoomer, glisse pour déplacer.",
     "use": "Utiliser cette photo",
     "gridHint": "Touche une photo pour la redimensionner"
+  },
+  "whosOutside": {
+    "tab": "Qui est dehors",
+    "setStatus": "Définir ton statut",
+    "setStatusTitle": "Ton statut",
+    "isWalking": "{{name}} promène {{dog}}",
+    "isOut": "{{name}} est dehors",
+    "noPoint": "Dehors, sans lieu partagé",
+    "empty": "Aucun de tes matchs n'est dehors en ce moment. Définis ton statut pour le leur dire.",
+    "invite": "Inviter",
+    "inviteSentTitle": "Envoyé",
+    "inviteSentBody": "Tes matchs savent que tu es en balade.",
+    "inviteFailed": "Impossible d'envoyer pour le moment.",
+    "howLong": "Pendant combien de temps",
+    "sharePoint": "Partager ta position",
+    "sharePointHint": "Seuls tes matchs la voient, et uniquement pendant la durée du statut.",
+    "usePoint": "Utiliser ma position actuelle",
+    "pointSet": "Position définie",
+    "saveStatus": "Enregistrer",
+    "clearStatus": "Effacer le statut",
+    "clearHint": "Touche à nouveau la sélection pour l'effacer.",
+    "forHours_one": "1 heure",
+    "forHours_other": "{{count}} heures",
+    "forDays_one": "1 jour",
+    "forDays_other": "{{count}} jours",
+    "forWeeks_one": "1 semaine",
+    "forWeeks_other": "{{count}} semaines",
+    "status": {
+      "WALKING": "En balade",
+      "AT_HOME": "À la maison",
+      "ON_VACATION": "En vacances",
+      "BUSY": "Occupé"
+    }
   }
 }

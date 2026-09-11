@@ -36,6 +36,7 @@ import CreatePlaydateScreen from '../features/playdates/CreatePlaydateScreen';
 import ParkPickerScreen from '../features/playdates/ParkPickerScreen';
 import PlaydateDetailScreen from '../features/playdates/PlaydateDetailScreen';
 import PlaydateChatScreen from '../features/playdates/PlaydateChatScreen';
+import SetStatusScreen from '../features/playdates/SetStatusScreen';
 import TabNavigator from './TabNavigator';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -49,9 +50,9 @@ export default function Navigation() {
   useEffect(() =>
     notificationService.onNotificationTap(data => {
       if (!navigationRef.isReady()) return;
-      // A birthday greeting is an invitation to write, so it lands in the chat
-      // itself rather than on a list the user then has to search.
-      const opensAChat = data.type === 'NEW_MESSAGE'
+      // A birthday greeting or a walk invite is an invitation to write, so it
+      // lands in the chat itself rather than on a list the user then has to search.
+      const opensAChat = data.type === 'NEW_MESSAGE' || data.type === 'WALK_INVITE'
         || data.type === 'DOG_BIRTHDAY' || data.type === 'USER_BIRTHDAY';
       if (opensAChat && data.matchId && data.otherUserId) {
         navigationRef.navigate('ChatDetail', {
@@ -155,6 +156,7 @@ export default function Navigation() {
         <Stack.Screen name="ParkPicker"             component={ParkPickerScreen} />
         <Stack.Screen name="PlaydateDetail"         component={PlaydateDetailScreen} />
         <Stack.Screen name="PlaydateChat"           component={PlaydateChatScreen} />
+        <Stack.Screen name="SetStatus"              component={SetStatusScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

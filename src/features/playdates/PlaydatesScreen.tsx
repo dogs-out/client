@@ -17,6 +17,9 @@ import { NeedsDogNotice } from '../../components/NeedsDogNotice';
 import { useHasDog } from '../../hooks/useHasDog';
 import { FloatingBackground } from '../../components/FloatingBackground';
 import { GlassCard } from '../../components/GlassCard';
+import { WhosOutsideView } from './WhosOutsideView';
+
+type PlaydateMode = 'playdates' | 'outside';
 
 const VISIBILITY_ICONS: Record<Playdate['visibility'], string> = {
   PUBLIC: 'earth-outline',
@@ -35,6 +38,7 @@ export default function PlaydatesScreen() {
   const hasDog = useHasDog();
   const { t, i18n } = useTranslation();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const [mode, setMode] = useState<PlaydateMode>('playdates');
   const [playdates, setPlaydates] = useState<Playdate[]>([]);
   const [showNeedsDog, setShowNeedsDog] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -113,10 +117,32 @@ export default function PlaydatesScreen() {
       <FloatingBackground />
 
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>{t('playdates.headerTitle')}</Text>
+        <Text style={styles.headerTitle}>
+          {t(mode === 'playdates' ? 'playdates.headerTitle' : 'whosOutside.tab')}
+        </Text>
       </View>
 
-      {loading ? (
+      <View style={styles.segmented}>
+        {(['playdates', 'outside'] as PlaydateMode[]).map(m => (
+          <TouchableOpacity
+            key={m}
+            style={[styles.segment, mode === m && styles.segmentActive]}
+            onPress={() => setMode(m)}
+          >
+            <Text
+              style={[styles.segmentText, mode === m && styles.segmentTextActive]}
+              numberOfLines={1}
+              adjustsFontSizeToFit
+              minimumFontScale={0.8}
+              maxFontSizeMultiplier={1.2}
+            >
+              {t(m === 'playdates' ? 'playdates.headerTitle' : 'whosOutside.tab')}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+
+      {mode === 'outside' ? <WhosOutsideView /> : loading ? (
         <View style={styles.centered}><ActivityIndicator size="large" color={Colors.primary} /></View>
       ) : (
         <FlatList
@@ -139,12 +165,14 @@ export default function PlaydatesScreen() {
 
       {/* Hosting is for dog owners — it is a meetup for dogs, and an account with
           none has no business organising one. Joining stays open to everyone. */}
-      <TouchableOpacity
-        style={styles.fab}
-        onPress={() => hasDog === false ? setShowNeedsDog(true) : navigation.navigate('CreatePlaydate')}
-      >
-        <Ionicons name="add" size={30} color="#fff" />
-      </TouchableOpacity>
+      {mode === 'playdates' && (
+        <TouchableOpacity
+          style={styles.fab}
+          onPress={() => hasDog === false ? setShowNeedsDog(true) : navigation.navigate('CreatePlaydate')}
+        >
+          <Ionicons name="add" size={30} color="#fff" />
+        </TouchableOpacity>
+      )}
 
       <Modal visible={showNeedsDog} animationType="slide" onRequestClose={() => setShowNeedsDog(false)}>
         <SafeAreaView style={styles.safe}>
@@ -170,6 +198,14 @@ const styles = StyleSheet.create({
   centered: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 32, paddingTop: 60 },
 
   header:      { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 12 },
+  segmented: {
+    flexDirection: 'row', marginHorizontal: 20, marginBottom: 10,
+    borderRadius: 14, borderWidth: 1.5, borderColor: Colors.border, overflow: 'hidden',
+  },
+  segment:           { flex: 1, paddingVertical: 9, paddingHorizontal: 6, alignItems: 'center' },
+  segmentActive:     { backgroundColor: 'rgba(46,158,107,0.12)' },
+  segmentText:       { fontSize: 13, fontWeight: '700', color: Colors.textSecondary },
+  segmentTextActive: { color: Colors.primary },
   headerTitle: { fontSize: 28, fontWeight: '800', color: Colors.text },
 
   list: { paddingHorizontal: 20, paddingBottom: 130, flexGrow: 1 },

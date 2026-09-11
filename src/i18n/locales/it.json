@@ -706,5 +706,38 @@
     "hint": "Pizzica per ingrandire, trascina per spostare.",
     "use": "Usa questa foto",
     "gridHint": "Tocca una foto per ridimensionarla"
+  },
+  "whosOutside": {
+    "tab": "Chi è fuori",
+    "setStatus": "Imposta il tuo stato",
+    "setStatusTitle": "Il tuo stato",
+    "isWalking": "{{name}} sta portando fuori {{dog}}",
+    "isOut": "{{name}} è fuori",
+    "noPoint": "In giro, senza luogo condiviso",
+    "empty": "Nessuno dei tuoi match è fuori in questo momento. Imposta il tuo stato e faglielo sapere.",
+    "invite": "Invita",
+    "inviteSentTitle": "Inviato",
+    "inviteSentBody": "I tuoi match sanno che sei fuori.",
+    "inviteFailed": "Non è stato possibile inviare ora.",
+    "howLong": "Per quanto tempo",
+    "sharePoint": "Condividi dove sei",
+    "sharePointHint": "Lo vedono solo i tuoi match, e solo finché dura lo stato.",
+    "usePoint": "Usa la posizione attuale",
+    "pointSet": "Posizione impostata",
+    "saveStatus": "Salva stato",
+    "clearStatus": "Rimuovi stato",
+    "clearHint": "Tocca di nuovo la selezione per rimuoverla.",
+    "forHours_one": "1 ora",
+    "forHours_other": "{{count}} ore",
+    "forDays_one": "1 giorno",
+    "forDays_other": "{{count}} giorni",
+    "forWeeks_one": "1 settimana",
+    "forWeeks_other": "{{count}} settimane",
+    "status": {
+      "WALKING": "In giro",
+      "AT_HOME": "A casa",
+      "ON_VACATION": "In vacanza",
+      "BUSY": "Occupato"
+    }
   }
 }

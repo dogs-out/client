@@ -30,4 +30,5 @@ export type RootStackParamList = {
   ParkPicker: { initialLat?: number; initialLng?: number } | undefined;
   PlaydateDetail: { playdateId: number };
   PlaydateChat: { playdateId: number; title: string };
+  SetStatus: undefined;
 };

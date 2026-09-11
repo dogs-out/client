@@ -613,5 +613,38 @@
     "hint": "Pinch to zoom, drag to move.",
     "use": "Use this photo",
     "gridHint": "Tap a photo to rescale it"
+  },
+  "whosOutside": {
+    "tab": "Who's outside",
+    "setStatus": "Set your status",
+    "setStatusTitle": "Your status",
+    "isWalking": "{{name}} is walking {{dog}}",
+    "isOut": "{{name}} is out",
+    "noPoint": "Out somewhere, no place shared",
+    "empty": "None of your matches are out right now. Set your own status and let them know.",
+    "invite": "Invite",
+    "inviteSentTitle": "Sent",
+    "inviteSentBody": "Your matches know you're out walking.",
+    "inviteFailed": "Couldn't send that just now.",
+    "howLong": "For how long",
+    "sharePoint": "Share where you are",
+    "sharePointHint": "Only your matches see it, and only while the status lasts.",
+    "usePoint": "Use my current location",
+    "pointSet": "Location set",
+    "saveStatus": "Save status",
+    "clearStatus": "Clear status",
+    "clearHint": "Tap the selected one again to clear it.",
+    "forHours_one": "1 hour",
+    "forHours_other": "{{count}} hours",
+    "forDays_one": "1 day",
+    "forDays_other": "{{count}} days",
+    "forWeeks_one": "1 week",
+    "forWeeks_other": "{{count}} weeks",
+    "status": {
+      "WALKING": "Out walking",
+      "AT_HOME": "At home",
+      "ON_VACATION": "On vacation",
+      "BUSY": "Busy"
+    }
   }
 }

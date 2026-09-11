@@ -2,6 +2,25 @@ import api from './api';
 import { tokenStorage } from '../utils/tokenStorage';
 import { MULTIPART_CONFIG, prepareForUpload } from './photoUpload';
 
+export type WalkStatus = 'WALKING' | 'AT_HOME' | 'ON_VACATION' | 'BUSY';
+
+/** Only WALKING and ON_VACATION may carry a point — see WalkStatus on the server. */
+export const STATUS_SHARES_LOCATION: Record<WalkStatus, boolean> = {
+  WALKING: true, ON_VACATION: true, AT_HOME: false, BUSY: false,
+};
+
+export interface WalkingFriend {
+  userId: number;
+  name: string;
+  profilePicture: string | null;
+  dogNames: string[];
+  /** Null when they are out but chose not to share where. */
+  latitude: number | null;
+  longitude: number | null;
+  until: string;
+  distanceKm: number;
+}
+
 export interface UserPhoto {
   id: number;
   /** Full-size rendition, for carousels and full-bleed cards. */
@@ -36,6 +55,9 @@ export interface UserProfile {
   maxDistanceKm: number | null;
   /** False until the account has accepted the terms. */
   termsAccepted: boolean;
+  /** Null when there is none, or when it has run out. */
+  walkStatus: WalkStatus | null;
+  walkStatusExpiresAt: string | null;
   minAge: number | null;
   maxAge: number | null;
   minDogAge: number | null;
@@ -66,6 +88,21 @@ export interface UpdateProfilePayload {
 }
 
 export const userService = {
+  /** Sets or clears the current status. Null status clears it. */
+  setStatus: (body: {
+    status: WalkStatus | null;
+    hours?: number;
+    latitude?: number;
+    longitude?: number;
+  }): Promise<UserProfile> => api.put<UserProfile>('/users/me/status', body).then(r => r.data),
+
+  /** Matches who are out walking and shared where. */
+  getWalkingFriends: (): Promise<WalkingFriend[]> =>
+    api.get<WalkingFriend[]>('/users/walking').then(r => r.data),
+
+  /** Tells matches you are out. Separate from setting the status, by design. */
+  inviteMatchesToWalk: (): Promise<void> => api.post('/users/me/status/invite').then(() => {}),
+
   /** Records acceptance of the terms on the account. Idempotent server-side. */
   acceptTerms: (): Promise<void> => api.post('/users/me/terms').then(() => {}),
 
