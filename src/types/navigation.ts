@@ -27,8 +27,13 @@ export type RootStackParamList = {
   Feedback: undefined;
   Language: undefined;
   CreatePlaydate: { playdateId?: number; pickedPark?: PlaceResult } | undefined;
-  ParkPicker: { initialLat?: number; initialLng?: number } | undefined;
+  ParkPicker: {
+    initialLat?: number;
+    initialLng?: number;
+    /** Which screen the pick goes back to. Defaults to CreatePlaydate. */
+    returnTo?: 'CreatePlaydate' | 'SetStatus';
+  } | undefined;
   PlaydateDetail: { playdateId: number };
   PlaydateChat: { playdateId: number; title: string };
-  SetStatus: undefined;
+  SetStatus: { pickedPlace?: PlaceResult } | undefined;
 };

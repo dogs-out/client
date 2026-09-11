@@ -250,7 +250,9 @@ export default function ChatDetailScreen() {
 
   return (
     <SafeAreaView style={styles.safe}>
-      <FloatingBackground variant={celebrating ? 'birthday' : 'default'} />
+      {/* undefined rather than 'default': on your own birthday the background
+          celebrates everywhere, and an explicit 'default' would switch it off. */}
+      <FloatingBackground variant={celebrating ? 'birthday' : undefined} />
 
       {/* Floating glass header */}
       <BlurView intensity={60} tint="light" style={styles.headerBlur}>

@@ -711,7 +711,6 @@
     "tab": "Wer ist draussen",
     "setStatus": "Status setzen",
     "setStatusTitle": "Dein Status",
-    "isWalking": "{{name}} ist mit {{dog}} unterwegs",
     "isOut": "{{name}} ist draussen",
     "noPoint": "Unterwegs, ohne Standort",
     "empty": "Gerade ist niemand aus deinen Matches unterwegs. Setze deinen Status und sag Bescheid.",
@@ -735,9 +734,22 @@
     "forWeeks_other": "{{count}} Wochen",
     "status": {
       "WALKING": "Unterwegs",
+      "AT_THE_PARK": "Im Park",
+      "SITTING": "Hüte einen Hund",
       "AT_HOME": "Zu Hause",
       "ON_VACATION": "In den Ferien",
       "BUSY": "Beschäftigt"
-    }
+    },
+    "line": {
+      "WALKING": "{{name}} ist mit {{dog}} unterwegs",
+      "AT_THE_PARK": "{{name}} ist mit {{dog}} im Park",
+      "SITTING": "{{name}} ist mit {{dog}} unterwegs"
+    },
+    "whichDog": "Welchen Hund hütest du?",
+    "dogOf": "Hund von {{name}}",
+    "noSittableDogs": "Hunde erscheinen hier, sobald du mit ihrem Halter gematcht hast.",
+    "pickADog": "Wähle den Hund, den du hütest.",
+    "pickOnMap": "Auf Karte wählen",
+    "currentLocation": "Dein aktueller Standort"
   }
 }

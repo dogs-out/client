@@ -1,24 +1,47 @@
 import api from './api';
 import { tokenStorage } from '../utils/tokenStorage';
 import { MULTIPART_CONFIG, prepareForUpload } from './photoUpload';
+import { celebration } from '../utils/celebration';
 
-export type WalkStatus = 'WALKING' | 'AT_HOME' | 'ON_VACATION' | 'BUSY';
+export type WalkStatus =
+  | 'WALKING' | 'AT_THE_PARK' | 'SITTING' | 'AT_HOME' | 'ON_VACATION' | 'BUSY';
 
-/** Only WALKING and ON_VACATION may carry a point — see WalkStatus on the server. */
+/** Mirrors WalkStatus.mayShareLocation on the server. */
 export const STATUS_SHARES_LOCATION: Record<WalkStatus, boolean> = {
-  WALKING: true, ON_VACATION: true, AT_HOME: false, BUSY: false,
+  WALKING: true, AT_THE_PARK: true, SITTING: true, ON_VACATION: true,
+  AT_HOME: false, BUSY: false,
+};
+
+/** Mirrors WalkStatus.isOutAndAbout — who appears under Who's outside, and who may invite. */
+export const STATUS_IS_OUT: Record<WalkStatus, boolean> = {
+  WALKING: true, AT_THE_PARK: true, SITTING: true,
+  ON_VACATION: false, AT_HOME: false, BUSY: false,
 };
 
 export interface WalkingFriend {
   userId: number;
   name: string;
   profilePicture: string | null;
+  /** Their own dogs, or the one they are looking after when sitting. */
   dogNames: string[];
+  status: WalkStatus;
   /** Null when they are out but chose not to share where. */
   latitude: number | null;
   longitude: number | null;
+  /** Set when the point was picked on the map, so the row can name the place. */
+  placeName: string | null;
   until: string;
   distanceKm: number;
+}
+
+/** A dog you may say you are looking after: one belonging to a match. */
+export interface SittableDog {
+  dogId: number;
+  name: string;
+  breed: string | null;
+  profilePicture: string | null;
+  ownerId: number;
+  ownerName: string;
 }
 
 export interface UserPhoto {
@@ -58,6 +81,12 @@ export interface UserProfile {
   /** Null when there is none, or when it has run out. */
   walkStatus: WalkStatus | null;
   walkStatusExpiresAt: string | null;
+  walkStatusLatitude: number | null;
+  walkStatusLongitude: number | null;
+  walkStatusPlaceName: string | null;
+  walkStatusDogId: number | null;
+  /** Today is this user's birthday, or one of their dogs'. */
+  celebratingToday: boolean;
   minAge: number | null;
   maxAge: number | null;
   minDogAge: number | null;
@@ -94,11 +123,17 @@ export const userService = {
     hours?: number;
     latitude?: number;
     longitude?: number;
+    placeName?: string;
+    dogId?: number;
   }): Promise<UserProfile> => api.put<UserProfile>('/users/me/status', body).then(r => r.data),
 
-  /** Matches who are out walking and shared where. */
+  /** Matches who are out right now. */
   getWalkingFriends: (): Promise<WalkingFriend[]> =>
     api.get<WalkingFriend[]>('/users/walking').then(r => r.data),
+
+  /** The dogs this account may say it is sitting: those belonging to its matches. */
+  getSittableDogs: (): Promise<SittableDog[]> =>
+    api.get<SittableDog[]>('/users/me/sittable-dogs').then(r => r.data),
 
   /** Tells matches you are out. Separate from setting the status, by design. */
   inviteMatchesToWalk: (): Promise<void> => api.post('/users/me/status/invite').then(() => {}),
@@ -106,8 +141,19 @@ export const userService = {
   /** Records acceptance of the terms on the account. Idempotent server-side. */
   acceptTerms: (): Promise<void> => api.post('/users/me/terms').then(() => {}),
 
+  /**
+   * The signed-in user's profile.
+   *
+   * <p>Deliberately has one side effect: it refreshes the birthday flag the
+   * floating background reads. This call already runs on most screen focuses, so
+   * hanging the flag off it keeps every screen current without a second request
+   * or a provider threaded through the auth screens.
+   */
   getMe: (): Promise<UserProfile> =>
-    api.get<UserProfile>('/users/me').then(r => r.data),
+    api.get<UserProfile>('/users/me').then(r => {
+      celebration.set(r.data.celebratingToday ?? false);
+      return r.data;
+    }),
   updateProfile: (payload: UpdateProfilePayload): Promise<UserProfile> =>
     api.put<UserProfile>('/users/me', payload).then(r => r.data),
   /** Takes a local image URI from the picker; resizes and uploads it as multipart. */

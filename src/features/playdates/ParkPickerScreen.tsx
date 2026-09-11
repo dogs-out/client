@@ -112,6 +112,12 @@ export default function ParkPickerScreen({ navigation, route }: Readonly<Props>)
 
   const confirm = () => {
     if (!selected) return;
+    // The picker serves both the playdate form and the status screen; navigating
+    // by name rather than going back is what carries the pick as a param.
+    if (route.params?.returnTo === 'SetStatus') {
+      navigation.navigate('SetStatus', { pickedPlace: selected });
+      return;
+    }
     navigation.navigate('CreatePlaydate', { pickedPark: selected });
   };
 

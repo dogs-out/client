@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { Animated, Easing, StyleSheet, View, useWindowDimensions } from 'react-native';
 import { useAppPrefs } from '../utils/appPrefs';
+import { useCelebration } from '../utils/celebration';
 
 type AnimStyle = 'float' | 'breathe' | 'diagonal' | 'spin';
 
@@ -60,21 +61,28 @@ function FloatingShape({ cfg, sw, sh, frozen }: Readonly<{
   const style = cfg.style ?? 'float';
 
   useEffect(() => {
-    // Frozen means never started, not paused mid-drift: a loop left running and
-    // merely hidden still wakes the UI thread sixty times a second.
-    if (frozen) return;
-    if (style === 'spin') {
-      Animated.loop(
-        Animated.timing(anim, { toValue: 1, duration: cfg.dur, easing: Easing.linear, useNativeDriver: true })
-      ).start();
-    } else {
-      Animated.loop(
-        Animated.sequence([
-          Animated.timing(anim, { toValue: 1, duration: cfg.dur, easing: Easing.inOut(Easing.sin), useNativeDriver: true }),
-          Animated.timing(anim, { toValue: 0, duration: cfg.dur, easing: Easing.inOut(Easing.sin), useNativeDriver: true }),
-        ])
-      ).start();
+    // Frozen means stopped and back at rest, not paused mid-drift: a loop left
+    // running and merely hidden still wakes the UI thread sixty times a second.
+    if (frozen) {
+      anim.stopAnimation();
+      anim.setValue(0);
+      return;
     }
+
+    const loop = style === 'spin'
+      ? Animated.loop(
+          Animated.timing(anim, { toValue: 1, duration: cfg.dur, easing: Easing.linear, useNativeDriver: true }))
+      : Animated.loop(
+          Animated.sequence([
+            Animated.timing(anim, { toValue: 1, duration: cfg.dur, easing: Easing.inOut(Easing.sin), useNativeDriver: true }),
+            Animated.timing(anim, { toValue: 0, duration: cfg.dur, easing: Easing.inOut(Easing.sin), useNativeDriver: true }),
+          ]));
+
+    loop.start();
+    // Without this the switch only appeared to work: the tab screens stay
+    // mounted, so their loops ran on while a freshly mounted Settings started
+    // frozen and looked correct.
+    return () => loop.stop();
   }, [frozen]);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -114,15 +122,20 @@ function FloatingShape({ cfg, sw, sh, frozen }: Readonly<{
   );
 }
 
-export function FloatingBackground({ variant = 'default' }: Readonly<{ variant?: BackgroundVariant }> = {}) {
+export function FloatingBackground({ variant }: Readonly<{ variant?: BackgroundVariant }> = {}) {
   const { width, height } = useWindowDimensions();
   const { freezeBackground } = useAppPrefs();
-  const shapes = variant === 'birthday' ? BIRTHDAY_SHAPES : SHAPES;
+  // On your own or your dog's birthday the whole app gets the cake, not just the
+  // one chat that happened to be told about it. An explicit variant still wins,
+  // so a chat can celebrate someone else's birthday on an ordinary day.
+  const celebrating = useCelebration();
+  const resolved = variant ?? (celebrating ? 'birthday' : 'default');
+  const shapes = resolved === 'birthday' ? BIRTHDAY_SHAPES : SHAPES;
 
   return (
     <View style={[StyleSheet.absoluteFill, { pointerEvents: 'none' }]}>
       {shapes.map((s, i) => (
-        <FloatingShape key={`${variant}-${i}`} cfg={s} sw={width} sh={height} frozen={freezeBackground} />
+        <FloatingShape key={`${resolved}-${i}`} cfg={s} sw={width} sh={height} frozen={freezeBackground} />
       ))}
     </View>
   );

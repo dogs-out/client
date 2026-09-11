@@ -12,7 +12,7 @@ import { RemoteImage } from '../../components/ui/RemoteImage';
 import { GlassCard } from '../../components/GlassCard';
 import { Colors } from '../../constants/colors';
 import { RootStackParamList } from '../../types/navigation';
-import { userService, WalkingFriend, WalkStatus } from '../../services/userService';
+import { userService, STATUS_IS_OUT, WalkingFriend, WalkStatus } from '../../services/userService';
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
@@ -60,6 +60,11 @@ export function WhosOutsideView() {
     // No point shared means no map to open, so the row stays flat rather than
     // offering a tap that goes nowhere.
     const hasPoint = item.latitude !== null && item.longitude !== null;
+    // "at the park" and "sitting Luna" are different sentences, not the same one
+    // with a word swapped, so each status gets its own phrasing.
+    const line = dogs
+      ? t(`whosOutside.line.${item.status}`, { name: item.name, dog: dogs })
+      : t('whosOutside.isOut', { name: item.name });
     return (
       <GlassCard style={styles.card}>
         <TouchableOpacity
@@ -73,11 +78,13 @@ export function WhosOutsideView() {
             : <View style={[styles.avatar, styles.avatarPlaceholder]}><Text style={{ fontSize: 22 }}>🐶</Text></View>
           }
           <View style={styles.rowBody}>
-            <Text style={styles.rowTitle} numberOfLines={1}>
-              {dogs
-                ? t('whosOutside.isWalking', { name: item.name, dog: dogs })
-                : t('whosOutside.isOut', { name: item.name })}
-            </Text>
+            <Text style={styles.rowTitle} numberOfLines={2}>{line}</Text>
+            {item.placeName && (
+              <Text style={styles.rowPlace} numberOfLines={1}>
+                <Ionicons name="location-outline" size={12} color={Colors.primary} />
+                {' '}{item.placeName}
+              </Text>
+            )}
             <Text style={styles.rowSub}>
               {item.distanceKm >= 0
                 ? <><Ionicons name="location-outline" size={12} color={Colors.textSecondary} />
@@ -106,7 +113,7 @@ export function WhosOutsideView() {
           <Ionicons name="chevron-forward" size={14} color={Colors.textSecondary} />
         </TouchableOpacity>
 
-        {myStatus === 'WALKING' && (
+        {myStatus !== null && STATUS_IS_OUT[myStatus] && (
           <TouchableOpacity style={styles.inviteBtn} onPress={invite} disabled={inviting}>
             {inviting
               ? <ActivityIndicator size="small" color="#fff" />
@@ -145,7 +152,7 @@ export function WhosOutsideView() {
             >
               <Marker
                 coordinate={{ latitude: onMap.latitude, longitude: onMap.longitude }}
-                title={onMap.name}
+                title={onMap.placeName ?? onMap.name}
                 description={onMap.dogNames.join(' & ')}
               />
             </MapView>
@@ -154,9 +161,9 @@ export function WhosOutsideView() {
                 <Ionicons name="close" size={26} color={Colors.text} />
               </TouchableOpacity>
               <Text style={styles.mapTitle} numberOfLines={1}>
-                {onMap.dogNames.length > 0
-                  ? t('whosOutside.isWalking', { name: onMap.name, dog: onMap.dogNames.join(' & ') })
-                  : t('whosOutside.isOut', { name: onMap.name })}
+                {onMap.placeName ?? (onMap.dogNames.length > 0
+                  ? t(`whosOutside.line.${onMap.status}`, { name: onMap.name, dog: onMap.dogNames.join(' & ') })
+                  : t('whosOutside.isOut', { name: onMap.name }))}
               </Text>
               <View style={{ width: 26 }} />
             </View>
@@ -193,6 +200,7 @@ const styles = StyleSheet.create({
   rowBody:  { flex: 1, marginRight: 8 },
   rowTitle: { fontSize: 15, fontWeight: '700', color: Colors.text },
   rowSub:   { fontSize: 12, color: Colors.textSecondary, marginTop: 2 },
+  rowPlace: { fontSize: 12, color: Colors.primary, fontWeight: '600', marginTop: 2 },
 
   emptyEmoji: { fontSize: 52, marginBottom: 12 },
   emptyText:  { fontSize: 15, color: Colors.textSecondary, textAlign: 'center', lineHeight: 22 },

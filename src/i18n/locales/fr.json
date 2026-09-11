@@ -711,7 +711,6 @@
     "tab": "Qui est dehors",
     "setStatus": "Définir ton statut",
     "setStatusTitle": "Ton statut",
-    "isWalking": "{{name}} promène {{dog}}",
     "isOut": "{{name}} est dehors",
     "noPoint": "Dehors, sans lieu partagé",
     "empty": "Aucun de tes matchs n'est dehors en ce moment. Définis ton statut pour le leur dire.",
@@ -735,9 +734,22 @@
     "forWeeks_other": "{{count}} semaines",
     "status": {
       "WALKING": "En balade",
+      "AT_THE_PARK": "Au parc",
+      "SITTING": "Je garde un chien",
       "AT_HOME": "À la maison",
       "ON_VACATION": "En vacances",
       "BUSY": "Occupé"
-    }
+    },
+    "line": {
+      "WALKING": "{{name}} promène {{dog}}",
+      "AT_THE_PARK": "{{name}} est au parc avec {{dog}}",
+      "SITTING": "{{name}} est dehors avec {{dog}}"
+    },
+    "whichDog": "Quel chien gardes-tu ?",
+    "dogOf": "Chien de {{name}}",
+    "noSittableDogs": "Les chiens apparaissent ici dès que tu as matché avec leur propriétaire.",
+    "pickADog": "Choisis le chien que tu gardes.",
+    "pickOnMap": "Choisir sur la carte",
+    "currentLocation": "Ta position actuelle"
   }
 }

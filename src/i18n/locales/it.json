@@ -711,7 +711,6 @@
     "tab": "Chi è fuori",
     "setStatus": "Imposta il tuo stato",
     "setStatusTitle": "Il tuo stato",
-    "isWalking": "{{name}} sta portando fuori {{dog}}",
     "isOut": "{{name}} è fuori",
     "noPoint": "In giro, senza luogo condiviso",
     "empty": "Nessuno dei tuoi match è fuori in questo momento. Imposta il tuo stato e faglielo sapere.",
@@ -735,9 +734,22 @@
     "forWeeks_other": "{{count}} settimane",
     "status": {
       "WALKING": "In giro",
+      "AT_THE_PARK": "Al parco",
+      "SITTING": "Sto con un cane",
       "AT_HOME": "A casa",
       "ON_VACATION": "In vacanza",
       "BUSY": "Occupato"
-    }
+    },
+    "line": {
+      "WALKING": "{{name}} sta portando fuori {{dog}}",
+      "AT_THE_PARK": "{{name}} è al parco con {{dog}}",
+      "SITTING": "{{name}} è in giro con {{dog}}"
+    },
+    "whichDog": "Di quale cane ti stai occupando?",
+    "dogOf": "Cane di {{name}}",
+    "noSittableDogs": "I cani compaiono qui appena fai match con il loro proprietario.",
+    "pickADog": "Scegli il cane di cui ti stai occupando.",
+    "pickOnMap": "Scegli sulla mappa",
+    "currentLocation": "La tua posizione attuale"
   }
 }

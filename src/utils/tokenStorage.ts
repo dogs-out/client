@@ -1,5 +1,6 @@
 import * as SecureStore from 'expo-secure-store';
 import { Platform } from 'react-native';
+import { celebration } from './celebration';
 
 const KEY = 'dogsout_token';
 
@@ -24,6 +25,10 @@ export const tokenStorage = {
   },
   remove: async (): Promise<void> => {
     cached = null;
+    // Losing the token is this app's definition of signing out, so anything
+    // derived from the account goes with it — the next person to pick up the
+    // phone should not inherit somebody else's cake.
+    celebration.set(false);
     if (Platform.OS === 'web') { localStorage.removeItem(KEY); return; }
     await SecureStore.deleteItemAsync(KEY);
   },
