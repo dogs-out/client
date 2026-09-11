@@ -172,6 +172,10 @@ function MatchOverlay({ profile, myPicture, onChat, onDismiss }: Readonly<{
 export default function DiscoverScreen() {
   const { t, i18n } = useTranslation();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  // Up here with the other hooks, not down by the styles that use it: the
+  // screen returns early while it is locked, and a hook below that return runs
+  // on some renders and not others — which crashes as soon as the lock lifts.
+  const insets = useSafeAreaInsets();
   const [feed, setFeed] = useState<DiscoverProfile[]>([]);
   const [idx, setIdx] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -377,7 +381,6 @@ export default function DiscoverScreen() {
   }
 
   const flatPhotos = buildFlatPhotos(profile);
-  const insets = useSafeAreaInsets();
   // SafeAreaView already inset us by the home indicator, so only the rest of the
   // floating tab bar still has to be reserved — plus a gap, or the buttons end up
   // flush against it and the first attempt at this left them touching.

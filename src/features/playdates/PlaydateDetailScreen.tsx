@@ -35,6 +35,16 @@ export default function PlaydateDetailScreen({ navigation, route }: Readonly<Pro
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
+  // Above the early return below, with the other hooks. React counts hooks per
+  // render, so an effect after a conditional return runs on some renders and not
+  // others — which crashes the screen the moment the playdate arrives.
+  useEffect(() => {
+    if (!playdate) return;
+    let cancelledLookup = false;
+    fullAddress(playdate).then(a => { if (!cancelledLookup) setCopyableAddress(a); });
+    return () => { cancelledLookup = true; };
+  }, [playdate]);
+
   const load = useCallback(() => {
     playdateService.getPlaydate(playdateId)
       .then(p => { setPlaydate(p); setError(null); })
@@ -131,13 +141,6 @@ export default function PlaydateDetailScreen({ navigation, route }: Readonly<Pro
       ],
     );
   };
-
-  useEffect(() => {
-    if (!playdate) return;
-    let cancelledLookup = false;
-    fullAddress(playdate).then(a => { if (!cancelledLookup) setCopyableAddress(a); });
-    return () => { cancelledLookup = true; };
-  }, [playdate]);
 
   const isFull = playdate.maxParticipants != null && playdate.joinedCount >= playdate.maxParticipants;
   const joinedParticipants = (playdate.participants ?? []).filter(p => p.status === 'JOINED' || p.status === 'HOST');
