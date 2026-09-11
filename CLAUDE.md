@@ -168,11 +168,11 @@ EXPO_PUBLIC_MAPS_API_KEY=
 - [x] Auth screens (Login, Register)
 - [x] Google OAuth
 - [x] Dog profile screens (add, edit, delete, photos, personality, tags)
-- [ ] Swipe/matching interface (Discover screen + matching API)
-- [ ] Chat with WebSockets
-- [ ] Map view
-- [ ] Push notifications
-- [ ] App Store / TestFlight deployment
+- [x] Swipe/matching interface (Discover screen + matching API)
+- [x] Chat with WebSockets
+- [x] Map view
+- [x] Push notifications
+- [x] App Store / TestFlight deployment
 
 ## Internship Context
 This is a 12-week UZH Informatikpraktikum project (Jun 15 – Sep 4, 2026).
