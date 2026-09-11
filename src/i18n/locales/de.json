@@ -110,6 +110,12 @@
       "digit": "eine Zahl",
       "special": "ein Sonderzeichen",
       "noSpace": "keine Leerzeichen"
+    },
+    "acceptTerms": {
+      "title": "Bevor es losgeht",
+      "subtitle": "Bitte lies und akzeptiere unsere Bedingungen, um Dogs Out zu nutzen.",
+      "accept": "Gelesen und akzeptiert",
+      "footNote": "Du kannst sie jederzeit unter Einstellungen → Bedingungen & Datenschutz nachlesen."
     }
   },
   "chat": {

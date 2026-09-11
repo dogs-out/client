@@ -110,6 +110,12 @@
       "digit": "un chiffre",
       "special": "un symbole",
       "noSpace": "aucun espace"
+    },
+    "acceptTerms": {
+      "title": "Avant de commencer",
+      "subtitle": "Merci de lire et d'accepter nos conditions pour utiliser Dogs Out.",
+      "accept": "J'ai lu et j'accepte",
+      "footNote": "Tu peux les relire à tout moment dans Réglages → Conditions et confidentialité."
     }
   },
   "chat": {

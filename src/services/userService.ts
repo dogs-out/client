@@ -34,6 +34,8 @@ export interface UserProfile {
   createdAt: string;
   photos: UserPhoto[];
   maxDistanceKm: number | null;
+  /** False until the account has accepted the terms. */
+  termsAccepted: boolean;
   minAge: number | null;
   maxAge: number | null;
   minDogAge: number | null;
@@ -64,6 +66,9 @@ export interface UpdateProfilePayload {
 }
 
 export const userService = {
+  /** Records acceptance of the terms on the account. Idempotent server-side. */
+  acceptTerms: (): Promise<void> => api.post('/users/me/terms').then(() => {}),
+
   getMe: (): Promise<UserProfile> =>
     api.get<UserProfile>('/users/me').then(r => r.data),
   updateProfile: (payload: UpdateProfilePayload): Promise<UserProfile> =>

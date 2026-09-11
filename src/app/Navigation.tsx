@@ -14,6 +14,7 @@ import VerifyEmailScreen from '../features/auth/VerifyEmailScreen';
 import ForgotPasswordScreen from '../features/auth/ForgotPasswordScreen';
 import ResetPasswordScreen from '../features/auth/ResetPasswordScreen';
 import ProfileSetupScreen from '../screens/ProfileSetupScreen';
+import AcceptTermsScreen from '../features/auth/AcceptTermsScreen';
 import EditProfileScreen from '../features/profile/EditProfileScreen';
 import SettingsScreen from '../features/profile/SettingsScreen';
 import AddDogScreen from '../features/dogs/AddDogScreen';
@@ -42,6 +43,7 @@ const navigationRef = createNavigationContainerRef<RootStackParamList>();
 
 export default function Navigation() {
   const [initialRoute, setInitialRoute] = useState<keyof RootStackParamList | null>(null);
+  const [termsNext, setTermsNext] = useState<'MainTabs' | 'ProfileSetup'>('ProfileSetup');
 
   // Tapping a push notification jumps straight to the relevant chat
   useEffect(() =>
@@ -77,6 +79,14 @@ export default function Navigation() {
       if (!token) { setInitialRoute('Login'); return; }
       try {
         const user = await userService.getMe();
+        // The terms come before everything, including finishing a profile —
+        // otherwise someone types their name and date of birth into an app whose
+        // terms they have not been shown.
+        if (!user.termsAccepted) {
+          setTermsNext(user.dateOfBirth ? 'MainTabs' : 'ProfileSetup');
+          setInitialRoute('AcceptTerms');
+          return;
+        }
         setInitialRoute(user.dateOfBirth ? 'MainTabs' : 'ProfileSetup');
       } catch (e) {
         const status = e instanceof AxiosError ? e.response?.status : null;
@@ -114,6 +124,12 @@ export default function Navigation() {
         <Stack.Screen name="VerifyEmail"    component={VerifyEmailScreen} />
         <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
         <Stack.Screen name="ResetPassword"  component={ResetPasswordScreen} />
+        <Stack.Screen
+          name="AcceptTerms"
+          component={AcceptTermsScreen}
+          initialParams={{ next: termsNext }}
+          options={{ gestureEnabled: false }}
+        />
         <Stack.Screen name="ProfileSetup"   component={ProfileSetupScreen} />
         {/* Main app */}
         <Stack.Screen name="MainTabs"       component={TabNavigator} />
