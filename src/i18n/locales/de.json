@@ -676,5 +676,19 @@
     "server": "Serverfehler. Bitte versuche es später erneut.",
     "requestFailed": "Anfrage fehlgeschlagen ({{status}}).",
     "unknown": "Etwas ist schiefgelaufen. Bitte versuche es erneut."
+  },
+  "needsDog": {
+    "addDog": "Hund hinzufügen",
+    "adoptTitle": "Noch keinen Hund?",
+    "adoptSoon": "Adoptieren über Dogs Out kommt bald.",
+    "adoptDog": "Hund adoptieren",
+    "discover": {
+      "title": "Entdecken braucht einen Hund",
+      "body": "Entdecken bringt Hundehalter zusammen und bleibt deshalb geschlossen, bis ein Hund in deinem Profil steht."
+    },
+    "playdates": {
+      "title": "Playdates brauchen einen Hund",
+      "body": "Nur Hundehalter können ein Playdate veranstalten. Bei den Playdates anderer kannst du weiterhin mitmachen."
+    }
   }
 }

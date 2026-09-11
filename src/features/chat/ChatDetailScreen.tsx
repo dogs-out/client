@@ -379,7 +379,13 @@ const styles = StyleSheet.create({
   bubbleRow:       { marginVertical: 3, maxWidth: '80%' },
   bubbleRowMine:   { alignSelf: 'flex-end', alignItems: 'flex-end' },
   bubbleRowTheirs: { alignSelf: 'flex-start', alignItems: 'flex-start' },
-  bubbleText: { color: Colors.text, fontSize: 15, lineHeight: scaledLineHeight(20) },
+  // No lineHeight on purpose. A fixed one — even scaled — is read once when the
+  // stylesheet is built, and Android does not reliably restart the JS context when
+  // the text-size setting changes, so it can be a scale behind the font actually
+  // being drawn. Inside a bubble that clips its corners, "a bit too short" shows up
+  // as sliced-off descenders. Letting the platform derive it from the (already
+  // scaled) font size cannot go stale.
+  bubbleText: { color: Colors.text, fontSize: 15 },
   bubbleTime:      { fontSize: 10, color: Colors.textSecondary, marginTop: 2, marginHorizontal: 4 },
 
   dateSeparatorRow:  { alignItems: 'center', marginVertical: 12 },

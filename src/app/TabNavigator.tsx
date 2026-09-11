@@ -119,18 +119,18 @@ export default function TabNavigator() {
     return () => { sub.remove(); close(); };
   }, []);
 
-  // Swiping for dog owners is pointless without a dog of your own to match with,
-  // so non-owners (sitter-only accounts) don't get the tab at all.
+  // The tab stays whether or not there is a dog. Removing it made the app change
+  // shape under someone who had just deleted their last dog, with no explanation;
+  // the screen itself now says why it is closed and how to open it.
   const hasDog = useHasDog();
-  const showDiscover = hasDog !== false;
 
   return (
     <Tab.Navigator
       tabBar={props => <GlassTabBar {...props} />}
       screenOptions={{ headerShown: false }}
-      initialRouteName={showDiscover ? 'Discover' : 'FindSitter'}
+      initialRouteName={hasDog === false ? 'FindSitter' : 'Discover'}
     >
-      {showDiscover && <Tab.Screen name="Discover" component={DiscoverScreen} />}
+      <Tab.Screen name="Discover" component={DiscoverScreen} />
       <Tab.Screen name="FindSitter" component={FindSitterScreen} />
       <Tab.Screen name="Playdates"  component={PlaydatesScreen} />
       <Tab.Screen name="Chats"      component={ChatsScreen} />

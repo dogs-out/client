@@ -187,11 +187,10 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: R
   const lifestyleOptions   = withSelected(hasDog ? OWNER_LIFESTYLE_TAGS : SITTER_LIFESTYLE_TAGS, lifestyleTags);
   const personalityOptions = withSelected(hasDog ? OWNER_PERSONALITY_TAGS : SITTER_PERSONALITY_TAGS, personalityTags);
 
-  // A user without a dog must be a sitter — otherwise the account has no purpose
-  const toggleHasDog = (value: boolean) => {
-    setHasDog(value);
-    if (!value) setIsSitter(true);
-  };
+  // Turning the dog off no longer forces the sitter role on. An account with
+  // neither is valid now — it simply cannot swipe or host, and is shown the
+  // add-or-adopt screen instead of having a role chosen for it.
+  const toggleHasDog = (value: boolean) => setHasDog(value);
 
   const toggleSitterTag = (tag: string) => {
     setSitterTags(prev =>

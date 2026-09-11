@@ -676,5 +676,19 @@
     "server": "Erreur du serveur. Réessaie plus tard.",
     "requestFailed": "Échec de la requête ({{status}}).",
     "unknown": "Une erreur est survenue. Réessaie."
+  },
+  "needsDog": {
+    "addDog": "Ajouter ton chien",
+    "adoptTitle": "Pas encore de chien ?",
+    "adoptSoon": "L'adoption via Dogs Out arrive bientôt.",
+    "adoptDog": "Adopter un chien",
+    "discover": {
+      "title": "Découvrir nécessite un chien",
+      "body": "Découvrir met en relation des propriétaires de chiens : la section reste fermée tant qu'aucun chien ne figure sur ton profil."
+    },
+    "playdates": {
+      "title": "Les playdates nécessitent un chien",
+      "body": "Seuls les propriétaires de chiens peuvent organiser un playdate. Tu peux toujours rejoindre ceux des autres."
+    }
   }
 }

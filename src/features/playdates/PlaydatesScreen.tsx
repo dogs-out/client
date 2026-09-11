@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 import {
-  ActivityIndicator, FlatList, RefreshControl, StyleSheet,
+  Modal, ActivityIndicator, FlatList, RefreshControl, StyleSheet,
   Text, TouchableOpacity, View,
 } from 'react-native';
 import { RemoteImage } from '../../components/ui/RemoteImage';
@@ -13,6 +13,8 @@ import { playdateService, Playdate } from '../../services/playdateService';
 import { chatSocket } from '../../services/socket';
 import { RootStackParamList } from '../../types/navigation';
 import { Colors } from '../../constants/colors';
+import { NeedsDogNotice } from '../../components/NeedsDogNotice';
+import { useHasDog } from '../../hooks/useHasDog';
 import { FloatingBackground } from '../../components/FloatingBackground';
 import { GlassCard } from '../../components/GlassCard';
 
@@ -30,9 +32,11 @@ export function formatPlaydateTime(iso: string, language: string): string {
 }
 
 export default function PlaydatesScreen() {
+  const hasDog = useHasDog();
   const { t, i18n } = useTranslation();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [playdates, setPlaydates] = useState<Playdate[]>([]);
+  const [showNeedsDog, setShowNeedsDog] = useState(false);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState(false);
@@ -133,15 +137,36 @@ export default function PlaydatesScreen() {
         />
       )}
 
-      <TouchableOpacity style={styles.fab} onPress={() => navigation.navigate('CreatePlaydate')}>
+      {/* Hosting is for dog owners — it is a meetup for dogs, and an account with
+          none has no business organising one. Joining stays open to everyone. */}
+      <TouchableOpacity
+        style={styles.fab}
+        onPress={() => hasDog === false ? setShowNeedsDog(true) : navigation.navigate('CreatePlaydate')}
+      >
         <Ionicons name="add" size={30} color="#fff" />
       </TouchableOpacity>
+
+      <Modal visible={showNeedsDog} animationType="slide" onRequestClose={() => setShowNeedsDog(false)}>
+        <SafeAreaView style={styles.safe}>
+          <FloatingBackground />
+          <View style={styles.modalHeader}>
+            <TouchableOpacity onPress={() => setShowNeedsDog(false)} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
+              <Ionicons name="close" size={26} color={Colors.text} />
+            </TouchableOpacity>
+          </View>
+          <NeedsDogNotice
+            reason="playdates"
+            onAddDog={() => { setShowNeedsDog(false); navigation.navigate('AddDog', {}); }}
+          />
+        </SafeAreaView>
+      </Modal>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   safe:     { flex: 1, backgroundColor: Colors.background },
+  modalHeader: { paddingHorizontal: 20, paddingTop: 8, alignItems: 'flex-start' },
   centered: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 32, paddingTop: 60 },
 
   header:      { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 12 },

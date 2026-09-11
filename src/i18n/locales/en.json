@@ -583,5 +583,19 @@
     "server": "Server error. Please try again later.",
     "requestFailed": "Request failed ({{status}}).",
     "unknown": "Something went wrong. Please try again."
+  },
+  "needsDog": {
+    "addDog": "Add your dog",
+    "adoptTitle": "No dog yet?",
+    "adoptSoon": "Adopting through Dogs Out is coming soon.",
+    "adoptDog": "Adopt a dog",
+    "discover": {
+      "title": "Discover needs a dog",
+      "body": "Discover matches dog owners with each other, so it stays closed until your profile has a dog on it."
+    },
+    "playdates": {
+      "title": "Playdates need a dog",
+      "body": "Only dog owners can host a playdate. You can still join the ones other people organise."
+    }
   }
 }

@@ -17,6 +17,7 @@ import { userService } from '../../services/userService';
 import { getDiscoverFiltersVersion } from '../../utils/discoverFilters';
 import { RootStackParamList } from '../../types/navigation';
 import { Colors } from '../../constants/colors';
+import { NeedsDogNotice } from '../../components/NeedsDogNotice';
 import { TAB_BAR_HEIGHT } from '../../components/GlassTabBar';
 import { FloatingBackground } from '../../components/FloatingBackground';
 import { translateTag } from '../../i18n/translateTag';
@@ -310,17 +311,7 @@ export default function DiscoverScreen() {
     return (
       <SafeAreaView style={styles.safe}>
         <FloatingBackground />
-        <View style={styles.centered}>
-          <Text style={styles.emptyEmoji}>🔒</Text>
-          <Text style={styles.emptyTitle}>{t('matching.discover.lockedTitle')}</Text>
-          <Text style={styles.emptySub}>{t('matching.discover.lockedBody')}</Text>
-          <TouchableOpacity
-            style={styles.refreshBtn}
-            onPress={() => navigation.navigate('MainTabs', { screen: 'FindSitter' } as never)}
-          >
-            <Text style={styles.refreshBtnText}>{t('matching.discover.lockedCta')}</Text>
-          </TouchableOpacity>
-        </View>
+        <NeedsDogNotice reason="discover" onAddDog={() => navigation.navigate('AddDog', {})} />
       </SafeAreaView>
     );
   }
@@ -490,9 +481,6 @@ export default function DiscoverScreen() {
             )
           )}
 
-          <TouchableOpacity style={styles.tapLeft}  onPress={() => tapPhoto('left')} />
-          <TouchableOpacity style={styles.tapRight} onPress={() => tapPhoto('right')} />
-
           <Animated.View style={[styles.treatBadge, { opacity: treatOpacity }]}>
             <Text style={styles.treatText}>{t('dogs.swipePreview.treat')}</Text>
           </Animated.View>
@@ -504,13 +492,13 @@ export default function DiscoverScreen() {
             colors={['transparent', 'rgba(0,0,0,0.30)', 'rgba(0,0,0,0.82)']}
             locations={[0, 0.4, 1]}
             style={styles.gradient}
-            // box-none: the gradient never takes a touch itself, so the photo tap
-            // zones behind it stay reachable over the name, tags and bio — but the
-            // owner avatar inside it still gets its own taps.
-            pointerEvents="box-none"
+            // Purely decorative now. The tap zones sit above it and the avatar
+            // above them, so nothing has to fall through anything — which is what
+            // broke on Android, where pass-through is far less reliable than on iOS.
+            pointerEvents="none"
           >
             {showOwner ? (
-              <View key="owner-info" style={styles.infoContent} pointerEvents="none">
+              <View key="owner-info" style={styles.infoContent}>
                 <Text style={styles.mainName}>
                   {profile.name}{ownerAge !== null ? `, ${ownerAge}` : ''}
                 </Text>
@@ -529,7 +517,7 @@ export default function DiscoverScreen() {
                 {profile.bio ? <Text style={styles.bioText}>{profile.bio}</Text> : null}
               </View>
             ) : (
-              <View key="dog-info" style={styles.infoContent} pointerEvents="none">
+              <View key="dog-info" style={styles.infoContent}>
                 <View style={styles.dogNameRow}>
                   {profile.dogs.map((dog, di) => {
                     const age = getAge(dog.dateOfBirth);
@@ -554,19 +542,26 @@ export default function DiscoverScreen() {
                 {currentDog?.bio ? <Text style={styles.bioText}>{currentDog.bio}</Text> : null}
               </View>
             )}
-
-            <TouchableOpacity style={styles.toggleBtn} onPress={() => setShowOwner(v => !v)}>
-              {showOwner ? (
-                flatPhotos[0]?.uri
-                  ? <RemoteImage source={{ uri: flatPhotos[0].uri }} style={styles.toggleAvatar} resizeMode="cover" />
-                  : <Ionicons name="paw" size={18} color="#fff" />
-              ) : (
-                profile.profilePicture
-                  ? <RemoteImage source={{ uri: profile.profilePicture }} style={styles.toggleAvatar} resizeMode="cover" />
-                  : <Ionicons name="person" size={18} color="#fff" />
-              )}
-            </TouchableOpacity>
           </LinearGradient>
+
+          {/* Rendered after the overlay, so they are genuinely on top: on both
+              platforms the last sibling wins a touch, which needs no per-platform
+              reasoning at all. */}
+          <TouchableOpacity style={styles.tapLeft}  onPress={() => tapPhoto('left')} />
+          <TouchableOpacity style={styles.tapRight} onPress={() => tapPhoto('right')} />
+
+          {/* And this last of all, so it stays above the tap zones. */}
+          <TouchableOpacity style={styles.toggleBtn} onPress={() => setShowOwner(v => !v)}>
+            {showOwner ? (
+              flatPhotos[0]?.uri
+                ? <RemoteImage source={{ uri: flatPhotos[0].uri }} style={styles.toggleAvatar} resizeMode="cover" />
+                : <Ionicons name="paw" size={18} color="#fff" />
+            ) : (
+              profile.profilePicture
+                ? <RemoteImage source={{ uri: profile.profilePicture }} style={styles.toggleAvatar} resizeMode="cover" />
+                : <Ionicons name="person" size={18} color="#fff" />
+            )}
+          </TouchableOpacity>
         </Animated.View>
       </View>
 
@@ -653,7 +648,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row', alignItems: 'flex-end',
   },
 
-  infoContent: { flex: 1, marginRight: 12 },
+  // Keeps clear of the avatar, which no longer reserves its own space in the row.
+  infoContent: { flex: 1, marginRight: 58 },
   dogNameRow:  { flexDirection: 'row', flexWrap: 'wrap', marginBottom: 4 },
   dogNameTab:  { fontSize: 22, fontWeight: '600', color: 'rgba(255,255,255,0.45)' },
   dogNameTabActive: { fontSize: 26, fontWeight: '800', color: '#fff' },
@@ -665,6 +661,9 @@ const styles = StyleSheet.create({
   bioText:  { fontSize: 13, color: 'rgba(255,255,255,0.85)', lineHeight: 18 },
 
   toggleBtn: {
+    // Was laid out by the gradient's flex row; now it places itself, because it
+    // has to be the last child of the card to sit above the tap zones.
+    position: 'absolute', right: 16, bottom: 18,
     width: 46, height: 46, borderRadius: 23,
     backgroundColor: 'rgba(255,255,255,0.20)',
     borderWidth: 2, borderColor: 'rgba(255,255,255,0.55)',

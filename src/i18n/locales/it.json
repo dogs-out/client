@@ -676,5 +676,19 @@
     "server": "Errore del server. Riprova più tardi.",
     "requestFailed": "Richiesta non riuscita ({{status}}).",
     "unknown": "Qualcosa è andato storto. Riprova."
+  },
+  "needsDog": {
+    "addDog": "Aggiungi il tuo cane",
+    "adoptTitle": "Non hai ancora un cane?",
+    "adoptSoon": "L'adozione tramite Dogs Out arriva presto.",
+    "adoptDog": "Adotta un cane",
+    "discover": {
+      "title": "Scopri richiede un cane",
+      "body": "Scopri mette in contatto i proprietari di cani, quindi resta chiuso finché non c'è un cane nel tuo profilo."
+    },
+    "playdates": {
+      "title": "I playdate richiedono un cane",
+      "body": "Solo i proprietari di cani possono organizzare un playdate. Puoi comunque partecipare a quelli degli altri."
+    }
   }
 }
