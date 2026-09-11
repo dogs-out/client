@@ -518,7 +518,9 @@
       "save": "Create playdate 🐾",
       "saveChanges": "Save changes",
       "createdTitle": "Playdate created 🎉",
-      "createdBody": "Your playdate is live. You'll find it under Playdates."
+      "createdBody": "Your playdate is live. You'll find it under Playdates.",
+      "sittersWelcomeLabel": "Dogsitters can join",
+      "sittersWelcomeHint": "Sitters without a dog of their own can come along. Everyone else needs a dog to join."
     },
     "visibility": {
       "public": "Anyone nearby",

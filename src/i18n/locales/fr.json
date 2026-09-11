@@ -611,7 +611,9 @@
       "save": "Créer le playdate 🐾",
       "saveChanges": "Enregistrer les modifications",
       "createdTitle": "Playdate créée 🎉",
-      "createdBody": "Ta playdate est en ligne. Tu la trouveras dans Playdates."
+      "createdBody": "Ta playdate est en ligne. Tu la trouveras dans Playdates.",
+      "sittersWelcomeLabel": "Les dogsitters peuvent participer",
+      "sittersWelcomeHint": "Les sitters sans chien peuvent venir. Les autres ont besoin d'un chien pour participer."
     },
     "visibility": {
       "public": "Tout le monde à proximité",

@@ -23,6 +23,8 @@ export interface Playdate {
   longitude: number;
   startsAt: string;
   maxParticipants: number | null;
+  /** Whether the host lets dogsitters without a dog join. */
+  sittersWelcome: boolean;
   visibility: PlaydateVisibility;
   status: 'ACTIVE' | 'CANCELLED';
   joinedCount: number;
@@ -58,6 +60,7 @@ export interface PlaydatePayload {
   longitude: number;
   startsAt: string; // ISO-8601 UTC
   maxParticipants?: number | null;
+  sittersWelcome?: boolean;
 }
 
 export const playdateService = {

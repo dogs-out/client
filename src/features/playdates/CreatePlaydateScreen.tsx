@@ -47,6 +47,9 @@ export default function CreatePlaydateScreen({ navigation, route }: Readonly<Pro
   const [hasLimit, setHasLimit] = useState(false);
   const [limit, setLimit] = useState(6);
   const [visibility, setVisibility] = useState<PlaydateVisibility>('PUBLIC');
+  // Welcome by default: a sitter is half the point of the app, and a host who
+  // would rather keep it to owners can say so.
+  const [sittersWelcome, setSittersWelcome] = useState(true);
   const [matches, setMatches] = useState<MatchSummary[]>([]);
   const [invitees, setInvitees] = useState<number[]>([]);
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -83,6 +86,7 @@ export default function CreatePlaydateScreen({ navigation, route }: Readonly<Pro
       setHasLimit(p.maxParticipants != null);
       if (p.maxParticipants != null) setLimit(p.maxParticipants);
       setVisibility(p.visibility);
+      setSittersWelcome(p.sittersWelcome);
     }).catch(() => setError(t('playdates.loadError'))).finally(() => setFetching(false));
   }, [playdateId, t]);
 
@@ -121,6 +125,7 @@ export default function CreatePlaydateScreen({ navigation, route }: Readonly<Pro
         longitude: park.longitude,
         startsAt: startsAt.toISOString(),
         maxParticipants: hasLimit ? limit : undefined,
+        sittersWelcome,
       };
       if (playdateId) {
         await playdateService.updatePlaydate(playdateId, payload);
@@ -256,6 +261,21 @@ export default function CreatePlaydateScreen({ navigation, route }: Readonly<Pro
                 />
               </>
             )}
+          </GlassCard>
+
+          {/* WHO MAY JOIN */}
+          <GlassCard style={styles.card}>
+            <View style={styles.limitRow}>
+              <View style={{ flex: 1, marginRight: 12 }}>
+                <Text style={styles.limitLabel}>{t('playdates.create.sittersWelcomeLabel')}</Text>
+                <Text style={styles.sittersHint}>{t('playdates.create.sittersWelcomeHint')}</Text>
+              </View>
+              <Switch
+                value={sittersWelcome}
+                onValueChange={setSittersWelcome}
+                trackColor={{ true: Colors.primary }}
+              />
+            </View>
           </GlassCard>
 
           {/* VISIBILITY (immutable when editing) */}
@@ -404,6 +424,7 @@ const styles = StyleSheet.create({
 
   limitRow:   { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 4 },
   limitLabel: { fontSize: 15, color: Colors.text },
+  sittersHint: { fontSize: 12, color: Colors.textSecondary, marginTop: 3, lineHeight: 17 },
   limitValue: { fontSize: 13, color: Colors.primary, fontWeight: '700', marginTop: 6 },
 
   visibilityRow:       { flexDirection: 'row', alignItems: 'flex-start', gap: 10, paddingVertical: 8 },
