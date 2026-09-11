@@ -700,5 +700,11 @@
       "title": "Les playdates nécessitent un chien",
       "body": "Seuls les propriétaires de chiens peuvent organiser un playdate. Tu peux toujours rejoindre ceux des autres."
     }
+  },
+  "photoCrop": {
+    "title": "Cadrer ta photo",
+    "hint": "Pince pour zoomer, glisse pour déplacer.",
+    "use": "Utiliser cette photo",
+    "gridHint": "Touche une photo pour la redimensionner"
   }
 }

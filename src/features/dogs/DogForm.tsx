@@ -15,6 +15,7 @@ import { containsProfanity } from '../../utils/profanityFilter';
 import { FloatingBackground } from '../../components/FloatingBackground';
 import { GlassCard } from '../../components/GlassCard';
 import { GlassButton } from '../../components/GlassButton';
+import { CropHint, PhotoCropModal } from '../../components/PhotoCropModal';
 import { Colors } from '../../constants/colors';
 import { BreedPickerModal } from './BreedPickerModal';
 import {
@@ -56,6 +57,7 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Re
   const [dateOfBirth, setDateOfBirth] = useState<Date | null>(null);
   const [bio, setBio]                 = useState('');
   const [photos, setPhotos]           = useState<PhotoState[]>([]);
+  const [cropIndex, setCropIndex] = useState<number | null>(null);
   // The grid used to size its tiles with a percentage width and an aspectRatio,
   // and derived nothing concrete for the line height — so once a second row was
   // needed (four photos or more) the two rows were laid out on top of each other,
@@ -113,7 +115,9 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Re
     if (result.canceled) return;
     // selectionLimit is advisory on some Android pickers, so clamp it here too.
     const picked = result.assets.slice(0, remaining).map(a => ({ kind: 'new' as const, uri: a.uri }));
-    if (picked.length > 0) setPhotos(prev => [...prev, ...picked]);
+    if (picked.length > 0) {
+      setPhotos(prev => { setCropIndex(prev.length); return [...prev, ...picked]; });
+    }
   };
 
   const removePhoto = (index: number) => {
@@ -276,7 +280,13 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Re
                   <View key={i} style={[styles.photoSlot, { width: slotWidth, height: slotHeight }]}>
                     {photo ? (
                       <>
-                        <RemoteImage source={{ uri: photo.uri }} style={styles.photoThumb} />
+                        <TouchableOpacity
+                          style={StyleSheet.absoluteFill}
+                          onPress={() => setCropIndex(i)}
+                          activeOpacity={0.85}
+                        >
+                          <RemoteImage source={{ uri: photo.uri }} style={styles.photoThumb} />
+                        </TouchableOpacity>
                         <TouchableOpacity style={styles.photoRemove} onPress={() => removePhoto(i)}>
                           <Ionicons name="close-circle" size={22} color="#e53e3e" />
                         </TouchableOpacity>
@@ -301,6 +311,16 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Re
                 );
               })}
             </View>
+            <CropHint />
+
+            <PhotoCropModal
+              uri={cropIndex !== null ? photos[cropIndex]?.uri ?? null : null}
+              onCancel={() => setCropIndex(null)}
+              onDone={uri => {
+                setPhotos(prev => prev.map((p, i) => i === cropIndex ? { kind: 'new', uri } : p));
+                setCropIndex(null);
+              }}
+            />
           </GlassCard>
 
           {/* BASIC INFO */}

@@ -23,6 +23,7 @@ import { containsProfanity } from '../../utils/profanityFilter';
 import { FloatingBackground } from '../../components/FloatingBackground';
 import { GlassButton } from '../../components/GlassButton';
 import { CustomSlider } from '../../components/CustomSlider';
+import { CropHint, PhotoCropModal } from '../../components/PhotoCropModal';
 import { Colors } from '../../constants/colors';
 
 interface Props {
@@ -64,6 +65,8 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: R
   const [dateOfBirth, setDateOfBirth]       = useState<Date | null>(null);
   const [showPicker, setShowPicker]         = useState(false);
   const [photos, setPhotos]                 = useState<PhotoItem[]>([]);
+  // Index of the photo open in the crop editor, if any.
+  const [cropIndex, setCropIndex] = useState<number | null>(null);
   const [location, setLocation]             = useState<{ latitude: number; longitude: number } | null>(null);
   const [lifestyleTags, setLifestyleTags]   = useState<string[]>([]);
   const [personalityTags, setPersonalityTags] = useState<string[]>([]);
@@ -134,7 +137,14 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: R
     if (result.canceled) return;
     // selectionLimit is advisory on some Android pickers, so clamp it here too.
     const picked = result.assets.slice(0, remaining).map(a => ({ kind: 'new' as const, uri: a.uri }));
-    if (picked.length > 0) setPhotos(prev => [...prev, ...picked]);
+    if (picked.length > 0) {
+      setPhotos(prev => {
+        // Open the editor on the first of the new ones, so framing is offered
+        // rather than hidden behind a second tap nobody would discover.
+        setCropIndex(prev.length);
+        return [...prev, ...picked];
+      });
+    }
   };
 
   const removePhoto = (index: number) => {
@@ -308,7 +318,13 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: R
                 <View key={i} style={styles.photoSlot}>
                   {photo ? (
                     <>
-                      <RemoteImage source={{ uri: photo.uri }} style={styles.photoThumb} />
+                      <TouchableOpacity
+                        style={StyleSheet.absoluteFill}
+                        onPress={() => setCropIndex(i)}
+                        activeOpacity={0.85}
+                      >
+                        <RemoteImage source={{ uri: photo.uri }} style={styles.photoThumb} />
+                      </TouchableOpacity>
                       {i === 0 && <View style={styles.mainBadge}><Text style={styles.mainBadgeText}>{t('dogs.form.mainBadge')}</Text></View>}
                       {i > 0 && (
                         <TouchableOpacity
@@ -333,6 +349,19 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: R
               );
             })}
           </View>
+          <CropHint />
+
+          <PhotoCropModal
+            uri={cropIndex !== null ? photos[cropIndex]?.uri ?? null : null}
+            onCancel={() => setCropIndex(null)}
+            onDone={uri => {
+              // A re-crop replaces the photo in place. An existing one becomes a
+              // new upload on save, because the server stores renditions rather
+              // than an editable original.
+              setPhotos(prev => prev.map((p, i) => i === cropIndex ? { kind: 'new', uri } : p));
+              setCropIndex(null);
+            }}
+          />
 
           {error && <Text style={styles.error}>{error}</Text>}
 

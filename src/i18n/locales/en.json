@@ -607,5 +607,11 @@
       "title": "Playdates need a dog",
       "body": "Only dog owners can host a playdate. You can still join the ones other people organise."
     }
+  },
+  "photoCrop": {
+    "title": "Frame your photo",
+    "hint": "Pinch to zoom, drag to move.",
+    "use": "Use this photo",
+    "gridHint": "Tap a photo to rescale it"
   }
 }
