@@ -17,6 +17,7 @@ import { NeedsDogNotice } from '../../components/NeedsDogNotice';
 import { useHasDog } from '../../hooks/useHasDog';
 import { FloatingBackground } from '../../components/FloatingBackground';
 import { GlassCard } from '../../components/GlassCard';
+import { useTabBarHeight } from '../../components/GlassTabBar';
 import { WhosOutsideView } from './WhosOutsideView';
 
 type PlaydateMode = 'playdates' | 'outside';
@@ -38,6 +39,9 @@ export default function PlaydatesScreen() {
   const hasDog = useHasDog();
   const { t, i18n } = useTranslation();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  // Measured, not guessed: on a phone with three-button navigation the bar is
+  // taller than it is on an iPhone, and the + used to end up behind it.
+  const tabBarHeight = useTabBarHeight();
   const [mode, setMode] = useState<PlaydateMode>('playdates');
   const [playdates, setPlaydates] = useState<Playdate[]>([]);
   const [showNeedsDog, setShowNeedsDog] = useState(false);
@@ -149,7 +153,7 @@ export default function PlaydatesScreen() {
           data={playdates}
           keyExtractor={item => String(item.id)}
           renderItem={renderPlaydate}
-          contentContainerStyle={styles.list}
+          contentContainerStyle={[styles.list, { paddingBottom: tabBarHeight + 24 }]}
           showsVerticalScrollIndicator={false}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); load(); }} tintColor={Colors.primary} />
@@ -167,7 +171,7 @@ export default function PlaydatesScreen() {
           none has no business organising one. Joining stays open to everyone. */}
       {mode === 'playdates' && (
         <TouchableOpacity
-          style={styles.fab}
+          style={[styles.fab, { bottom: tabBarHeight + 16 }]}
           onPress={() => hasDog === false ? setShowNeedsDog(true) : navigation.navigate('CreatePlaydate')}
         >
           <Ionicons name="add" size={30} color="#fff" />
@@ -208,7 +212,7 @@ const styles = StyleSheet.create({
   segmentTextActive: { color: Colors.primary },
   headerTitle: { fontSize: 28, fontWeight: '800', color: Colors.text },
 
-  list: { paddingHorizontal: 20, paddingBottom: 130, flexGrow: 1 },
+  list: { paddingHorizontal: 20, paddingBottom: 24, flexGrow: 1 },
 
   card:       { marginBottom: 12 },
   cardHeader: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', gap: 8 },
@@ -234,9 +238,9 @@ const styles = StyleSheet.create({
   emptyText:  { fontSize: 15, color: Colors.textSecondary, textAlign: 'center', lineHeight: 22 },
 
   fab: {
-    // Clears the floating tab bar (~94pt tall incl. its bottom inset) with margin
-    // to spare — at 110 the + sat under the bar's top edge on iOS.
-    position: 'absolute', right: 20, bottom: 128,
+    // bottom comes from useTabBarHeight at the call site; every phone reserves a
+    // different amount at the bottom and a constant is wrong on most of them.
+    position: 'absolute', right: 20,
     width: 56, height: 56, borderRadius: 28,
     backgroundColor: Colors.primary,
     alignItems: 'center', justifyContent: 'center',

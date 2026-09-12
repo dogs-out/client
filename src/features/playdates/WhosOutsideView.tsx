@@ -11,6 +11,7 @@ import { useTranslation } from 'react-i18next';
 import { RemoteImage } from '../../components/ui/RemoteImage';
 import { GlassCard } from '../../components/GlassCard';
 import { Colors } from '../../constants/colors';
+import { useTabBarHeight } from '../../components/GlassTabBar';
 import { RootStackParamList } from '../../types/navigation';
 import { userService, DEFAULT_STATUS, STATUS_IS_OUT, WalkingFriend, WalkStatus } from '../../services/userService';
 import { InvitePicker } from './InvitePicker';
@@ -27,6 +28,9 @@ type Nav = NativeStackNavigationProp<RootStackParamList>;
  */
 export function WhosOutsideView() {
   const { t } = useTranslation();
+  // Every phone reserves a different amount at the bottom; a constant left the
+  // last row under the tab bar on those with three-button navigation.
+  const tabBarHeight = useTabBarHeight();
   const navigation = useNavigation<Nav>();
 
   const [friends, setFriends] = useState<WalkingFriend[]>([]);
@@ -130,7 +134,7 @@ export function WhosOutsideView() {
         keyExtractor={item => String(item.userId)}
         renderItem={renderFriend}
         style={styles.flex}
-        contentContainerStyle={styles.list}
+        contentContainerStyle={[styles.list, { paddingBottom: tabBarHeight + 24 }]}
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={
           <View style={styles.centered}>
@@ -194,7 +198,7 @@ const styles = StyleSheet.create({
   },
   inviteText: { color: '#fff', fontSize: 13, fontWeight: '700' },
 
-  list: { paddingHorizontal: 20, paddingBottom: 120, flexGrow: 1 },
+  list: { paddingHorizontal: 20, paddingBottom: 24, flexGrow: 1 },
   card: { marginTop: 10 },
   row:  { flexDirection: 'row', alignItems: 'center' },
   avatar: { width: 48, height: 48, borderRadius: 24, marginRight: 12 },

@@ -15,6 +15,7 @@ import { sitterService } from '../../services/sitterService';
 import { userService } from '../../services/userService';
 import { RootStackParamList } from '../../types/navigation';
 import { Colors } from '../../constants/colors';
+import { useTabBarHeight } from '../../components/GlassTabBar';
 import { FloatingBackground } from '../../components/FloatingBackground';
 import { GlassCard } from '../../components/GlassCard';
 import { CustomSlider } from '../../components/CustomSlider';
@@ -31,6 +32,9 @@ function formatDistance(km: number, t: TFunction): string {
 
 export default function FindSitterScreen() {
   const { t, i18n } = useTranslation();
+  // Every phone reserves a different amount at the bottom; a constant left the
+  // last row under the tab bar on those with three-button navigation.
+  const tabBarHeight = useTabBarHeight();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [seekers, setSeekers] = useState<DiscoverProfile[]>([]);
   const [sitters, setSitters] = useState<DiscoverProfile[]>([]);
@@ -260,7 +264,7 @@ export default function FindSitterScreen() {
           data={data}
           keyExtractor={item => String(item.userId)}
           renderItem={renderSeeker}
-          contentContainerStyle={styles.list}
+          contentContainerStyle={[styles.list, { paddingBottom: tabBarHeight + 24 }]}
           showsVerticalScrollIndicator={false}
           ListEmptyComponent={
             <View style={styles.centered}>
@@ -318,7 +322,7 @@ const styles = StyleSheet.create({
   radiusValue: { fontSize: 15, fontWeight: '700', color: Colors.text },
   radiusHint:  { fontSize: 12, color: Colors.textSecondary, lineHeight: 17, marginTop: 4 },
 
-  list: { paddingHorizontal: 20, paddingBottom: 120, flexGrow: 1 },
+  list: { paddingHorizontal: 20, paddingBottom: 24, flexGrow: 1 },
 
   card:    { marginTop: 12 },
   cardTop: { flexDirection: 'row', alignItems: 'center' },

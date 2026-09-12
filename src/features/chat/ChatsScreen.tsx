@@ -13,6 +13,7 @@ import { playdateService, Playdate } from '../../services/playdateService';
 import { chatSocket } from '../../services/socket';
 import { RootStackParamList } from '../../types/navigation';
 import { Colors } from '../../constants/colors';
+import { useTabBarHeight } from '../../components/GlassTabBar';
 import { FloatingBackground } from '../../components/FloatingBackground';
 import { GlassCard } from '../../components/GlassCard';
 
@@ -39,6 +40,9 @@ function formatWhen(iso: string | null, t: TFunction): string {
 
 export default function ChatsScreen() {
   const { t } = useTranslation();
+  // Every phone reserves a different amount at the bottom; a constant left the
+  // last row under the tab bar on those with three-button navigation.
+  const tabBarHeight = useTabBarHeight();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [matches, setMatches] = useState<MatchSummary[]>([]);
   const [groups, setGroups] = useState<Playdate[]>([]);
@@ -200,7 +204,7 @@ export default function ChatsScreen() {
             ? <Text style={styles.sectionHeader}>{section.title}</Text>
             : null}
         stickySectionHeadersEnabled={false}
-        contentContainerStyle={isEmpty ? styles.emptyContainer : styles.listContainer}
+        contentContainerStyle={[isEmpty ? styles.emptyContainer : styles.listContainer, { paddingBottom: tabBarHeight + 24 }]}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); load(); }} tintColor={Colors.primary} />
         }
@@ -225,7 +229,7 @@ const styles = StyleSheet.create({
   header:      { paddingHorizontal: 16, paddingTop: 8, paddingBottom: 12 },
   headerTitle: { fontSize: 22, fontWeight: '800', color: Colors.text },
 
-  listContainer:  { paddingHorizontal: 16, paddingBottom: 120 },
+  listContainer:  { paddingHorizontal: 16, paddingBottom: 24 },
   emptyContainer: { flexGrow: 1, justifyContent: 'center' },
 
   card: { marginBottom: 14 },

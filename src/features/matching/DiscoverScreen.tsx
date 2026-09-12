@@ -18,7 +18,7 @@ import { getDiscoverFiltersVersion } from '../../utils/discoverFilters';
 import { RootStackParamList } from '../../types/navigation';
 import { Colors } from '../../constants/colors';
 import { NeedsDogNotice } from '../../components/NeedsDogNotice';
-import { TAB_BAR_HEIGHT } from '../../components/GlassTabBar';
+import { useTabBarHeight } from '../../components/GlassTabBar';
 import { FloatingBackground } from '../../components/FloatingBackground';
 import { translateTag } from '../../i18n/translateTag';
 import { translateBreed } from '../../i18n/translateBreed';
@@ -176,6 +176,7 @@ export default function DiscoverScreen() {
   // screen returns early while it is locked, and a hook below that return runs
   // on some renders and not others — which crashes as soon as the lock lifts.
   const insets = useSafeAreaInsets();
+  const tabBarHeight = useTabBarHeight();
   const [feed, setFeed] = useState<DiscoverProfile[]>([]);
   const [idx, setIdx] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -385,7 +386,7 @@ export default function DiscoverScreen() {
   // floating tab bar still has to be reserved — plus a gap, or the buttons end up
   // flush against it and the first attempt at this left them touching.
   const TAB_BAR_GAP = 16;
-  const tabClearance = Math.max(16, TAB_BAR_HEIGHT + TAB_BAR_GAP - insets.bottom);
+  const tabClearance = Math.max(16, tabBarHeight + TAB_BAR_GAP - insets.bottom);
   const cardH = cardAreaH > 0 ? Math.min(CARD_H, cardAreaH - 10) : CARD_H;
 
   const currentDogIndex = flatPhotos[photoIndex]?.dogIndex ?? 0;

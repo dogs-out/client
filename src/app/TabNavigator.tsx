@@ -6,12 +6,13 @@ import { chatSocket } from '../services/socket';
 import { BlurView } from 'expo-blur';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import DiscoverScreen from '../features/matching/DiscoverScreen';
 import FindSitterScreen from '../features/sitter/FindSitterScreen';
 import PlaydatesScreen from '../features/playdates/PlaydatesScreen';
 import ChatsScreen from '../features/chat/ChatsScreen';
 import HomeScreen from '../screens/HomeScreen';
-import { glassTabBarStyles as styles, TAB_ICON_SIZE } from '../components/GlassTabBar';
+import { glassTabBarStyles as styles, TAB_ICON_SIZE, WRAPPER_PAD_B } from '../components/GlassTabBar';
 import { useHasDog } from '../hooks/useHasDog';
 import { useUnreadCount } from '../hooks/useUnreadCount';
 import { Colors } from '../constants/colors';
@@ -37,8 +38,12 @@ const TAB_ITEMS: { name: keyof MainTabParamList; labelKey: string; icon: string;
 function GlassTabBar({ state, descriptors, navigation }: Readonly<BottomTabBarProps>) {
   const { t } = useTranslation();
   const unread = useUnreadCount();
+  // Whatever the system reserves at the bottom — nothing on an iPhone beyond the
+  // home indicator, a few points for gesture navigation, and around 48 for the
+  // Android three-button bar, which is what this bar was sitting underneath.
+  const insets = useSafeAreaInsets();
   return (
-    <View style={styles.wrapper}>
+    <View style={[styles.wrapper, { paddingBottom: WRAPPER_PAD_B + insets.bottom }]}>
       <BlurView intensity={60} tint="light" style={styles.blur}>
         <View style={styles.tabBar}>
           {state.routes.map((route, index) => {
