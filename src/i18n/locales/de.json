@@ -326,7 +326,8 @@
       "experienceLabel": "Erfahrung mit Hunden:",
       "experienceYears": "Jahre",
       "sitterTagsLabel": "Sitter-Tags",
-      "sitterTagsHint": "(bis zu 4)"
+      "sitterTagsHint": "(bis zu 4)",
+      "cameraPermission": "Dogs Out braucht Kamerazugriff, um ein Foto aufzunehmen. Du kannst das in den Einstellungen erlauben."
     },
     "userProfile": {
       "profileFallback": "Profil",
@@ -710,7 +711,6 @@
   },
   "whosOutside": {
     "tab": "Wer ist draussen",
-    "setStatus": "Status setzen",
     "setStatusTitle": "Dein Status",
     "isOut": "{{name}} ist draussen",
     "noPoint": "Unterwegs, ohne Standort",
@@ -725,8 +725,6 @@
     "usePoint": "Aktuellen Standort verwenden",
     "pointSet": "Standort gesetzt",
     "saveStatus": "Status speichern",
-    "clearStatus": "Status entfernen",
-    "clearHint": "Tippe die Auswahl nochmals an, um sie zu entfernen.",
     "forHours_one": "1 Stunde",
     "forHours_other": "{{count}} Stunden",
     "forDays_one": "1 Tag",
@@ -751,7 +749,19 @@
     "noSittableDogs": "Hunde erscheinen hier, sobald du mit ihrem Halter gematcht hast.",
     "pickADog": "Wähle den Hund, den du hütest.",
     "pickOnMap": "Auf Karte wählen",
-    "currentLocation": "Dein aktueller Standort"
+    "currentLocation": "Dein aktueller Standort",
+    "photoLabel": "Foto hinzufügen",
+    "photoHint": "Optional — wie der Park heute aussieht, oder dein Hund mitten im Zoomie.",
+    "takePhoto": "Foto aufnehmen",
+    "choosePhoto": "Aus Galerie",
+    "inviteTitle": "Wer soll es wissen?",
+    "inviteEveryone": "Allen Bescheid geben",
+    "inviteOr": "oder einzelne auswählen",
+    "inviteNoMatches": "Du hast noch keine Matches. Sobald du welche hast, erscheinen sie hier.",
+    "inviteSelected_one": "1 Person benachrichtigen",
+    "inviteSelected_other": "{{count}} Personen benachrichtigen",
+    "inviteSentSome_one": "Eine Freundin oder ein Freund weiss, dass du unterwegs bist.",
+    "inviteSentSome_other": "{{count}} Freunde wissen, dass du unterwegs bist."
   },
   "birthday": {
     "ownTitle": "Wuff wuff — alles Gute zum Geburtstag!",

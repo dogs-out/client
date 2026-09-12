@@ -6,6 +6,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import * as Location from 'expo-location';
+import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { RootStackParamList } from '../../types/navigation';
@@ -14,9 +15,10 @@ import { FloatingBackground } from '../../components/FloatingBackground';
 import { GlassCard } from '../../components/GlassCard';
 import { GlassButton } from '../../components/GlassButton';
 import { RemoteImage } from '../../components/ui/RemoteImage';
+import { PhotoCropModal } from '../../components/PhotoCropModal';
 import { CustomSlider } from '../../components/CustomSlider';
 import {
-  userService, SittableDog, STATUS_SHARES_LOCATION, WalkStatus,
+  userService, DEFAULT_STATUS, SittableDog, STATUS_EXPIRES, STATUS_SHARES_LOCATION, WalkStatus,
 } from '../../services/userService';
 import { STATUS_DURATIONS, durationLabel, nearestStop } from '../../utils/statusDuration';
 import { getApiError } from '../../utils/apiError';
@@ -59,7 +61,14 @@ export function statusesFor(hasDog: boolean, isSitter: boolean): WalkStatus[] {
 export default function SetStatusScreen({ navigation, route }: Readonly<Props>) {
   const { t } = useTranslation();
 
-  const [status, setStatus] = useState<WalkStatus | null>(null);
+  // At home is the floor, not an empty selection: everybody is somewhere.
+  const [status, setStatus] = useState<WalkStatus>(DEFAULT_STATUS);
+  const [photo, setPhoto] = useState<string | null>(null);
+  /** A newly picked local file, waiting to be uploaded when the status is saved. */
+  const [pendingPhoto, setPendingPhoto] = useState<string | null>(null);
+  const [cropping, setCropping] = useState<string | null>(null);
+  /** Set when an existing photo was removed, so saving takes it off the status. */
+  const [removePhoto, setRemovePhoto] = useState(false);
   const [hours, setHours] = useState(2);
   const [sharePoint, setSharePoint] = useState(true);
   const [point, setPoint] = useState<Point | null>(null);
@@ -80,6 +89,7 @@ export default function SetStatusScreen({ navigation, route }: Readonly<Props>) 
         if (!me.walkStatus) return;
         setStatus(me.walkStatus);
         setDogId(me.walkStatusDogId);
+        setPhoto(me.walkStatusPhoto);
         if (me.walkStatusLatitude != null && me.walkStatusLongitude != null) {
           setPoint({
             latitude: me.walkStatusLatitude,
@@ -100,19 +110,18 @@ export default function SetStatusScreen({ navigation, route }: Readonly<Props>) 
     navigation.setParams({ pickedPlace: undefined });
   }, [picked, navigation]);
 
-  const stops = useMemo(
-    () => (status ? STATUS_DURATIONS[status] : STATUS_DURATIONS.WALKING),
-    [status]);
+  const stops = useMemo(() => STATUS_DURATIONS[status], [status]);
 
-  const chooseStatus = (next: WalkStatus | null) => {
+  const chooseStatus = (next: WalkStatus) => {
     setStatus(next);
     // Each status has its own range, so carry the span across rather than reset
     // it — two hours becomes the shortest holiday, not a silent jump to weeks.
-    if (next) setHours(nearestStop(next, hours));
+    setHours(nearestStop(next, hours));
   };
 
-  const canShare = status !== null && STATUS_SHARES_LOCATION[status];
+  const canShare = STATUS_SHARES_LOCATION[status];
   const needsDog = status === 'SITTING';
+  const shownPhoto = pendingPhoto ?? photo;
 
   const forHumans = (h: number) => {
     const { key, count } = durationLabel(h);
@@ -136,6 +145,22 @@ export default function SetStatusScreen({ navigation, route }: Readonly<Props>) 
     }
   };
 
+  const pickPhoto = async (fromCamera: boolean) => {
+    const permission = fromCamera
+      ? await ImagePicker.requestCameraPermissionsAsync()
+      : await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (permission.status !== 'granted') {
+      Alert.alert(t('common.error'), t(fromCamera ? 'profile.form.cameraPermission' : 'profile.form.photoPermission'));
+      return;
+    }
+    const result = fromCamera
+      ? await ImagePicker.launchCameraAsync({ mediaTypes: ['images'] })
+      : await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'] });
+    if (result.canceled) return;
+    // Framed before it is sent, like every other photo in the app.
+    setCropping(result.assets[0].uri);
+  };
+
   const save = async () => {
     if (needsDog && dogId === null) {
       Alert.alert(t('common.error'), t('whosOutside.pickADog'));
@@ -146,11 +171,17 @@ export default function SetStatusScreen({ navigation, route }: Readonly<Props>) 
       const shares = canShare && sharePoint && point !== null;
       await userService.setStatus({
         status,
-        hours,
+        // At home stands until it is changed, so it carries no duration at all.
+        ...(STATUS_EXPIRES[status] ? { hours } : {}),
         ...(shares ? { latitude: point.latitude, longitude: point.longitude } : {}),
         ...(shares && point.name ? { placeName: point.name } : {}),
         ...(needsDog && dogId !== null ? { dogId } : {}),
+        // Without this the server drops the photo, which is what should happen
+        // when the status changes and the old photo no longer describes it.
+        ...(photo && !pendingPhoto ? { keepPhoto: true } : {}),
       });
+      if (pendingPhoto) await userService.setStatusPhoto(pendingPhoto);
+      else if (removePhoto) await userService.removeStatusPhoto();
       // popToTop, not goBack: the map picker may still be on the stack behind
       // this screen, and going back one step lands on it — so saving a status
       // dropped people back into picking a place they had just finished picking.
@@ -204,7 +235,7 @@ export default function SetStatusScreen({ navigation, route }: Readonly<Props>) 
               <TouchableOpacity
                 key={option}
                 style={styles.option}
-                onPress={() => chooseStatus(selected ? null : option)}
+                onPress={() => chooseStatus(option)}
               >
                 <Ionicons
                   name={ICONS[option] as never}
@@ -218,7 +249,6 @@ export default function SetStatusScreen({ navigation, route }: Readonly<Props>) 
               </TouchableOpacity>
             );
           })}
-          <Text style={styles.hint}>{t('whosOutside.clearHint')}</Text>
         </GlassCard>
 
         {needsDog && (
@@ -230,7 +260,8 @@ export default function SetStatusScreen({ navigation, route }: Readonly<Props>) 
           </GlassCard>
         )}
 
-        {status !== null && (
+        {/* At home has no duration: it is where you are until you say otherwise. */}
+        {STATUS_EXPIRES[status] && (
           <GlassCard style={styles.card}>
             <Text style={styles.sectionLabel}>{t('whosOutside.howLong')}</Text>
             <Text style={styles.durationValue}>{forHumans(hours)}</Text>
@@ -311,16 +342,49 @@ export default function SetStatusScreen({ navigation, route }: Readonly<Props>) 
           </GlassCard>
         )}
 
+        <GlassCard style={styles.card}>
+          <Text style={styles.sectionLabel}>{t('whosOutside.photoLabel')}</Text>
+          <Text style={styles.hint}>{t('whosOutside.photoHint')}</Text>
+
+          {shownPhoto && (
+            <View style={styles.photoWrap}>
+              <RemoteImage source={{ uri: shownPhoto }} style={styles.photo} />
+              <TouchableOpacity
+                style={styles.photoRemove}
+                onPress={() => { setPendingPhoto(null); setPhoto(null); setRemovePhoto(true); }}
+                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+              >
+                <Ionicons name="close-circle" size={24} color="#fff" />
+              </TouchableOpacity>
+            </View>
+          )}
+
+          <View style={styles.pickRow}>
+            <TouchableOpacity style={styles.pickBtn} onPress={() => pickPhoto(true)}>
+              <Ionicons name="camera-outline" size={15} color={Colors.textSecondary} />
+              <Text style={styles.pickText} numberOfLines={2}>{t('whosOutside.takePhoto')}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.pickBtn} onPress={() => pickPhoto(false)}>
+              <Ionicons name="images-outline" size={15} color={Colors.textSecondary} />
+              <Text style={styles.pickText} numberOfLines={2}>{t('whosOutside.choosePhoto')}</Text>
+            </TouchableOpacity>
+          </View>
+        </GlassCard>
+
         <GlassButton onPress={save} disabled={saving} style={styles.saveBtn}>
           {saving
             ? <ActivityIndicator color={Colors.text} />
-            : <Text style={styles.saveText}>
-                {status === null ? t('whosOutside.clearStatus') : t('whosOutside.saveStatus')}
-              </Text>
+            : <Text style={styles.saveText}>{t('whosOutside.saveStatus')}</Text>
           }
         </GlassButton>
         <View style={{ height: 40 }} />
       </ScrollView>
+
+      <PhotoCropModal
+        uri={cropping}
+        onCancel={() => setCropping(null)}
+        onDone={uri => { setPendingPhoto(uri); setRemovePhoto(false); setCropping(null); }}
+      />
     </SafeAreaView>
   );
 }
@@ -365,6 +429,10 @@ const styles = StyleSheet.create({
     borderRadius: 14, borderWidth: 1.5, borderColor: Colors.border,
   },
   pickText: { flexShrink: 1, fontSize: 13, fontWeight: '700', color: Colors.textSecondary },
+
+  photoWrap:   { marginTop: 12, borderRadius: 14, overflow: 'hidden' },
+  photo:       { width: '100%', aspectRatio: 3 / 4, borderRadius: 14 },
+  photoRemove: { position: 'absolute', top: 8, right: 8 },
 
   saveBtn:  { marginTop: 4 },
   saveText: { color: Colors.text, fontSize: 16, fontWeight: '700' },

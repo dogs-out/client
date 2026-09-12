@@ -12,7 +12,8 @@ import { RemoteImage } from '../../components/ui/RemoteImage';
 import { GlassCard } from '../../components/GlassCard';
 import { Colors } from '../../constants/colors';
 import { RootStackParamList } from '../../types/navigation';
-import { userService, STATUS_IS_OUT, WalkingFriend, WalkStatus } from '../../services/userService';
+import { userService, DEFAULT_STATUS, STATUS_IS_OUT, WalkingFriend, WalkStatus } from '../../services/userService';
+import { InvitePicker } from './InvitePicker';
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
@@ -29,25 +30,31 @@ export function WhosOutsideView() {
   const navigation = useNavigation<Nav>();
 
   const [friends, setFriends] = useState<WalkingFriend[]>([]);
-  const [myStatus, setMyStatus] = useState<WalkStatus | null>(null);
+  const [myStatus, setMyStatus] = useState<WalkStatus>(DEFAULT_STATUS);
+  const [picking, setPicking] = useState(false);
   const [loading, setLoading] = useState(true);
   const [inviting, setInviting] = useState(false);
   const [onMap, setOnMap] = useState<WalkingFriend | null>(null);
 
   const load = useCallback(() => {
     Promise.all([userService.getWalkingFriends(), userService.getMe()])
-      .then(([walking, me]) => { setFriends(walking); setMyStatus(me.walkStatus); })
+      .then(([walking, me]) => { setFriends(walking); setMyStatus(me.walkStatus ?? DEFAULT_STATUS); })
       .catch(() => { /* the empty state says enough */ })
       .finally(() => setLoading(false));
   }, []);
 
   useFocusEffect(useCallback(() => { load(); }, [load]));
 
-  const invite = async () => {
+  const invite = async (userIds: number[]) => {
     setInviting(true);
     try {
-      await userService.inviteMatchesToWalk();
-      Alert.alert(t('whosOutside.inviteSentTitle'), t('whosOutside.inviteSentBody'));
+      await userService.inviteMatchesToWalk(userIds);
+      setPicking(false);
+      Alert.alert(
+        t('whosOutside.inviteSentTitle'),
+        userIds.length > 0
+          ? t('whosOutside.inviteSentSome', { count: userIds.length })
+          : t('whosOutside.inviteSentBody'));
     } catch {
       Alert.alert(t('common.error'), t('whosOutside.inviteFailed'));
     } finally {
@@ -107,18 +114,13 @@ export function WhosOutsideView() {
       <View style={styles.statusBar}>
         <TouchableOpacity style={styles.statusBtn} onPress={() => navigation.navigate('SetStatus')}>
           <Ionicons name="walk-outline" size={16} color={Colors.primary} />
-          <Text style={styles.statusBtnText}>
-            {myStatus ? t(`whosOutside.status.${myStatus}`) : t('whosOutside.setStatus')}
-          </Text>
+          <Text style={styles.statusBtnText}>{t(`whosOutside.status.${myStatus}`)}</Text>
           <Ionicons name="chevron-forward" size={14} color={Colors.textSecondary} />
         </TouchableOpacity>
 
-        {myStatus !== null && STATUS_IS_OUT[myStatus] && (
-          <TouchableOpacity style={styles.inviteBtn} onPress={invite} disabled={inviting}>
-            {inviting
-              ? <ActivityIndicator size="small" color="#fff" />
-              : <Text style={styles.inviteText}>{t('whosOutside.invite')}</Text>
-            }
+        {STATUS_IS_OUT[myStatus] && (
+          <TouchableOpacity style={styles.inviteBtn} onPress={() => setPicking(true)} disabled={inviting}>
+            <Text style={styles.inviteText}>{t('whosOutside.invite')}</Text>
           </TouchableOpacity>
         )}
       </View>
@@ -201,6 +203,7 @@ const styles = StyleSheet.create({
   rowTitle: { fontSize: 15, fontWeight: '700', color: Colors.text },
   rowSub:   { fontSize: 12, color: Colors.textSecondary, marginTop: 2 },
   rowPlace: { fontSize: 12, color: Colors.primary, fontWeight: '600', marginTop: 2 },
+  rowPhoto: { width: '100%', aspectRatio: 4 / 3, borderRadius: 12, marginTop: 10 },
 
   emptyEmoji: { fontSize: 52, marginBottom: 12 },
   emptyText:  { fontSize: 15, color: Colors.textSecondary, textAlign: 'center', lineHeight: 22 },

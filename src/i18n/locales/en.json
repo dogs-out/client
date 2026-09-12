@@ -326,7 +326,8 @@
       "experienceLabel": "Experience with dogs:",
       "experienceYears": "years",
       "sitterTagsLabel": "Sitter tags",
-      "sitterTagsHint": "(up to 4)"
+      "sitterTagsHint": "(up to 4)",
+      "cameraPermission": "Dogs Out needs camera access to take a photo. You can allow it in Settings."
     },
     "userProfile": {
       "profileFallback": "Profile",
@@ -617,7 +618,6 @@
   },
   "whosOutside": {
     "tab": "Who's outside",
-    "setStatus": "Set your status",
     "setStatusTitle": "Your status",
     "isOut": "{{name}} is out",
     "noPoint": "Out somewhere, no place shared",
@@ -632,8 +632,6 @@
     "usePoint": "Use my current location",
     "pointSet": "Location set",
     "saveStatus": "Save status",
-    "clearStatus": "Clear status",
-    "clearHint": "Tap the selected one again to clear it.",
     "forHours_one": "1 hour",
     "forHours_other": "{{count}} hours",
     "forDays_one": "1 day",
@@ -658,7 +656,19 @@
     "noSittableDogs": "Dogs show up here once you've matched with their owner.",
     "pickADog": "Pick the dog you're looking after.",
     "pickOnMap": "Pick on the map",
-    "currentLocation": "Your current location"
+    "currentLocation": "Your current location",
+    "photoLabel": "Add a photo",
+    "photoHint": "Optional — what the park looks like today, or your dog mid-zoomie.",
+    "takePhoto": "Take a photo",
+    "choosePhoto": "From library",
+    "inviteTitle": "Who should know?",
+    "inviteEveryone": "Tell everyone",
+    "inviteOr": "or pick a few",
+    "inviteNoMatches": "You have no matches yet. They show up here once you do.",
+    "inviteSelected_one": "Tell 1 person",
+    "inviteSelected_other": "Tell {{count}} people",
+    "inviteSentSome_one": "One friend knows you're out.",
+    "inviteSentSome_other": "{{count}} friends know you're out."
   },
   "birthday": {
     "ownTitle": "Woof woof — happy birthday!",

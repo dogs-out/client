@@ -326,7 +326,8 @@
       "experienceLabel": "Esperienza con i cani:",
       "experienceYears": "anni",
       "sitterTagsLabel": "Tag da sitter",
-      "sitterTagsHint": "(fino a 4)"
+      "sitterTagsHint": "(fino a 4)",
+      "cameraPermission": "Dogs Out ha bisogno dell'accesso alla fotocamera. Puoi consentirlo nelle impostazioni."
     },
     "userProfile": {
       "profileFallback": "Profilo",
@@ -710,7 +711,6 @@
   },
   "whosOutside": {
     "tab": "Chi è fuori",
-    "setStatus": "Imposta il tuo stato",
     "setStatusTitle": "Il tuo stato",
     "isOut": "{{name}} è fuori",
     "noPoint": "In giro, senza luogo condiviso",
@@ -725,8 +725,6 @@
     "usePoint": "Usa la posizione attuale",
     "pointSet": "Posizione impostata",
     "saveStatus": "Salva stato",
-    "clearStatus": "Rimuovi stato",
-    "clearHint": "Tocca di nuovo la selezione per rimuoverla.",
     "forHours_one": "1 ora",
     "forHours_other": "{{count}} ore",
     "forDays_one": "1 giorno",
@@ -751,7 +749,19 @@
     "noSittableDogs": "I cani compaiono qui appena fai match con il loro proprietario.",
     "pickADog": "Scegli il cane di cui ti stai occupando.",
     "pickOnMap": "Scegli sulla mappa",
-    "currentLocation": "La tua posizione attuale"
+    "currentLocation": "La tua posizione attuale",
+    "photoLabel": "Aggiungi una foto",
+    "photoHint": "Facoltativo — com'è il parco oggi, o il tuo cane nel bel mezzo di una corsa pazza.",
+    "takePhoto": "Scatta una foto",
+    "choosePhoto": "Dalla galleria",
+    "inviteTitle": "Chi deve saperlo?",
+    "inviteEveryone": "Avvisa tutti",
+    "inviteOr": "oppure scegline alcuni",
+    "inviteNoMatches": "Non hai ancora match. Appariranno qui appena ne avrai.",
+    "inviteSelected_one": "Avvisa 1 persona",
+    "inviteSelected_other": "Avvisa {{count}} persone",
+    "inviteSentSome_one": "Una persona sa che sei in giro.",
+    "inviteSentSome_other": "{{count}} persone sanno che sei in giro."
   },
   "birthday": {
     "ownTitle": "Bau bau — buon compleanno!",

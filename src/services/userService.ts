@@ -12,6 +12,15 @@ export const STATUS_SHARES_LOCATION: Record<WalkStatus, boolean> = {
   AT_HOME: false, BUSY: false,
 };
 
+/** Where everyone starts: an account that never picked a status is at home. */
+export const DEFAULT_STATUS: WalkStatus = 'AT_HOME';
+
+/** At home is the resting state and stands until changed; the rest run out. */
+export const STATUS_EXPIRES: Record<WalkStatus, boolean> = {
+  WALKING: true, AT_THE_PARK: true, SITTING: true, ON_VACATION: true, BUSY: true,
+  AT_HOME: false,
+};
+
 /** Mirrors WalkStatus.isOutAndAbout — who appears under Who's outside, and who may invite. */
 export const STATUS_IS_OUT: Record<WalkStatus, boolean> = {
   WALKING: true, AT_THE_PARK: true, SITTING: true,
@@ -30,6 +39,8 @@ export interface WalkingFriend {
   longitude: number | null;
   /** Set when the point was picked on the map, so the row can name the place. */
   placeName: string | null;
+  /** Optional photo they attached to the status. */
+  photo: string | null;
   until: string;
   distanceKm: number;
 }
@@ -85,6 +96,8 @@ export interface UserProfile {
   walkStatusLongitude: number | null;
   walkStatusPlaceName: string | null;
   walkStatusDogId: number | null;
+  /** Optional photo on the current status. */
+  walkStatusPhoto: string | null;
   /** Today is this user's birthday, or one of their dogs'. */
   celebratingToday: boolean;
   birthdayToday: boolean;
@@ -128,7 +141,18 @@ export const userService = {
     longitude?: number;
     placeName?: string;
     dogId?: number;
+    /** Keeps a photo already attached; without it, changing the status drops it. */
+    keepPhoto?: boolean;
   }): Promise<UserProfile> => api.put<UserProfile>('/users/me/status', body).then(r => r.data),
+
+  /** Attaches a photo to the current status. Takes a local file URI from the picker. */
+  setStatusPhoto: async (uri: string): Promise<UserProfile> => {
+    const form = await prepareForUpload(uri);
+    return api.put<UserProfile>('/users/me/status/photo', form, MULTIPART_CONFIG).then(r => r.data);
+  },
+
+  removeStatusPhoto: (): Promise<UserProfile> =>
+    api.delete<UserProfile>('/users/me/status/photo').then(r => r.data),
 
   /** Matches who are out right now. */
   getWalkingFriends: (): Promise<WalkingFriend[]> =>
@@ -138,8 +162,15 @@ export const userService = {
   getSittableDogs: (): Promise<SittableDog[]> =>
     api.get<SittableDog[]>('/users/me/sittable-dogs').then(r => r.data),
 
-  /** Tells matches you are out. Separate from setting the status, by design. */
-  inviteMatchesToWalk: (): Promise<void> => api.post('/users/me/status/invite').then(() => {}),
+  /**
+   * Tells matches you are out. Separate from setting the status, by design.
+   *
+   * <p>No ids means everyone you have matched with; a list narrows it to those.
+   * The server filters against the matches either way, so the list can never
+   * reach somebody new.
+   */
+  inviteMatchesToWalk: (userIds?: number[]): Promise<void> =>
+    api.post('/users/me/status/invite', { userIds: userIds ?? [] }).then(() => {}),
 
   /** Records acceptance of the terms on the account. Idempotent server-side. */
   acceptTerms: (): Promise<void> => api.post('/users/me/terms').then(() => {}),

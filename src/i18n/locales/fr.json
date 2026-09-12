@@ -326,7 +326,8 @@
       "experienceLabel": "Expérience avec les chiens :",
       "experienceYears": "ans",
       "sitterTagsLabel": "Tags de sitter",
-      "sitterTagsHint": "(jusqu'à 4)"
+      "sitterTagsHint": "(jusqu'à 4)",
+      "cameraPermission": "Dogs Out a besoin d'accéder à l'appareil photo. Tu peux l'autoriser dans les réglages."
     },
     "userProfile": {
       "profileFallback": "Profil",
@@ -710,7 +711,6 @@
   },
   "whosOutside": {
     "tab": "Qui est dehors",
-    "setStatus": "Définir ton statut",
     "setStatusTitle": "Ton statut",
     "isOut": "{{name}} est dehors",
     "noPoint": "Dehors, sans lieu partagé",
@@ -725,8 +725,6 @@
     "usePoint": "Utiliser ma position actuelle",
     "pointSet": "Position définie",
     "saveStatus": "Enregistrer",
-    "clearStatus": "Effacer le statut",
-    "clearHint": "Touche à nouveau la sélection pour l'effacer.",
     "forHours_one": "1 heure",
     "forHours_other": "{{count}} heures",
     "forDays_one": "1 jour",
@@ -751,7 +749,19 @@
     "noSittableDogs": "Les chiens apparaissent ici dès que tu as matché avec leur propriétaire.",
     "pickADog": "Choisis le chien que tu gardes.",
     "pickOnMap": "Choisir sur la carte",
-    "currentLocation": "Ta position actuelle"
+    "currentLocation": "Ta position actuelle",
+    "photoLabel": "Ajouter une photo",
+    "photoHint": "Facultatif — à quoi ressemble le parc aujourd'hui, ou ton chien en plein zoomie.",
+    "takePhoto": "Prendre une photo",
+    "choosePhoto": "Depuis la galerie",
+    "inviteTitle": "Qui doit le savoir ?",
+    "inviteEveryone": "Prévenir tout le monde",
+    "inviteOr": "ou choisis quelques personnes",
+    "inviteNoMatches": "Tu n'as pas encore de matchs. Ils apparaîtront ici dès que ce sera le cas.",
+    "inviteSelected_one": "Prévenir 1 personne",
+    "inviteSelected_other": "Prévenir {{count}} personnes",
+    "inviteSentSome_one": "Une personne sait que tu es dehors.",
+    "inviteSentSome_other": "{{count}} personnes savent que tu es dehors."
   },
   "birthday": {
     "ownTitle": "Wouf wouf — joyeux anniversaire !",
