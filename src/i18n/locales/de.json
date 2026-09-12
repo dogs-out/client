@@ -24,7 +24,7 @@
     "deleteForever": "Endgültig löschen",
     "deleteAccountError": "Konto konnte nicht gelöscht werden. Bitte versuche es erneut.",
     "sections": {
-      "discover": "Entdecken",
+      "app": "App",
       "account": "Konto",
       "privacy": "Privatsphäre",
       "support": "Support",
@@ -41,8 +41,15 @@
       "helpFaq": "Hilfe & FAQ",
       "termsPrivacy": "AGB & Datenschutz",
       "aboutDogsOut": "Über Dogs Out",
-      "deleteAccount": "Konto löschen",
-      "freezeBackground": "Hintergrund-Animation anhalten"
+      "deleteAccount": "Konto löschen"
+    },
+    "appearance": {
+      "title": "Darstellung",
+      "freezeLabel": "Hintergrund-Animation",
+      "freezeHint": "Die Pfoten, Bälle und Knochen, die hinter jedem Bildschirm treiben. Ausschalten hilft, wenn dich Bewegung stört — und spart etwas Akku.",
+      "on": "Animation ein",
+      "off": "Animation aus",
+      "footNote": "Diese Einstellung gilt nur für dieses Gerät und wandert nicht mit deinem Konto auf ein anderes Handy."
     }
   },
   "auth": {

@@ -24,7 +24,7 @@
     "deleteForever": "Delete forever",
     "deleteAccountError": "Could not delete account. Please try again.",
     "sections": {
-      "discover": "Discover",
+      "app": "App",
       "account": "Account",
       "privacy": "Privacy",
       "support": "Support",
@@ -41,8 +41,15 @@
       "helpFaq": "Help & FAQ",
       "termsPrivacy": "Terms & Privacy",
       "aboutDogsOut": "About Dogs Out",
-      "deleteAccount": "Delete account",
-      "freezeBackground": "Freeze background animation"
+      "deleteAccount": "Delete account"
+    },
+    "appearance": {
+      "title": "Appearance",
+      "freezeLabel": "Background animation",
+      "freezeHint": "The paws, balls and bones that drift behind every screen. Turning them off can help if motion bothers you, or to save a little battery.",
+      "on": "Animation on",
+      "off": "Animation off",
+      "footNote": "This setting lives on this device, so it does not follow your account to another phone."
     }
   },
   "auth": {

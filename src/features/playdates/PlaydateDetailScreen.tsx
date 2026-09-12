@@ -206,10 +206,23 @@ export default function PlaydateDetailScreen({ navigation, route }: Readonly<Pro
                 />
               </TouchableOpacity>
             </View>
-            <TouchableOpacity style={styles.mapsBtn} onPress={() => openInMaps(playdate)}>
-              <Ionicons name="navigate-outline" size={15} color={Colors.primary} />
-              <Text style={styles.mapsBtnText}>{t('playdates.detail.openInMaps')}</Text>
-            </TouchableOpacity>
+            {/* Side by side: both answer "and then what do I do with this?", and
+                a wrap lets the German labels take two lines instead of squeezing. */}
+            <View style={styles.actionRow}>
+              <TouchableOpacity style={styles.actionBtn} onPress={() => openInMaps(playdate)}>
+                <Ionicons name="navigate-outline" size={15} color={Colors.primary} />
+                <Text style={styles.actionBtnText} numberOfLines={2}>{t('playdates.detail.openInMaps')}</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.actionBtn}
+                onPress={saveToCalendar}
+                disabled={savingToCalendar}
+              >
+                <Ionicons name="calendar-outline" size={15} color={Colors.primary} />
+                <Text style={styles.actionBtnText} numberOfLines={2}>{t('playdates.detail.addToCalendar')}</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </GlassCard>
 
@@ -219,15 +232,6 @@ export default function PlaydateDetailScreen({ navigation, route }: Readonly<Pro
             <Ionicons name="time-outline" size={15} color={Colors.primary} /> {formatPlaydateTime(playdate.startsAt, i18n.language)}
           </Text>
           {playdate.description && <Text style={styles.description}>{playdate.description}</Text>}
-
-          <TouchableOpacity
-            style={styles.calendarBtn}
-            onPress={saveToCalendar}
-            disabled={savingToCalendar}
-          >
-            <Ionicons name="calendar-outline" size={16} color={Colors.primary} />
-            <Text style={styles.calendarBtnText}>{t('playdates.detail.addToCalendar')}</Text>
-          </TouchableOpacity>
 
           <TouchableOpacity
             style={styles.hostRow}
@@ -366,25 +370,20 @@ const styles = StyleSheet.create({
   parkName:{ fontSize: 16, fontWeight: '700', color: Colors.text },
   address: { fontSize: 13, color: Colors.textSecondary, marginTop: 2 },
   addressRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 2 },
-  mapsBtn: {
-    flexDirection: 'row', alignItems: 'center', alignSelf: 'flex-start', gap: 6,
-    marginTop: 10, paddingHorizontal: 12, paddingVertical: 8,
+  actionRow: { flexDirection: 'row', gap: 10, marginTop: 10 },
+  actionBtn: {
+    flex: 1,
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6,
+    paddingHorizontal: 10, paddingVertical: 9,
     borderRadius: 12, borderWidth: 1.5, borderColor: Colors.border,
     backgroundColor: 'rgba(46,158,107,0.06)',
   },
-  mapsBtnText: { fontSize: 13, fontWeight: '700', color: Colors.primary },
+  actionBtnText: { flexShrink: 1, fontSize: 13, fontWeight: '700', color: Colors.primary },
 
   card: { marginBottom: 16 },
 
   timeText:    { fontSize: 15, fontWeight: '700', color: Colors.text, marginBottom: 8 },
   description: { fontSize: 14, color: Colors.text, lineHeight: 20, marginBottom: 12 },
-  calendarBtn: {
-    flexDirection: 'row', alignItems: 'center', alignSelf: 'flex-start', gap: 6,
-    marginTop: 12, paddingHorizontal: 12, paddingVertical: 8,
-    borderRadius: 12, borderWidth: 1.5, borderColor: Colors.border,
-    backgroundColor: 'rgba(46,158,107,0.06)',
-  },
-  calendarBtnText: { fontSize: 13, fontWeight: '700', color: Colors.primary },
 
   hostRow:    { flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 2 },
   hostAvatar: { width: 34, height: 34, borderRadius: 17 },

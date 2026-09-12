@@ -24,7 +24,7 @@
     "deleteForever": "Supprimer définitivement",
     "deleteAccountError": "Impossible de supprimer le compte. Veuillez réessayer.",
     "sections": {
-      "discover": "Découvrir",
+      "app": "Application",
       "account": "Compte",
       "privacy": "Confidentialité",
       "support": "Support",
@@ -41,8 +41,15 @@
       "helpFaq": "Aide & FAQ",
       "termsPrivacy": "Conditions & confidentialité",
       "aboutDogsOut": "À propos de Dogs Out",
-      "deleteAccount": "Supprimer le compte",
-      "freezeBackground": "Figer l'animation de fond"
+      "deleteAccount": "Supprimer le compte"
+    },
+    "appearance": {
+      "title": "Apparence",
+      "freezeLabel": "Animation de fond",
+      "freezeHint": "Les pattes, balles et os qui flottent derrière chaque écran. Les désactiver aide si le mouvement te gêne, et économise un peu de batterie.",
+      "on": "Animation activée",
+      "off": "Animation désactivée",
+      "footNote": "Ce réglage reste sur cet appareil : il ne suit pas ton compte sur un autre téléphone."
     }
   },
   "auth": {

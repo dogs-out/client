@@ -24,7 +24,7 @@
     "deleteForever": "Elimina definitivamente",
     "deleteAccountError": "Impossibile eliminare l'account. Riprova.",
     "sections": {
-      "discover": "Scopri",
+      "app": "App",
       "account": "Account",
       "privacy": "Privacy",
       "support": "Supporto",
@@ -41,8 +41,15 @@
       "helpFaq": "Aiuto e FAQ",
       "termsPrivacy": "Termini e privacy",
       "aboutDogsOut": "Informazioni su Dogs Out",
-      "deleteAccount": "Elimina account",
-      "freezeBackground": "Blocca l'animazione di sfondo"
+      "deleteAccount": "Elimina account"
+    },
+    "appearance": {
+      "title": "Aspetto",
+      "freezeHint": "Le zampe, le palline e gli ossi che fluttuano dietro ogni schermata. Disattivarli aiuta se il movimento ti disturba e fa risparmiare un po' di batteria.",
+      "freezeLabel": "Animazione di sfondo",
+      "on": "Animazione attiva",
+      "off": "Animazione disattivata",
+      "footNote": "Questa impostazione resta su questo dispositivo e non segue il tuo account su un altro telefono."
     }
   },
   "auth": {

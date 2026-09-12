@@ -27,6 +27,7 @@ import UserProfileScreen from '../features/profile/UserProfileScreen';
 import BlockedUsersScreen from '../features/profile/BlockedUsersScreen';
 import NotificationSettingsScreen from '../features/profile/NotificationSettingsScreen';
 import LocationSettingsScreen from '../features/profile/LocationSettingsScreen';
+import AppearanceSettingsScreen from '../features/profile/AppearanceSettingsScreen';
 import HelpFaqScreen from '../features/profile/HelpFaqScreen';
 import TermsPrivacyScreen from '../features/profile/TermsPrivacyScreen';
 import AboutScreen from '../features/profile/AboutScreen';
@@ -148,6 +149,7 @@ export default function Navigation() {
         <Stack.Screen name="BlockedUsers"       component={BlockedUsersScreen} />
         <Stack.Screen name="NotificationSettings" component={NotificationSettingsScreen} />
         <Stack.Screen name="LocationSettings"     component={LocationSettingsScreen} />
+        <Stack.Screen name="AppearanceSettings"   component={AppearanceSettingsScreen} />
         <Stack.Screen name="HelpFaq"              component={HelpFaqScreen} />
         <Stack.Screen name="TermsPrivacy"         component={TermsPrivacyScreen} />
         <Stack.Screen name="About"                component={AboutScreen} />

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Switch, Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
@@ -8,7 +8,6 @@ import { RootStackParamList } from '../../types/navigation';
 import { FloatingBackground } from '../../components/FloatingBackground';
 import { GlassCard } from '../../components/GlassCard';
 import { Colors } from '../../constants/colors';
-import { appPrefs, useAppPrefs } from '../../utils/appPrefs';
 import { tokenStorage } from '../../utils/tokenStorage';
 import { userService } from '../../services/userService';
 import { notificationService } from '../../services/notificationService';
@@ -26,7 +25,6 @@ type SettingsRow = {
 
 export default function SettingsScreen({ navigation }: Readonly<Props>) {
   const { t } = useTranslation();
-  const prefs = useAppPrefs();
   const [isLocalAuth, setIsLocalAuth] = useState(true);
 
   useEffect(() => {
@@ -51,9 +49,12 @@ export default function SettingsScreen({ navigation }: Readonly<Props>) {
 
   const sections: { title: string; rows: SettingsRow[] }[] = [
     {
-      title: t('settings.sections.discover'),
+      title: t('settings.sections.app'),
       rows: [
         { icon: 'options-outline', label: t('settings.rows.discoveryPreferences'), onPress: () => navigation.navigate('DiscoverFilters') },
+        // Not under Privacy: how the app looks is not a question about who can see
+        // what, and a tester reasonably found it odd sitting there.
+        { icon: 'sparkles-outline', label: t('settings.appearance.title'), onPress: () => navigation.navigate('AppearanceSettings') },
       ],
     },
     {
@@ -69,11 +70,6 @@ export default function SettingsScreen({ navigation }: Readonly<Props>) {
       title: t('settings.sections.privacy'),
       rows: [
         { icon: 'location-outline',      label: t('settings.rows.locationSettings'),   onPress: () => navigation.navigate('LocationSettings') },
-        {
-          icon: 'sparkles-outline',
-          label: t('settings.rows.freezeBackground'),
-          toggle: { value: prefs.freezeBackground, onChange: v => appPrefs.set('freezeBackground', v) },
-        },
         { icon: 'eye-off-outline',        label: t('settings.rows.blockedUsers'),       onPress: () => navigation.navigate('BlockedUsers') },
       ],
     },
@@ -154,15 +150,7 @@ export default function SettingsScreen({ navigation }: Readonly<Props>) {
                       {row.label}
                     </Text>
                   </View>
-                  {row.toggle
-                    ? <Switch
-                        value={row.toggle.value}
-                        onValueChange={row.toggle.onChange}
-                        trackColor={{ false: Colors.border, true: Colors.primary }}
-                        thumbColor="#fff"
-                      />
-                    : <Ionicons name="chevron-forward" size={16} color={Colors.textSecondary} />
-                  }
+                  <Ionicons name="chevron-forward" size={16} color={Colors.textSecondary} />
                 </TouchableOpacity>
               ))}
             </GlassCard>
@@ -186,9 +174,12 @@ const styles = StyleSheet.create({
 
   row:       { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingVertical: 14 },
   rowBorder: { borderBottomWidth: 1, borderBottomColor: Colors.border },
-  rowLeft:   { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  // flex and a wrapping label, so a long translation at a large system font size
+  // pushes nothing off the screen. A German label at 130% text size had taken the
+  // full width and left the switch beyond the right edge, out of reach.
+  rowLeft:   { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 12, marginRight: 12 },
   iconWrap:  { width: 32, height: 32, borderRadius: 8, backgroundColor: 'rgba(46,158,107,0.10)', alignItems: 'center', justifyContent: 'center' },
   iconWrapDestructive: { backgroundColor: 'rgba(229,62,62,0.10)' },
-  rowLabel:  { fontSize: 15, color: Colors.text, fontWeight: '500' },
+  rowLabel:  { flex: 1, fontSize: 15, color: Colors.text, fontWeight: '500' },
   rowLabelDestructive: { color: Colors.error },
 });
