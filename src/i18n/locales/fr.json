@@ -756,10 +756,10 @@
   "birthday": {
     "ownTitle": "Wouf wouf — joyeux anniversaire !",
     "ownBody": "Toute l'équipe DogsOut te souhaite une merveilleuse journée, plein de friandises et de zoomies avec tes amis.",
-    "dogTitle": "Wouf wouf — joyeux anniversaire, {{dog}} !",
-    "dogBody": "Toute l'équipe DogsOut souhaite à {{dog}} une merveilleuse journée, plein de friandises et de zoomies avec ses amis.",
-    "bothTitle": "Wouf wouf — joyeux anniversaire à toi et à {{dog}} !",
-    "bothBody": "Le même anniversaire que ton chien, ça se fête. Toute l'équipe DogsOut vous souhaite à tous les deux une merveilleuse journée, plein de friandises et de zoomies avec vos amis.",
+    "dogTitle": "C'est l'anniversaire de {{dog}} !",
+    "dogBody": "Wouf wouf ! Toute l'équipe DogsOut souhaite à {{dog}} une merveilleuse journée, et à vous deux plein de friandises et de zoomies avec vos amis.",
+    "bothTitle": "Joyeux anniversaire à toi et à {{dog}} !",
+    "bothBody": "Wouf wouf ! Le même anniversaire que ton chien, ça se fête. Toute l'équipe DogsOut vous souhaite à tous les deux une merveilleuse journée, plein de friandises et de zoomies avec vos amis.",
     "signoff": "🐾 L'équipe DogsOut",
     "thanks": "Merci !"
   }

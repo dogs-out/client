@@ -99,4 +99,12 @@ describe('the greeting itself', () => {
       expect(messages.birthday.bothTitle).toContain('{{dog}}');
     }
   });
+
+  it('talks to the owner about the dog, never to the dog', () => {
+    // The dog is not the one holding the phone. Addressing it made the reader
+    // work out who was being spoken to, which is a strange way to open a card.
+    expect(en.birthday.dogTitle).not.toMatch(/happy birthday, /i);
+    expect(en.birthday.dogTitle).toContain("{{dog}}'s birthday");
+    expect(en.birthday.dogBody).toContain('wishes {{dog}}');
+  });
 });

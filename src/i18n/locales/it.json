@@ -756,10 +756,10 @@
   "birthday": {
     "ownTitle": "Bau bau — buon compleanno!",
     "ownBody": "Tutto il team di DogsOut ti augura una giornata meravigliosa, tanti premietti e tante corse pazze con i tuoi amici.",
-    "dogTitle": "Bau bau — buon compleanno, {{dog}}!",
-    "dogBody": "Tutto il team di DogsOut augura a {{dog}} una giornata meravigliosa, tanti premietti e tante corse pazze con i suoi amici.",
-    "bothTitle": "Bau bau — buon compleanno a te e a {{dog}}!",
-    "bothBody": "Compiere gli anni lo stesso giorno del tuo cane merita una festa. Tutto il team di DogsOut augura a entrambi una giornata meravigliosa, tanti premietti e tante corse pazze con i vostri amici.",
+    "dogTitle": "Oggi {{dog}} compie gli anni!",
+    "dogBody": "Bau bau! Tutto il team di DogsOut augura a {{dog}} una giornata meravigliosa, e a voi due tanti premietti e tante corse pazze con i vostri amici.",
+    "bothTitle": "Buon compleanno a te e a {{dog}}!",
+    "bothBody": "Bau bau! Compiere gli anni lo stesso giorno del tuo cane merita una festa. Tutto il team di DogsOut augura a entrambi una giornata meravigliosa, tanti premietti e tante corse pazze con i vostri amici.",
     "signoff": "🐾 Il team di DogsOut",
     "thanks": "Grazie!"
   }
