@@ -617,11 +617,10 @@
     "gridHint": "Tap a photo to rescale it"
   },
   "whosOutside": {
-    "tab": "Who's outside",
+    "tab": "Friends",
     "setStatusTitle": "Your status",
-    "isOut": "{{name}} is out",
     "noPoint": "Out somewhere, no place shared",
-    "empty": "None of your matches are out right now. Set your own status and let them know.",
+    "empty": "Your matches will show up here with what they're up to.",
     "invite": "Invite",
     "inviteSentTitle": "Sent",
     "inviteSentBody": "Your matches know you're out walking.",
@@ -649,7 +648,10 @@
     "line": {
       "WALKING": "{{name}} is walking {{dog}}",
       "AT_THE_PARK": "{{name}} is at the park with {{dog}}",
-      "SITTING": "{{name}} is out with {{dog}}"
+      "SITTING": "{{name}} is out with {{dog}}",
+      "AT_HOME": "{{name}} is at home",
+      "ON_VACATION": "{{name}} is away",
+      "BUSY": "{{name}} is busy"
     },
     "whichDog": "Which dog are you looking after?",
     "dogOf": "{{name}}'s dog",
@@ -668,7 +670,17 @@
     "inviteSelected_one": "Tell 1 person",
     "inviteSelected_other": "Tell {{count}} people",
     "inviteSentSome_one": "One friend knows you're out.",
-    "inviteSentSome_other": "{{count}} friends know you're out."
+    "inviteSentSome_other": "{{count}} friends know you're out.",
+    "you": "YOU",
+    "theDog": "their dog",
+    "mine": {
+      "WALKING": "You're out walking {{dog}}",
+      "AT_THE_PARK": "You're at the park with {{dog}}",
+      "SITTING": "You're out with {{dog}}",
+      "AT_HOME": "You're at home",
+      "ON_VACATION": "You're away",
+      "BUSY": "You're busy"
+    }
   },
   "birthday": {
     "ownTitle": "Woof woof — happy birthday!",

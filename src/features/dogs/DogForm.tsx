@@ -320,7 +320,15 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Re
               uri={cropIndex !== null ? photos[cropIndex]?.uri ?? null : null}
               onCancel={() => setCropQueue([])}
               onDone={uri => {
-                setPhotos(prev => prev.map((p, i) => i === cropIndex ? { kind: 'new', uri } : p));
+                setPhotos(prev => prev.map((p, i) => {
+                  if (i !== cropIndex) return p;
+                  // Re-cropping an existing photo uploads a new one, so the old
+                  // must be deleted too. Without this the server kept both, and
+                  // saving failed with "photoIds must contain exactly this dog's
+                  // photo ids" — the reorder list was one shorter than the dog.
+                  if (p.kind === 'existing') setRemovedIds(ids => [...ids, p.photoId]);
+                  return { kind: 'new', uri };
+                }));
                 nextInQueue();
               }}
             />

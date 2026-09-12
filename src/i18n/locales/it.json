@@ -710,11 +710,10 @@
     "gridHint": "Tocca una foto per ridimensionarla"
   },
   "whosOutside": {
-    "tab": "Chi è fuori",
+    "tab": "Amici",
     "setStatusTitle": "Il tuo stato",
-    "isOut": "{{name}} è fuori",
     "noPoint": "In giro, senza luogo condiviso",
-    "empty": "Nessuno dei tuoi match è fuori in questo momento. Imposta il tuo stato e faglielo sapere.",
+    "empty": "I tuoi match appariranno qui con quello che stanno facendo.",
     "invite": "Invita",
     "inviteSentTitle": "Inviato",
     "inviteSentBody": "I tuoi match sanno che sei fuori.",
@@ -742,7 +741,10 @@
     "line": {
       "WALKING": "{{name}} sta portando fuori {{dog}}",
       "AT_THE_PARK": "{{name}} è al parco con {{dog}}",
-      "SITTING": "{{name}} è in giro con {{dog}}"
+      "SITTING": "{{name}} è in giro con {{dog}}",
+      "AT_HOME": "{{name}} è a casa",
+      "ON_VACATION": "{{name}} è in viaggio",
+      "BUSY": "{{name}} è occupato"
     },
     "whichDog": "Di quale cane ti stai occupando?",
     "dogOf": "Cane di {{name}}",
@@ -761,7 +763,17 @@
     "inviteSelected_one": "Avvisa 1 persona",
     "inviteSelected_other": "Avvisa {{count}} persone",
     "inviteSentSome_one": "Una persona sa che sei in giro.",
-    "inviteSentSome_other": "{{count}} persone sanno che sei in giro."
+    "inviteSentSome_other": "{{count}} persone sanno che sei in giro.",
+    "you": "TU",
+    "theDog": "il suo cane",
+    "mine": {
+      "WALKING": "Stai portando fuori {{dog}}",
+      "AT_THE_PARK": "Sei al parco con {{dog}}",
+      "SITTING": "Sei in giro con {{dog}}",
+      "AT_HOME": "Sei a casa",
+      "ON_VACATION": "Sei in viaggio",
+      "BUSY": "Sei occupato"
+    }
   },
   "birthday": {
     "ownTitle": "Bau bau — buon compleanno!",

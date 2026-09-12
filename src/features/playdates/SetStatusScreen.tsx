@@ -64,6 +64,8 @@ export default function SetStatusScreen({ navigation, route }: Readonly<Props>) 
   // At home is the floor, not an empty selection: everybody is somewhere.
   const [status, setStatus] = useState<WalkStatus>(DEFAULT_STATUS);
   const [photo, setPhoto] = useState<string | null>(null);
+  /** The status the photo was attached to, so a change of status can drop it. */
+  const [photoStatus, setPhotoStatus] = useState<WalkStatus | null>(null);
   /** A newly picked local file, waiting to be uploaded when the status is saved. */
   const [pendingPhoto, setPendingPhoto] = useState<string | null>(null);
   const [cropping, setCropping] = useState<string | null>(null);
@@ -90,6 +92,7 @@ export default function SetStatusScreen({ navigation, route }: Readonly<Props>) 
         setStatus(me.walkStatus);
         setDogId(me.walkStatusDogId);
         setPhoto(me.walkStatusPhoto);
+        setPhotoStatus(me.walkStatus);
         if (me.walkStatusLatitude != null && me.walkStatusLongitude != null) {
           setPoint({
             latitude: me.walkStatusLatitude,
@@ -114,6 +117,8 @@ export default function SetStatusScreen({ navigation, route }: Readonly<Props>) 
 
   const chooseStatus = (next: WalkStatus) => {
     setStatus(next);
+    // Show what will actually be saved: the old photo is about the old status.
+    if (next !== photoStatus) { setPhoto(null); setPendingPhoto(null); }
     // Each status has its own range, so carry the span across rather than reset
     // it — two hours becomes the shortest holiday, not a silent jump to weeks.
     setHours(nearestStop(next, hours));
@@ -176,9 +181,10 @@ export default function SetStatusScreen({ navigation, route }: Readonly<Props>) 
         ...(shares ? { latitude: point.latitude, longitude: point.longitude } : {}),
         ...(shares && point.name ? { placeName: point.name } : {}),
         ...(needsDog && dogId !== null ? { dogId } : {}),
-        // Without this the server drops the photo, which is what should happen
-        // when the status changes and the old photo no longer describes it.
-        ...(photo && !pendingPhoto ? { keepPhoto: true } : {}),
+        // A photo describes the status it was taken for, so it only survives a
+        // save that leaves the status alone. Carrying this morning's "at home"
+        // picture into an afternoon walk says nothing about the walk.
+        ...(photo && !pendingPhoto && status === photoStatus ? { keepPhoto: true } : {}),
       });
       if (pendingPhoto) await userService.setStatusPhoto(pendingPhoto);
       else if (removePhoto) await userService.removeStatusPhoto();

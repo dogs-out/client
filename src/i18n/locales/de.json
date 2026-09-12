@@ -710,11 +710,10 @@
     "gridHint": "Tippe ein Foto an, um es neu zu skalieren"
   },
   "whosOutside": {
-    "tab": "Wer ist draussen",
+    "tab": "Freunde",
     "setStatusTitle": "Dein Status",
-    "isOut": "{{name}} ist draussen",
     "noPoint": "Unterwegs, ohne Standort",
-    "empty": "Gerade ist niemand aus deinen Matches unterwegs. Setze deinen Status und sag Bescheid.",
+    "empty": "Deine Matches erscheinen hier mit dem, was sie gerade machen.",
     "invite": "Einladen",
     "inviteSentTitle": "Gesendet",
     "inviteSentBody": "Deine Matches wissen, dass du unterwegs bist.",
@@ -742,7 +741,10 @@
     "line": {
       "WALKING": "{{name}} ist mit {{dog}} unterwegs",
       "AT_THE_PARK": "{{name}} ist mit {{dog}} im Park",
-      "SITTING": "{{name}} ist mit {{dog}} unterwegs"
+      "SITTING": "{{name}} ist mit {{dog}} unterwegs",
+      "AT_HOME": "{{name}} ist zu Hause",
+      "ON_VACATION": "{{name}} ist verreist",
+      "BUSY": "{{name}} ist beschäftigt"
     },
     "whichDog": "Welchen Hund hütest du?",
     "dogOf": "Hund von {{name}}",
@@ -761,7 +763,17 @@
     "inviteSelected_one": "1 Person benachrichtigen",
     "inviteSelected_other": "{{count}} Personen benachrichtigen",
     "inviteSentSome_one": "Eine Freundin oder ein Freund weiss, dass du unterwegs bist.",
-    "inviteSentSome_other": "{{count}} Freunde wissen, dass du unterwegs bist."
+    "inviteSentSome_other": "{{count}} Freunde wissen, dass du unterwegs bist.",
+    "you": "DU",
+    "theDog": "ihrem Hund",
+    "mine": {
+      "WALKING": "Du bist mit {{dog}} unterwegs",
+      "AT_THE_PARK": "Du bist mit {{dog}} im Park",
+      "SITTING": "Du bist mit {{dog}} unterwegs",
+      "AT_HOME": "Du bist zu Hause",
+      "ON_VACATION": "Du bist verreist",
+      "BUSY": "Du bist beschäftigt"
+    }
   },
   "birthday": {
     "ownTitle": "Wuff wuff — alles Gute zum Geburtstag!",

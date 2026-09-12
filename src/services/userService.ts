@@ -27,7 +27,11 @@ export const STATUS_IS_OUT: Record<WalkStatus, boolean> = {
   ON_VACATION: false, AT_HOME: false, BUSY: false,
 };
 
-export interface WalkingFriend {
+/**
+ * A match and what they are up to. Everyone appears, not only the ones who are
+ * out — a list that empties itself when nobody is walking tells you nothing.
+ */
+export interface FriendStatus {
   userId: number;
   name: string;
   profilePicture: string | null;
@@ -154,9 +158,9 @@ export const userService = {
   removeStatusPhoto: (): Promise<UserProfile> =>
     api.delete<UserProfile>('/users/me/status/photo').then(r => r.data),
 
-  /** Matches who are out right now. */
-  getWalkingFriends: (): Promise<WalkingFriend[]> =>
-    api.get<WalkingFriend[]>('/users/walking').then(r => r.data),
+  /** Every match and their current status, whoever is out listed first. */
+  getFriendStatuses: (): Promise<FriendStatus[]> =>
+    api.get<FriendStatus[]>('/users/walking').then(r => r.data),
 
   /** The dogs this account may say it is sitting: those belonging to its matches. */
   getSittableDogs: (): Promise<SittableDog[]> =>

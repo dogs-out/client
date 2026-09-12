@@ -363,7 +363,8 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: R
             onDone={uri => {
               // A re-crop replaces the photo in place. An existing one becomes a
               // new upload on save, because the server stores renditions rather
-              // than an editable original.
+              // than an editable original — and the save below deletes whatever
+              // is no longer in the existing list, so the old one goes with it.
               setPhotos(prev => prev.map((p, i) => i === cropIndex ? { kind: 'new', uri } : p));
               nextInQueue();
             }}

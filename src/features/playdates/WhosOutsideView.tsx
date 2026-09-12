@@ -13,13 +13,19 @@ import { GlassCard } from '../../components/GlassCard';
 import { Colors } from '../../constants/colors';
 import { useTabBarHeight } from '../../components/GlassTabBar';
 import { RootStackParamList } from '../../types/navigation';
-import { userService, DEFAULT_STATUS, STATUS_IS_OUT, WalkingFriend, WalkStatus } from '../../services/userService';
+import { userService, DEFAULT_STATUS, FriendStatus, STATUS_IS_OUT, WalkStatus } from '../../services/userService';
+import { dogService } from '../../services/dogService';
 import { InvitePicker } from './InvitePicker';
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
 /**
- * Who among your matches is out right now.
+ * Your matches and what they are up to, whoever is out listed first.
+ *
+ * <p>Everyone appears, because a list that empties itself whenever nobody happens
+ * to be walking tells you nothing — and knowing a friend is away for a fortnight
+ * is worth as much as knowing they are at the park. Ordering does the work a
+ * filter used to: the part you can act on is at the top.
  *
  * <p>Matches only, because the row can carry roughly where somebody is standing.
  * That is the same reason the invite is a button rather than something that fires
@@ -33,16 +39,43 @@ export function WhosOutsideView() {
   const tabBarHeight = useTabBarHeight();
   const navigation = useNavigation<Nav>();
 
-  const [friends, setFriends] = useState<WalkingFriend[]>([]);
+  const [friends, setFriends] = useState<FriendStatus[]>([]);
   const [myStatus, setMyStatus] = useState<WalkStatus>(DEFAULT_STATUS);
+  /** My own status as a row, so I see exactly what my friends see. */
+  const [mine, setMine] = useState<FriendStatus | null>(null);
   const [picking, setPicking] = useState(false);
   const [loading, setLoading] = useState(true);
   const [inviting, setInviting] = useState(false);
-  const [onMap, setOnMap] = useState<WalkingFriend | null>(null);
+  const [onMap, setOnMap] = useState<FriendStatus | null>(null);
 
   const load = useCallback(() => {
-    Promise.all([userService.getWalkingFriends(), userService.getMe()])
-      .then(([walking, me]) => { setFriends(walking); setMyStatus(me.walkStatus ?? DEFAULT_STATUS); })
+    Promise.all([
+      userService.getFriendStatuses(),
+      userService.getMe(),
+      userService.getSittableDogs(),
+      dogService.getMyDogs().catch(() => []),
+    ])
+      .then(([all, me, sittable, myDogs]) => {
+        setFriends(all);
+        setMyStatus(me.walkStatus ?? DEFAULT_STATUS);
+        setMine({
+          userId: me.id,
+          name: me.name,
+          profilePicture: me.profilePicture,
+          // The dog being sat belongs to somebody else, so its name comes from
+          // the list of dogs I am allowed to name rather than from my own.
+          dogNames: me.walkStatus === 'SITTING'
+            ? sittable.filter(d => d.dogId === me.walkStatusDogId).map(d => d.name)
+            : myDogs.map(d => d.name),
+          status: me.walkStatus ?? DEFAULT_STATUS,
+          latitude: me.walkStatusLatitude,
+          longitude: me.walkStatusLongitude,
+          placeName: me.walkStatusPlaceName,
+          photo: me.walkStatusPhoto,
+          until: me.walkStatusExpiresAt ?? '',
+          distanceKm: -1,
+        });
+      })
       .catch(() => { /* the empty state says enough */ })
       .finally(() => setLoading(false));
   }, []);
@@ -66,18 +99,21 @@ export function WhosOutsideView() {
     }
   };
 
-  const renderFriend = ({ item }: { item: WalkingFriend }) => {
+  const renderFriend = ({ item, isMine }: { item: FriendStatus; isMine?: boolean }) => {
     const dogs = item.dogNames.join(' & ');
     // No point shared means no map to open, so the row stays flat rather than
     // offering a tap that goes nowhere.
     const hasPoint = item.latitude !== null && item.longitude !== null;
+    const out = STATUS_IS_OUT[item.status];
     // "at the park" and "sitting Luna" are different sentences, not the same one
-    // with a word swapped, so each status gets its own phrasing.
-    const line = dogs
-      ? t(`whosOutside.line.${item.status}`, { name: item.name, dog: dogs })
-      : t('whosOutside.isOut', { name: item.name });
+    // with a word swapped, so each status gets its own phrasing — and my own row
+    // is written in the second person, since "Moritz is at home" is a strange
+    // thing to read about yourself.
+    const prefix = isMine ? 'whosOutside.mine' : 'whosOutside.line';
+    const line = t(`${prefix}.${item.status}`, { name: item.name, dog: dogs || t('whosOutside.theDog') });
     return (
-      <GlassCard style={styles.card}>
+      <GlassCard style={[styles.card, !out && styles.cardResting, isMine && styles.cardMine]}>
+        {isMine && <Text style={styles.youTag}>{t('whosOutside.you')}</Text>}
         <TouchableOpacity
           style={styles.row}
           activeOpacity={hasPoint ? 0.7 : 1}
@@ -132,7 +168,8 @@ export function WhosOutsideView() {
       <FlatList
         data={friends}
         keyExtractor={item => String(item.userId)}
-        renderItem={renderFriend}
+        renderItem={({ item }) => renderFriend({ item })}
+        ListHeaderComponent={mine ? renderFriend({ item: mine, isMine: true }) : null}
         style={styles.flex}
         contentContainerStyle={[styles.list, { paddingBottom: tabBarHeight + 24 }]}
         showsVerticalScrollIndicator={false}
@@ -167,9 +204,10 @@ export function WhosOutsideView() {
                 <Ionicons name="close" size={26} color={Colors.text} />
               </TouchableOpacity>
               <Text style={styles.mapTitle} numberOfLines={1}>
-                {onMap.placeName ?? (onMap.dogNames.length > 0
-                  ? t(`whosOutside.line.${onMap.status}`, { name: onMap.name, dog: onMap.dogNames.join(' & ') })
-                  : t('whosOutside.isOut', { name: onMap.name }))}
+                {onMap.placeName ?? t(`whosOutside.line.${onMap.status}`, {
+                  name: onMap.name,
+                  dog: onMap.dogNames.join(' & ') || t('whosOutside.theDog'),
+                })}
               </Text>
               <View style={{ width: 26 }} />
             </View>
@@ -199,7 +237,11 @@ const styles = StyleSheet.create({
   inviteText: { color: '#fff', fontSize: 13, fontWeight: '700' },
 
   list: { paddingHorizontal: 20, paddingBottom: 24, flexGrow: 1 },
-  card: { marginTop: 10 },
+  card:        { marginTop: 10 },
+  // Quieter for the statuses that are not an invitation to go anywhere.
+  cardResting: { opacity: 0.72 },
+  cardMine:    { borderColor: Colors.primary, borderWidth: 1.5 },
+  youTag:      { fontSize: 10, fontWeight: '800', color: Colors.primary, letterSpacing: 0.6, marginBottom: 6 },
   row:  { flexDirection: 'row', alignItems: 'center' },
   avatar: { width: 48, height: 48, borderRadius: 24, marginRight: 12 },
   avatarPlaceholder: { backgroundColor: 'rgba(46,158,107,0.12)', alignItems: 'center', justifyContent: 'center' },

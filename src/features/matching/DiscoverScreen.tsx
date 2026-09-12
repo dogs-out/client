@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
-  Animated, Dimensions, Easing, PanResponder,
+  Animated, Dimensions, Easing, PanResponder, Pressable,
   StyleSheet, Text, TouchableOpacity, View, ActivityIndicator,
 } from 'react-native';
 import { RemoteImage } from '../../components/ui/RemoteImage';
@@ -177,6 +177,8 @@ export default function DiscoverScreen() {
   // on some renders and not others — which crashes as soon as the lock lifts.
   const insets = useSafeAreaInsets();
   const tabBarHeight = useTabBarHeight();
+  /** Measured rather than assumed, so the halfway line is the card's real middle. */
+  const tapWidthRef = useRef(0);
   const [feed, setFeed] = useState<DiscoverProfile[]>([]);
   const [idx, setIdx] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -548,11 +550,18 @@ export default function DiscoverScreen() {
             )}
           </LinearGradient>
 
-          {/* Rendered after the overlay, so they are genuinely on top: on both
-              platforms the last sibling wins a touch, which needs no per-platform
-              reasoning at all. */}
-          <TouchableOpacity style={styles.tapLeft}  onPress={() => tapPhoto('left')} />
-          <TouchableOpacity style={styles.tapRight} onPress={() => tapPhoto('right')} />
+          {/* One target over the whole card, deciding the side from where the
+              finger landed. Two half-width siblings kept losing the lower half of
+              the card on Android — whichever overlay was to blame, a single view
+              that covers everything cannot be half-covered by anything. */}
+          <Pressable
+            style={StyleSheet.absoluteFill}
+            onLayout={e => { tapWidthRef.current = e.nativeEvent.layout.width; }}
+            onPress={e => {
+              const width = tapWidthRef.current || CARD_W;
+              tapPhoto(e.nativeEvent.locationX < width / 2 ? 'left' : 'right');
+            }}
+          />
 
           {/* And this last of all, so it stays above the tap zones. */}
           <TouchableOpacity style={styles.toggleBtn} onPress={() => setShowOwner(v => !v)}>
@@ -635,11 +644,6 @@ const styles = StyleSheet.create({
   progressBar:       { flex: 1, height: 3, borderRadius: 2, backgroundColor: 'rgba(255,255,255,0.35)' },
   progressBarActive: { backgroundColor: '#fff' },
 
-  // Half the card each, full height. The gradient and its text sit on top but pass
-  // touches through (box-none / none), so the name, tags and bio are tappable too —
-  // only the owner avatar, which is a real button, takes its own taps.
-  tapLeft:  { position: 'absolute', left: 0,  top: 0, bottom: 0, width: '50%' },
-  tapRight: { position: 'absolute', right: 0, top: 0, bottom: 0, width: '50%' },
 
   treatBadge:   { position: 'absolute', top: 40, left: 16, borderWidth: 3, borderColor: Colors.primary, borderRadius: 8, paddingHorizontal: 10, paddingVertical: 4, transform: [{ rotate: '-15deg' }] },
   treatText:    { fontSize: 22, fontWeight: '900', color: Colors.primary },
