@@ -704,7 +704,7 @@
   },
   "photoCrop": {
     "title": "Inquadra la foto",
-    "hint": "Pizzica per ingrandire, trascina per spostare.",
+    "hint": "Zooma con due dita o con il cursore, poi sposta la foto",
     "use": "Usa questa foto",
     "gridHint": "Tocca una foto per ridimensionarla"
   },

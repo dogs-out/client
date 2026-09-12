@@ -7,6 +7,8 @@ import { ImageManipulator, SaveFormat } from 'expo-image-manipulator';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { Colors } from '../constants/colors';
+import { CustomSlider } from './CustomSlider';
+import { clampScale, maxOffset, pinchScale, touchDistance } from '../utils/pinch';
 
 /** Matches the feed rendition the server produces, so what you frame is what shows. */
 const FRAME_RATIO = 3 / 4;
@@ -36,6 +38,9 @@ export function PhotoCropModal({ uri, onCancel, onDone }: Readonly<Props>) {
   const { t } = useTranslation();
   const { width } = useWindowDimensions();
   const [working, setWorking] = useState(false);
+  // Mirrors state.current.scale for the slider. The gesture keeps writing straight
+  // to the Animated value; this only follows along so the control has a position.
+  const [zoom, setZoom] = useState(MIN_SCALE);
   const [natural, setNatural] = useState<{ width: number; height: number } | null>(null);
 
   const frameW = width - 48;
@@ -59,18 +64,29 @@ export function PhotoCropModal({ uri, onCancel, onDone }: Readonly<Props>) {
     scale.setValue(1);
     translateX.setValue(0);
     translateY.setValue(0);
+    setZoom(MIN_SCALE);
   }, [uri, scale, translateX, translateY]);
+
+  /** Single place that moves the zoom, whichever control asked for it. */
+  const applyZoom = (next: number) => {
+    state.current.scale = clampScale(next, MIN_SCALE, MAX_SCALE, state.current.scale);
+    scale.setValue(state.current.scale);
+    setZoom(state.current.scale);
+    clampOffsets();
+  };
 
   /** Keeps the photo covering the frame, so no empty corner can be saved. */
   const clampOffsets = () => {
-    const s = state.current.scale;
-    const maxX = Math.max(0, (frameW * s - frameW) / 2);
-    const maxY = Math.max(0, (frameH * s - frameH) / 2);
-    state.current.x = clamp(state.current.x, -maxX, maxX);
-    state.current.y = clamp(state.current.y, -maxY, maxY);
+    const maxX = maxOffset(frameW, state.current.scale);
+    const maxY = maxOffset(frameH, state.current.scale);
+    state.current.x = clampScale(state.current.x, -maxX, maxX, 0);
+    state.current.y = clampScale(state.current.y, -maxY, maxY, 0);
     translateX.setValue(state.current.x);
     translateY.setValue(state.current.y);
   };
+
+  const setZoomRef = useRef(setZoom);
+  useEffect(() => { setZoomRef.current = setZoom; }, []);
 
   const pan = useRef(PanResponder.create({
     onStartShouldSetPanResponder: () => true,
@@ -82,22 +98,28 @@ export function PhotoCropModal({ uri, onCancel, onDone }: Readonly<Props>) {
       state.current.startDistance = 0;
     },
     onPanResponderMove: (e, gesture) => {
-      const touches = e.nativeEvent.touches;
+      // numberActiveTouches rather than touches.length: the gesture state counts
+      // every finger down, while the touch array is only as complete as the
+      // platform chose to make it.
+      const pinching = gesture.numberActiveTouches >= 2;
+      const distance = touchDistance(e.nativeEvent.touches);
 
-      if (touches.length >= 2) {
-        const [a, b] = touches;
-        const distance = Math.hypot(a.pageX - b.pageX, a.pageY - b.pageY);
-        // First frame of the pinch sets the reference the ratio is measured from.
-        if (state.current.startDistance === 0) {
+      if (pinching) {
+        // A pinch we cannot measure leaves the photo alone rather than dragging
+        // it by the centroid, which is what two fingers would otherwise do.
+        if (distance === null) return;
+
+        // First measurable frame sets the reference the ratio works from.
+        if (state.current.startDistance <= 0) {
           state.current.startDistance = distance;
           state.current.startScale = state.current.scale;
           return;
         }
-        state.current.scale = clamp(
-          state.current.startScale * (distance / state.current.startDistance),
-          MIN_SCALE, MAX_SCALE);
+        state.current.scale = pinchScale(
+          state.current.startScale, state.current.startDistance, distance, MIN_SCALE, MAX_SCALE);
         scale.setValue(state.current.scale);
         clampOffsets();
+        setZoomRef.current(state.current.scale);
         return;
       }
 
@@ -168,6 +190,19 @@ export function PhotoCropModal({ uri, onCancel, onDone }: Readonly<Props>) {
               />
             )}
           </View>
+          <View style={styles.zoomRow}>
+            <Ionicons name="remove" size={18} color="rgba(255,255,255,0.75)" />
+            <View style={styles.zoomSlider}>
+              <CustomSlider
+                value={zoom}
+                min={MIN_SCALE}
+                max={MAX_SCALE}
+                step={0.05}
+                onChange={applyZoom}
+              />
+            </View>
+            <Ionicons name="add" size={18} color="rgba(255,255,255,0.75)" />
+          </View>
           <Text style={styles.hint}>{t('photoCrop.hint')}</Text>
         </View>
 
@@ -200,7 +235,9 @@ const styles = StyleSheet.create({
 
   stage: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   frame: { overflow: 'hidden', borderRadius: 14, backgroundColor: '#1A1A1A' },
-  hint:  { color: 'rgba(255,255,255,0.65)', fontSize: 13, marginTop: 16, textAlign: 'center', paddingHorizontal: 32 },
+  hint:  { color: 'rgba(255,255,255,0.65)', fontSize: 13, marginTop: 4, textAlign: 'center', paddingHorizontal: 32 },
+  zoomRow: { flexDirection: 'row', alignItems: 'center', gap: 10, alignSelf: 'stretch', paddingHorizontal: 24, marginTop: 14 },
+  zoomSlider: { flex: 1 },
 
   footer: { paddingHorizontal: 24, paddingBottom: 36 },
   useBtn: {

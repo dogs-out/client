@@ -704,7 +704,7 @@
   },
   "photoCrop": {
     "title": "Foto ausrichten",
-    "hint": "Zum Zoomen zwei Finger, zum Verschieben ziehen.",
+    "hint": "Zoomen mit zwei Fingern oder dem Regler, dann das Foto verschieben",
     "use": "Dieses Foto verwenden",
     "gridHint": "Tippe ein Foto an, um es neu zu skalieren"
   },

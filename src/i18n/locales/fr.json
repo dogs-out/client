@@ -704,7 +704,7 @@
   },
   "photoCrop": {
     "title": "Cadrer ta photo",
-    "hint": "Pince pour zoomer, glisse pour déplacer.",
+    "hint": "Zoome à deux doigts ou avec le curseur, puis déplace la photo",
     "use": "Utiliser cette photo",
     "gridHint": "Touche une photo pour la redimensionner"
   },
