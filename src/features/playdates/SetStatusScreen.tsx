@@ -151,7 +151,10 @@ export default function SetStatusScreen({ navigation, route }: Readonly<Props>) 
         ...(shares && point.name ? { placeName: point.name } : {}),
         ...(needsDog && dogId !== null ? { dogId } : {}),
       });
-      navigation.goBack();
+      // popToTop, not goBack: the map picker may still be on the stack behind
+      // this screen, and going back one step lands on it — so saving a status
+      // dropped people back into picking a place they had just finished picking.
+      navigation.popToTop();
     } catch (e) {
       Alert.alert(t('common.error'), getApiError(e));
     } finally {

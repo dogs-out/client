@@ -112,18 +112,19 @@ export default function ParkPickerScreen({ navigation, route }: Readonly<Props>)
 
   const confirm = () => {
     if (!selected) return;
-    // The picker serves both the playdate form and the status screen; navigating
-    // by name rather than going back is what carries the pick as a param.
+    // popTo rather than navigate, and merge rather than replace. Both matter:
     //
-    // merge is what makes editing work. Without it these params REPLACE the
-    // screen's existing ones, so playdateId vanishes and the form, no longer
-    // knowing it was editing, creates a second playdate on save — which is
-    // exactly what happened to anyone who changed a playdate's location.
-    if (route.params?.returnTo === 'SetStatus') {
-      navigation.navigate({ name: 'SetStatus', params: { pickedPlace: selected }, merge: true });
-      return;
-    }
-    navigation.navigate({ name: 'CreatePlaydate', params: { pickedPark: selected }, merge: true });
+    // merge keeps the params the screen already had. Without it they are REPLACED,
+    // so playdateId vanished and the form, no longer knowing it was editing, made
+    // a second playdate on save — which is what happened to anyone who changed a
+    // playdate's location.
+    //
+    // popTo guarantees we return to the screen that sent us here rather than
+    // risking a second copy pushed on top of the picker, which is what leaves
+    // someone staring at this form again after they have already saved.
+    const target = route.params?.returnTo === 'SetStatus' ? 'SetStatus' : 'CreatePlaydate';
+    const params = target === 'SetStatus' ? { pickedPlace: selected } : { pickedPark: selected };
+    navigation.popTo(target, params, { merge: true });
   };
 
   return (
