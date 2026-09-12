@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator, Animated, Image, Modal, PanResponder,
   StyleSheet, Text, TouchableOpacity, View, useWindowDimensions,
@@ -48,6 +48,18 @@ export function PhotoCropModal({ uri, onCancel, onDone }: Readonly<Props>) {
   const translateY = useRef(new Animated.Value(0)).current;
 
   const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v));
+
+  // Every photo starts unzoomed and centred. Without this the editor opens on the
+  // next photo still holding the last one's zoom and offset — which is wrong on
+  // its own, and glaring now that picking several photos walks through them all.
+  useEffect(() => {
+    if (!uri) return;
+    setNatural(null);
+    state.current = { scale: 1, x: 0, y: 0, startDistance: 0, startScale: 1, startX: 0, startY: 0 };
+    scale.setValue(1);
+    translateX.setValue(0);
+    translateY.setValue(0);
+  }, [uri, scale, translateX, translateY]);
 
   /** Keeps the photo covering the frame, so no empty corner can be saved. */
   const clampOffsets = () => {

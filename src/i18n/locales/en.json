@@ -567,10 +567,11 @@
       "calendarAddedBody": "The playdate is in your calendar.",
       "calendarDenied": "Dogs Out needs calendar access to add the playdate. You can allow it in Settings.",
       "calendarFailedTitle": "Couldn't add it",
-      "calendarFailedBody": "We couldn't write to your calendar. You can open the playdate in Google Calendar instead.",
-      "calendarNoneBody": "This phone has no calendar that apps can write to. You can still open the playdate in Google Calendar.",
       "calendarOpenGoogle": "Open Google Calendar",
-      "openInMaps": "Open in Maps"
+      "openInMaps": "Open in Maps",
+      "calendarFallbackTitle": "Open in Google Calendar",
+      "calendarFallbackBody": "Dogs Out can't save events to this phone's calendar, so here's the playdate in Google Calendar with everything already filled in.",
+      "calendarNotNow": "Not now"
     },
     "chat": {
       "placeholder": "Message the group…",

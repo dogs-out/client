@@ -57,7 +57,10 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Re
   const [dateOfBirth, setDateOfBirth] = useState<Date | null>(null);
   const [bio, setBio]                 = useState('');
   const [photos, setPhotos]           = useState<PhotoState[]>([]);
-  const [cropIndex, setCropIndex] = useState<number | null>(null);
+  // See ProfileForm: a queue so every newly picked photo gets offered for framing.
+  const [cropQueue, setCropQueue] = useState<number[]>([]);
+  const cropIndex = cropQueue.length > 0 ? cropQueue[0] : null;
+  const nextInQueue = () => setCropQueue(q => q.slice(1));
   // The grid used to size its tiles with a percentage width and an aspectRatio,
   // and derived nothing concrete for the line height — so once a second row was
   // needed (four photos or more) the two rows were laid out on top of each other,
@@ -116,7 +119,7 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Re
     // selectionLimit is advisory on some Android pickers, so clamp it here too.
     const picked = result.assets.slice(0, remaining).map(a => ({ kind: 'new' as const, uri: a.uri }));
     if (picked.length > 0) {
-      setPhotos(prev => { setCropIndex(prev.length); return [...prev, ...picked]; });
+      setPhotos(prev => { setCropQueue(picked.map((_, i) => prev.length + i)); return [...prev, ...picked]; });
     }
   };
 
@@ -282,7 +285,7 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Re
                       <>
                         <TouchableOpacity
                           style={StyleSheet.absoluteFill}
-                          onPress={() => setCropIndex(i)}
+                          onPress={() => setCropQueue([i])}
                           activeOpacity={0.85}
                         >
                           <RemoteImage source={{ uri: photo.uri }} style={styles.photoThumb} />
@@ -315,10 +318,10 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Re
 
             <PhotoCropModal
               uri={cropIndex !== null ? photos[cropIndex]?.uri ?? null : null}
-              onCancel={() => setCropIndex(null)}
+              onCancel={() => setCropQueue([])}
               onDone={uri => {
                 setPhotos(prev => prev.map((p, i) => i === cropIndex ? { kind: 'new', uri } : p));
-                setCropIndex(null);
+                nextInQueue();
               }}
             />
           </GlassCard>

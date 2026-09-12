@@ -114,11 +114,16 @@ export default function ParkPickerScreen({ navigation, route }: Readonly<Props>)
     if (!selected) return;
     // The picker serves both the playdate form and the status screen; navigating
     // by name rather than going back is what carries the pick as a param.
+    //
+    // merge is what makes editing work. Without it these params REPLACE the
+    // screen's existing ones, so playdateId vanishes and the form, no longer
+    // knowing it was editing, creates a second playdate on save — which is
+    // exactly what happened to anyone who changed a playdate's location.
     if (route.params?.returnTo === 'SetStatus') {
-      navigation.navigate('SetStatus', { pickedPlace: selected });
+      navigation.navigate({ name: 'SetStatus', params: { pickedPlace: selected }, merge: true });
       return;
     }
-    navigation.navigate('CreatePlaydate', { pickedPark: selected });
+    navigation.navigate({ name: 'CreatePlaydate', params: { pickedPark: selected }, merge: true });
   };
 
   return (

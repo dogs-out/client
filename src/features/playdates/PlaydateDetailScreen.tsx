@@ -127,16 +127,16 @@ export default function PlaydateDetailScreen({ navigation, route }: Readonly<Pro
       return;
     }
 
-    // Writing to the device calendar did not work — say why, and offer the route
-    // that needs no permission and no synced account rather than dead-ending.
+    // Not an error to the person holding the phone: plenty of devices simply have
+    // no calendar an app may write to. Offer the route that needs no permission
+    // and no synced account, worded as the next step rather than a failure —
+    // testers read the old "Couldn't add it" as something being broken.
     if (reason) console.warn('[calendar] write failed:', reason);
     Alert.alert(
-      t('playdates.detail.calendarFailedTitle'),
-      t(result === 'no-calendar'
-        ? 'playdates.detail.calendarNoneBody'
-        : 'playdates.detail.calendarFailedBody'),
+      t('playdates.detail.calendarFallbackTitle'),
+      t('playdates.detail.calendarFallbackBody'),
       [
-        { text: t('common.cancel'), style: 'cancel' },
+        { text: t('playdates.detail.calendarNotNow'), style: 'cancel' },
         { text: t('playdates.detail.calendarOpenGoogle'), onPress: () => openInGoogleCalendar(playdate) },
       ],
     );

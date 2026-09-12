@@ -66,7 +66,11 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: R
   const [showPicker, setShowPicker]         = useState(false);
   const [photos, setPhotos]                 = useState<PhotoItem[]>([]);
   // Index of the photo open in the crop editor, if any.
-  const [cropIndex, setCropIndex] = useState<number | null>(null);
+  // A queue, not a single index: picking four photos should offer framing for all
+  // four, one after another, rather than the first and silently none of the rest.
+  const [cropQueue, setCropQueue] = useState<number[]>([]);
+  const cropIndex = cropQueue.length > 0 ? cropQueue[0] : null;
+  const nextInQueue = () => setCropQueue(q => q.slice(1));
   const [location, setLocation]             = useState<{ latitude: number; longitude: number } | null>(null);
   const [lifestyleTags, setLifestyleTags]   = useState<string[]>([]);
   const [personalityTags, setPersonalityTags] = useState<string[]>([]);
@@ -139,9 +143,9 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: R
     const picked = result.assets.slice(0, remaining).map(a => ({ kind: 'new' as const, uri: a.uri }));
     if (picked.length > 0) {
       setPhotos(prev => {
-        // Open the editor on the first of the new ones, so framing is offered
-        // rather than hidden behind a second tap nobody would discover.
-        setCropIndex(prev.length);
+        // Queue every new photo, so framing is offered for each rather than hidden
+        // behind a second tap nobody would discover.
+        setCropQueue(picked.map((_, i) => prev.length + i));
         return [...prev, ...picked];
       });
     }
@@ -320,7 +324,7 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: R
                     <>
                       <TouchableOpacity
                         style={StyleSheet.absoluteFill}
-                        onPress={() => setCropIndex(i)}
+                        onPress={() => setCropQueue([i])}
                         activeOpacity={0.85}
                       >
                         <RemoteImage source={{ uri: photo.uri }} style={styles.photoThumb} />
@@ -353,13 +357,15 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: R
 
           <PhotoCropModal
             uri={cropIndex !== null ? photos[cropIndex]?.uri ?? null : null}
-            onCancel={() => setCropIndex(null)}
+            // Cancel drops the whole queue: someone who backs out of framing the
+            // first of four photos does not want the next three thrown at them.
+            onCancel={() => setCropQueue([])}
             onDone={uri => {
               // A re-crop replaces the photo in place. An existing one becomes a
               // new upload on save, because the server stores renditions rather
               // than an editable original.
               setPhotos(prev => prev.map((p, i) => i === cropIndex ? { kind: 'new', uri } : p));
-              setCropIndex(null);
+              nextInQueue();
             }}
           />
 
