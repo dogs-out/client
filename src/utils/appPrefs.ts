@@ -5,10 +5,16 @@ import { Platform } from 'react-native';
 export interface AppPrefs {
   /** Stops the background emoji drifting. Motion bothers some people. */
   freezeBackground: boolean;
+  /**
+   * Calendar year this device last showed the birthday greeting. 0 means never.
+   * Per year rather than per day: a birthday only comes round once, and this is
+   * what stops the greeting reappearing on every launch for a whole day.
+   */
+  birthdayGreetedYear: number;
 }
 
 const KEY = 'dogsout_prefs';
-const DEFAULTS: AppPrefs = { freezeBackground: false };
+const DEFAULTS: AppPrefs = { freezeBackground: false, birthdayGreetedYear: 0 };
 
 /**
  * Device-local settings.

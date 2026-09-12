@@ -752,5 +752,15 @@
     "pickADog": "Choisis le chien que tu gardes.",
     "pickOnMap": "Choisir sur la carte",
     "currentLocation": "Ta position actuelle"
+  },
+  "birthday": {
+    "ownTitle": "Wouf wouf — joyeux anniversaire !",
+    "ownBody": "Toute l'équipe DogsOut te souhaite une merveilleuse journée, plein de friandises et de zoomies avec tes amis.",
+    "dogTitle": "Wouf wouf — joyeux anniversaire, {{dog}} !",
+    "dogBody": "Toute l'équipe DogsOut souhaite à {{dog}} une merveilleuse journée, plein de friandises et de zoomies avec ses amis.",
+    "bothTitle": "Wouf wouf — joyeux anniversaire à toi et à {{dog}} !",
+    "bothBody": "Le même anniversaire que ton chien, ça se fête. Toute l'équipe DogsOut vous souhaite à tous les deux une merveilleuse journée, plein de friandises et de zoomies avec vos amis.",
+    "signoff": "🐾 L'équipe DogsOut",
+    "thanks": "Merci !"
   }
 }

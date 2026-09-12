@@ -659,5 +659,15 @@
     "pickADog": "Pick the dog you're looking after.",
     "pickOnMap": "Pick on the map",
     "currentLocation": "Your current location"
+  },
+  "birthday": {
+    "ownTitle": "Woof woof — happy birthday!",
+    "ownBody": "The entire DogsOut team wishes you a wonderful day, and lots of treats and zoomies with your friends.",
+    "dogTitle": "Woof woof — happy birthday, {{dog}}!",
+    "dogBody": "The entire DogsOut team wishes {{dog}} a wonderful day, and lots of treats and zoomies with friends.",
+    "bothTitle": "Woof woof — happy birthday to you and {{dog}}!",
+    "bothBody": "Sharing a birthday with your dog deserves a party. The entire DogsOut team wishes you both a wonderful day, and lots of treats and zoomies with your friends.",
+    "signoff": "🐾 The DogsOut team",
+    "thanks": "Thank you!"
   }
 }

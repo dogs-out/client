@@ -87,6 +87,9 @@ export interface UserProfile {
   walkStatusDogId: number | null;
   /** Today is this user's birthday, or one of their dogs'. */
   celebratingToday: boolean;
+  birthdayToday: boolean;
+  /** Names of their dogs with a birthday today. */
+  dogBirthdaysToday: string[];
   minAge: number | null;
   maxAge: number | null;
   minDogAge: number | null;
@@ -151,7 +154,10 @@ export const userService = {
    */
   getMe: (): Promise<UserProfile> =>
     api.get<UserProfile>('/users/me').then(r => {
-      celebration.set(r.data.celebratingToday ?? false);
+      celebration.set({
+        own: r.data.birthdayToday ?? false,
+        dogNames: r.data.dogBirthdaysToday ?? [],
+      });
       return r.data;
     }),
   updateProfile: (payload: UpdateProfilePayload): Promise<UserProfile> =>

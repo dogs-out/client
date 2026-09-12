@@ -38,6 +38,7 @@ import PlaydateDetailScreen from '../features/playdates/PlaydateDetailScreen';
 import PlaydateChatScreen from '../features/playdates/PlaydateChatScreen';
 import SetStatusScreen from '../features/playdates/SetStatusScreen';
 import TabNavigator from './TabNavigator';
+import { BirthdayGreeting } from '../components/BirthdayGreeting';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const navigationRef = createNavigationContainerRef<RootStackParamList>();
@@ -158,6 +159,9 @@ export default function Navigation() {
         <Stack.Screen name="PlaydateChat"           component={PlaydateChatScreen} />
         <Stack.Screen name="SetStatus"              component={SetStatusScreen} />
       </Stack.Navigator>
+      {/* Above the navigator, so the greeting finds the user on whatever screen
+          they opened the app to. */}
+      <BirthdayGreeting />
     </NavigationContainer>
   );
 }

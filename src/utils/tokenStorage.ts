@@ -28,7 +28,7 @@ export const tokenStorage = {
     // Losing the token is this app's definition of signing out, so anything
     // derived from the account goes with it — the next person to pick up the
     // phone should not inherit somebody else's cake.
-    celebration.set(false);
+    celebration.clear();
     if (Platform.OS === 'web') { localStorage.removeItem(KEY); return; }
     await SecureStore.deleteItemAsync(KEY);
   },

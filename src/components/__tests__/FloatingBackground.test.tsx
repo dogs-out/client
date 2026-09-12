@@ -18,7 +18,7 @@ describe('FloatingBackground', () => {
     // renderer in a state where the next render produces an empty tree.
     cleanup();
     appPrefs.set('freezeBackground', false);
-    celebration.set(false);
+    celebration.clear();
     jest.restoreAllMocks();
   });
 
@@ -52,7 +52,7 @@ describe('FloatingBackground', () => {
   });
 
   it('switches to cake on the user\'s own birthday, with no variant passed', async () => {
-    celebration.set(true);
+    celebration.set({ own: true, dogNames: [] });
 
     await render(<FloatingBackground />);
     expect(screen.queryAllByText('🎂').length).toBeGreaterThan(0);

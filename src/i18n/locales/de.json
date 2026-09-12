@@ -752,5 +752,15 @@
     "pickADog": "Wähle den Hund, den du hütest.",
     "pickOnMap": "Auf Karte wählen",
     "currentLocation": "Dein aktueller Standort"
+  },
+  "birthday": {
+    "ownTitle": "Wuff wuff — alles Gute zum Geburtstag!",
+    "ownBody": "Das ganze DogsOut-Team wünscht dir einen wunderschönen Tag, ganz viele Leckerlis und Zoomies mit deinen Freunden.",
+    "dogTitle": "Wuff wuff — alles Gute zum Geburtstag, {{dog}}!",
+    "dogBody": "Das ganze DogsOut-Team wünscht {{dog}} einen wunderschönen Tag, ganz viele Leckerlis und Zoomies mit den Freunden.",
+    "bothTitle": "Wuff wuff — alles Gute dir und {{dog}}!",
+    "bothBody": "Am selben Tag Geburtstag wie dein Hund, das gehört gefeiert. Das ganze DogsOut-Team wünscht euch beiden einen wunderschönen Tag, ganz viele Leckerlis und Zoomies mit euren Freunden.",
+    "signoff": "🐾 Dein DogsOut-Team",
+    "thanks": "Danke!"
   }
 }

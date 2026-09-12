@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { Animated, Easing, StyleSheet, View, useWindowDimensions } from 'react-native';
 import { useAppPrefs } from '../utils/appPrefs';
-import { useCelebration } from '../utils/celebration';
+import { celebration, useCelebration } from '../utils/celebration';
 
 type AnimStyle = 'float' | 'breathe' | 'diagonal' | 'spin';
 
@@ -128,8 +128,8 @@ export function FloatingBackground({ variant }: Readonly<{ variant?: BackgroundV
   // On your own or your dog's birthday the whole app gets the cake, not just the
   // one chat that happened to be told about it. An explicit variant still wins,
   // so a chat can celebrate someone else's birthday on an ordinary day.
-  const celebrating = useCelebration();
-  const resolved = variant ?? (celebrating ? 'birthday' : 'default');
+  useCelebration();
+  const resolved = variant ?? (celebration.any() ? 'birthday' : 'default');
   const shapes = resolved === 'birthday' ? BIRTHDAY_SHAPES : SHAPES;
 
   return (
