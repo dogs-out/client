@@ -1,52 +1,52 @@
 <en-US>
 Friends — see what everyone you've matched with is up to: out walking, at the park, looking after someone else's dog, at home or away. Your own status sits at the top, so you see exactly what they see. Pick the park you're heading to before you even get there, add a photo if you like, and tell everyone or just a few with one tap.
 
-Birthdays — a card on the day, for you and for your dog, and the whole app fills with confetti and cake.
+Photos you can reframe — pinch to zoom and drag to choose what shows. Your picture is kept whole, so you can open it again next month and widen the crop back out. Pick several at once and you can frame each one.
 
-Photos — pinch to zoom and drag to frame a picture before you add it. Pick several and you can frame each one.
+Birthdays — a card on the day, for you and for your dog, and the whole app fills with confetti and cake.
 
 Playdates — Add to calendar now sits beside Open in Maps.
 
-Settings — the background animation now has its own screen under App, instead of hiding in Privacy where its switch could end up off the edge of the screen.
+Settings — the background animation has its own screen under App, where its switch has room to breathe at any text size.
 
-Fixed: playdates no longer crash when you open them, and editing one's location changes it instead of creating a second. Saving a status no longer drops you back into the form, the Invite button does what it says, and a shared place is no longer described as "no place shared". The tab bar sits above the navigation buttons on phones that have them.
+Fixed: playdates no longer crash when you open them, and editing one's location changes it instead of creating a second. Saving a status no longer drops you back into the form, Invite does what it says, and a shared place is no longer described as "no place shared". The tab bar sits above the navigation buttons on phones that have them.
 </en-US>
 <de-DE>
 Freunde — sieh, was deine Matches gerade machen: unterwegs, im Park, einen fremden Hund hütend, zu Hause oder verreist. Dein eigener Status steht zuoberst, du siehst also genau das, was die anderen sehen. Wähle den Park, zu dem du gehst, schon bevor du dort bist, füg ein Foto dazu und sag mit einem Tipp allen oder nur einzelnen Bescheid.
 
-Geburtstage — eine Karte am Tag selbst, für dich und für deinen Hund, und die ganze App füllt sich mit Konfetti und Torten.
+Fotos neu ausrichten — mit zwei Fingern zoomen und verschieben, um den Ausschnitt zu wählen. Dein Bild bleibt vollständig erhalten, du kannst es also nächsten Monat wieder öffnen und den Ausschnitt weiter aufziehen. Bei mehreren Bildern lässt sich jedes einzeln ausrichten.
 
-Fotos — mit zwei Fingern zoomen und verschieben, bevor du sie hinzufügst. Bei mehreren Bildern kannst du jedes einzeln zuschneiden.
+Geburtstage — eine Karte am Tag selbst, für dich und für deinen Hund, und die ganze App füllt sich mit Konfetti und Torten.
 
 Playdates — «Zum Kalender hinzufügen» sitzt jetzt neben «In Karten öffnen».
 
-Einstellungen — die Hintergrund-Animation hat einen eigenen Bildschirm unter «App», statt in der Privatsphäre zu stecken, wo ihr Schalter über den Bildschirmrand rutschen konnte.
+Einstellungen — die Hintergrund-Animation hat einen eigenen Bildschirm unter «App», wo ihr Schalter bei jeder Schriftgrösse Platz hat.
 
 Behoben: Playdates stürzen beim Öffnen nicht mehr ab, und wer den Ort ändert, ändert das Playdate statt ein zweites anzulegen. Nach dem Speichern eines Status landest du nicht mehr im Formular, «Einladen» tut endlich etwas, und ein geteilter Standort heisst nicht mehr «kein Standort geteilt». Die Menüleiste sitzt über den Navigationstasten.
 </de-DE>
 <fr-FR>
 Amis — vois ce que font tes matchs : en balade, au parc, en train de garder le chien de quelqu'un d'autre, à la maison ou en voyage. Ton propre statut est en haut, tu vois donc exactement ce qu'ils voient. Choisis le parc où tu vas avant même d'y être, ajoute une photo si tu veux, et préviens tout le monde ou seulement quelques personnes d'un geste.
 
-Anniversaires — une carte le jour même, pour toi et pour ton chien, et toute l'appli se remplit de confettis et de gâteaux.
+Des photos que tu peux recadrer — pince pour zoomer et glisse pour choisir ce qui apparaît. Ton image est conservée entière : tu peux la rouvrir le mois prochain et élargir le cadrage. Si tu en choisis plusieurs, tu peux cadrer chacune.
 
-Photos — pince pour zoomer et glisse pour cadrer avant d'ajouter. Si tu en choisis plusieurs, tu peux cadrer chacune.
+Anniversaires — une carte le jour même, pour toi et pour ton chien, et toute l'appli se remplit de confettis et de gâteaux.
 
 Rencontres — « Ajouter au calendrier » est maintenant à côté de « Ouvrir dans Plans ».
 
-Réglages — l'animation de fond a son propre écran sous « Application », au lieu de se cacher dans Confidentialité où son interrupteur pouvait sortir de l'écran.
+Réglages — l'animation de fond a son propre écran sous « Application », où son interrupteur a de la place quelle que soit la taille du texte.
 
-Corrigé : les rencontres ne font plus planter l'appli à l'ouverture, et changer le lieu modifie la rencontre au lieu d'en créer une seconde. Enregistrer un statut ne te renvoie plus dans le formulaire, le bouton Inviter fait enfin quelque chose, et un lieu partagé n'est plus annoncé comme « aucun lieu partagé ». La barre de menu passe au-dessus des boutons de navigation.
+Corrigé : les rencontres ne font plus planter l'appli à l'ouverture, et changer le lieu modifie la rencontre au lieu d'en créer une seconde. Enregistrer un statut ne te renvoie plus dans le formulaire, Inviter fait enfin quelque chose, et un lieu partagé n'est plus annoncé comme « aucun lieu partagé ». La barre de menu passe au-dessus des boutons de navigation.
 </fr-FR>
 <it-IT>
 Amici — guarda cosa stanno facendo i tuoi match: in giro, al parco, a occuparsi del cane di qualcun altro, a casa o in viaggio. Il tuo stato è in cima, così vedi esattamente quello che vedono loro. Scegli il parco dove stai andando ancora prima di arrivarci, aggiungi una foto se ti va e avvisa tutti o solo alcuni con un tocco.
 
-Compleanni — un biglietto nel giorno stesso, per te e per il tuo cane, e tutta l'app si riempie di coriandoli e torte.
+Foto che puoi riquadrare — pizzica per ingrandire e trascina per scegliere cosa si vede. La tua immagine resta intera, così il mese prossimo puoi riaprirla e allargare di nuovo il ritaglio. Se ne scegli più di una, puoi riquadrarle tutte.
 
-Foto — pizzica per ingrandire e trascina per inquadrare prima di aggiungerle. Se ne scegli più di una, puoi ritagliarle tutte.
+Compleanni — un biglietto nel giorno stesso, per te e per il tuo cane, e tutta l'app si riempie di coriandoli e torte.
 
 Playdate — «Aggiungi al calendario» ora sta accanto ad «Apri in Mappe».
 
-Impostazioni — l'animazione di sfondo ha una schermata tutta sua sotto «App», invece di nascondersi in Privacy dove il suo interruttore poteva finire fuori dallo schermo.
+Impostazioni — l'animazione di sfondo ha una schermata tutta sua sotto «App», dove il suo interruttore ha spazio con qualsiasi dimensione del testo.
 
-Risolto: i playdate non fanno più crashare l'app quando li apri, e cambiando il luogo si modifica il playdate invece di crearne un secondo. Salvare uno stato non ti riporta più nel modulo, il pulsante Invita finalmente fa qualcosa e un luogo condiviso non viene più descritto come «nessun luogo condiviso». La barra del menu sta sopra i pulsanti di navigazione.
+Risolto: i playdate non fanno più crashare l'app quando li apri, e cambiando il luogo si modifica il playdate invece di crearne un secondo. Salvare uno stato non ti riporta più nel modulo, Invita finalmente fa qualcosa e un luogo condiviso non viene più descritto come «nessun luogo condiviso». La barra del menu sta sopra i pulsanti di navigazione.
 </it-IT>

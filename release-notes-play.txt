@@ -1,36 +1,36 @@
 <en-US>
 Friends: see what your matches are up to — out walking, at the park, sitting a dog, at home or away — with your own status at the top. Name the park before you get there, add a photo, and tell everyone or just a few.
 
-Birthdays get a card on the day, for you and your dog.
+Reframe your photos by pinching. The picture is kept whole, so you can widen a crop back out later.
 
-Pinch to zoom and drag to frame photos before you add them.
+Birthdays get a card on the day, for you and your dog.
 
 Fixed: playdates no longer crash when opened, editing a location no longer creates a second one, and Invite now works.
 </en-US>
 <de-DE>
-Freunde: sieh, was deine Matches machen — unterwegs, im Park, einen Hund hütend, zu Hause oder verreist — mit deinem Status zuoberst. Nenne den Park, bevor du dort bist, füg ein Foto dazu und sag allen oder nur einzelnen Bescheid.
+Freunde: sieh, was deine Matches machen — unterwegs, im Park, einen Hund hütend, zu Hause oder verreist — mit deinem Status zuoberst. Nenne den Park, bevor du dort bist, füg ein Foto dazu und sag allen oder einzelnen Bescheid.
 
-Geburtstage bekommen eine Karte am Tag selbst, für dich und deinen Hund.
+Fotos mit zwei Fingern neu ausrichten. Das Bild bleibt ganz, du kannst den Ausschnitt später wieder aufziehen.
 
-Fotos vor dem Hinzufügen mit zwei Fingern zoomen und zuschneiden.
+Geburtstage bekommen eine Karte am Tag selbst.
 
-Behoben: Playdates stürzen nicht mehr ab, das Ändern des Orts legt kein zweites an, und «Einladen» funktioniert.
+Behoben: Playdates stürzen nicht mehr ab, das Ändern des Orts legt kein zweites an, «Einladen» funktioniert.
 </de-DE>
 <fr-FR>
 Amis : vois ce que font tes matchs — en balade, au parc, à garder un chien, à la maison ou en voyage — avec ton statut en haut. Nomme le parc avant d'y être, ajoute une photo et préviens tout le monde ou quelques personnes.
 
-Les anniversaires ont une carte le jour même, pour toi et ton chien.
+Recadre tes photos en pinçant. L'image est conservée entière : tu peux élargir le cadrage plus tard.
 
-Pince pour zoomer et cadrer tes photos avant de les ajouter.
+Les anniversaires ont une carte le jour même.
 
 Corrigé : les rencontres ne plantent plus, changer le lieu n'en crée plus une seconde, et Inviter fonctionne.
 </fr-FR>
 <it-IT>
 Amici: guarda cosa fanno i tuoi match — in giro, al parco, con il cane di qualcun altro, a casa o in viaggio — con il tuo stato in cima. Indica il parco prima di arrivarci, aggiungi una foto e avvisa tutti o solo alcuni.
 
-I compleanni hanno un biglietto nel giorno stesso, per te e per il tuo cane.
+Riquadra le foto pizzicando. L'immagine resta intera, così puoi allargare il ritaglio più avanti.
 
-Pizzica per ingrandire e ritagliare le foto prima di aggiungerle.
+I compleanni hanno un biglietto nel giorno stesso.
 
 Risolto: i playdate non crashano più, cambiare il luogo non ne crea un secondo e Invita funziona.
 </it-IT>
