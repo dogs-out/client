@@ -188,6 +188,13 @@ export function WhosOutsideView() {
         }
       />
 
+      <InvitePicker
+        visible={picking}
+        sending={inviting}
+        onClose={() => setPicking(false)}
+        onSend={invite}
+      />
+
       <Modal visible={onMap !== null} animationType="slide" onRequestClose={() => setOnMap(null)}>
         {onMap?.latitude != null && onMap.longitude != null && (
           <View style={{ flex: 1 }}>
