@@ -780,7 +780,10 @@
       "AT_HOME": "Du bist zu Hause",
       "ON_VACATION": "Du bist verreist",
       "BUSY": "Du bist beschäftigt"
-    }
+    },
+    "pointShared": "Teilt den Standort",
+    "mineShared": "Deine Freunde sehen, wo du bist",
+    "mineNoPoint": "Du teilst keinen Standort"
   },
   "birthday": {
     "ownTitle": "Wuff wuff — alles Gute zum Geburtstag!",

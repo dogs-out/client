@@ -85,3 +85,35 @@ describe('the client and server agree about statuses', () => {
     expect(STATUS_IS_OUT.ON_VACATION).toBe(false);
   });
 });
+
+describe('what a row says about a shared place', () => {
+  // The rule the screen follows, stated once. Reading "did they share a place?"
+  // off the distance was wrong twice: the distance is -1 whenever EITHER side
+  // lacks coordinates, and my own row has no meaningful distance to itself.
+  const subtitle = (hasPoint: boolean, distanceKm: number, isMine: boolean) => {
+    if (!hasPoint) return isMine ? 'mineNoPoint' : 'noPoint';
+    if (isMine) return 'mineShared';
+    return distanceKm >= 0 ? 'distance' : 'pointShared';
+  };
+
+  it('says a place is shared even when the distance is unknown', () => {
+    // A viewer who never set a profile location cannot be measured from, and
+    // used to be told nobody was sharing anything.
+    expect(subtitle(true, -1, false)).toBe('pointShared');
+  });
+
+  it('shows the distance when both ends have coordinates', () => {
+    expect(subtitle(true, 3, false)).toBe('distance');
+  });
+
+  it('never claims my own picked place is unshared', () => {
+    // Distance to yourself is meaningless, so the row carried -1 and said "no
+    // place shared" about a park the user had just chosen.
+    expect(subtitle(true, -1, true)).toBe('mineShared');
+  });
+
+  it('still says so when there really is no place', () => {
+    expect(subtitle(false, -1, false)).toBe('noPoint');
+    expect(subtitle(false, -1, true)).toBe('mineNoPoint');
+  });
+});

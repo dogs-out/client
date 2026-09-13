@@ -687,7 +687,10 @@
       "AT_HOME": "You're at home",
       "ON_VACATION": "You're away",
       "BUSY": "You're busy"
-    }
+    },
+    "pointShared": "Sharing where they are",
+    "mineShared": "Your friends can see where you are",
+    "mineNoPoint": "You're not sharing a place"
   },
   "birthday": {
     "ownTitle": "Woof woof — happy birthday!",

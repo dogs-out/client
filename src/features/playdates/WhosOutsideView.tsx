@@ -99,6 +99,21 @@ export function WhosOutsideView() {
     }
   };
 
+  const renderSubtitle = (item: FriendStatus, hasPoint: boolean, isMine?: boolean) => {
+    if (!hasPoint) return t(isMine ? 'whosOutside.mineNoPoint' : 'whosOutside.noPoint');
+    if (isMine) return t('whosOutside.mineShared');
+    if (item.distanceKm >= 0) {
+      return (
+        <>
+          <Ionicons name="location-outline" size={12} color={Colors.textSecondary} />
+          {' '}{t('matching.discover.distanceAway', { km: item.distanceKm })}
+        </>
+      );
+    }
+    // They shared a place; we simply have nothing of our own to measure it from.
+    return t('whosOutside.pointShared');
+  };
+
   const renderFriend = ({ item, isMine }: { item: FriendStatus; isMine?: boolean }) => {
     const dogs = item.dogNames.join(' & ');
     // No point shared means no map to open, so the row stays flat rather than
@@ -139,11 +154,15 @@ export function WhosOutsideView() {
                 {' '}{item.placeName}
               </Text>
             )}
+            {/* Whether a place was shared and how far away it is are two
+                different questions. Reading the first off the distance was wrong
+                twice over: the distance is -1 whenever EITHER side has no
+                coordinates, so anyone who never set a profile location saw "no
+                place shared" against friends who had shared one — and my own row,
+                which has no meaningful distance to itself, said it about a place
+                I had just picked. */}
             <Text style={styles.rowSub}>
-              {item.distanceKm >= 0
-                ? <><Ionicons name="location-outline" size={12} color={Colors.textSecondary} />
-                    {' '}{t('matching.discover.distanceAway', { km: item.distanceKm })}</>
-                : t('whosOutside.noPoint')}
+              {renderSubtitle(item, hasPoint, isMine)}
             </Text>
           </View>
           {hasPoint && <Ionicons name="map-outline" size={20} color={Colors.primary} />}
