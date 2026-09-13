@@ -1,0 +1,36 @@
+<en-US>
+Who's outside: say you're out walking, at the park, or sitting someone's dog. Name the park before you get there, add a photo, and invite everyone or just a few.
+
+Birthdays now get a card on the day, for you and your dog.
+
+Crop photos with a pinch or the new zoom slider.
+
+Fixed: playdates no longer crash when opened, editing one's location no longer creates a second, and the tab bar clears the navigation buttons.
+</en-US>
+<de-DE>
+Wer ist draussen: Sag, dass du unterwegs bist, im Park bist oder einen Hund hütest. Nenne den Park, bevor du dort bist, füg ein Foto dazu und lade alle oder nur einzelne ein.
+
+Geburtstage bekommen jetzt eine Karte am Tag selbst, für dich und deinen Hund.
+
+Fotos zuschneiden mit zwei Fingern oder dem neuen Zoom-Regler.
+
+Behoben: Playdates stürzen beim Öffnen nicht mehr ab, das Ändern des Orts legt kein zweites mehr an, und die Menüleiste sitzt über den Navigationstasten.
+</de-DE>
+<fr-FR>
+Qui est dehors : dis que tu es en balade, au parc ou que tu gardes un chien. Nomme le parc avant d'y être, ajoute une photo et invite tout le monde ou quelques personnes.
+
+Les anniversaires ont droit à une carte le jour même, pour toi et ton chien.
+
+Cadre tes photos à deux doigts ou avec le nouveau curseur.
+
+Corrigé : les rencontres ne plantent plus à l'ouverture, changer le lieu n'en crée plus une seconde, et la barre de menu passe au-dessus des boutons.
+</fr-FR>
+<it-IT>
+Chi è fuori: di' che sei in giro, al parco o che ti stai occupando di un cane. Indica il parco prima di arrivarci, aggiungi una foto e invita tutti o solo alcuni.
+
+I compleanni ora hanno un biglietto nel giorno stesso, per te e per il tuo cane.
+
+Ritaglia le foto con due dita o con il nuovo cursore.
+
+Risolto: i playdate non crashano più all'apertura, cambiare il luogo non ne crea un secondo e la barra del menu sta sopra i pulsanti.
+</it-IT>

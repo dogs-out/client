@@ -619,7 +619,7 @@
   },
   "photoCrop": {
     "title": "Frame your photo",
-    "hint": "Pinch or drag the slider to zoom, then drag the photo to frame it",
+    "hint": "Pinch to zoom, drag to move",
     "use": "Use this photo",
     "gridHint": "Tap a photo to rescale it"
   },

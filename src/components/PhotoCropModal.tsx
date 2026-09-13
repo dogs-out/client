@@ -1,14 +1,17 @@
 import { useEffect, useRef, useState } from 'react';
 import {
-  ActivityIndicator, Animated, Image, Modal, PanResponder,
+  ActivityIndicator, Animated, Modal,
   StyleSheet, Text, TouchableOpacity, View, useWindowDimensions,
 } from 'react-native';
+import {
+  GestureHandlerRootView, PanGestureHandler, PanGestureHandlerStateChangeEvent,
+  PinchGestureHandler, PinchGestureHandlerStateChangeEvent, State,
+} from 'react-native-gesture-handler';
 import { ImageManipulator, SaveFormat } from 'expo-image-manipulator';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { Colors } from '../constants/colors';
-import { CustomSlider } from './CustomSlider';
-import { clampScale, maxOffset, pinchScale, touchDistance } from '../utils/pinch';
+import { clampScale, maxOffset } from '../utils/pinch';
 
 /** Matches the feed rendition the server produces, so what you frame is what shows. */
 const FRAME_RATIO = 3 / 4;
@@ -29,107 +32,73 @@ interface Props {
  * when photos became multi-select — this puts framing back, and puts it in one
  * place for both profile and dog photos.
  *
- * <p>Built on PanResponder rather than a gesture library on purpose: two fingers
- * and a rectangle is the whole interaction, and the alternative meant Reanimated's
- * worklet toolchain — a babel plugin, a companion package and the new architecture
- * — for a screen this small.
+ * <p>Built on react-native-gesture-handler rather than PanResponder. The hand
+ * rolled version read finger positions out of {@code nativeEvent.touches}, and on
+ * the reporter's Android phone that never yielded a usable second touch: the
+ * photo rendered and simply refused to move. A pinch handler is handed the scale
+ * by the platform, so there is no touch array left to come up empty.
+ *
+ * <p>Deliberately the classic handler API with React Native's own Animated rather
+ * than Reanimated worklets — this is two values and a clamp, and Reanimated would
+ * mean a babel plugin and a companion package for it.
  */
 export function PhotoCropModal({ uri, onCancel, onDone }: Readonly<Props>) {
   const { t } = useTranslation();
   const { width } = useWindowDimensions();
   const [working, setWorking] = useState(false);
-  // Mirrors state.current.scale for the slider. The gesture keeps writing straight
-  // to the Animated value; this only follows along so the control has a position.
-  const [zoom, setZoom] = useState(MIN_SCALE);
   const [natural, setNatural] = useState<{ width: number; height: number } | null>(null);
 
   const frameW = width - 48;
   const frameH = frameW / FRAME_RATIO;
 
-  // Committed values, and the live ones the gesture writes to.
-  const state = useRef({ scale: 1, x: 0, y: 0, startDistance: 0, startScale: 1, startX: 0, startY: 0 });
-  const scale = useRef(new Animated.Value(1)).current;
+  // What is committed, and what the live gesture is adding on top of it.
+  const committed = useRef({ scale: MIN_SCALE, x: 0, y: 0 });
+  const scale = useRef(new Animated.Value(MIN_SCALE)).current;
   const translateX = useRef(new Animated.Value(0)).current;
   const translateY = useRef(new Animated.Value(0)).current;
 
-  const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v));
-
-  // Every photo starts unzoomed and centred. Without this the editor opens on the
-  // next photo still holding the last one's zoom and offset — which is wrong on
-  // its own, and glaring now that picking several photos walks through them all.
+  /** Every photo starts unzoomed and centred, rather than holding the last one's framing. */
   useEffect(() => {
     if (!uri) return;
     setNatural(null);
-    state.current = { scale: 1, x: 0, y: 0, startDistance: 0, startScale: 1, startX: 0, startY: 0 };
-    scale.setValue(1);
+    committed.current = { scale: MIN_SCALE, x: 0, y: 0 };
+    scale.setValue(MIN_SCALE);
     translateX.setValue(0);
     translateY.setValue(0);
-    setZoom(MIN_SCALE);
   }, [uri, scale, translateX, translateY]);
 
-  /** Single place that moves the zoom, whichever control asked for it. */
-  const applyZoom = (next: number) => {
-    state.current.scale = clampScale(next, MIN_SCALE, MAX_SCALE, state.current.scale);
-    scale.setValue(state.current.scale);
-    setZoom(state.current.scale);
-    clampOffsets();
+  /** Keeps the photo covering the frame, so no empty corner can ever be saved. */
+  const settle = () => {
+    const maxX = maxOffset(frameW, committed.current.scale);
+    const maxY = maxOffset(frameH, committed.current.scale);
+    committed.current.x = clampScale(committed.current.x, -maxX, maxX, 0);
+    committed.current.y = clampScale(committed.current.y, -maxY, maxY, 0);
+    scale.setValue(committed.current.scale);
+    translateX.setValue(committed.current.x);
+    translateY.setValue(committed.current.y);
   };
 
-  /** Keeps the photo covering the frame, so no empty corner can be saved. */
-  const clampOffsets = () => {
-    const maxX = maxOffset(frameW, state.current.scale);
-    const maxY = maxOffset(frameH, state.current.scale);
-    state.current.x = clampScale(state.current.x, -maxX, maxX, 0);
-    state.current.y = clampScale(state.current.y, -maxY, maxY, 0);
-    translateX.setValue(state.current.x);
-    translateY.setValue(state.current.y);
+  const onPinch = Animated.event([{ nativeEvent: { scale } }], { useNativeDriver: true });
+
+  const onPinchState = (e: PinchGestureHandlerStateChangeEvent) => {
+    if (e.nativeEvent.oldState !== State.ACTIVE) return;
+    // The handler reports a factor relative to the start of this pinch, so it
+    // multiplies into what was already there rather than replacing it.
+    committed.current.scale = clampScale(
+      committed.current.scale * e.nativeEvent.scale, MIN_SCALE, MAX_SCALE, committed.current.scale);
+    settle();
   };
 
-  const setZoomRef = useRef(setZoom);
-  useEffect(() => { setZoomRef.current = setZoom; }, []);
+  const onPan = Animated.event(
+    [{ nativeEvent: { translationX: translateX, translationY: translateY } }],
+    { useNativeDriver: true });
 
-  const pan = useRef(PanResponder.create({
-    onStartShouldSetPanResponder: () => true,
-    onMoveShouldSetPanResponder: () => true,
-    onPanResponderGrant: () => {
-      state.current.startScale = state.current.scale;
-      state.current.startX = state.current.x;
-      state.current.startY = state.current.y;
-      state.current.startDistance = 0;
-    },
-    onPanResponderMove: (e, gesture) => {
-      // numberActiveTouches rather than touches.length: the gesture state counts
-      // every finger down, while the touch array is only as complete as the
-      // platform chose to make it.
-      const pinching = gesture.numberActiveTouches >= 2;
-      const distance = touchDistance(e.nativeEvent.touches);
-
-      if (pinching) {
-        // A pinch we cannot measure leaves the photo alone rather than dragging
-        // it by the centroid, which is what two fingers would otherwise do.
-        if (distance === null) return;
-
-        // First measurable frame sets the reference the ratio works from.
-        if (state.current.startDistance <= 0) {
-          state.current.startDistance = distance;
-          state.current.startScale = state.current.scale;
-          return;
-        }
-        state.current.scale = pinchScale(
-          state.current.startScale, state.current.startDistance, distance, MIN_SCALE, MAX_SCALE);
-        scale.setValue(state.current.scale);
-        clampOffsets();
-        setZoomRef.current(state.current.scale);
-        return;
-      }
-
-      state.current.x = state.current.startX + gesture.dx;
-      state.current.y = state.current.startY + gesture.dy;
-      clampOffsets();
-    },
-    onPanResponderRelease: () => { state.current.startDistance = 0; },
-    onPanResponderTerminate: () => { state.current.startDistance = 0; },
-  })).current;
+  const onPanState = (e: PanGestureHandlerStateChangeEvent) => {
+    if (e.nativeEvent.oldState !== State.ACTIVE) return;
+    committed.current.x += e.nativeEvent.translationX;
+    committed.current.y += e.nativeEvent.translationY;
+    settle();
+  };
 
   const apply = async () => {
     if (!uri || !natural) return;
@@ -138,11 +107,13 @@ export function PhotoCropModal({ uri, onCancel, onDone }: Readonly<Props>) {
       // The frame shows the image scaled to cover it; translate that back into
       // pixels of the original, which is what the manipulator crops in.
       const cover = Math.max(frameW / natural.width, frameH / natural.height);
-      const shown = cover * state.current.scale;
+      const shown = cover * committed.current.scale;
       const cropW = Math.min(natural.width, frameW / shown);
       const cropH = Math.min(natural.height, frameH / shown);
-      const originX = clamp((natural.width - cropW) / 2 - state.current.x / shown, 0, natural.width - cropW);
-      const originY = clamp((natural.height - cropH) / 2 - state.current.y / shown, 0, natural.height - cropH);
+      const originX = clampScale(
+        (natural.width - cropW) / 2 - committed.current.x / shown, 0, natural.width - cropW, 0);
+      const originY = clampScale(
+        (natural.height - cropH) / 2 - committed.current.y / shown, 0, natural.height - cropH, 0);
 
       const context = ImageManipulator.manipulate(uri);
       context.crop({
@@ -164,7 +135,9 @@ export function PhotoCropModal({ uri, onCancel, onDone }: Readonly<Props>) {
 
   return (
     <Modal visible={uri !== null} animationType="slide" onRequestClose={onCancel} transparent={false}>
-      <View style={styles.screen}>
+      {/* A modal is its own native window, outside the root view in App.tsx, so
+          the handlers inside it need a gesture root of their own. */}
+      <GestureHandlerRootView style={styles.screen}>
         <View style={styles.header}>
           <TouchableOpacity onPress={onCancel} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
             <Ionicons name="close" size={26} color="#fff" />
@@ -174,35 +147,34 @@ export function PhotoCropModal({ uri, onCancel, onDone }: Readonly<Props>) {
         </View>
 
         <View style={styles.stage}>
-          <View style={[styles.frame, { width: frameW, height: frameH }]} {...pan.panHandlers}>
-            {uri && (
-              <Animated.Image
-                source={{ uri }}
-                onLoad={e => setNatural({
-                  width: e.nativeEvent.source.width,
-                  height: e.nativeEvent.source.height,
-                })}
-                style={[
-                  { width: frameW, height: frameH },
-                  { transform: [{ translateX }, { translateY }, { scale }] },
-                ]}
-                resizeMode="cover"
-              />
-            )}
-          </View>
-          <View style={styles.zoomRow}>
-            <Ionicons name="remove" size={18} color="rgba(255,255,255,0.75)" />
-            <View style={styles.zoomSlider}>
-              <CustomSlider
-                value={zoom}
-                min={MIN_SCALE}
-                max={MAX_SCALE}
-                step={0.05}
-                onChange={applyZoom}
-              />
-            </View>
-            <Ionicons name="add" size={18} color="rgba(255,255,255,0.75)" />
-          </View>
+          <PanGestureHandler
+            onGestureEvent={onPan}
+            onHandlerStateChange={onPanState}
+            minPointers={1}
+            maxPointers={1}
+          >
+            <Animated.View>
+              <PinchGestureHandler onGestureEvent={onPinch} onHandlerStateChange={onPinchState}>
+                <Animated.View style={[styles.frame, { width: frameW, height: frameH }]}>
+                  {uri && (
+                    <Animated.Image
+                      source={{ uri }}
+                      onLoad={e => setNatural({
+                        width: e.nativeEvent.source.width,
+                        height: e.nativeEvent.source.height,
+                      })}
+                      style={[
+                        { width: frameW, height: frameH },
+                        { transform: [{ translateX }, { translateY }, { scale }] },
+                      ]}
+                      resizeMode="cover"
+                    />
+                  )}
+                </Animated.View>
+              </PinchGestureHandler>
+            </Animated.View>
+          </PanGestureHandler>
+
           <Text style={styles.hint}>{t('photoCrop.hint')}</Text>
         </View>
 
@@ -214,7 +186,7 @@ export function PhotoCropModal({ uri, onCancel, onDone }: Readonly<Props>) {
             }
           </TouchableOpacity>
         </View>
-      </View>
+      </GestureHandlerRootView>
     </Modal>
   );
 }
@@ -235,9 +207,7 @@ const styles = StyleSheet.create({
 
   stage: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   frame: { overflow: 'hidden', borderRadius: 14, backgroundColor: '#1A1A1A' },
-  hint:  { color: 'rgba(255,255,255,0.65)', fontSize: 13, marginTop: 4, textAlign: 'center', paddingHorizontal: 32 },
-  zoomRow: { flexDirection: 'row', alignItems: 'center', gap: 10, alignSelf: 'stretch', paddingHorizontal: 24, marginTop: 14 },
-  zoomSlider: { flex: 1 },
+  hint:  { color: 'rgba(255,255,255,0.65)', fontSize: 13, marginTop: 18, textAlign: 'center', paddingHorizontal: 32 },
 
   footer: { paddingHorizontal: 24, paddingBottom: 36 },
   useBtn: {
