@@ -4,6 +4,7 @@ import {
   StyleSheet, Text, TouchableOpacity, View,
 } from 'react-native';
 import { RemoteImage } from '../../components/ui/RemoteImage';
+import { CropRect, CroppedImage } from '../../components/ui/CroppedImage';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -22,10 +23,12 @@ type Props = NativeStackScreenProps<RootStackParamList, 'SwipePreview'>;
 
 const { width: SW } = Dimensions.get('window');
 const CARD_W = SW - 32;
+/** The little avatar that flips between the dog and its owner. */
+const AVATAR = 42;
 const CARD_H = CARD_W * 1.42;
 const SWIPE_THRESHOLD = 100;
 
-type FlatPhoto = { uri: string; dogIndex: number };
+type FlatPhoto = { uri: string; crop: CropRect | null; dogIndex: number };
 
 export default function SwipePreviewScreen({ navigation }: Readonly<Props>) {
   const { t, i18n } = useTranslation();
@@ -86,14 +89,18 @@ export default function SwipePreviewScreen({ navigation }: Readonly<Props>) {
   // Build flat photo array across all dogs
   const flatPhotos: FlatPhoto[] = dogs.flatMap((dog, di) => {
     // Full-size renditions — these fill the preview card.
-    const photos = dog.photos.length > 0 ? dog.photos.map(p => p.url) : [''];
-    return photos.map(uri => ({ uri, dogIndex: di }));
+    // The stored file is the whole picture; the framing rides along with it, or
+    // the preview shows something other than what the swipe card will.
+    const photos = dog.photos.length > 0
+      ? dog.photos.map(p => ({ uri: p.url, crop: p.crop }))
+      : [{ uri: '', crop: null }];
+    return photos.map(photo => ({ ...photo, dogIndex: di }));
   });
 
   const currentDogIndex = flatPhotos[photoIndex]?.dogIndex ?? 0;
   const currentDog = dogs[currentDogIndex];
 
-  const ownerPhotos = user.photos?.map(p => p.url) ?? [];
+  const ownerPhotos = user.photos?.map(p => ({ uri: p.url, crop: p.crop })) ?? [];
 
   const getAge = (dob: string | null) => dob
     ? Math.floor((Date.now() - new Date(dob).getTime()) / (1000 * 60 * 60 * 24 * 365.25))
@@ -139,11 +146,23 @@ export default function SwipePreviewScreen({ navigation }: Readonly<Props>) {
           {/* Background photo */}
           {showOwner ? (
             ownerPhotos.length > 0
-              ? <RemoteImage source={{ uri: ownerPhotos[ownerPhotoIndex] }} style={styles.photo} resizeMode="cover" />
+              ? <CroppedImage
+                  uri={ownerPhotos[ownerPhotoIndex].uri}
+                  crop={ownerPhotos[ownerPhotoIndex].crop}
+                  width={CARD_W}
+                  height={CARD_H}
+                  style={styles.photo}
+                />
               : <View style={[styles.photo, styles.photoPlaceholder]}><Text style={{ fontSize: 64 }}>👤</Text></View>
           ) : (
             flatPhotos[photoIndex]?.uri
-              ? <RemoteImage source={{ uri: flatPhotos[photoIndex].uri }} style={styles.photo} resizeMode="cover" />
+              ? <CroppedImage
+                  uri={flatPhotos[photoIndex].uri}
+                  crop={flatPhotos[photoIndex].crop}
+                  width={CARD_W}
+                  height={CARD_H}
+                  style={styles.photo}
+                />
               : <View style={[styles.photo, styles.photoPlaceholder]}><Text style={{ fontSize: 64 }}>🐶</Text></View>
           )}
 
@@ -241,7 +260,13 @@ export default function SwipePreviewScreen({ navigation }: Readonly<Props>) {
             <TouchableOpacity style={styles.toggleBtn} onPress={() => setShowOwner(v => !v)}>
               {showOwner ? (
                 flatPhotos[0]?.uri
-                  ? <RemoteImage source={{ uri: flatPhotos[0].uri }} style={styles.toggleAvatar} resizeMode="cover" />
+                  ? <CroppedImage
+                      uri={flatPhotos[0].uri}
+                      crop={flatPhotos[0].crop}
+                      width={AVATAR}
+                      height={AVATAR}
+                      style={styles.toggleAvatar}
+                    />
                   : <Ionicons name="paw" size={18} color="#fff" />
               ) : (
                 user.profilePicture

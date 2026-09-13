@@ -30,6 +30,8 @@ const CARD_W = SW - 32;
 /** The card's preferred height; it shrinks below this on shorter screens. */
 const CARD_H = CARD_W * 1.42;
 const SWIPE_THRESHOLD = 100;
+/** The little avatar that flips between the dog and its owner. */
+const AVATAR = 42;
 
 type FlatPhoto = { uri: string; crop: CropRect | null; dogIndex: number };
 
@@ -589,7 +591,13 @@ export default function DiscoverScreen() {
           <TouchableOpacity style={styles.toggleBtn} onPress={() => setShowOwner(v => !v)}>
             {showOwner ? (
               flatPhotos[0]?.uri
-                ? <RemoteImage source={{ uri: flatPhotos[0].uri }} style={styles.toggleAvatar} resizeMode="cover" />
+                ? <CroppedImage
+                    uri={flatPhotos[0].uri}
+                    crop={flatPhotos[0].crop}
+                    width={AVATAR}
+                    height={AVATAR}
+                    style={styles.toggleAvatar}
+                  />
                 : <Ionicons name="paw" size={18} color="#fff" />
             ) : (
               profile.profilePicture
