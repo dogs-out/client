@@ -16,6 +16,7 @@ import { FloatingBackground } from '../../components/FloatingBackground';
 import { GlassCard } from '../../components/GlassCard';
 import { GlassButton } from '../../components/GlassButton';
 import { CropHint, PhotoCropModal } from '../../components/PhotoCropModal';
+import { CropRect, CroppedImage } from '../../components/ui/CroppedImage';
 import { Colors } from '../../constants/colors';
 import { BreedPickerModal } from './BreedPickerModal';
 import {
@@ -34,8 +35,10 @@ interface Props {
 }
 
 type PhotoState =
-  | { kind: 'existing'; photoId: number; uri: string }
-  | { kind: 'new'; uri: string };
+  // A photo carries its framing rather than being replaced by a cropped copy:
+  // the file stays the whole picture, so a crop can be widened again later.
+  | { kind: 'existing'; photoId: number; uri: string; crop: CropRect | null }
+  | { kind: 'new'; uri: string; crop: CropRect | null };
 
 /** Server allows six photos per dog (DogService.addPhoto). */
 const MAX_DOG_PHOTOS = 6;
@@ -88,7 +91,7 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Re
       if (dog.dateOfBirth) setDateOfBirth(new Date(dog.dateOfBirth));
       setBio(dog.bio ?? '');
       // Thumbs: these render as small grid tiles, never full size.
-      setPhotos(dog.photos.map(p => ({ kind: 'existing', photoId: p.id, uri: p.thumbUrl })));
+      setPhotos(dog.photos.map(p => ({ kind: 'existing', photoId: p.id, uri: p.url, crop: p.crop })));
       setEnergyLevel(dog.energyLevel);
       setSocialBehavior(dog.socialBehavior);
       setLoves(dog.loves ?? []);
@@ -117,7 +120,7 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Re
     });
     if (result.canceled) return;
     // selectionLimit is advisory on some Android pickers, so clamp it here too.
-    const picked = result.assets.slice(0, remaining).map(a => ({ kind: 'new' as const, uri: a.uri }));
+    const picked = result.assets.slice(0, remaining).map(a => ({ kind: 'new' as const, uri: a.uri, crop: null }));
     if (picked.length > 0) {
       setPhotos(prev => { setCropQueue(picked.map((_, i) => prev.length + i)); return [...prev, ...picked]; });
     }
@@ -191,14 +194,22 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Re
       // Upload new photos sequentially (parallel uploads race the server-side
       // sort order) and persist the display order — first photo = main photo.
       const orderedIds: number[] = [];
+      // The framing is saved separately from the file, so it has to be applied
+      // to whatever id the photo ends up with.
+      const crops: { photoId: number; crop: CropRect | null; changed: boolean }[] = [];
       for (const p of photos) {
         if (p.kind === 'existing') {
           orderedIds.push(p.photoId);
+          crops.push({ photoId: p.photoId, crop: p.crop, changed: true });
         } else {
           const saved = await dogService.addPhoto(savedDogId, p.uri);
           orderedIds.push(saved.id);
+          if (p.crop) crops.push({ photoId: saved.id, crop: p.crop, changed: true });
         }
       }
+      await Promise.all(crops
+        .filter(c => c.changed)
+        .map(c => dogService.setPhotoCrop(savedDogId, c.photoId, c.crop).catch(() => {})));
       if (orderedIds.length > 0) {
         await dogService.reorderPhotos(savedDogId, orderedIds);
       }
@@ -288,7 +299,13 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Re
                           onPress={() => setCropQueue([i])}
                           activeOpacity={0.85}
                         >
-                          <RemoteImage source={{ uri: photo.uri }} style={styles.photoThumb} />
+                          <CroppedImage
+                            uri={photo.uri}
+                            crop={photo.crop}
+                            width={slotWidth}
+                            height={slotHeight}
+                            style={styles.photoThumb}
+                          />
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.photoRemove} onPress={() => removePhoto(i)}>
                           <Ionicons name="close-circle" size={22} color="#e53e3e" />
@@ -319,16 +336,11 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Re
             <PhotoCropModal
               uri={cropIndex !== null ? photos[cropIndex]?.uri ?? null : null}
               onCancel={() => setCropQueue([])}
-              onDone={uri => {
-                setPhotos(prev => prev.map((p, i) => {
-                  if (i !== cropIndex) return p;
-                  // Re-cropping an existing photo uploads a new one, so the old
-                  // must be deleted too. Without this the server kept both, and
-                  // saving failed with "photoIds must contain exactly this dog's
-                  // photo ids" — the reorder list was one shorter than the dog.
-                  if (p.kind === 'existing') setRemovedIds(ids => [...ids, p.photoId]);
-                  return { kind: 'new', uri };
-                }));
+              crop={cropIndex !== null ? photos[cropIndex]?.crop : null}
+              onDone={crop => {
+                // Only the framing changes. Nothing is re-uploaded and nothing is
+                // deleted, which is what makes cropping reversible.
+                setPhotos(prev => prev.map((p, i) => i === cropIndex ? { ...p, crop } : p));
                 nextInQueue();
               }}
             />

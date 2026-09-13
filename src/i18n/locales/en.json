@@ -621,7 +621,7 @@
     "title": "Frame your photo",
     "hint": "Pinch to zoom, drag to move",
     "use": "Use this photo",
-    "gridHint": "Tap a photo to rescale it"
+    "gridHint": "Tap a photo to reframe it"
   },
   "whosOutside": {
     "tab": "Friends",

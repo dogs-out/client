@@ -1,5 +1,6 @@
 import api from './api';
 import { MULTIPART_CONFIG, prepareForUpload } from './photoUpload';
+import { CropRect } from '../components/ui/CroppedImage';
 
 export interface DogPhoto {
   id: number;
@@ -8,6 +9,8 @@ export interface DogPhoto {
   /** Small rendition, for avatars and list rows. */
   thumbUrl: string;
   sortOrder: number;
+  /** Which part of the picture to show; null means all of it. */
+  crop: CropRect | null;
 }
 
 export interface Dog {
@@ -65,6 +68,12 @@ export const dogService = {
     const { data } = await api.post<DogPhoto>(`/dogs/${dogId}/photos`, form, MULTIPART_CONFIG);
     return data;
   },
+
+  /** Reframes a photo without re-uploading it; null clears the crop. */
+  setPhotoCrop: (dogId: number, photoId: number, crop: CropRect | null): Promise<DogPhoto> =>
+    api.put<DogPhoto>(`/dogs/${dogId}/photos/${photoId}/crop`, crop ?? {
+      x: null, y: null, width: null, height: null,
+    }).then(r => r.data),
 
   deletePhoto: (dogId: number, photoId: number): Promise<void> =>
     api.delete(`/dogs/${dogId}/photos/${photoId}`).then(() => undefined),

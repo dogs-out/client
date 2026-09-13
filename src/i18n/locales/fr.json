@@ -714,7 +714,7 @@
     "title": "Cadrer ta photo",
     "hint": "Pince pour zoomer, glisse pour déplacer",
     "use": "Utiliser cette photo",
-    "gridHint": "Touche une photo pour la redimensionner"
+    "gridHint": "Touche une photo pour la recadrer"
   },
   "whosOutside": {
     "tab": "Amis",

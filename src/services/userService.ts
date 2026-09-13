@@ -1,6 +1,7 @@
 import api from './api';
 import { tokenStorage } from '../utils/tokenStorage';
 import { MULTIPART_CONFIG, prepareForUpload } from './photoUpload';
+import { CropRect } from '../components/ui/CroppedImage';
 import { celebration } from '../utils/celebration';
 
 export type WalkStatus =
@@ -66,6 +67,8 @@ export interface UserPhoto {
   /** Small rendition, for avatars and list rows. */
   thumbUrl: string;
   sortOrder: number;
+  /** Which part of the picture to show; null means all of it. */
+  crop: CropRect | null;
 }
 
 export interface UserProfile {
@@ -175,6 +178,17 @@ export const userService = {
    */
   inviteMatchesToWalk: (userIds?: number[]): Promise<void> =>
     api.post('/users/me/status/invite', { userIds: userIds ?? [] }).then(() => {}),
+
+  /**
+   * Reframes a photo without re-uploading it; null clears the crop.
+   *
+   * <p>This is what makes cropping reversible: the stored file is always the
+   * whole picture, so a crop can be widened again months later.
+   */
+  setPhotoCrop: (photoId: number, crop: CropRect | null): Promise<UserPhoto> =>
+    api.put<UserPhoto>(`/users/me/photos/${photoId}/crop`, crop ?? {
+      x: null, y: null, width: null, height: null,
+    }).then(r => r.data),
 
   /** Records acceptance of the terms on the account. Idempotent server-side. */
   acceptTerms: (): Promise<void> => api.post('/users/me/terms').then(() => {}),

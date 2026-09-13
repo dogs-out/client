@@ -24,6 +24,7 @@ import { FloatingBackground } from '../../components/FloatingBackground';
 import { GlassButton } from '../../components/GlassButton';
 import { CustomSlider } from '../../components/CustomSlider';
 import { CropHint, PhotoCropModal } from '../../components/PhotoCropModal';
+import { CropRect, CroppedImage } from '../../components/ui/CroppedImage';
 import { Colors } from '../../constants/colors';
 
 interface Props {
@@ -54,8 +55,10 @@ const defaultPickerDate = (() => {
 })();
 
 type PhotoItem =
-  | { kind: 'existing'; photoId: number; uri: string }
-  | { kind: 'new'; uri: string };
+  // A photo carries its framing rather than being replaced by a cropped copy:
+  // the file stays the whole picture, so a crop can be widened again later.
+  | { kind: 'existing'; photoId: number; uri: string; crop: CropRect | null }
+  | { kind: 'new'; uri: string; crop: CropRect | null };
 
 export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: Readonly<Props>) {
   const { t } = useTranslation();
@@ -68,6 +71,7 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: R
   // Index of the photo open in the crop editor, if any.
   // A queue, not a single index: picking four photos should offer framing for all
   // four, one after another, rather than the first and silently none of the rest.
+  const [slotSize, setSlotSize] = useState(0);
   const [cropQueue, setCropQueue] = useState<number[]>([]);
   const cropIndex = cropQueue.length > 0 ? cropQueue[0] : null;
   const nextInQueue = () => setCropQueue(q => q.slice(1));
@@ -108,7 +112,7 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: R
       if (user.sitterTags?.length) setSitterTags(user.sitterTags);
       if (user.photos?.length) {
         // Thumbs: these render as small grid tiles, never full size.
-        const loaded = user.photos.map(p => ({ kind: 'existing' as const, photoId: p.id, uri: p.thumbUrl }));
+        const loaded = user.photos.map(p => ({ kind: 'existing' as const, photoId: p.id, uri: p.url, crop: p.crop }));
         setPhotos(loaded);
         originalPhotoIds.current = user.photos.map(p => p.id);
       }
@@ -140,7 +144,7 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: R
     });
     if (result.canceled) return;
     // selectionLimit is advisory on some Android pickers, so clamp it here too.
-    const picked = result.assets.slice(0, remaining).map(a => ({ kind: 'new' as const, uri: a.uri }));
+    const picked = result.assets.slice(0, remaining).map(a => ({ kind: 'new' as const, uri: a.uri, crop: null }));
     if (picked.length > 0) {
       setPhotos(prev => {
         // Queue every new photo, so framing is offered for each rather than hidden
@@ -230,21 +234,25 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: R
     setError(null);
     try {
       const currentExistingIds = photos
-        .filter((p): p is { kind: 'existing'; photoId: number; uri: string } => p.kind === 'existing')
+        .filter((p): p is Extract<PhotoItem, { kind: 'existing' }> => p.kind === 'existing')
         .map(p => p.photoId);
       const deletedIds = originalPhotoIds.current.filter(id => !currentExistingIds.includes(id));
       await Promise.all(deletedIds.map(id => userService.deletePhoto(id)));
       // Upload new photos sequentially and collect ids in display order, then
       // persist that order — the first photo becomes the profile picture.
       const orderedIds: number[] = [];
+      const crops: { photoId: number; crop: CropRect | null }[] = [];
       for (const p of photos) {
         if (p.kind === 'existing') {
           orderedIds.push(p.photoId);
+          crops.push({ photoId: p.photoId, crop: p.crop });
         } else {
           const saved = await userService.addPhoto(p.uri);
           orderedIds.push(saved.id);
+          if (p.crop) crops.push({ photoId: saved.id, crop: p.crop });
         }
       }
+      await Promise.all(crops.map(c => userService.setPhotoCrop(c.photoId, c.crop).catch(() => {})));
       if (orderedIds.length > 0) {
         await userService.reorderPhotos(orderedIds);
       }
@@ -327,7 +335,21 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: R
                         onPress={() => setCropQueue([i])}
                         activeOpacity={0.85}
                       >
-                        <RemoteImage source={{ uri: photo.uri }} style={styles.photoThumb} />
+                        {/* Measured rather than assumed: the slot is a flexed
+                            square, so its pixel size is only known at layout. */}
+                        <View
+                          style={styles.photoThumb}
+                          onLayout={e => setSlotSize(e.nativeEvent.layout.width)}
+                        >
+                          {slotSize > 0 && (
+                            <CroppedImage
+                              uri={photo.uri}
+                              crop={photo.crop}
+                              width={slotSize}
+                              height={slotSize}
+                            />
+                          )}
+                        </View>
                       </TouchableOpacity>
                       {i === 0 && <View style={styles.mainBadge}><Text style={styles.mainBadgeText}>{t('dogs.form.mainBadge')}</Text></View>}
                       {i > 0 && (
@@ -360,12 +382,11 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: R
             // Cancel drops the whole queue: someone who backs out of framing the
             // first of four photos does not want the next three thrown at them.
             onCancel={() => setCropQueue([])}
-            onDone={uri => {
-              // A re-crop replaces the photo in place. An existing one becomes a
-              // new upload on save, because the server stores renditions rather
-              // than an editable original — and the save below deletes whatever
-              // is no longer in the existing list, so the old one goes with it.
-              setPhotos(prev => prev.map((p, i) => i === cropIndex ? { kind: 'new', uri } : p));
+            crop={cropIndex !== null ? photos[cropIndex]?.crop : null}
+            onDone={crop => {
+              // Only the framing changes. Nothing is re-uploaded and nothing is
+              // deleted, which is what makes cropping reversible.
+              setPhotos(prev => prev.map((p, i) => i === cropIndex ? { ...p, crop } : p));
               nextInQueue();
             }}
           />

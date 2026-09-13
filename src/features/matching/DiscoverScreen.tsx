@@ -18,6 +18,7 @@ import { getDiscoverFiltersVersion } from '../../utils/discoverFilters';
 import { RootStackParamList } from '../../types/navigation';
 import { Colors } from '../../constants/colors';
 import { NeedsDogNotice } from '../../components/NeedsDogNotice';
+import { CropRect, CroppedImage } from '../../components/ui/CroppedImage';
 import { useTabBarHeight } from '../../components/GlassTabBar';
 import { FloatingBackground } from '../../components/FloatingBackground';
 import { translateTag } from '../../i18n/translateTag';
@@ -30,7 +31,7 @@ const CARD_W = SW - 32;
 const CARD_H = CARD_W * 1.42;
 const SWIPE_THRESHOLD = 100;
 
-type FlatPhoto = { uri: string; dogIndex: number };
+type FlatPhoto = { uri: string; crop: CropRect | null; dogIndex: number };
 
 function getAge(dob: string | null): number | null {
   if (!dob) return null;
@@ -48,8 +49,11 @@ function buildFlatPhotos(profile: DiscoverProfile): FlatPhoto[] {
     // Full-size renditions: these fill the card. An empty string keeps the
     // placeholder card for a dog with no photos — profilePicture is derived from
     // the first photo, so there is never one to fall back to when photos is empty.
-    const uris = dog.photos.length > 0 ? dog.photos.map(p => p.url) : [''];
-    return uris.map(uri => ({ uri, dogIndex: di }));
+    // The stored file is the whole picture; the framing rides along with it.
+    const photos = dog.photos.length > 0
+      ? dog.photos.map(p => ({ uri: p.url, crop: p.crop }))
+      : [{ uri: '', crop: null }];
+    return photos.map(photo => ({ ...photo, dogIndex: di }));
   });
 }
 
@@ -393,7 +397,7 @@ export default function DiscoverScreen() {
 
   const currentDogIndex = flatPhotos[photoIndex]?.dogIndex ?? 0;
   const currentDog: Dog | undefined = profile.dogs[currentDogIndex];
-  const ownerPhotos = profile.photos.map(p => p.url);
+  const ownerPhotos = profile.photos.map(p => ({ uri: p.url, crop: p.crop }));
   const ownerAge = profile.age;
   const ownerTags = [...(profile.lifestyleTags ?? []), ...(profile.personalityTags ?? [])];
   const nextProfile = feed[idx + 1];
@@ -444,7 +448,13 @@ export default function DiscoverScreen() {
             {/* Full-size, not profilePicture: this fills a whole card, and
                 profilePicture is only a 256px avatar rendition. */}
             {nextProfile.dogs[0]?.photos[0]?.url
-              ? <RemoteImage source={{ uri: nextProfile.dogs[0].photos[0].url }} style={styles.photo} resizeMode="cover" />
+              ? <CroppedImage
+                  uri={nextProfile.dogs[0].photos[0].url}
+                  crop={nextProfile.dogs[0].photos[0].crop}
+                  width={CARD_W}
+                  height={cardH}
+                  style={styles.photo}
+                />
               : <View style={[styles.photo, styles.photoPlaceholder]}><Text style={{ fontSize: 64 }}>🐶</Text></View>
             }
           </Animated.View>
@@ -460,11 +470,23 @@ export default function DiscoverScreen() {
         >
           {showOwner ? (
             ownerPhotos.length > 0
-              ? <RemoteImage source={{ uri: ownerPhotos[ownerPhotoIndex] }} style={styles.photo} resizeMode="cover" />
+              ? <CroppedImage
+                  uri={ownerPhotos[ownerPhotoIndex].uri}
+                  crop={ownerPhotos[ownerPhotoIndex].crop}
+                  width={CARD_W}
+                  height={cardH}
+                  style={styles.photo}
+                />
               : <View style={[styles.photo, styles.photoPlaceholder]}><Text style={{ fontSize: 64 }}>👤</Text></View>
           ) : (
             flatPhotos[photoIndex]?.uri
-              ? <RemoteImage source={{ uri: flatPhotos[photoIndex].uri }} style={styles.photo} resizeMode="cover" />
+              ? <CroppedImage
+                  uri={flatPhotos[photoIndex].uri}
+                  crop={flatPhotos[photoIndex].crop}
+                  width={CARD_W}
+                  height={cardH}
+                  style={styles.photo}
+                />
               : <View style={[styles.photo, styles.photoPlaceholder]}><Text style={{ fontSize: 64 }}>🐶</Text></View>
           )}
 

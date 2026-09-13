@@ -15,7 +15,6 @@ import { FloatingBackground } from '../../components/FloatingBackground';
 import { GlassCard } from '../../components/GlassCard';
 import { GlassButton } from '../../components/GlassButton';
 import { RemoteImage } from '../../components/ui/RemoteImage';
-import { PhotoCropModal } from '../../components/PhotoCropModal';
 import { CustomSlider } from '../../components/CustomSlider';
 import {
   userService, DEFAULT_STATUS, SittableDog, STATUS_EXPIRES, STATUS_SHARES_LOCATION, WalkStatus,
@@ -60,7 +59,6 @@ export default function SetStatusScreen({ navigation, route }: Readonly<Props>) 
   const [photoStatus, setPhotoStatus] = useState<WalkStatus | null>(null);
   /** A newly picked local file, waiting to be uploaded when the status is saved. */
   const [pendingPhoto, setPendingPhoto] = useState<string | null>(null);
-  const [cropping, setCropping] = useState<string | null>(null);
   /** Set when an existing photo was removed, so saving takes it off the status. */
   const [removePhoto, setRemovePhoto] = useState(false);
   const [hours, setHours] = useState(2);
@@ -154,8 +152,12 @@ export default function SetStatusScreen({ navigation, route }: Readonly<Props>) 
       ? await ImagePicker.launchCameraAsync({ mediaTypes: ['images'] })
       : await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'] });
     if (result.canceled) return;
-    // Framed before it is sent, like every other photo in the app.
-    setCropping(result.assets[0].uri);
+    // Sent as taken. A status photo has no stored framing to go with it — the
+    // crop editor returns a rectangle now, and there is nowhere to keep one
+    // here — so cropping it would be the destructive kind this all moved away
+    // from. It is shown whole.
+    setPendingPhoto(result.assets[0].uri);
+    setRemovePhoto(false);
   };
 
   const save = async () => {
@@ -378,11 +380,6 @@ export default function SetStatusScreen({ navigation, route }: Readonly<Props>) 
         <View style={{ height: 40 }} />
       </ScrollView>
 
-      <PhotoCropModal
-        uri={cropping}
-        onCancel={() => setCropping(null)}
-        onDone={uri => { setPendingPhoto(uri); setRemovePhoto(false); setCropping(null); }}
-      />
     </SafeAreaView>
   );
 }

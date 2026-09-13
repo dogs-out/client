@@ -4,6 +4,7 @@ import {
   StyleSheet, Text, TouchableOpacity, View,
 } from 'react-native';
 import { RemoteImage } from '../../components/ui/RemoteImage';
+import { CropRect, CroppedImage } from '../../components/ui/CroppedImage';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
@@ -30,7 +31,9 @@ function getAge(dob: string | null): number | null {
   return Math.floor((Date.now() - new Date(dob).getTime()) / (1000 * 60 * 60 * 24 * 365.25));
 }
 
-function PhotoCarousel({ uris, placeholder }: Readonly<{ uris: string[]; placeholder: string }>) {
+interface CarouselPhoto { uri: string; crop: CropRect | null }
+
+function PhotoCarousel({ photos, placeholder }: Readonly<{ photos: CarouselPhoto[]; placeholder: string }>) {
   const [index, setIndex] = useState(0);
   // pagingEnabled snaps by the *viewport* width. The card's border makes the
   // viewport a few px narrower than PHOTO_W, so fixed-width pages drift a bit
@@ -38,7 +41,7 @@ function PhotoCarousel({ uris, placeholder }: Readonly<{ uris: string[]; placeho
   // real viewport and size each page to exactly that.
   const [pageW, setPageW] = useState(PHOTO_W);
 
-  if (uris.length === 0) {
+  if (photos.length === 0) {
     return (
       <View style={[styles.photo, styles.photoPlaceholder]}>
         <Text style={{ fontSize: 64 }}>{placeholder}</Text>
@@ -54,13 +57,20 @@ function PhotoCarousel({ uris, placeholder }: Readonly<{ uris: string[]; placeho
         showsHorizontalScrollIndicator={false}
         onMomentumScrollEnd={e => setIndex(Math.round(e.nativeEvent.contentOffset.x / pageW))}
       >
-        {uris.map((uri, i) => (
-          <RemoteImage key={i} source={{ uri }} style={[styles.photo, { width: pageW }]} resizeMode="cover" />
+        {photos.map((photo, i) => (
+          <CroppedImage
+            key={i}
+            uri={photo.uri}
+            crop={photo.crop}
+            width={pageW}
+            height={PHOTO_H}
+            style={styles.photo}
+          />
         ))}
       </ScrollView>
-      {uris.length > 1 && (
+      {photos.length > 1 && (
         <View style={styles.dotsRow}>
-          {uris.map((_, i) => (
+          {photos.map((_, i) => (
             <View key={i} style={[styles.dot, i === index && styles.dotActive]} />
           ))}
         </View>
@@ -82,13 +92,13 @@ function LevelDots({ level }: Readonly<{ level: number }>) {
 function DogCard({ dog }: Readonly<{ dog: Dog }>) {
   const { t, i18n } = useTranslation();
   const age = getAge(dog.dateOfBirth);
-  const photos = dog.photos.map(p => p.url);
+  const photos = dog.photos.map(p => ({ uri: p.url, crop: p.crop }));
   const hasPersonality = dog.energyLevel !== null || dog.socialBehavior !== null
     || dog.offLeash !== null || dog.kidsComfort !== null;
 
   return (
     <GlassCard padding={0} plain style={styles.dogCard}>
-      <PhotoCarousel uris={photos} placeholder="🐶" />
+      <PhotoCarousel photos={photos} placeholder="🐶" />
       <View style={styles.dogInfo}>
         <Text style={styles.dogName}>
           {dog.name}{age !== null ? `, ${age}` : ''}
@@ -176,7 +186,7 @@ export default function UserProfileScreen({ navigation, route }: Readonly<Props>
       .finally(() => setContacting(false));
   };
 
-  const ownerPhotos = profile?.photos.map(p => p.url) ?? [];
+  const ownerPhotos = profile?.photos.map(p => ({ uri: p.url, crop: p.crop })) ?? [];
   const ownerTags = profile ? [...(profile.lifestyleTags ?? []), ...(profile.personalityTags ?? [])] : [];
 
   return (
@@ -206,7 +216,7 @@ export default function UserProfileScreen({ navigation, route }: Readonly<Props>
         <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
           {/* Owner */}
           <GlassCard padding={0} plain>
-            <PhotoCarousel uris={ownerPhotos} placeholder="👤" />
+            <PhotoCarousel photos={ownerPhotos} placeholder="👤" />
             <View style={styles.dogInfo}>
               <Text style={styles.dogName}>
                 {profile.name}{profile.age !== null ? `, ${profile.age}` : ''}

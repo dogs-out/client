@@ -1,17 +1,17 @@
 import { useEffect, useRef, useState } from 'react';
 import {
-  ActivityIndicator, Animated, Modal,
+  Animated, Modal,
   StyleSheet, Text, TouchableOpacity, View, useWindowDimensions,
 } from 'react-native';
 import {
   GestureHandlerRootView, PanGestureHandler, PanGestureHandlerStateChangeEvent,
   PinchGestureHandler, PinchGestureHandlerStateChangeEvent, State,
 } from 'react-native-gesture-handler';
-import { ImageManipulator, SaveFormat } from 'expo-image-manipulator';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { Colors } from '../constants/colors';
 import { clampScale, maxOffset } from '../utils/pinch';
+import { CropRect } from './ui/CroppedImage';
 
 /** Matches the feed rendition the server produces, so what you frame is what shows. */
 const FRAME_RATIO = 3 / 4;
@@ -19,10 +19,13 @@ const MIN_SCALE = 1;
 const MAX_SCALE = 4;
 
 interface Props {
-  /** Local file URI of the picked photo; null closes the editor. */
+  /** The photo to frame; null closes the editor. */
   uri: string | null;
+  /** The framing it already has, so reopening starts where it left off. */
+  crop?: CropRect | null;
   onCancel: () => void;
-  onDone: (croppedUri: string) => void;
+  /** The chosen framing, or null for the whole picture. The file is never altered. */
+  onDone: (crop: CropRect | null) => void;
 }
 
 /**
@@ -41,11 +44,14 @@ interface Props {
  * <p>Deliberately the classic handler API with React Native's own Animated rather
  * than Reanimated worklets — this is two values and a clamp, and Reanimated would
  * mean a babel plugin and a companion package for it.
+ *
+ * <p>Nothing here writes a file. The editor returns the rectangle it was asked to
+ * choose, and the photo itself is uploaded and kept whole — which is what lets
+ * someone crop in today and crop back out next month.
  */
-export function PhotoCropModal({ uri, onCancel, onDone }: Readonly<Props>) {
+export function PhotoCropModal({ uri, crop, onCancel, onDone }: Readonly<Props>) {
   const { t } = useTranslation();
   const { width } = useWindowDimensions();
-  const [working, setWorking] = useState(false);
   const [natural, setNatural] = useState<{ width: number; height: number } | null>(null);
 
   const frameW = width - 48;
@@ -72,14 +78,17 @@ export function PhotoCropModal({ uri, onCancel, onDone }: Readonly<Props>) {
   useEffect(() => {
     if (!uri) return;
     setNatural(null);
-    committed.current = { scale: MIN_SCALE, x: 0, y: 0 };
-    baseScale.setValue(MIN_SCALE);
+    // Reopening an already-framed photo picks up where it was left, so widening
+    // a crop is a matter of pinching back out rather than starting again.
+    const zoom = crop ? clampScale(1 / Math.max(crop.width, crop.height), MIN_SCALE, MAX_SCALE, MIN_SCALE) : MIN_SCALE;
+    committed.current = { scale: zoom, x: 0, y: 0 };
+    baseScale.setValue(zoom);
     baseX.setValue(0);
     baseY.setValue(0);
     gestureScale.setValue(1);
     gestureX.setValue(0);
     gestureY.setValue(0);
-  }, [uri, baseScale, baseX, baseY, gestureScale, gestureX, gestureY]);
+  }, [uri, crop, baseScale, baseX, baseY, gestureScale, gestureX, gestureY]);
 
   /** Keeps the photo covering the frame, so no empty corner can ever be saved. */
   const settle = () => {
@@ -119,49 +128,38 @@ export function PhotoCropModal({ uri, onCancel, onDone }: Readonly<Props>) {
     settle();
   };
 
-  const apply = async () => {
+  /**
+   * Turns the on-screen framing into fractions of the whole image.
+   *
+   * <p>The frame shows the photo scaled to cover it; this reverses that to say
+   * which part of the original is visible, in units that mean the same thing
+   * whatever size the image is served at.
+   */
+  const apply = () => {
     if (!uri || !natural) return;
 
-    // Untouched means untouched. The server stores what it is given, fitted to
-    // 1080x1440 without cropping, so handing it the original keeps the whole
-    // frame — where cropping to the 3:4 window would shave the edges off a photo
-    // whose framing nobody asked to change.
     const untouched = committed.current.scale === MIN_SCALE
       && committed.current.x === 0 && committed.current.y === 0;
     if (untouched) {
-      onDone(uri);
+      onDone(null);
       return;
     }
 
-    setWorking(true);
-    try {
-      // The frame shows the image scaled to cover it; translate that back into
-      // pixels of the original, which is what the manipulator crops in.
-      const cover = Math.max(frameW / natural.width, frameH / natural.height);
-      const shown = cover * committed.current.scale;
-      const cropW = Math.min(natural.width, frameW / shown);
-      const cropH = Math.min(natural.height, frameH / shown);
-      const originX = clampScale(
-        (natural.width - cropW) / 2 - committed.current.x / shown, 0, natural.width - cropW, 0);
-      const originY = clampScale(
-        (natural.height - cropH) / 2 - committed.current.y / shown, 0, natural.height - cropH, 0);
+    const cover = Math.max(frameW / natural.width, frameH / natural.height);
+    const shown = cover * committed.current.scale;
+    const visibleW = Math.min(natural.width, frameW / shown);
+    const visibleH = Math.min(natural.height, frameH / shown);
+    const originX = clampScale(
+      (natural.width - visibleW) / 2 - committed.current.x / shown, 0, natural.width - visibleW, 0);
+    const originY = clampScale(
+      (natural.height - visibleH) / 2 - committed.current.y / shown, 0, natural.height - visibleH, 0);
 
-      const context = ImageManipulator.manipulate(uri);
-      context.crop({
-        originX: Math.round(originX),
-        originY: Math.round(originY),
-        width: Math.round(cropW),
-        height: Math.round(cropH),
-      });
-      const image = await context.renderAsync();
-      const saved = await image.saveAsync({ format: SaveFormat.JPEG, compress: 0.9 });
-      onDone(saved.uri);
-    } catch {
-      // Cropping is a convenience; the original is still a perfectly good photo.
-      onDone(uri);
-    } finally {
-      setWorking(false);
-    }
+    onDone({
+      x: originX / natural.width,
+      y: originY / natural.height,
+      width: visibleW / natural.width,
+      height: visibleH / natural.height,
+    });
   };
 
   return (
@@ -210,11 +208,8 @@ export function PhotoCropModal({ uri, onCancel, onDone }: Readonly<Props>) {
         </View>
 
         <View style={styles.footer}>
-          <TouchableOpacity style={styles.useBtn} onPress={apply} disabled={working || !natural}>
-            {working
-              ? <ActivityIndicator color="#fff" />
-              : <Text style={styles.useText}>{t('photoCrop.use')}</Text>
-            }
+          <TouchableOpacity style={styles.useBtn} onPress={apply} disabled={!natural}>
+            <Text style={styles.useText}>{t('photoCrop.use')}</Text>
           </TouchableOpacity>
         </View>
       </GestureHandlerRootView>

@@ -18,6 +18,8 @@ jest.mock('../../../services/userService', () => ({
     addPhoto: jest.fn(),
     deletePhoto: jest.fn(),
     reorderPhotos: jest.fn(),
+    // Saving now persists each photo's framing alongside the order.
+    setPhotoCrop: jest.fn().mockResolvedValue(undefined),
     updateProfile: jest.fn(),
   },
 }));
