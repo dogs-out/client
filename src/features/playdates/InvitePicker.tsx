@@ -75,7 +75,13 @@ export function InvitePicker({ visible, onClose, onSend, sending }: Readonly<Pro
           <View style={{ width: 26 }} />
         </View>
 
-        <GlassButton onPress={() => onSend([])} disabled={sending} style={styles.everyone}>
+        {/* Nothing to tell when there is nobody: "Sent" over an empty list is a
+            small lie, and the row below already explains why. */}
+        <GlassButton
+          onPress={() => onSend([])}
+          disabled={sending || matches.length === 0}
+          style={[styles.everyone, matches.length === 0 && styles.everyoneDisabled]}
+        >
           <Text style={styles.everyoneText}>{t('whosOutside.inviteEveryone')}</Text>
         </GlassButton>
         <Text style={styles.or}>{t('whosOutside.inviteOr')}</Text>
@@ -116,7 +122,8 @@ const styles = StyleSheet.create({
   header:      { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingTop: 8, paddingBottom: 12 },
   headerTitle: { fontSize: 16, fontWeight: '700', color: Colors.text },
 
-  everyone:     { marginHorizontal: 20 },
+  everyone:         { marginHorizontal: 20 },
+  everyoneDisabled: { opacity: 0.45 },
   everyoneText: { color: Colors.text, fontSize: 16, fontWeight: '700', textAlign: 'center' },
   or:           { textAlign: 'center', color: Colors.textSecondary, fontSize: 12, marginVertical: 14 },
 

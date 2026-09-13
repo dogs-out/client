@@ -1,4 +1,4 @@
-import { Platform, StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
+import { Platform, StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
 import { GlassView } from 'expo-glass-effect';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Colors } from '../constants/colors';
@@ -6,7 +6,7 @@ import { Colors } from '../constants/colors';
 interface Props {
   onPress: () => void;
   children: React.ReactNode;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   disabled?: boolean;
   /** Optional rgba() overlay color, e.g. to read as a primary CTA rather than neutral glass. */
   tint?: string;

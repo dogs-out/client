@@ -22,6 +22,7 @@ import {
 } from '../../services/userService';
 import { STATUS_DURATIONS, durationLabel, nearestStop } from '../../utils/statusDuration';
 import { getApiError } from '../../utils/apiError';
+import { STATUS_ICONS } from './statusIcons';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'SetStatus'>;
 
@@ -31,15 +32,6 @@ interface Point {
   /** Set when the point came from the map rather than the phone. */
   name?: string;
 }
-
-const ICONS: Record<WalkStatus, string> = {
-  WALKING:     'walk-outline',
-  AT_THE_PARK: 'leaf-outline',
-  SITTING:     'paw-outline',
-  AT_HOME:     'home-outline',
-  ON_VACATION: 'airplane-outline',
-  BUSY:        'time-outline',
-};
 
 /**
  * Whether to offer walking or sitting, which is really a question about whose
@@ -244,7 +236,7 @@ export default function SetStatusScreen({ navigation, route }: Readonly<Props>) 
                 onPress={() => chooseStatus(option)}
               >
                 <Ionicons
-                  name={ICONS[option] as never}
+                  name={STATUS_ICONS[option] as never}
                   size={19}
                   color={selected ? Colors.primary : Colors.textSecondary}
                 />

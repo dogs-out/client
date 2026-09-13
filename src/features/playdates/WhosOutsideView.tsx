@@ -18,6 +18,7 @@ import {
 } from '../../services/userService';
 import { dogService } from '../../services/dogService';
 import { InvitePicker } from './InvitePicker';
+import { STATUS_ICONS } from './statusIcons';
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
@@ -184,7 +185,7 @@ export function WhosOutsideView() {
     <>
       <View style={styles.statusBar}>
         <TouchableOpacity style={styles.statusBtn} onPress={() => navigation.navigate('SetStatus')}>
-          <Ionicons name="walk-outline" size={16} color={Colors.primary} />
+          <Ionicons name={STATUS_ICONS[myStatus] as never} size={16} color={Colors.primary} />
           <Text style={styles.statusBtnText}>{t(`whosOutside.status.${myStatus}`, { defaultValue: myStatus })}</Text>
           <Ionicons name="chevron-forward" size={14} color={Colors.textSecondary} />
         </TouchableOpacity>
