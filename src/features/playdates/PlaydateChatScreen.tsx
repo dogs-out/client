@@ -2,6 +2,7 @@ import { useCallback, useMemo, useRef, useState } from 'react';
 import {
   ActivityIndicator, FlatList, KeyboardAvoidingView,
   Platform, StyleSheet, Text, TextInput, TouchableOpacity, View,
+  useWindowDimensions,
 } from 'react-native';
 import { RemoteImage } from '../../components/ui/RemoteImage';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -55,6 +56,9 @@ type ListItem =
 type Props = NativeStackScreenProps<RootStackParamList, 'PlaydateChat'>;
 
 export default function PlaydateChatScreen({ navigation, route }: Readonly<Props>) {
+  const { width } = useWindowDimensions();
+  /** Points, not a percentage — see ChatDetailScreen. */
+  const bubbleMaxWidth = Math.round(width * 0.76);
   const { t, i18n } = useTranslation();
   const { playdateId, title } = route.params;
 
@@ -172,10 +176,12 @@ export default function PlaydateChatScreen({ navigation, route }: Readonly<Props
             <Text style={styles.senderName}>{message.senderName}</Text>
           </View>
         )}
-        <GlassCard padding={10} radius={16} compact>
+        {/* See ChatDetailScreen: a percentage maxWidth on the row gave the text
+            nothing definite to wrap against, and the card clips its corners. */}
+        <GlassCard padding={10} radius={16} compact style={{ maxWidth: bubbleMaxWidth }}>
           <Text style={styles.bubbleText}>{message.content}</Text>
         </GlassCard>
-        <Text style={styles.bubbleTime}>{formatTime(message.sentAt)}</Text>
+        <Text style={styles.bubbleTime} numberOfLines={1}>{formatTime(message.sentAt)}</Text>
       </View>
     );
   };
@@ -293,8 +299,8 @@ const styles = StyleSheet.create({
   // being drawn. Inside a bubble that clips its corners, "a bit too short" shows up
   // as sliced-off descenders. Letting the platform derive it from the (already
   // scaled) font size cannot go stale.
-  bubbleText: { color: Colors.text, fontSize: 15 },
-  bubbleTime: { fontSize: 10, color: Colors.textSecondary, marginTop: 2, marginHorizontal: 4 },
+  bubbleText: { color: Colors.text, fontSize: 15, flexShrink: 1 },
+  bubbleTime: { fontSize: 10, color: Colors.textSecondary, marginTop: 2, marginHorizontal: 4, paddingHorizontal: 2 },
 
   dateSeparatorRow:  { alignItems: 'center', marginVertical: 12 },
   dateSeparatorPill: {

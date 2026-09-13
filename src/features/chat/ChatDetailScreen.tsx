@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   ActivityIndicator, Alert, FlatList, KeyboardAvoidingView, Modal,
   Platform, Pressable, StyleSheet, Text, TextInput,
-  TouchableOpacity, View,
+  TouchableOpacity, View, useWindowDimensions,
 } from 'react-native';
 import { RemoteImage } from '../../components/ui/RemoteImage';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -63,6 +63,10 @@ type ListItem =
   | { type: 'separator'; key: string; label: string };
 
 export default function ChatDetailScreen() {
+  const { width } = useWindowDimensions();
+  // Points, not a percentage: the bubble has to hand the text a real number to
+  // wrap against, or a large system font clips the tail instead of wrapping.
+  const bubbleMaxWidth = Math.round(width * 0.76);
   const { t, i18n } = useTranslation();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { params } = useRoute<RouteProp<RootStackParamList, 'ChatDetail'>>();
@@ -240,10 +244,16 @@ export default function ChatDetailScreen() {
     const mine = message.senderId !== otherUserId;
     return (
       <View style={[styles.bubbleRow, mine ? styles.bubbleRowMine : styles.bubbleRowTheirs]}>
-        <GlassCard padding={10} radius={16} compact>
+        {/* A width in points, on the bubble itself. The row's maxWidth is a
+            percentage, and a percentage resolved through a card that sizes to its
+            own content gave the text nothing definite to wrap against: at a large
+            system font the text measured narrower than it drew, the card took the
+            smaller number, and the card clips its corners — so "Das hat jetzt
+            funktioniert" was cut to "Das hat jetzt" rather than wrapping. */}
+        <GlassCard padding={10} radius={16} compact style={{ maxWidth: bubbleMaxWidth }}>
           <Text style={styles.bubbleText}>{message.content}</Text>
         </GlassCard>
-        <Text style={styles.bubbleTime}>{formatTime(message.sentAt)}</Text>
+        <Text style={styles.bubbleTime} numberOfLines={1}>{formatTime(message.sentAt)}</Text>
       </View>
     );
   };
@@ -400,8 +410,12 @@ const styles = StyleSheet.create({
   // being drawn. Inside a bubble that clips its corners, "a bit too short" shows up
   // as sliced-off descenders. Letting the platform derive it from the (already
   // scaled) font size cannot go stale.
-  bubbleText: { color: Colors.text, fontSize: 15 },
-  bubbleTime:      { fontSize: 10, color: Colors.textSecondary, marginTop: 2, marginHorizontal: 4 },
+  // flexShrink so the text yields to the bubble's width rather than the bubble
+  // being dragged wider than the constraint and then clipped.
+  bubbleText: { color: Colors.text, fontSize: 15, flexShrink: 1 },
+  // A little breathing room either side: at a large font the clock string
+  // drew wider than it measured and lost its last digit — 18:13 became 18:1.
+  bubbleTime:      { fontSize: 10, color: Colors.textSecondary, marginTop: 2, marginHorizontal: 4, paddingHorizontal: 2 },
 
   dateSeparatorRow:  { alignItems: 'center', marginVertical: 12 },
   dateSeparatorPill: {
