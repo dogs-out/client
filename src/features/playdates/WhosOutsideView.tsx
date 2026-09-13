@@ -110,7 +110,14 @@ export function WhosOutsideView() {
     // is written in the second person, since "Moritz is at home" is a strange
     // thing to read about yourself.
     const prefix = isMine ? 'whosOutside.mine' : 'whosOutside.line';
-    const line = t(`${prefix}.${item.status}`, { name: item.name, dog: dogs || t('whosOutside.theDog') });
+    // defaultValue because the status comes from the server: a value added after
+    // this build shipped has no wording here, and a name alone still reads as a
+    // row about a person rather than as a broken string.
+    const line = t(`${prefix}.${item.status}`, {
+      name: item.name,
+      dog: dogs || t('whosOutside.theDog'),
+      defaultValue: item.name,
+    });
     return (
       <GlassCard style={[styles.card, !out && styles.cardResting, isMine && styles.cardMine]}>
         {isMine && <Text style={styles.youTag}>{t('whosOutside.you')}</Text>}
@@ -154,7 +161,7 @@ export function WhosOutsideView() {
       <View style={styles.statusBar}>
         <TouchableOpacity style={styles.statusBtn} onPress={() => navigation.navigate('SetStatus')}>
           <Ionicons name="walk-outline" size={16} color={Colors.primary} />
-          <Text style={styles.statusBtnText}>{t(`whosOutside.status.${myStatus}`)}</Text>
+          <Text style={styles.statusBtnText}>{t(`whosOutside.status.${myStatus}`, { defaultValue: myStatus })}</Text>
           <Ionicons name="chevron-forward" size={14} color={Colors.textSecondary} />
         </TouchableOpacity>
 
@@ -207,6 +214,7 @@ export function WhosOutsideView() {
                 {onMap.placeName ?? t(`whosOutside.line.${onMap.status}`, {
                   name: onMap.name,
                   dog: onMap.dogNames.join(' & ') || t('whosOutside.theDog'),
+                  defaultValue: onMap.name,
                 })}
               </Text>
               <View style={{ width: 26 }} />

@@ -249,7 +249,7 @@ export default function SetStatusScreen({ navigation, route }: Readonly<Props>) 
                   color={selected ? Colors.primary : Colors.textSecondary}
                 />
                 <Text style={[styles.optionText, selected && styles.optionTextSelected]}>
-                  {t(`whosOutside.status.${option}`)}
+                  {t(`whosOutside.status.${option}`, { defaultValue: option })}
                 </Text>
                 {selected && <Ionicons name="checkmark" size={18} color={Colors.primary} />}
               </TouchableOpacity>

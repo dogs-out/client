@@ -38,6 +38,20 @@ export async function initI18n(): Promise<void> {
     lng: language,
     fallbackLng: 'en',
     interpolation: { escapeValue: false },
+    /**
+     * A key with no translation renders as nothing rather than as its own path.
+     *
+     * <p>i18next's default is to return the key, which is how a tester on an
+     * older build ended up reading "whosOutside.line.AT_HOME" in her friends
+     * list: the server had started sending a status her app predated, and the
+     * lookup fell through. Call sites that show server-provided values pass a
+     * defaultValue for exactly that case; this is the backstop for the rest,
+     * because an empty line is a blemish and a key path is a bug report.
+     */
+    parseMissingKeyHandler: (key: string) => {
+      if (__DEV__) console.warn('[i18n] missing key:', key);
+      return '';
+    },
   });
 }
 
