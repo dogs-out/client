@@ -51,21 +51,35 @@ export function PhotoCropModal({ uri, onCancel, onDone }: Readonly<Props>) {
   const frameW = width - 48;
   const frameH = frameW / FRAME_RATIO;
 
-  // What is committed, and what the live gesture is adding on top of it.
+  // Two layers: what is committed, and what the live gesture is adding on top.
+  // They have to be composed rather than swapped — a pinch reports a factor
+  // relative to its own start, so writing it straight into the displayed scale
+  // snapped an already-zoomed photo back to 1x and then multiplied on release.
+  // Everything came out far more zoomed than what was on screen while framing.
   const committed = useRef({ scale: MIN_SCALE, x: 0, y: 0 });
-  const scale = useRef(new Animated.Value(MIN_SCALE)).current;
-  const translateX = useRef(new Animated.Value(0)).current;
-  const translateY = useRef(new Animated.Value(0)).current;
+  const baseScale = useRef(new Animated.Value(MIN_SCALE)).current;
+  const gestureScale = useRef(new Animated.Value(1)).current;
+  const baseX = useRef(new Animated.Value(0)).current;
+  const baseY = useRef(new Animated.Value(0)).current;
+  const gestureX = useRef(new Animated.Value(0)).current;
+  const gestureY = useRef(new Animated.Value(0)).current;
+
+  const scale = Animated.multiply(baseScale, gestureScale);
+  const translateX = Animated.add(baseX, gestureX);
+  const translateY = Animated.add(baseY, gestureY);
 
   /** Every photo starts unzoomed and centred, rather than holding the last one's framing. */
   useEffect(() => {
     if (!uri) return;
     setNatural(null);
     committed.current = { scale: MIN_SCALE, x: 0, y: 0 };
-    scale.setValue(MIN_SCALE);
-    translateX.setValue(0);
-    translateY.setValue(0);
-  }, [uri, scale, translateX, translateY]);
+    baseScale.setValue(MIN_SCALE);
+    baseX.setValue(0);
+    baseY.setValue(0);
+    gestureScale.setValue(1);
+    gestureX.setValue(0);
+    gestureY.setValue(0);
+  }, [uri, baseScale, baseX, baseY, gestureScale, gestureX, gestureY]);
 
   /** Keeps the photo covering the frame, so no empty corner can ever be saved. */
   const settle = () => {
@@ -73,12 +87,17 @@ export function PhotoCropModal({ uri, onCancel, onDone }: Readonly<Props>) {
     const maxY = maxOffset(frameH, committed.current.scale);
     committed.current.x = clampScale(committed.current.x, -maxX, maxX, 0);
     committed.current.y = clampScale(committed.current.y, -maxY, maxY, 0);
-    scale.setValue(committed.current.scale);
-    translateX.setValue(committed.current.x);
-    translateY.setValue(committed.current.y);
+    // The committed layer takes the new values and the gesture layer returns to
+    // neutral, so the photo does not move at the moment a gesture ends.
+    baseScale.setValue(committed.current.scale);
+    baseX.setValue(committed.current.x);
+    baseY.setValue(committed.current.y);
+    gestureScale.setValue(1);
+    gestureX.setValue(0);
+    gestureY.setValue(0);
   };
 
-  const onPinch = Animated.event([{ nativeEvent: { scale } }], { useNativeDriver: true });
+  const onPinch = Animated.event([{ nativeEvent: { scale: gestureScale } }], { useNativeDriver: true });
 
   const onPinchState = (e: PinchGestureHandlerStateChangeEvent) => {
     if (e.nativeEvent.oldState !== State.ACTIVE) return;
@@ -90,7 +109,7 @@ export function PhotoCropModal({ uri, onCancel, onDone }: Readonly<Props>) {
   };
 
   const onPan = Animated.event(
-    [{ nativeEvent: { translationX: translateX, translationY: translateY } }],
+    [{ nativeEvent: { translationX: gestureX, translationY: gestureY } }],
     { useNativeDriver: true });
 
   const onPanState = (e: PanGestureHandlerStateChangeEvent) => {
@@ -102,6 +121,18 @@ export function PhotoCropModal({ uri, onCancel, onDone }: Readonly<Props>) {
 
   const apply = async () => {
     if (!uri || !natural) return;
+
+    // Untouched means untouched. The server stores what it is given, fitted to
+    // 1080x1440 without cropping, so handing it the original keeps the whole
+    // frame — where cropping to the 3:4 window would shave the edges off a photo
+    // whose framing nobody asked to change.
+    const untouched = committed.current.scale === MIN_SCALE
+      && committed.current.x === 0 && committed.current.y === 0;
+    if (untouched) {
+      onDone(uri);
+      return;
+    }
+
     setWorking(true);
     try {
       // The frame shows the image scaled to cover it; translate that back into

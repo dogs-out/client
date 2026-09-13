@@ -48,9 +48,13 @@ export async function initI18n(): Promise<void> {
      * defaultValue for exactly that case; this is the backstop for the rest,
      * because an empty line is a blemish and a key path is a bug report.
      */
-    parseMissingKeyHandler: (key: string) => {
+    parseMissingKeyHandler: (key: string, defaultValue?: string) => {
       if (__DEV__) console.warn('[i18n] missing key:', key);
-      return '';
+      // The defaultValue MUST win. This handler overrides it rather than running
+      // after it, which blanked every tag in English: tags have no en block at
+      // all by design — they are stored as their English text and passed here as
+      // the default — so ignoring it emptied every chip in the app.
+      return defaultValue ?? '';
     },
   });
 }
