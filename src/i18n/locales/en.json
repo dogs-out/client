@@ -626,7 +626,7 @@
   "whosOutside": {
     "tab": "Friends",
     "setStatusTitle": "Your status",
-    "noPoint": "Out somewhere, no place shared",
+    "noPoint": "No place shared",
     "empty": "Your matches will show up here with what they're up to.",
     "invite": "Invite",
     "inviteSentTitle": "Sent",

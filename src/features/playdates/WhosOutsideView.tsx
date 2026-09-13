@@ -13,7 +13,9 @@ import { GlassCard } from '../../components/GlassCard';
 import { Colors } from '../../constants/colors';
 import { useTabBarHeight } from '../../components/GlassTabBar';
 import { RootStackParamList } from '../../types/navigation';
-import { userService, DEFAULT_STATUS, FriendStatus, STATUS_IS_OUT, WalkStatus } from '../../services/userService';
+import {
+  userService, DEFAULT_STATUS, FriendStatus, STATUS_IS_OUT, STATUS_SHARES_LOCATION, WalkStatus,
+} from '../../services/userService';
 import { dogService } from '../../services/dogService';
 import { InvitePicker } from './InvitePicker';
 
@@ -100,6 +102,10 @@ export function WhosOutsideView() {
   };
 
   const renderSubtitle = (item: FriendStatus, hasPoint: boolean, isMine?: boolean) => {
+    // Statuses that never carry a place say nothing here. "Out somewhere, no
+    // place shared" under "Hanna is at home" contradicts the line above it, and
+    // being at home is not a place anyone is withholding.
+    if (!STATUS_SHARES_LOCATION[item.status]) return null;
     if (!hasPoint) return t(isMine ? 'whosOutside.mineNoPoint' : 'whosOutside.noPoint');
     if (isMine) return t('whosOutside.mineShared');
     if (item.distanceKm >= 0) {
@@ -133,6 +139,7 @@ export function WhosOutsideView() {
       dog: dogs || t('whosOutside.theDog'),
       defaultValue: item.name,
     });
+    const subtitle = renderSubtitle(item, hasPoint, isMine);
     return (
       <GlassCard style={[styles.card, !out && styles.cardResting, isMine && styles.cardMine]}>
         {isMine && <Text style={styles.youTag}>{t('whosOutside.you')}</Text>}
@@ -161,9 +168,7 @@ export function WhosOutsideView() {
                 place shared" against friends who had shared one — and my own row,
                 which has no meaningful distance to itself, said it about a place
                 I had just picked. */}
-            <Text style={styles.rowSub}>
-              {renderSubtitle(item, hasPoint, isMine)}
-            </Text>
+            {subtitle !== null && <Text style={styles.rowSub}>{subtitle}</Text>}
           </View>
           {hasPoint && <Ionicons name="map-outline" size={20} color={Colors.primary} />}
         </TouchableOpacity>
