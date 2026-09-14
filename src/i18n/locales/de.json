@@ -804,5 +804,12 @@
     "bothBody": "Wuff wuff! Am selben Tag Geburtstag wie dein Hund, das gehört gefeiert. Das ganze DogsOut-Team wünscht euch beiden einen wunderschönen Tag, ganz viele Leckerlis und Zoomies mit euren Freunden.",
     "signoff": "🐾 Dein DogsOut-Team",
     "thanks": "Danke!"
+  },
+  "discoverActions": {
+    "hideTitle": "Nicht mehr in Entdecken zeigen",
+    "hideHint": "Ihr seht euch nicht mehr. Rückgängig machen kannst du das in den Einstellungen unter «Blockierte Nutzer».",
+    "reportTitle": "Profil melden",
+    "reportHint": "Für unangemessenen Namen, Bio oder Fotos. Wir schauen es uns an.",
+    "hideFailed": "Das Profil konnte gerade nicht ausgeblendet werden."
   }
 }

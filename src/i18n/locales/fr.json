@@ -804,5 +804,12 @@
     "bothBody": "Wouf wouf ! Le même anniversaire que ton chien, ça se fête. Toute l'équipe DogsOut vous souhaite à tous les deux une merveilleuse journée, plein de friandises et de zoomies avec vos amis.",
     "signoff": "🐾 L'équipe DogsOut",
     "thanks": "Merci !"
+  },
+  "discoverActions": {
+    "hideTitle": "Ne plus afficher dans Découvrir",
+    "hideHint": "Vous ne vous verrez plus. Tu peux annuler dans les réglages, sous « Utilisateurs bloqués ».",
+    "reportTitle": "Signaler le profil",
+    "reportHint": "Pour un nom, une bio ou des photos inappropriés. Nous allons regarder.",
+    "hideFailed": "Impossible de masquer ce profil pour le moment."
   }
 }

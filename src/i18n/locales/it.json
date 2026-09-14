@@ -804,5 +804,12 @@
     "bothBody": "Bau bau! Compiere gli anni lo stesso giorno del tuo cane merita una festa. Tutto il team di DogsOut augura a entrambi una giornata meravigliosa, tanti premietti e tante corse pazze con i vostri amici.",
     "signoff": "🐾 Il team di DogsOut",
     "thanks": "Grazie!"
+  },
+  "discoverActions": {
+    "hideTitle": "Non mostrare più in Scopri",
+    "hideHint": "Non vi vedrete più. Puoi annullare nelle impostazioni, sotto «Utenti bloccati».",
+    "reportTitle": "Segnala il profilo",
+    "reportHint": "Per nome, bio o foto inappropriati. Daremo un'occhiata.",
+    "hideFailed": "Non è stato possibile nascondere questo profilo."
   }
 }

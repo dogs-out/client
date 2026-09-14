@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
-  Animated, Dimensions, Easing, PanResponder, Pressable,
+  Alert, Animated, Dimensions, Easing, PanResponder, Pressable,
   StyleSheet, Text, TouchableOpacity, View, ActivityIndicator,
 } from 'react-native';
 import { RemoteImage } from '../../components/ui/RemoteImage';
@@ -20,6 +20,7 @@ import { Colors } from '../../constants/colors';
 import { NeedsDogNotice } from '../../components/NeedsDogNotice';
 import { CropRect, CroppedImage } from '../../components/ui/CroppedImage';
 import { ReportUserModal } from '../../components/ReportUserModal';
+import { ProfileActionsSheet } from '../../components/ProfileActionsSheet';
 import { moderationService, PROFILE_REPORT_REASONS } from '../../services/moderationService';
 import { useTabBarHeight } from '../../components/GlassTabBar';
 import { FloatingBackground } from '../../components/FloatingBackground';
@@ -200,6 +201,7 @@ export default function DiscoverScreen() {
   const [ownerPhotoIndex, setOwnerPhotoIndex] = useState(0);
   const [matchInfo, setMatchInfo] = useState<{ profile: DiscoverProfile; matchId: number } | null>(null);
   const [reporting, setReporting] = useState(false);
+  const [actionsOpen, setActionsOpen] = useState(false);
   const [showBoneCatch, setShowBoneCatch] = useState(false);
   const [myPicture, setMyPicture] = useState<string | null>(null);
   // Where the feed is centred and how far it reaches — surfaced in the header so a
@@ -609,19 +611,35 @@ export default function DiscoverScreen() {
             )}
           </TouchableOpacity>
 
-          {/* Also after the tap zones, so it is reachable. Reporting lived behind
-              a match until now, which is the wrong place for it: nobody matches
-              with a profile whose name or photos are the problem, so it could
-              never be reported and stayed visible to everyone else. */}
+          {/* Also after the tap zones, so it is reachable. Both actions behind it
+              lived behind a match until now, which is the wrong place for them:
+              nobody matches with a profile whose name or photos are the problem,
+              so it could never be reported and stayed visible to everyone. */}
           <TouchableOpacity
-            style={styles.reportBtn}
-            onPress={() => setReporting(true)}
+            style={styles.moreBtn}
+            onPress={() => setActionsOpen(true)}
             hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
           >
-            <Ionicons name="flag-outline" size={16} color="rgba(255,255,255,0.9)" />
+            <Ionicons name="ellipsis-horizontal" size={18} color="rgba(255,255,255,0.95)" />
           </TouchableOpacity>
         </Animated.View>
       </View>
+
+      <ProfileActionsSheet
+        visible={actionsOpen}
+        name={profile.name}
+        onClose={() => setActionsOpen(false)}
+        onReport={() => { setActionsOpen(false); setReporting(true); }}
+        onHide={() => {
+          setActionsOpen(false);
+          // Blocking is what "never show me this person again" already means
+          // here: it hides them both ways, and Settings lists it so it can be
+          // undone by someone who tapped it by accident.
+          moderationService.blockUser(profile.userId)
+            .then(() => { setIdx(0); loadFeed(); })
+            .catch(() => Alert.alert(t('common.error'), t('discoverActions.hideFailed')));
+        }}
+      />
 
       <ReportUserModal
         visible={reporting}
@@ -631,9 +649,11 @@ export default function DiscoverScreen() {
         onSubmit={async (reason, message) => {
           await moderationService.reportProfile(profile.userId, reason, message);
           setReporting(false);
-          // Reported and then passed: someone who reports a profile should not
-          // have to look at it again to get rid of it.
-          handleSwipe('PASS', 0);
+          // Reported and then hidden: nobody should have to keep looking at a
+          // profile they have just reported.
+          await moderationService.blockUser(profile.userId).catch(() => {});
+          setIdx(0);
+          loadFeed();
         }}
       />
 
@@ -727,11 +747,11 @@ const styles = StyleSheet.create({
   tagText:  { fontSize: 11, color: '#fff', fontWeight: '600' },
   bioText:  { fontSize: 13, color: 'rgba(255,255,255,0.85)', lineHeight: 18 },
 
-  reportBtn: {
-    // Top-left, away from the progress bars and the treat badges, and small
-    // enough not to invite an accidental tap mid-swipe.
-    position: 'absolute', top: 44, left: 14,
-    width: 32, height: 32, borderRadius: 16,
+  moreBtn: {
+    // Top right, where a menu is looked for, and small enough not to invite an
+    // accidental tap mid-swipe.
+    position: 'absolute', top: 44, right: 14,
+    width: 34, height: 34, borderRadius: 17,
     alignItems: 'center', justifyContent: 'center',
     backgroundColor: 'rgba(0,0,0,0.35)',
   },
