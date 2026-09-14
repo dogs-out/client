@@ -19,6 +19,8 @@ import { RootStackParamList } from '../../types/navigation';
 import { Colors } from '../../constants/colors';
 import { NeedsDogNotice } from '../../components/NeedsDogNotice';
 import { CropRect, CroppedImage } from '../../components/ui/CroppedImage';
+import { ReportUserModal } from '../../components/ReportUserModal';
+import { moderationService, PROFILE_REPORT_REASONS } from '../../services/moderationService';
 import { useTabBarHeight } from '../../components/GlassTabBar';
 import { FloatingBackground } from '../../components/FloatingBackground';
 import { translateTag } from '../../i18n/translateTag';
@@ -197,6 +199,7 @@ export default function DiscoverScreen() {
   const [photoIndex, setPhotoIndex] = useState(0);
   const [ownerPhotoIndex, setOwnerPhotoIndex] = useState(0);
   const [matchInfo, setMatchInfo] = useState<{ profile: DiscoverProfile; matchId: number } | null>(null);
+  const [reporting, setReporting] = useState(false);
   const [showBoneCatch, setShowBoneCatch] = useState(false);
   const [myPicture, setMyPicture] = useState<string | null>(null);
   // Where the feed is centred and how far it reaches — surfaced in the header so a
@@ -605,8 +608,34 @@ export default function DiscoverScreen() {
                 : <Ionicons name="person" size={18} color="#fff" />
             )}
           </TouchableOpacity>
+
+          {/* Also after the tap zones, so it is reachable. Reporting lived behind
+              a match until now, which is the wrong place for it: nobody matches
+              with a profile whose name or photos are the problem, so it could
+              never be reported and stayed visible to everyone else. */}
+          <TouchableOpacity
+            style={styles.reportBtn}
+            onPress={() => setReporting(true)}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          >
+            <Ionicons name="flag-outline" size={16} color="rgba(255,255,255,0.9)" />
+          </TouchableOpacity>
         </Animated.View>
       </View>
+
+      <ReportUserModal
+        visible={reporting}
+        name={profile.name}
+        reasons={PROFILE_REPORT_REASONS}
+        onClose={() => setReporting(false)}
+        onSubmit={async (reason, message) => {
+          await moderationService.reportProfile(profile.userId, reason, message);
+          setReporting(false);
+          // Reported and then passed: someone who reports a profile should not
+          // have to look at it again to get rid of it.
+          handleSwipe('PASS', 0);
+        }}
+      />
 
       {/* Action buttons */}
       <View style={[styles.actionRow, { paddingBottom: tabClearance }]}>
@@ -698,6 +727,14 @@ const styles = StyleSheet.create({
   tagText:  { fontSize: 11, color: '#fff', fontWeight: '600' },
   bioText:  { fontSize: 13, color: 'rgba(255,255,255,0.85)', lineHeight: 18 },
 
+  reportBtn: {
+    // Top-left, away from the progress bars and the treat badges, and small
+    // enough not to invite an accidental tap mid-swipe.
+    position: 'absolute', top: 44, left: 14,
+    width: 32, height: 32, borderRadius: 16,
+    alignItems: 'center', justifyContent: 'center',
+    backgroundColor: 'rgba(0,0,0,0.35)',
+  },
   toggleBtn: {
     // Was laid out by the gradient's flex row; now it places itself, because it
     // has to be the last child of the card to sit above the tap zones.

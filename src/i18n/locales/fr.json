@@ -576,7 +576,9 @@
     "Reactive dogs welcome": "Chiens réactifs bienvenus",
     "Happy with long walks": "Volontiers de longues balades",
     "Flexible at short notice": "Disponible au pied levé",
-    "Has a car": "A une voiture"
+    "Has a car": "A une voiture",
+    "Inappropriate photos": "Photos inappropriées",
+    "Inappropriate name or bio": "Nom ou bio inapproprié"
   },
   "sitter": {
     "tabTitle": "Dogsitting",
@@ -783,7 +785,15 @@
     },
     "pointShared": "Partage sa position",
     "mineShared": "Tes amis voient où tu es",
-    "mineNoPoint": "Tu ne partages pas de lieu"
+    "mineNoPoint": "Tu ne partages pas de lieu",
+    "untilTime": "jusqu'à {{when}}",
+    "untilDay": "jusqu'à {{when}}",
+    "forMinutes_one": "encore une minute",
+    "forMinutes_other": "encore {{count}} min",
+    "openEnded": "jusqu'à nouvel ordre",
+    "openEndedLabel": "Jusqu'à nouvel ordre",
+    "openEndedHint": "Reste actif jusqu'à ce que tu le changes, au lieu de choisir un chiffre.",
+    "report": "Signaler"
   },
   "birthday": {
     "ownTitle": "Wouf wouf — joyeux anniversaire !",

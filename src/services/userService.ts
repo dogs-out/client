@@ -22,6 +22,15 @@ export const STATUS_EXPIRES: Record<WalkStatus, boolean> = {
   AT_HOME: false,
 };
 
+/**
+ * Mirrors WalkStatus.mayBeIndefinite. "Busy for two hours" and "busy until
+ * further notice" are both real answers; a walk has to run out either way.
+ */
+export const STATUS_MAY_BE_INDEFINITE: Record<WalkStatus, boolean> = {
+  AT_HOME: true, BUSY: true,
+  WALKING: false, AT_THE_PARK: false, SITTING: false, ON_VACATION: false,
+};
+
 /** Mirrors WalkStatus.isOutAndAbout — who appears under Who's outside, and who may invite. */
 export const STATUS_IS_OUT: Record<WalkStatus, boolean> = {
   WALKING: true, AT_THE_PARK: true, SITTING: true,
@@ -150,6 +159,8 @@ export const userService = {
     dogId?: number;
     /** Keeps a photo already attached; without it, changing the status drops it. */
     keepPhoto?: boolean;
+    /** Leaves the status standing until it is changed; only honoured where allowed. */
+    indefinite?: boolean;
   }): Promise<UserProfile> => api.put<UserProfile>('/users/me/status', body).then(r => r.data),
 
   /** Attaches a photo to the current status. Takes a local file URI from the picker. */

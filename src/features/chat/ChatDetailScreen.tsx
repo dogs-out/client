@@ -24,7 +24,7 @@ import { FloatingBackground } from '../../components/FloatingBackground';
 import { discoverService } from '../../services/discoverService';
 import { invertedListCounterTransform } from '../../utils/invertedList';
 import { GlassCard } from '../../components/GlassCard';
-import { ReportUserModal } from './ReportUserModal';
+import { ReportUserModal } from '../../components/ReportUserModal';
 
 const POLL_MS = 3000;
 // With a live socket, polling is only a safety net every SLOW_POLL_TICKS * POLL_MS

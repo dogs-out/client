@@ -690,7 +690,15 @@
     },
     "pointShared": "Sharing where they are",
     "mineShared": "Your friends can see where you are",
-    "mineNoPoint": "You're not sharing a place"
+    "mineNoPoint": "You're not sharing a place",
+    "untilTime": "until {{when}}",
+    "untilDay": "until {{when}}",
+    "forMinutes_one": "another minute",
+    "forMinutes_other": "another {{count}} min",
+    "openEnded": "until further notice",
+    "openEndedLabel": "Until further notice",
+    "openEndedHint": "Leave it standing until you change it, instead of picking a number.",
+    "report": "Report"
   },
   "birthday": {
     "ownTitle": "Woof woof — happy birthday!",

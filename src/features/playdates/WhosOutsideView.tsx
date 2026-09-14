@@ -17,6 +17,7 @@ import {
   userService, DEFAULT_STATUS, FriendStatus, STATUS_IS_OUT, STATUS_SHARES_LOCATION, WalkStatus,
 } from '../../services/userService';
 import { dogService } from '../../services/dogService';
+import { untilLabel } from '../../utils/statusUntil';
 import { InvitePicker } from './InvitePicker';
 import { STATUS_ICONS } from './statusIcons';
 
@@ -36,7 +37,7 @@ type Nav = NativeStackNavigationProp<RootStackParamList>;
  * about not handing out more than the person meant to give.
  */
 export function WhosOutsideView() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   // Every phone reserves a different amount at the bottom; a constant left the
   // last row under the tab bar on those with three-button navigation.
   const tabBarHeight = useTabBarHeight();
@@ -141,6 +142,7 @@ export function WhosOutsideView() {
       defaultValue: item.name,
     });
     const subtitle = renderSubtitle(item, hasPoint, isMine);
+    const until = untilLabel(item.until, i18n.language);
     return (
       <GlassCard style={[styles.card, !out && styles.cardResting, isMine && styles.cardMine]}>
         {isMine && <Text style={styles.youTag}>{t('whosOutside.you')}</Text>}
@@ -170,6 +172,14 @@ export function WhosOutsideView() {
                 which has no meaningful distance to itself, said it about a place
                 I had just picked. */}
             {subtitle !== null && <Text style={styles.rowSub}>{subtitle}</Text>}
+            {/* Knowing somebody is busy is half an answer; knowing they are busy
+                for another twenty minutes is the whole one. */}
+            {until !== null && (
+              <Text style={styles.rowUntil}>
+                <Ionicons name="time-outline" size={12} color={Colors.textSecondary} />
+                {' '}{t(until.key, { count: until.count, when: until.when })}
+              </Text>
+            )}
           </View>
           {hasPoint && <Ionicons name="map-outline" size={20} color={Colors.primary} />}
         </TouchableOpacity>
@@ -289,6 +299,7 @@ const styles = StyleSheet.create({
   rowTitle: { fontSize: 15, fontWeight: '700', color: Colors.text },
   rowSub:   { fontSize: 12, color: Colors.textSecondary, marginTop: 2 },
   rowPlace: { fontSize: 12, color: Colors.primary, fontWeight: '600', marginTop: 2 },
+  rowUntil: { fontSize: 12, color: Colors.textSecondary, marginTop: 2 },
   rowPhoto: { width: '100%', aspectRatio: 4 / 3, borderRadius: 12, marginTop: 10 },
 
   emptyEmoji: { fontSize: 52, marginBottom: 12 },

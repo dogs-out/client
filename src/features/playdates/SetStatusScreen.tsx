@@ -17,7 +17,8 @@ import { GlassButton } from '../../components/GlassButton';
 import { RemoteImage } from '../../components/ui/RemoteImage';
 import { CustomSlider } from '../../components/CustomSlider';
 import {
-  userService, DEFAULT_STATUS, SittableDog, STATUS_EXPIRES, STATUS_SHARES_LOCATION, WalkStatus,
+  userService, DEFAULT_STATUS, SittableDog, STATUS_EXPIRES, STATUS_MAY_BE_INDEFINITE,
+  STATUS_SHARES_LOCATION, WalkStatus,
 } from '../../services/userService';
 import { STATUS_DURATIONS, durationLabel, nearestStop } from '../../utils/statusDuration';
 import { getApiError } from '../../utils/apiError';
@@ -62,6 +63,8 @@ export default function SetStatusScreen({ navigation, route }: Readonly<Props>) 
   /** Set when an existing photo was removed, so saving takes it off the status. */
   const [removePhoto, setRemovePhoto] = useState(false);
   const [hours, setHours] = useState(2);
+  /** Busy can stand until it is changed; picking a number nobody knows is worse. */
+  const [indefinite, setIndefinite] = useState(false);
   const [sharePoint, setSharePoint] = useState(true);
   const [point, setPoint] = useState<Point | null>(null);
   const [dogs, setDogs] = useState<SittableDog[]>([]);
@@ -81,6 +84,8 @@ export default function SetStatusScreen({ navigation, route }: Readonly<Props>) 
         if (!me.walkStatus) return;
         setStatus(me.walkStatus);
         setDogId(me.walkStatusDogId);
+        // No expiry on an expiring status means it was set open-ended.
+        setIndefinite(me.walkStatusExpiresAt === null);
         setPhoto(me.walkStatusPhoto);
         setPhotoStatus(me.walkStatus);
         if (me.walkStatusLatitude != null && me.walkStatusLongitude != null) {
@@ -116,6 +121,8 @@ export default function SetStatusScreen({ navigation, route }: Readonly<Props>) 
 
   const canShare = STATUS_SHARES_LOCATION[status];
   const needsDog = status === 'SITTING';
+  const canBeOpenEnded = STATUS_EXPIRES[status] && STATUS_MAY_BE_INDEFINITE[status];
+  const openEnded = canBeOpenEnded && indefinite;
   const shownPhoto = pendingPhoto ?? photo;
 
   const forHumans = (h: number) => {
@@ -171,7 +178,8 @@ export default function SetStatusScreen({ navigation, route }: Readonly<Props>) 
       await userService.setStatus({
         status,
         // At home stands until it is changed, so it carries no duration at all.
-        ...(STATUS_EXPIRES[status] ? { hours } : {}),
+        ...(STATUS_EXPIRES[status] && !openEnded ? { hours } : {}),
+        ...(openEnded ? { indefinite: true } : {}),
         ...(shares ? { latitude: point.latitude, longitude: point.longitude } : {}),
         ...(shares && point.name ? { placeName: point.name } : {}),
         ...(needsDog && dogId !== null ? { dogId } : {}),
@@ -261,7 +269,24 @@ export default function SetStatusScreen({ navigation, route }: Readonly<Props>) 
         )}
 
         {/* At home has no duration: it is where you are until you say otherwise. */}
-        {STATUS_EXPIRES[status] && (
+        {canBeOpenEnded && (
+          <GlassCard style={styles.card}>
+            <View style={styles.shareRow}>
+              <View style={{ flex: 1, marginRight: 12 }}>
+                <Text style={styles.sectionLabel}>{t('whosOutside.openEndedLabel')}</Text>
+                <Text style={styles.hint}>{t('whosOutside.openEndedHint')}</Text>
+              </View>
+              <Switch
+                value={indefinite}
+                onValueChange={setIndefinite}
+                trackColor={{ false: Colors.border, true: Colors.primary }}
+                thumbColor="#fff"
+              />
+            </View>
+          </GlassCard>
+        )}
+
+        {STATUS_EXPIRES[status] && !openEnded && (
           <GlassCard style={styles.card}>
             <Text style={styles.sectionLabel}>{t('whosOutside.howLong')}</Text>
             <Text style={styles.durationValue}>{forHumans(hours)}</Text>

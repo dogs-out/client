@@ -6,19 +6,21 @@ import {
 import { BlurView } from 'expo-blur';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
-import { REPORT_REASONS } from '../../services/moderationService';
-import { Colors } from '../../constants/colors';
-import { scaledLineHeight } from '../../utils/typography';
-import { translateTag } from '../../i18n/translateTag';
+import { REPORT_REASONS } from '../services/moderationService';
+import { Colors } from '../constants/colors';
+import { scaledLineHeight } from '../utils/typography';
+import { translateTag } from '../i18n/translateTag';
 
 interface Props {
   visible: boolean;
   name: string;
+  /** Which reasons to offer. A profile and a conversation are reported for different things. */
+  reasons?: readonly string[];
   onClose: () => void;
   onSubmit: (reason: string, message: string) => Promise<void>;
 }
 
-export function ReportUserModal({ visible, name, onClose, onSubmit }: Readonly<Props>) {
+export function ReportUserModal({ visible, name, reasons = REPORT_REASONS, onClose, onSubmit }: Readonly<Props>) {
   const { t } = useTranslation();
   const [reason, setReason] = useState<string | null>(null);
   const [message, setMessage] = useState('');
@@ -66,7 +68,7 @@ export function ReportUserModal({ visible, name, onClose, onSubmit }: Readonly<P
                 {t('chat.reportModal.subtitle', { name })}
               </Text>
 
-              {REPORT_REASONS.map(r => {
+              {reasons.map(r => {
                 const selected = r === reason;
                 return (
                   <TouchableOpacity key={r} style={styles.reasonRow} onPress={() => setReason(r)}>
