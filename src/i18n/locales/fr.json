@@ -603,6 +603,35 @@
       "experience": "Expérience avec les chiens :",
       "experienceYears": "ans",
       "availability": "Disponible le :"
+    },
+    "jobs": {
+      "openTitle": "DEMANDES OUVERTES",
+      "mineTitle": "TES DEMANDES",
+      "thenBrowse": "OU PARCOURIR LES PROPRIÉTAIRES",
+      "thenSitters": "OU PARCOURIR LES DOG-SITTERS",
+      "forDogs": "Pour {{dogs}}",
+      "forADog": "Pour son chien",
+      "yours": "Publiée par toi",
+      "offer": "Proposer",
+      "close": "Clore",
+      "closeTitle": "Clore cette demande ?",
+      "closeBody": "Elle disparaît de la liste des dog-sitters. Tu peux en publier une autre quand tu veux.",
+      "closeFailed": "Impossible de la clore pour le moment.",
+      "contactFailed": "Impossible d'ouvrir la conversation.",
+      "post": "Chercher un dog-sitter",
+      "anyDay": "Tous les jours"
+    },
+    "request": {
+      "title": "Chercher un dog-sitter",
+      "whenLabel": "Quand as-tu besoin de quelqu'un ?",
+      "whichDogs": "Quels chiens ?",
+      "noDogs": "Ajoute d'abord un chien à ton profil.",
+      "noteLabel": "Quelque chose à savoir ?",
+      "notePlaceholder": "Les clés sont chez le voisin, Luna a ses médicaments à 14h…",
+      "post": "Publier la demande",
+      "pickADog": "Choisis au moins un chien.",
+      "endBeforeStart": "La fin doit être après le début.",
+      "loadFailed": "Impossible de charger tes chiens."
     }
   },
   "playdates": {

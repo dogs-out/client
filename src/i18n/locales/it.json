@@ -603,6 +603,35 @@
       "experience": "Esperienza con i cani:",
       "experienceYears": "anni",
       "availability": "Disponibile il:"
+    },
+    "jobs": {
+      "openTitle": "RICHIESTE APERTE",
+      "mineTitle": "LE TUE RICHIESTE",
+      "thenBrowse": "OPPURE SFOGLIA I PROPRIETARI",
+      "thenSitters": "OPPURE SFOGLIA I DOG SITTER",
+      "forDogs": "Per {{dogs}}",
+      "forADog": "Per il suo cane",
+      "yours": "Pubblicata da te",
+      "offer": "Proponiti",
+      "close": "Chiudi",
+      "closeTitle": "Chiudere questa richiesta?",
+      "closeBody": "Sparisce dalla lista dei dog sitter. Puoi pubblicarne un'altra quando vuoi.",
+      "closeFailed": "Non è stato possibile chiuderla ora.",
+      "contactFailed": "Non è stato possibile aprire la chat.",
+      "post": "Cerca un dog sitter",
+      "anyDay": "Ogni giorno"
+    },
+    "request": {
+      "title": "Cerca un dog sitter",
+      "whenLabel": "Quando ti serve qualcuno?",
+      "whichDogs": "Quali cani?",
+      "noDogs": "Aggiungi prima un cane al tuo profilo.",
+      "noteLabel": "C'è qualcosa da sapere?",
+      "notePlaceholder": "Le chiavi sono dal vicino, Luna prende le medicine alle 14:00…",
+      "post": "Pubblica la richiesta",
+      "pickADog": "Scegli almeno un cane.",
+      "endBeforeStart": "La fine deve venire dopo l'inizio.",
+      "loadFailed": "Non è stato possibile caricare i tuoi cani."
     }
   },
   "playdates": {

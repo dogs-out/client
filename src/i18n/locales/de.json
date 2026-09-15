@@ -603,6 +603,35 @@
       "experience": "Erfahrung mit Hunden:",
       "experienceYears": "Jahre",
       "availability": "Verfügbar am:"
+    },
+    "jobs": {
+      "openTitle": "OFFENE AUFTRÄGE",
+      "mineTitle": "DEINE ANFRAGEN",
+      "thenBrowse": "ODER HALTER DURCHSEHEN",
+      "thenSitters": "ODER SITTER DURCHSEHEN",
+      "forDogs": "Für {{dogs}}",
+      "forADog": "Für den Hund",
+      "yours": "Von dir",
+      "offer": "Anbieten",
+      "close": "Schliessen",
+      "closeTitle": "Anfrage schliessen?",
+      "closeBody": "Sie verschwindet aus der Liste der Sitter. Du kannst jederzeit eine neue stellen.",
+      "closeFailed": "Konnte gerade nicht geschlossen werden.",
+      "contactFailed": "Chat konnte gerade nicht geöffnet werden.",
+      "post": "Sitter suchen",
+      "anyDay": "Jeder Tag"
+    },
+    "request": {
+      "title": "Sitter suchen",
+      "whenLabel": "Wann brauchst du jemanden?",
+      "whichDogs": "Welche Hunde?",
+      "noDogs": "Füge zuerst einen Hund zu deinem Profil hinzu.",
+      "noteLabel": "Gibt es etwas zu wissen?",
+      "notePlaceholder": "Schlüssel liegt beim Nachbarn, Luna braucht um 14:00 ihre Medikamente…",
+      "post": "Anfrage stellen",
+      "pickADog": "Wähle mindestens einen Hund.",
+      "endBeforeStart": "Das Ende muss nach dem Beginn liegen.",
+      "loadFailed": "Deine Hunde konnten nicht geladen werden."
     }
   },
   "playdates": {

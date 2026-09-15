@@ -1,9 +1,9 @@
 import { useCallback, useState } from 'react';
 import {
-  ActivityIndicator, FlatList, StyleSheet, Text,
-  TouchableOpacity, View,
+  ActivityIndicator, Alert, FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View,
 } from 'react-native';
 import { RemoteImage } from '../../components/ui/RemoteImage';
+import { translateTag } from '../../i18n/translateTag';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -11,7 +11,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { TFunction } from 'i18next';
 import { DiscoverProfile } from '../../services/discoverService';
-import { sitterService } from '../../services/sitterService';
+import { sitterService, SittingRequest } from '../../services/sitterService';
 import { userService } from '../../services/userService';
 import { RootStackParamList } from '../../types/navigation';
 import { Colors } from '../../constants/colors';
@@ -23,6 +23,9 @@ import { DEFAULT_RADIUS_KM } from '../../constants/discover';
 import { translateBreed } from '../../i18n/translateBreed';
 
 type SitterMode = 'jobs' | 'requests';
+
+/** The same names the sitter profile stores, so the filter compares like with like. */
+const WEEKDAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] as const;
 
 function formatDistance(km: number, t: TFunction): string {
   if (km < 0) return '';
@@ -42,6 +45,11 @@ export default function FindSitterScreen() {
   const [amSeeking, setAmSeeking] = useState(false);
   // 'jobs' = owners who need a sitter, 'requests' = sitters an owner can ask.
   const [mode, setMode] = useState<SitterMode>('jobs');
+  /** Concrete jobs with hours attached, shown above the browsable pool. */
+  const [openJobs, setOpenJobs] = useState<SittingRequest[]>([]);
+  const [myJobs, setMyJobs] = useState<SittingRequest[]>([]);
+  /** Null is every day. A sitter who named no days is kept either way. */
+  const [weekday, setWeekday] = useState<string | null>(null);
   const [modePinned, setModePinned] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -64,10 +72,15 @@ export default function FindSitterScreen() {
         // Don't ask for a pool we aren't entitled to.
         return Promise.all([
           me.isSitter ? sitterService.getSeekers() : Promise.resolve([]),
-          me.lookingForSitter ? sitterService.getAvailableSitters() : Promise.resolve([]),
-        ]).then(([seekerPool, sitterPool]) => {
+          me.lookingForSitter ? sitterService.getAvailableSitters(weekday) : Promise.resolve([]),
+          // Open jobs are for sitters to take; own requests are for owners to manage.
+          me.isSitter ? sitterService.getOpenRequests().catch(() => []) : Promise.resolve([]),
+          me.lookingForSitter ? sitterService.getMyRequests().catch(() => []) : Promise.resolve([]),
+        ]).then(([seekerPool, sitterPool, open, own]) => {
           setSeekers(seekerPool.filter(p => p.userId !== me.id));
           setSitters(sitterPool.filter(p => p.userId !== me.id));
+          setOpenJobs(open.filter(r => !r.mine));
+          setMyJobs(own.filter(r => r.status === 'OPEN'));
           // Land on the side that matches the single role they enabled; once they've
           // tapped the switcher themselves, leave their choice alone on refocus.
           // Requests is only reachable while lookingForSitter holds, so a pinned
@@ -80,7 +93,7 @@ export default function FindSitterScreen() {
       })
       .catch(() => setError(true))
       .finally(() => setLoading(false));
-  }, [modePinned]);
+  }, [modePinned, weekday]);
 
   useFocusEffect(useCallback(() => { load(); }, [load]));
 
@@ -170,6 +183,83 @@ export default function FindSitterScreen() {
     );
   };
 
+  const formatWindow = (job: SittingRequest) => {
+    const from = new Date(job.startsAt);
+    const to = new Date(job.endsAt);
+    const day = from.toLocaleDateString(i18n.language, { weekday: 'short', day: 'numeric', month: 'short' });
+    const time = (d: Date) => d.toLocaleTimeString(i18n.language, { hour: '2-digit', minute: '2-digit' });
+    return `${day} · ${time(from)} – ${time(to)}`;
+  };
+
+  const renderJob = (job: SittingRequest) => (
+    <GlassCard key={job.id} style={styles.jobCard}>
+      <Text style={styles.jobWindow}>{formatWindow(job)}</Text>
+      <Text style={styles.jobDogs} numberOfLines={2}>
+        {job.dogs.length > 0
+          ? t('sitter.jobs.forDogs', { dogs: job.dogs.join(' & ') })
+          : t('sitter.jobs.forADog')}
+      </Text>
+      {job.note ? <Text style={styles.jobNote} numberOfLines={3}>{job.note}</Text> : null}
+
+      <View style={styles.jobFooter}>
+        <Text style={styles.jobOwner} numberOfLines={1}>
+          {job.mine
+            ? t('sitter.jobs.yours')
+            : `${job.ownerName}${job.distanceKm >= 0 ? ` · ${t('matching.discover.distanceAway', { km: job.distanceKm })}` : ''}`}
+        </Text>
+        {job.mine ? (
+          <TouchableOpacity style={styles.jobBtn} onPress={() => closeJob(job)}>
+            <Text style={styles.jobBtnText}>{t('sitter.jobs.close')}</Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity style={[styles.jobBtn, styles.jobBtnPrimary]} onPress={() => contactOwner(job)}>
+            <Text style={[styles.jobBtnText, styles.jobBtnTextPrimary]}>{t('sitter.jobs.offer')}</Text>
+          </TouchableOpacity>
+        )}
+      </View>
+    </GlassCard>
+  );
+
+  /** Opens the chat with the owner. The offer itself is a message, not a state. */
+  const contactOwner = (job: SittingRequest) => {
+    sitterService.contact(job.ownerId)
+      .then(({ matchId }) => navigation.navigate('ChatDetail', {
+        matchId,
+        otherUserId: job.ownerId,
+        name: job.ownerName,
+        profilePicture: job.ownerProfilePicture,
+      }))
+      .catch(() => Alert.alert(t('common.error'), t('sitter.jobs.contactFailed')));
+  };
+
+  const closeJob = (job: SittingRequest) => {
+    Alert.alert(t('sitter.jobs.closeTitle'), t('sitter.jobs.closeBody'), [
+      { text: t('common.cancel'), style: 'cancel' },
+      {
+        text: t('sitter.jobs.close'),
+        onPress: () => sitterService.closeRequest(job.id)
+          .then(() => setMyJobs(prev => prev.filter(j => j.id !== job.id)))
+          .catch(() => Alert.alert(t('common.error'), t('sitter.jobs.closeFailed'))),
+      },
+    ]);
+  };
+
+  const listHeader = () => {
+    const jobs = mode === 'jobs' ? openJobs : myJobs;
+    if (jobs.length === 0) return null;
+    return (
+      <View style={styles.jobsBlock}>
+        <Text style={styles.jobsTitle}>
+          {t(mode === 'jobs' ? 'sitter.jobs.openTitle' : 'sitter.jobs.mineTitle')}
+        </Text>
+        {jobs.map(renderJob)}
+        <Text style={styles.jobsDivider}>
+          {t(mode === 'jobs' ? 'sitter.jobs.thenBrowse' : 'sitter.jobs.thenSitters')}
+        </Text>
+      </View>
+    );
+  };
+
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
       <FloatingBackground />
@@ -208,6 +298,37 @@ export default function FindSitterScreen() {
           <Ionicons name="information-circle-outline" size={18} color={Colors.primary} style={{ marginRight: 8 }} />
           <Text style={styles.hintText}>{t('sitter.list.enableSitterHint')}</Text>
         </TouchableOpacity>
+      )}
+
+      {mode === 'requests' && amSeeking && (
+        <TouchableOpacity style={styles.postBtn} onPress={() => navigation.navigate('PostSittingRequest')}>
+          <Ionicons name="add-circle-outline" size={18} color={Colors.primary} />
+          <Text style={styles.postBtnText}>{t('sitter.jobs.post')}</Text>
+        </TouchableOpacity>
+      )}
+
+      {mode === 'requests' && amSeeking && (
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.weekdayRow}
+        >
+          {/* Any day first, because it is the state most people want back. */}
+          {[null, ...WEEKDAYS].map(day => {
+            const active = weekday === day;
+            return (
+              <TouchableOpacity
+                key={day ?? 'any'}
+                style={[styles.weekdayChip, active && styles.weekdayChipActive]}
+                onPress={() => setWeekday(day)}
+              >
+                <Text style={[styles.weekdayText, active && styles.weekdayTextActive]}>
+                  {day ? translateTag(day, t) : t('sitter.jobs.anyDay')}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </ScrollView>
       )}
 
       {hasAnyRole && (
@@ -264,6 +385,7 @@ export default function FindSitterScreen() {
           data={data}
           keyExtractor={item => String(item.userId)}
           renderItem={renderSeeker}
+          ListHeaderComponent={listHeader}
           contentContainerStyle={[styles.list, { paddingBottom: tabBarHeight + 24 }]}
           showsVerticalScrollIndicator={false}
           ListEmptyComponent={
@@ -283,6 +405,43 @@ export default function FindSitterScreen() {
 }
 
 const styles = StyleSheet.create({
+  // ─── Open jobs ────────────────────────────────────────────────────────────
+  jobsBlock:   { marginBottom: 6 },
+  jobsTitle:   { fontSize: 13, fontWeight: '800', color: Colors.textSecondary, letterSpacing: 0.4, marginBottom: 8 },
+  jobsDivider: { fontSize: 13, fontWeight: '800', color: Colors.textSecondary, letterSpacing: 0.4, marginTop: 16, marginBottom: 2 },
+  jobCard:     { marginBottom: 10 },
+  jobWindow:   { fontSize: 15, fontWeight: '800', color: Colors.text },
+  jobDogs:     { fontSize: 14, color: Colors.text, marginTop: 3 },
+  jobNote:     { fontSize: 13, color: Colors.textSecondary, marginTop: 6, lineHeight: 18 },
+  jobFooter:   { flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 12 },
+  jobOwner:    { flex: 1, fontSize: 13, color: Colors.textSecondary },
+  jobBtn: {
+    paddingHorizontal: 14, paddingVertical: 8,
+    borderRadius: 12, borderWidth: 1.5, borderColor: Colors.border,
+  },
+  jobBtnPrimary:     { borderColor: Colors.primary, backgroundColor: 'rgba(46,158,107,0.12)' },
+  jobBtnText:        { fontSize: 13, fontWeight: '700', color: Colors.textSecondary },
+  jobBtnTextPrimary: { color: Colors.primary },
+
+  postBtn: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8,
+    marginHorizontal: 20, marginBottom: 10,
+    paddingVertical: 11,
+    borderRadius: 14, borderWidth: 1.5, borderColor: Colors.primary,
+    backgroundColor: 'rgba(46,158,107,0.10)',
+  },
+  postBtnText: { fontSize: 14, fontWeight: '700', color: Colors.primary },
+
+  // ─── Weekday filter ───────────────────────────────────────────────────────
+  weekdayRow:  { paddingHorizontal: 20, paddingBottom: 10, gap: 8 },
+  weekdayChip: {
+    paddingHorizontal: 13, paddingVertical: 7,
+    borderRadius: 14, borderWidth: 1.5, borderColor: Colors.border,
+  },
+  weekdayChipActive: { borderColor: Colors.primary, backgroundColor: 'rgba(46,158,107,0.12)' },
+  weekdayText:       { fontSize: 13, fontWeight: '600', color: Colors.textSecondary },
+  weekdayTextActive: { color: Colors.primary },
+
   safe:     { flex: 1, backgroundColor: Colors.background },
   centered: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 32, paddingTop: 60 },
 

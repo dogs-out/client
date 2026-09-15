@@ -508,6 +508,35 @@
       "experience": "Experience with dogs:",
       "experienceYears": "years",
       "availability": "Available on:"
+    },
+    "jobs": {
+      "openTitle": "OPEN JOBS",
+      "mineTitle": "YOUR REQUESTS",
+      "thenBrowse": "OR BROWSE OWNERS",
+      "thenSitters": "OR BROWSE SITTERS",
+      "forDogs": "For {{dogs}}",
+      "forADog": "For their dog",
+      "yours": "Posted by you",
+      "offer": "Offer",
+      "close": "Close",
+      "closeTitle": "Close this request?",
+      "closeBody": "It disappears from the sitters' list. You can post a new one any time.",
+      "closeFailed": "Couldn't close it just now.",
+      "contactFailed": "Couldn't open the chat just now.",
+      "post": "Ask for a sitter",
+      "anyDay": "Any day"
+    },
+    "request": {
+      "title": "Ask for a sitter",
+      "whenLabel": "When do you need one?",
+      "whichDogs": "Which dogs?",
+      "noDogs": "Add a dog to your profile first.",
+      "noteLabel": "Anything they should know?",
+      "notePlaceholder": "Keys are with the neighbour, Luna needs her medication at 14:00…",
+      "post": "Post request",
+      "pickADog": "Pick at least one dog.",
+      "endBeforeStart": "The end has to come after the start.",
+      "loadFailed": "Couldn't load your dogs."
     }
   },
   "playdates": {

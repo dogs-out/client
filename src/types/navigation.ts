@@ -22,6 +22,7 @@ export type RootStackParamList = {
   NotificationSettings: undefined;
   LocationSettings: undefined;
   AppearanceSettings: undefined;
+  PostSittingRequest: undefined;
   HelpFaq: undefined;
   TermsPrivacy: undefined;
   About: undefined;
