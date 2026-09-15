@@ -811,5 +811,12 @@
     "reportTitle": "Profil melden",
     "reportHint": "Für unangemessenen Namen, Bio oder Fotos. Wir schauen es uns an.",
     "hideFailed": "Das Profil konnte gerade nicht ausgeblendet werden."
+  },
+  "unsaved": {
+    "title": "Nicht gespeicherte Änderungen",
+    "body": "Du hast etwas geändert, das noch nicht gespeichert ist.",
+    "save": "Speichern",
+    "discard": "Verwerfen",
+    "keepEditing": "Weiter bearbeiten"
   }
 }

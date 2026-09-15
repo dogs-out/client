@@ -27,7 +27,9 @@ jest.mock('../../../services/userService', () => ({
 // ProfileForm freezes the screen's pop gesture while a slider is dragged, so it
 // reads navigation from context — which the bare render() here doesn't provide.
 jest.mock('@react-navigation/native', () => ({
-  useNavigation: () => ({ setOptions: jest.fn() }),
+  // addListener because the form guards against leaving with unsaved changes;
+  // it returns the unsubscribe the hook cleans up with.
+  useNavigation: () => ({ setOptions: jest.fn(), addListener: jest.fn(() => jest.fn()), dispatch: jest.fn() }),
 }));
 
 jest.mock('../../../services/dogService', () => ({

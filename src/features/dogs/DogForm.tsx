@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator, Alert, KeyboardAvoidingView, Modal,
   Platform, ScrollView, StyleSheet, Text, TextInput,
@@ -17,6 +17,7 @@ import { GlassCard } from '../../components/GlassCard';
 import { GlassButton } from '../../components/GlassButton';
 import { CropHint, PhotoCropModal } from '../../components/PhotoCropModal';
 import { CropRect, CroppedImage } from '../../components/ui/CroppedImage';
+import { useUnsavedChanges } from '../../hooks/useUnsavedChanges';
 import { KEYBOARD_BEHAVIOR } from '../../utils/keyboardBehavior';
 import { Colors } from '../../constants/colors';
 import { BreedPickerModal } from './BreedPickerModal';
@@ -157,6 +158,21 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Re
     });
   };
 
+  // Everything the form holds, as one string. Photos are included by id, uri and
+  // framing, so adding, cropping or reordering one counts as a change too.
+  const fingerprint = useMemo(() => JSON.stringify([
+    name, breed, dateOfBirth?.toISOString() ?? null, bio,
+    energyLevel, socialBehavior, loves, offLeash, kidsComfort, dogTags, removedIds,
+    photos.map(p => [p.kind, p.kind === 'existing' ? p.photoId : p.uri, p.crop]),
+  ]), [name, breed, dateOfBirth, bio, energyLevel, socialBehavior, loves,
+       offLeash, kidsComfort, dogTags, removedIds, photos]);
+
+  const { markSaved } = useUnsavedChanges({
+    fingerprint,
+    ready: !fetching,
+    onSave: () => handleSave(),
+  });
+
   const handleSave = async () => {
     if (!name.trim()) { setError(t('dogs.form.nameRequired')); return; }
     if (!NAME_REGEX.test(name.trim())) { setError(t('auth.register.invalidName')); return; }
@@ -215,6 +231,9 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Re
         await dogService.reorderPhotos(savedDogId, orderedIds);
       }
 
+      // Before navigating away, or the leave-guard asks about changes that
+      // have just been written.
+      markSaved();
       onSaved();
     } catch (e) {
       setError(getApiError(e));

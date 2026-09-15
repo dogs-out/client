@@ -811,5 +811,12 @@
     "reportTitle": "Signaler le profil",
     "reportHint": "Pour un nom, une bio ou des photos inappropriés. Nous allons regarder.",
     "hideFailed": "Impossible de masquer ce profil pour le moment."
+  },
+  "unsaved": {
+    "title": "Modifications non enregistrées",
+    "body": "Tu as modifié quelque chose qui n'est pas encore enregistré.",
+    "save": "Enregistrer",
+    "discard": "Abandonner",
+    "keepEditing": "Continuer"
   }
 }

@@ -716,5 +716,12 @@
     "reportTitle": "Report profile",
     "reportHint": "For an inappropriate name, bio or photos. We'll look at it.",
     "hideFailed": "Couldn't hide that profile just now."
+  },
+  "unsaved": {
+    "title": "Unsaved changes",
+    "body": "You've changed something that isn't saved yet.",
+    "save": "Save",
+    "discard": "Discard",
+    "keepEditing": "Keep editing"
   }
 }

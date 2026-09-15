@@ -811,5 +811,12 @@
     "reportTitle": "Segnala il profilo",
     "reportHint": "Per nome, bio o foto inappropriati. Daremo un'occhiata.",
     "hideFailed": "Non è stato possibile nascondere questo profilo."
+  },
+  "unsaved": {
+    "title": "Modifiche non salvate",
+    "body": "Hai cambiato qualcosa che non è ancora stato salvato.",
+    "save": "Salva",
+    "discard": "Scarta",
+    "keepEditing": "Continua a modificare"
   }
 }

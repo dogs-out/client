@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   ActivityIndicator, KeyboardAvoidingView, Modal,
   Platform, ScrollView, StyleSheet, Switch, Text, TextInput,
@@ -25,6 +25,7 @@ import { GlassButton } from '../../components/GlassButton';
 import { CustomSlider } from '../../components/CustomSlider';
 import { CropHint, PhotoCropModal } from '../../components/PhotoCropModal';
 import { CropRect, CroppedImage } from '../../components/ui/CroppedImage';
+import { useUnsavedChanges } from '../../hooks/useUnsavedChanges';
 import { KEYBOARD_BEHAVIOR } from '../../utils/keyboardBehavior';
 import { Colors } from '../../constants/colors';
 
@@ -223,6 +224,19 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: R
     );
   };
 
+  // Everything the form holds, as one string. Photos are included by id, uri and
+  // framing, so adding, cropping or reordering one counts as a change too.
+  const fingerprint = useMemo(() => JSON.stringify([
+    name, bio, dateOfBirth?.toISOString() ?? null, location, lifestyleTags,
+    photos.map(p => [p.kind, p.kind === 'existing' ? p.photoId : p.uri, p.crop]),
+  ]), [name, bio, dateOfBirth, location, lifestyleTags, photos]);
+
+  const { markSaved } = useUnsavedChanges({
+    fingerprint,
+    ready: !fetching,
+    onSave: () => handleSubmit(),
+  });
+
   const handleSubmit = async () => {
     if (!name.trim()) { setError(t('profile.form.nameRequired')); return; }
     if (!NAME_REGEX.test(name.trim())) { setError(t('auth.register.invalidName')); return; }
@@ -273,6 +287,9 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: R
         sitterExperienceYears: isSitter ? sitterExperienceYears : undefined,
         sitterTags,
       });
+      // Before navigating away, or the leave-guard asks about changes that
+      // have just been written.
+      markSaved();
       onSaved({ hasDog });
     } catch (e) {
       setError(getApiError(e));
