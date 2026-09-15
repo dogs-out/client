@@ -17,6 +17,7 @@ import { GlassCard } from '../../components/GlassCard';
 import { GlassButton } from '../../components/GlassButton';
 import { CropHint, PhotoCropModal } from '../../components/PhotoCropModal';
 import { CropRect, CroppedImage } from '../../components/ui/CroppedImage';
+import { KEYBOARD_BEHAVIOR } from '../../utils/keyboardBehavior';
 import { Colors } from '../../constants/colors';
 import { BreedPickerModal } from './BreedPickerModal';
 import {
@@ -260,7 +261,7 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Re
   return (
     <View style={styles.screen}>
       <FloatingBackground />
-      <KeyboardAvoidingView style={styles.flex} behavior="padding">
+      <KeyboardAvoidingView style={styles.flex} behavior={KEYBOARD_BEHAVIOR}>
         <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
 
           {(onBack || !fromOnboarding) && (

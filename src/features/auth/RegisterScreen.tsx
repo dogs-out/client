@@ -15,6 +15,7 @@ import { GlassButton } from '../../components/GlassButton';
 import { PasswordInput } from '../../components/PasswordInput';
 import { PasswordRules } from '../../components/PasswordRules';
 import { isPasswordValid } from '../../utils/passwordRules';
+import { KEYBOARD_BEHAVIOR } from '../../utils/keyboardBehavior';
 import { Colors } from '../../constants/colors';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Register'>;
@@ -84,7 +85,7 @@ export default function RegisterScreen({ navigation, route }: Readonly<Props>) {
   return (
     <View style={styles.screen}>
       <FloatingBackground />
-      <KeyboardAvoidingView style={styles.container} behavior="padding">
+      <KeyboardAvoidingView style={styles.container} behavior={KEYBOARD_BEHAVIOR}>
       <GlassCard style={styles.card}>
       <Text style={styles.title}>{t('auth.register.title')}</Text>
       <Text style={styles.subtitle}>{t('auth.register.subtitle')}</Text>

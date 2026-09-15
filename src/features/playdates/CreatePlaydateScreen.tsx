@@ -13,6 +13,7 @@ import { playdateService, PlaceResult, PlaydateVisibility } from '../../services
 import { chatService, MatchSummary } from '../../services/chatService';
 import { getApiError } from '../../utils/apiError';
 import { RootStackParamList } from '../../types/navigation';
+import { KEYBOARD_BEHAVIOR } from '../../utils/keyboardBehavior';
 import { Colors } from '../../constants/colors';
 import { FloatingBackground } from '../../components/FloatingBackground';
 import { GlassCard } from '../../components/GlassCard';
@@ -184,7 +185,7 @@ export default function CreatePlaydateScreen({ navigation, route }: Readonly<Pro
         <View style={{ width: 26 }} />
       </View>
 
-      <KeyboardAvoidingView style={styles.flex} behavior="padding">
+      <KeyboardAvoidingView style={styles.flex} behavior={KEYBOARD_BEHAVIOR}>
         <ScrollView
           contentContainerStyle={styles.scroll}
           keyboardShouldPersistTaps="handled"

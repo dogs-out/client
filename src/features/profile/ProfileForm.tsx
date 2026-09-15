@@ -25,6 +25,7 @@ import { GlassButton } from '../../components/GlassButton';
 import { CustomSlider } from '../../components/CustomSlider';
 import { CropHint, PhotoCropModal } from '../../components/PhotoCropModal';
 import { CropRect, CroppedImage } from '../../components/ui/CroppedImage';
+import { KEYBOARD_BEHAVIOR } from '../../utils/keyboardBehavior';
 import { Colors } from '../../constants/colors';
 
 interface Props {
@@ -306,7 +307,7 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: R
     <View style={styles.flex}>
       <FloatingBackground />
       <View style={styles.dimOverlay} />
-      <KeyboardAvoidingView style={styles.kav} behavior="padding">
+      <KeyboardAvoidingView style={styles.kav} behavior={KEYBOARD_BEHAVIOR}>
         <ScrollView
           style={styles.kav}
           contentContainerStyle={styles.container}

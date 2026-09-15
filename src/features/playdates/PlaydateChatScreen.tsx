@@ -18,6 +18,7 @@ import { userService } from '../../services/userService';
 import { chatSocket } from '../../services/socket';
 import { containsProfanity } from '../../utils/profanityFilter';
 import { RootStackParamList } from '../../types/navigation';
+import { KEYBOARD_BEHAVIOR } from '../../utils/keyboardBehavior';
 import { Colors } from '../../constants/colors';
 import { scaledLineHeight } from '../../utils/typography';
 import { FloatingBackground } from '../../components/FloatingBackground';
@@ -210,7 +211,7 @@ export default function PlaydateChatScreen({ navigation, route }: Readonly<Props
 
       <KeyboardAvoidingView
         style={styles.flex}
-        behavior="padding"
+        behavior={KEYBOARD_BEHAVIOR}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 8 : 0}
       >
         {loading ? (

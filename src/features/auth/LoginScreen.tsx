@@ -18,6 +18,7 @@ import { FloatingBackground } from '../../components/FloatingBackground';
 import { GlassCard } from '../../components/GlassCard';
 import { GlassButton } from '../../components/GlassButton';
 import { PasswordInput } from '../../components/PasswordInput';
+import { KEYBOARD_BEHAVIOR } from '../../utils/keyboardBehavior';
 import { Colors } from '../../constants/colors';
 import { SUPPORTED_LANGUAGES, setLanguage } from '../../i18n';
 
@@ -154,7 +155,7 @@ export default function LoginScreen({ navigation }: Readonly<Props>) {
   return (
     <View style={styles.screen}>
       <FloatingBackground />
-      <KeyboardAvoidingView style={styles.container} behavior="padding">
+      <KeyboardAvoidingView style={styles.container} behavior={KEYBOARD_BEHAVIOR}>
 
         <View style={styles.languageRow}>
           {SUPPORTED_LANGUAGES.map(lang => (

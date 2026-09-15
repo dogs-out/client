@@ -7,6 +7,7 @@ import { BlurView } from 'expo-blur';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { REPORT_REASONS } from '../services/moderationService';
+import { KEYBOARD_BEHAVIOR } from '../utils/keyboardBehavior';
 import { Colors } from '../constants/colors';
 import { scaledLineHeight } from '../utils/typography';
 import { translateTag } from '../i18n/translateTag';
@@ -51,7 +52,7 @@ export function ReportUserModal({ visible, name, reasons = REPORT_REASONS, onClo
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
       <KeyboardAvoidingView
         style={styles.backdropWrap}
-        behavior="padding"
+        behavior={KEYBOARD_BEHAVIOR}
       >
         <Pressable style={styles.backdrop} onPress={onClose} />
 
