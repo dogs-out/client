@@ -33,6 +33,23 @@ export const PROFILE_REPORT_REASONS = [
   'Other',
 ] as const;
 
+/**
+ * What a review's comment is reported for.
+ *
+ * <p>Narrower than the others on purpose. A review is someone's honest opinion of
+ * a sitting and a bad one is not a reportable offence — the list has to name the
+ * things that are actually wrong with a comment, or it becomes a button for
+ * deleting criticism.
+ */
+export const REVIEW_REPORT_REASONS = [
+  'Hate speech',
+  'Harassment or abuse',
+  'Untrue — this sitting never happened',
+  'Personal information',
+  'Spam',
+  'Other',
+] as const;
+
 export const moderationService = {
   blockUser: (userId: number): Promise<void> =>
     api.post(`/users/${userId}/block`).then(() => {}),
@@ -54,6 +71,13 @@ export const moderationService = {
    */
   reportProfile: (userId: number, reason: string, message: string): Promise<void> =>
     api.post(`/users/${userId}/report`, { reason, message }).then(() => {}),
+
+  /**
+   * Reports a sitter review's comment. It is hidden server-side straight away,
+   * because it sits on someone's profile and they have no way to answer it.
+   */
+  reportReview: (reviewId: number, reason: string, message: string): Promise<void> =>
+    api.post(`/reviews/${reviewId}/report`, { reason, message }).then(() => {}),
 
   unmatch: (matchId: number): Promise<void> =>
     api.delete(`/matches/${matchId}`).then(() => {}),

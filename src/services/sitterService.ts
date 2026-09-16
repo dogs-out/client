@@ -13,10 +13,43 @@ export interface SittingRequest {
   dogs: string[];
   note: string | null;
   status: 'OPEN' | 'CLOSED';
-  /** True when the reader posted it, so the row offers closing instead of contacting. */
+  /** True when the reader posted it, so the row offers managing instead of offering. */
   mine: boolean;
+  /** Who got the job, or null while it is still open. */
+  sitterId: number | null;
+  sitterName: string | null;
+  sitterProfilePicture: string | null;
+  /** The window has passed: off the board, and greyed in the owner's own list. */
+  over: boolean;
+  /** The reader may still change it — their own, not taken, not over. */
+  canEdit: boolean;
+  /** Over, somebody sat, and the owner has not rated them yet. */
+  awaitingReview: boolean;
+  /** Which dogs, by id, so the edit screen can preselect them. */
+  dogIds: number[];
   /** Rounded; -1 when either side has no location. */
   distanceKm: number;
+}
+
+/** What an owner thought of a sitter, once the sitting was over. */
+export interface SitterReview {
+  id: number;
+  sitterId: number;
+  raterId: number;
+  raterName: string;
+  raterProfilePicture: string | null;
+  stars: number;
+  /** Null when none was written, or when it has been hidden pending moderation. */
+  comment: string | null;
+  tags: string[];
+  mine: boolean;
+  createdAt: string;
+}
+
+export interface SitterRating {
+  /** Rounded to one decimal; 0 when there are none yet. */
+  average: number;
+  count: number;
 }
 
 export const sitterService = {
@@ -58,4 +91,52 @@ export const sitterService = {
   /** Closes a request once someone has been found. Only the owner may. */
   closeRequest: (id: number): Promise<SittingRequest> =>
     api.put<SittingRequest>(`/sitters/requests/${id}/close`, {}).then(r => r.data),
+
+  /** Changes a request nobody has taken yet. Only the owner, and only until accepted. */
+  updateRequest: (id: number, body: {
+    startsAt: string;
+    endsAt: string;
+    dogIds: number[];
+    note?: string;
+  }): Promise<SittingRequest> =>
+    api.put<SittingRequest>(`/sitters/requests/${id}`, body).then(r => r.data),
+
+  /**
+   * A sitter offering to take a job. Opens the chat and posts the offer into it,
+   * so the answer is a conversation rather than a form.
+   */
+  offer: (id: number, message?: string): Promise<{ matchId: number }> =>
+    api.post<{ matchId: number }>(`/sitters/requests/${id}/offer`, { message }).then(r => r.data),
+
+  /** The owner accepting an offer; takes the job off everyone else's board. */
+  accept: (id: number, sitterId: number): Promise<SittingRequest> =>
+    api.put<SittingRequest>(`/sitters/requests/${id}/accept`, { sitterId }).then(r => r.data),
+
+  /** Jobs this account was accepted for, as the sitter. */
+  getAcceptedJobs: (): Promise<SittingRequest[]> =>
+    api.get<SittingRequest[]>('/sitters/requests/accepted').then(r => r.data),
+
+  // ─── Reviews ────────────────────────────────────────────────────────────────
+
+  /** Sittings this owner still owes a rating for, so the app can prompt. */
+  getPendingReviews: (): Promise<SittingRequest[]> =>
+    api.get<SittingRequest[]>('/sitters/reviews/pending').then(r => r.data),
+
+  /** The highlight tags on offer, from the server so the client never invents one. */
+  getReviewTags: (): Promise<string[]> =>
+    api.get<string[]>('/sitters/reviews/tags').then(r => r.data),
+
+  submitReview: (body: {
+    requestId: number;
+    stars: number;
+    comment?: string;
+    tags?: string[];
+  }): Promise<SitterReview> =>
+    api.post<SitterReview>('/sitters/reviews', body).then(r => r.data),
+
+  getReviews: (sitterId: number): Promise<SitterReview[]> =>
+    api.get<SitterReview[]>(`/sitters/${sitterId}/reviews`).then(r => r.data),
+
+  getRating: (sitterId: number): Promise<SitterRating> =>
+    api.get<SitterRating>(`/sitters/${sitterId}/rating`).then(r => r.data),
 };

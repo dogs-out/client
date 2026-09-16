@@ -19,6 +19,11 @@ export interface ChatMessage {
   content: string;
   sentAt: string;
   isRead: boolean;
+  /**
+   * Set when the message is a sitter's offer on a sitting job. The owner's side
+   * renders those with an Accept button instead of as plain text.
+   */
+  sittingRequestId?: number | null;
 }
 
 export const chatService = {

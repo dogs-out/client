@@ -26,6 +26,7 @@ import { discoverService } from '../../services/discoverService';
 import { invertedListCounterTransform } from '../../utils/invertedList';
 import { GlassCard } from '../../components/GlassCard';
 import { ReportUserModal } from '../../components/ReportUserModal';
+import { sitterService, SittingRequest } from '../../services/sitterService';
 
 const POLL_MS = 3000;
 // With a live socket, polling is only a safety net every SLOW_POLL_TICKS * POLL_MS
@@ -84,6 +85,13 @@ export default function ChatDetailScreen() {
   const [error, setError] = useState<string | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [reportOpen, setReportOpen] = useState(false);
+  /**
+   * The jobs any offer bubbles in this chat refer to, by id. Fetched rather than
+   * carried in the message so the bubble reflects the job as it is now — an offer
+   * the owner accepted last week should not still be offering an Accept button.
+   */
+  const [offerJobs, setOfferJobs] = useState<Record<number, SittingRequest>>({});
+  const [accepting, setAccepting] = useState<number | null>(null);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
   // Bumped on every send so an in-flight poll from before the send
   // can't overwrite the list and briefly swallow the new bubble
@@ -231,6 +239,49 @@ export default function ChatDetailScreen() {
     return result;
   }, [messages, t, i18n.language]);
 
+  const offerIds = useMemo(
+    () => [...new Set(messages.map(m => m.sittingRequestId).filter((id): id is number => id != null))],
+    [messages]);
+
+  /**
+   * Both sides of the job board, because either party may be looking: the owner
+   * finds the job under their own requests, the sitter under the jobs they were
+   * accepted for. One of the two calls covers whoever is reading.
+   */
+  const loadOfferJobs = useCallback(() => {
+    if (offerIds.length === 0) return;
+    Promise.all([
+      sitterService.getMyRequests().catch(() => []),
+      sitterService.getAcceptedJobs().catch(() => []),
+      sitterService.getOpenRequests().catch(() => []),
+    ]).then(lists => {
+      const byId: Record<number, SittingRequest> = {};
+      for (const job of lists.flat()) {
+        if (offerIds.includes(job.id)) byId[job.id] = job;
+      }
+      setOfferJobs(byId);
+    });
+  }, [offerIds]);
+
+  useEffect(() => { loadOfferJobs(); }, [loadOfferJobs]);
+
+  const acceptOffer = async (requestId: number, sitterId: number) => {
+    setAccepting(requestId);
+    try {
+      const updated = await sitterService.accept(requestId, sitterId);
+      setOfferJobs(prev => ({ ...prev, [requestId]: updated }));
+    } catch (e) {
+      const message = e instanceof AxiosError
+        ? (e.response?.data as { message?: string } | undefined)?.message
+        : undefined;
+      Alert.alert(t('sitter.offer.acceptFailedTitle'), message ?? t('sitter.offer.acceptFailedBody'));
+      // Whatever went wrong, the job has moved on — show what it says now.
+      loadOfferJobs();
+    } finally {
+      setAccepting(null);
+    }
+  };
+
   const renderItem = ({ item }: { item: ListItem }) => {
     if (item.type === 'separator') {
       return (
@@ -243,6 +294,50 @@ export default function ChatDetailScreen() {
     }
     const message = item.message;
     const mine = message.senderId !== otherUserId;
+
+    // A sitter's offer on a job. The owner gets a bubble they can accept from;
+    // the sitter sees their own offer with its state, so "did that go through?"
+    // is answered without leaving the conversation.
+    if (message.sittingRequestId) {
+      const job = offerJobs[message.sittingRequestId];
+      const takenByMe = job?.sitterId != null && job.sitterId === message.senderId;
+      const canAccept = !mine && job != null && job.sitterId == null && !job.over;
+      return (
+        <View style={[styles.bubbleRow, mine ? styles.bubbleRowMine : styles.bubbleRowTheirs]}>
+          <GlassCard padding={12} radius={16} compact style={{ maxWidth: bubbleMaxWidth }}>
+            <View style={styles.offerHead}>
+              <Ionicons name="paw" size={15} color={Colors.primary} />
+              <Text style={styles.offerLabel}>{t('sitter.offer.label')}</Text>
+            </View>
+            <Text style={styles.bubbleText}>{message.content}</Text>
+
+            {canAccept && (
+              <TouchableOpacity
+                style={styles.offerAccept}
+                onPress={() => acceptOffer(message.sittingRequestId!, message.senderId)}
+                disabled={accepting === message.sittingRequestId}
+              >
+                {accepting === message.sittingRequestId
+                  ? <ActivityIndicator color="#fff" size="small" />
+                  : <Text style={styles.offerAcceptText}>{t('sitter.offer.accept')}</Text>}
+              </TouchableOpacity>
+            )}
+
+            {takenByMe && (
+              <Text style={styles.offerState}>{t('sitter.offer.accepted')}</Text>
+            )}
+            {job != null && job.sitterId != null && !takenByMe && (
+              <Text style={styles.offerState}>{t('sitter.offer.wentToSomeoneElse')}</Text>
+            )}
+            {job != null && job.sitterId == null && job.over && (
+              <Text style={styles.offerState}>{t('sitter.offer.expired')}</Text>
+            )}
+          </GlassCard>
+          <Text style={styles.bubbleTime} numberOfLines={1}>{formatTime(message.sentAt)}</Text>
+        </View>
+      );
+    }
+
     return (
       <View style={[styles.bubbleRow, mine ? styles.bubbleRowMine : styles.bubbleRowTheirs]}>
         {/* A width in points, on the bubble itself. The row's maxWidth is a
@@ -414,6 +509,20 @@ const styles = StyleSheet.create({
   // flexShrink so the text yields to the bubble's width rather than the bubble
   // being dragged wider than the constraint and then clipped.
   bubbleText: { color: Colors.text, fontSize: 15, flexShrink: 1 },
+
+  // ─── Sitting offer bubbles ─────────────────────────────────────────────────
+  offerHead:  { flexDirection: 'row', alignItems: 'center', gap: 5, marginBottom: 6 },
+  offerLabel: {
+    fontSize: 11, fontWeight: '800', color: Colors.primary,
+    letterSpacing: 0.4, textTransform: 'uppercase',
+  },
+  offerAccept: {
+    marginTop: 10, paddingVertical: 9, paddingHorizontal: 14,
+    borderRadius: 13, backgroundColor: Colors.primary,
+    alignItems: 'center', justifyContent: 'center',
+  },
+  offerAcceptText: { color: '#fff', fontSize: 14, fontWeight: '800' },
+  offerState: { marginTop: 8, fontSize: 12, fontWeight: '600', color: Colors.textSecondary },
   // A little breathing room either side: at a large font the clock string
   // drew wider than it measured and lost its last digit — 18:13 became 18:1.
   bubbleTime:      { fontSize: 10, color: Colors.textSecondary, marginTop: 2, marginHorizontal: 4, paddingHorizontal: 2 },

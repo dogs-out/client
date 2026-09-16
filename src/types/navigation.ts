@@ -1,4 +1,5 @@
 import type { PlaceResult } from '../services/playdateService';
+import { SittingRequest } from '../services/sitterService';
 
 export type RootStackParamList = {
   Login: undefined;
@@ -22,7 +23,10 @@ export type RootStackParamList = {
   NotificationSettings: undefined;
   LocationSettings: undefined;
   AppearanceSettings: undefined;
-  PostSittingRequest: undefined;
+  /** No job means posting a new one; a job means editing that one in place. */
+  PostSittingRequest: { job?: SittingRequest } | undefined;
+  RateSitter: { job: SittingRequest };
+  SitterReviews: { sitterId: number; name: string };
   HelpFaq: undefined;
   TermsPrivacy: undefined;
   About: undefined;

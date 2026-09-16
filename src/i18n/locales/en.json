@@ -524,7 +524,9 @@
       "closeFailed": "Couldn't close it just now.",
       "contactFailed": "Couldn't open the chat just now.",
       "post": "Ask for a sitter",
-      "anyDay": "Any day"
+      "anyDay": "Any day",
+      "rate": "Rate",
+      "sittingBy": "Sitting: {{name}}"
     },
     "request": {
       "title": "Ask for a sitter",
@@ -536,7 +538,39 @@
       "post": "Post request",
       "pickADog": "Pick at least one dog.",
       "endBeforeStart": "The end has to come after the start.",
-      "loadFailed": "Couldn't load your dogs."
+      "loadFailed": "Couldn't load your dogs.",
+      "editTitle": "Edit your request",
+      "save": "Save changes"
+    },
+    "offer": {
+      "label": "Sitting offer",
+      "accept": "Accept this sitter",
+      "accepted": "You accepted this offer.",
+      "wentToSomeoneElse": "This job went to someone else.",
+      "expired": "This job has expired.",
+      "acceptFailedTitle": "Couldn't accept",
+      "acceptFailedBody": "Something went wrong. Please try again."
+    },
+    "rate": {
+      "title": "Rate your sitter",
+      "subtitle": "How did the sitting go?",
+      "starsLabel": "{{count}} stars",
+      "pickStars": "Pick a rating first",
+      "highlightsLabel": "What stood out?",
+      "highlightsHint": "Pick up to {{count}}",
+      "commentLabel": "Anything to add?",
+      "commentPlaceholder": "Optional — what should other owners know?",
+      "submit": "Submit rating",
+      "later": "Maybe later"
+    },
+    "reviews": {
+      "title": "Reviews for {{name}}",
+      "count": "{{count}} review",
+      "count_other": "{{count}} reviews",
+      "empty": "{{name}} hasn't been rated yet.",
+      "reportComment": "Report this comment",
+      "reportThanks": "Thanks for letting us know. The comment is hidden while we look at it.",
+      "none": "No reviews yet"
     }
   },
   "playdates": {
@@ -752,5 +786,19 @@
     "save": "Save",
     "discard": "Discard",
     "keepEditing": "Keep editing"
+  },
+  "tags": {
+    "Great communication": null,
+    "Dog loved the sitter": null,
+    "Punctual": null,
+    "Sent photo updates": null,
+    "Followed instructions": null,
+    "Went the extra mile": null,
+    "Flexible with timing": null,
+    "Dog came back happy and tired": null,
+    "Hate speech": null,
+    "Harassment or abuse": null,
+    "Untrue — this sitting never happened": null,
+    "Personal information": null
   }
 }

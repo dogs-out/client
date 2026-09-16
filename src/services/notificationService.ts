@@ -27,11 +27,13 @@ export interface PushData {
     | 'PLAYDATE_INVITE' | 'PLAYDATE_JOINED' | 'PLAYDATE_UPDATED'
     | 'PLAYDATE_CANCELLED' | 'PLAYDATE_MESSAGE' | 'PLAYDATE_REMINDER'
     | 'DOG_BIRTHDAY' | 'DOG_BIRTHDAY_OWN' | 'USER_BIRTHDAY'
-    | 'WALK_INVITE';
+    | 'WALK_INVITE'
+    | 'SITTING_OFFER' | 'SITTING_ACCEPTED' | 'SITTING_RATE';
   matchId?: number;
   otherUserId?: number;
   name?: string;
   playdateId?: number;
+  requestId?: number;
 }
 
 export const notificationService = {
@@ -63,8 +65,12 @@ export const notificationService = {
         projectId ? { projectId } : undefined
       );
       await api.put('/users/me/push-token', { token });
-    } catch {
-      // push is optional — never break the app over it
+    } catch (e) {
+      // Push is optional — never break the app over it. But swallowing this
+      // without a word is how Android went months with no notifications and no
+      // sign of why: with no FCM credentials configured, getExpoPushTokenAsync
+      // throws here and the app carries on looking perfectly healthy.
+      if (__DEV__) console.warn('[push] could not register for notifications:', e);
     }
   },
 

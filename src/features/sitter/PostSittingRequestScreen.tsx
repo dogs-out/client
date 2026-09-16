@@ -26,20 +26,27 @@ const DEFAULT_LEAD_HOURS = 2;
 const DEFAULT_LENGTH_HOURS = 4;
 
 /**
- * Asking for a sitter for a particular window.
+ * Asking for a sitter for a particular window — or changing what you asked for.
  *
  * <p>The dogs are picked rather than assumed even when there is only one: the
  * request is read by strangers deciding whether they can take it, and "which
  * dogs" is the part that decides it.
+ *
+ * <p>One screen for both posting and editing. They ask for exactly the same four
+ * things, and a separate edit screen would be the same form with a different
+ * submit call — which is how the two drift apart.
  */
-export default function PostSittingRequestScreen({ navigation }: Readonly<Props>) {
+export default function PostSittingRequestScreen({ navigation, route }: Readonly<Props>) {
   const { t, i18n } = useTranslation();
+  const editing = route.params?.job;
 
   const [dogs, setDogs] = useState<Dog[]>([]);
-  const [selected, setSelected] = useState<number[]>([]);
-  const [start, setStart] = useState(() => roundToNextHour(DEFAULT_LEAD_HOURS));
-  const [end, setEnd] = useState(() => roundToNextHour(DEFAULT_LEAD_HOURS + DEFAULT_LENGTH_HOURS));
-  const [note, setNote] = useState('');
+  const [selected, setSelected] = useState<number[]>(editing?.dogIds ?? []);
+  const [start, setStart] = useState(() =>
+    editing ? new Date(editing.startsAt) : roundToNextHour(DEFAULT_LEAD_HOURS));
+  const [end, setEnd] = useState(() =>
+    editing ? new Date(editing.endsAt) : roundToNextHour(DEFAULT_LEAD_HOURS + DEFAULT_LENGTH_HOURS));
+  const [note, setNote] = useState(editing?.note ?? '');
   const [picker, setPicker] = useState<'start-date' | 'start-time' | 'end-time' | null>(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -48,11 +55,12 @@ export default function PostSittingRequestScreen({ navigation }: Readonly<Props>
     dogService.getMyDogs()
       .then(mine => {
         setDogs(mine);
-        // One dog is not a choice, so make it for them.
-        if (mine.length === 1) setSelected([mine[0].id]);
+        // One dog is not a choice, so make it for them — but never overwrite the
+        // selection an existing request came with.
+        if (mine.length === 1 && !editing) setSelected([mine[0].id]);
       })
       .catch(() => setError(t('sitter.request.loadFailed')));
-  }, [t]);
+  }, [t, editing]);
 
   const toggleDog = (id: number) =>
     setSelected(prev => prev.includes(id) ? prev.filter(d => d !== id) : [...prev, id]);
@@ -83,12 +91,17 @@ export default function PostSittingRequestScreen({ navigation }: Readonly<Props>
     setSaving(true);
     setError(null);
     try {
-      await sitterService.createRequest({
+      const body = {
         startsAt: start.toISOString(),
         endsAt: end.toISOString(),
         dogIds: selected,
         note: note.trim() || undefined,
-      });
+      };
+      if (editing) {
+        await sitterService.updateRequest(editing.id, body);
+      } else {
+        await sitterService.createRequest(body);
+      }
       navigation.goBack();
     } catch (e) {
       setError(getApiError(e));
@@ -110,7 +123,7 @@ export default function PostSittingRequestScreen({ navigation }: Readonly<Props>
         <TouchableOpacity onPress={() => navigation.goBack()} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
           <Ionicons name="chevron-back" size={26} color={Colors.text} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>{t('sitter.request.title')}</Text>
+        <Text style={styles.headerTitle}>{t(editing ? 'sitter.request.editTitle' : 'sitter.request.title')}</Text>
         <View style={{ width: 26 }} />
       </View>
 
@@ -179,7 +192,7 @@ export default function PostSittingRequestScreen({ navigation }: Readonly<Props>
           <GlassButton onPress={submit} disabled={saving} style={styles.submit}>
             {saving
               ? <ActivityIndicator color={Colors.text} />
-              : <Text style={styles.submitText}>{t('sitter.request.post')}</Text>}
+              : <Text style={styles.submitText}>{t(editing ? 'sitter.request.save' : 'sitter.request.post')}</Text>}
           </GlassButton>
           <View style={{ height: 40 }} />
         </ScrollView>
