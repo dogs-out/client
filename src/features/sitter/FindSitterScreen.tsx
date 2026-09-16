@@ -49,7 +49,8 @@ export default function FindSitterScreen() {
   const [openJobs, setOpenJobs] = useState<SittingRequest[]>([]);
   const [myJobs, setMyJobs] = useState<SittingRequest[]>([]);
   /** Null is every day. A sitter who named no days is kept either way. */
-  const [weekday, setWeekday] = useState<string | null>(null);
+  /** Empty means any day. Several means any one of them — see the service. */
+  const [weekdays, setWeekdays] = useState<string[]>([]);
   const [weekdayOpen, setWeekdayOpen] = useState(false);
   const [modePinned, setModePinned] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -73,7 +74,7 @@ export default function FindSitterScreen() {
         // Don't ask for a pool we aren't entitled to.
         return Promise.all([
           me.isSitter ? sitterService.getSeekers() : Promise.resolve([]),
-          me.lookingForSitter ? sitterService.getAvailableSitters(weekday) : Promise.resolve([]),
+          me.lookingForSitter ? sitterService.getAvailableSitters(weekdays) : Promise.resolve([]),
           // Open jobs are for sitters to take; own requests are for owners to manage.
           me.isSitter ? sitterService.getOpenRequests().catch(() => []) : Promise.resolve([]),
           me.lookingForSitter ? sitterService.getMyRequests().catch(() => []) : Promise.resolve([]),
@@ -97,7 +98,7 @@ export default function FindSitterScreen() {
       })
       .catch(() => setError(true))
       .finally(() => setLoading(false));
-  }, [modePinned, weekday]);
+  }, [modePinned, weekdays]);
 
   useFocusEffect(useCallback(() => { load(); }, [load]));
 
@@ -194,6 +195,19 @@ export default function FindSitterScreen() {
     const time = (d: Date) => d.toLocaleTimeString(i18n.language, { hour: '2-digit', minute: '2-digit' });
     return `${day} · ${time(from)} – ${time(to)}`;
   };
+
+  /** The weekday filter only makes sense while browsing sitters to ask. */
+  const showWeekdayFilter = mode === 'requests' && amSeeking;
+
+  /**
+   * One day reads better as its own name than as "1 day", and past two the names
+   * stop fitting on half a row — so a count takes over.
+   */
+  const weekdayLabel = (() => {
+    if (weekdays.length === 0) return t('sitter.jobs.anyDay');
+    if (weekdays.length === 1) return translateTag(weekdays[0], t);
+    return t('sitter.jobs.daysPicked', { count: weekdays.length });
+  })();
 
   const renderJob = (job: SittingRequest) => (
     <GlassCard key={job.id} style={styles.jobCard}>
@@ -375,69 +389,85 @@ export default function FindSitterScreen() {
         </TouchableOpacity>
       )}
 
-      {mode === 'requests' && amSeeking && (
-        <View style={styles.weekdayBlock}>
-          {/* A dropdown, not a row of chips: seven days plus "any" is more than a
-              row can hold without scrolling, and a horizontal scroller hides its
-              own options. The same shape as the radius control below it. */}
-          <TouchableOpacity
-            style={styles.weekdayPill}
-            onPress={() => setWeekdayOpen(open => !open)}
-            activeOpacity={0.7}
-          >
-            <Ionicons name="calendar-outline" size={15} color={Colors.primary} />
-            <Text style={styles.weekdayPillText}>
-              {weekday ? translateTag(weekday, t) : t('sitter.jobs.anyDay')}
-            </Text>
-            <Ionicons
-              name={weekdayOpen ? 'chevron-up' : 'chevron-down'}
-              size={15}
-              color={Colors.textSecondary}
-            />
-          </TouchableOpacity>
+      {/* Both filters on one line. They are two short pills and the row was
+          half empty with them stacked; side by side they also read as what they
+          are — two halves of the same question about who to show. Their panels
+          open underneath at full width, and only ever one at a time. */}
+      {(showWeekdayFilter || hasAnyRole) && (
+        <View style={styles.filterBlock}>
+          <View style={styles.filterRow}>
+            {showWeekdayFilter && (
+              <TouchableOpacity
+                style={[styles.filterPill, styles.filterPillFlex]}
+                onPress={() => { setWeekdayOpen(open => !open); setRadiusOpen(false); }}
+                activeOpacity={0.7}
+              >
+                <Ionicons name="calendar-outline" size={15} color={Colors.primary} />
+                <Text style={styles.filterPillText} numberOfLines={1}>{weekdayLabel}</Text>
+                <Ionicons
+                  name={weekdayOpen ? 'chevron-up' : 'chevron-down'}
+                  size={15}
+                  color={Colors.textSecondary}
+                />
+              </TouchableOpacity>
+            )}
+
+            {hasAnyRole && (
+              <TouchableOpacity
+                style={[styles.filterPill, styles.filterPillFlex]}
+                onPress={() => { setRadiusOpen(open => !open); setWeekdayOpen(false); }}
+                activeOpacity={0.7}
+              >
+                <Ionicons name="location-outline" size={15} color={Colors.primary} />
+                <Text style={styles.filterPillText} numberOfLines={1}>
+                  {t('sitter.list.withinKm', { km: radiusKm })}
+                </Text>
+                <Ionicons
+                  name={radiusOpen ? 'chevron-up' : 'chevron-down'}
+                  size={15}
+                  color={Colors.textSecondary}
+                />
+              </TouchableOpacity>
+            )}
+          </View>
 
           {weekdayOpen && (
-            <GlassCard style={styles.weekdayCard} padding={6}>
-              {[null, ...WEEKDAYS].map(day => {
-                const active = weekday === day;
+            <GlassCard style={styles.filterCard} padding={6}>
+              {/* Stays open as days are tapped: picking Monday and Friday is two
+                  taps, and a panel that shut after the first would make the
+                  second one a chore. "Any day" is the way back to no filter. */}
+              <TouchableOpacity style={styles.weekdayOption} onPress={() => setWeekdays([])}>
+                <Text style={[styles.weekdayOptionText, weekdays.length === 0 && styles.weekdayOptionTextActive]}>
+                  {t('sitter.jobs.anyDay')}
+                </Text>
+                {weekdays.length === 0 && <Ionicons name="checkmark" size={17} color={Colors.primary} />}
+              </TouchableOpacity>
+
+              {WEEKDAYS.map(day => {
+                const active = weekdays.includes(day);
                 return (
                   <TouchableOpacity
-                    key={day ?? 'any'}
+                    key={day}
                     style={styles.weekdayOption}
-                    onPress={() => { setWeekday(day); setWeekdayOpen(false); }}
+                    onPress={() => setWeekdays(prev =>
+                      prev.includes(day) ? prev.filter(d => d !== day) : [...prev, day])}
                   >
                     <Text style={[styles.weekdayOptionText, active && styles.weekdayOptionTextActive]}>
-                      {day ? translateTag(day, t) : t('sitter.jobs.anyDay')}
+                      {translateTag(day, t)}
                     </Text>
-                    {active && <Ionicons name="checkmark" size={17} color={Colors.primary} />}
+                    <Ionicons
+                      name={active ? 'checkbox' : 'square-outline'}
+                      size={19}
+                      color={active ? Colors.primary : Colors.border}
+                    />
                   </TouchableOpacity>
                 );
               })}
             </GlassCard>
           )}
-        </View>
-      )}
-
-      {hasAnyRole && (
-        <View style={styles.radiusBlock}>
-          <TouchableOpacity
-            style={styles.radiusPill}
-            onPress={() => setRadiusOpen(open => !open)}
-            activeOpacity={0.7}
-          >
-            <Ionicons name="location-outline" size={15} color={Colors.primary} />
-            <Text style={styles.radiusPillText}>
-              {t('sitter.list.withinKm', { km: radiusKm })}
-            </Text>
-            <Ionicons
-              name={radiusOpen ? 'chevron-up' : 'chevron-down'}
-              size={15}
-              color={Colors.textSecondary}
-            />
-          </TouchableOpacity>
 
           {radiusOpen && (
-            <GlassCard style={styles.radiusCard} padding={16}>
+            <GlassCard style={styles.filterCard} padding={16}>
               <View style={styles.radiusLabels}>
                 <Text style={styles.radiusEdge}>1 km</Text>
                 <Text style={styles.radiusValue}>{t('sitter.list.withinKm', { km: radiusKm })}</Text>
@@ -526,16 +556,19 @@ const styles = StyleSheet.create({
   },
   postBtnText: { fontSize: 14, fontWeight: '700', color: Colors.primary },
 
-  // ─── Weekday filter ───────────────────────────────────────────────────────
-  weekdayBlock: { paddingHorizontal: 20, marginBottom: 8 },
-  weekdayPill: {
-    flexDirection: 'row', alignItems: 'center', alignSelf: 'flex-start', gap: 6,
-    paddingHorizontal: 12, paddingVertical: 7,
+  // ─── Filter row ───────────────────────────────────────────────────────────
+  filterBlock: { paddingHorizontal: 20, marginBottom: 8 },
+  filterRow:   { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  filterPill: {
+    flexDirection: 'row', alignItems: 'center', gap: 6,
+    paddingHorizontal: 12, paddingVertical: 8,
     borderRadius: 14, borderWidth: 1.5, borderColor: Colors.border,
     backgroundColor: 'rgba(46,158,107,0.08)',
   },
-  weekdayPillText: { fontSize: 13, fontWeight: '700', color: Colors.text },
-  weekdayCard:     { marginTop: 8 },
+  // Equal halves, so the two pills line up however long their labels are.
+  filterPillFlex: { flex: 1 },
+  filterPillText: { flex: 1, fontSize: 13, fontWeight: '700', color: Colors.text },
+  filterCard:     { marginTop: 8 },
   weekdayOption: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
     paddingVertical: 11, paddingHorizontal: 10,
@@ -568,15 +601,8 @@ const styles = StyleSheet.create({
   segmentText:       { fontSize: 13, fontWeight: '700', color: Colors.textSecondary },
   segmentTextActive: { color: Colors.primary },
 
-  radiusBlock: { paddingHorizontal: 20, marginBottom: 4 },
-  radiusPill: {
-    flexDirection: 'row', alignItems: 'center', alignSelf: 'flex-start', gap: 6,
-    paddingHorizontal: 12, paddingVertical: 7,
-    borderRadius: 14, borderWidth: 1.5, borderColor: Colors.border,
-    backgroundColor: 'rgba(46,158,107,0.08)',
-  },
-  radiusPillText: { fontSize: 13, fontWeight: '700', color: Colors.text },
-  radiusCard:  { marginTop: 10 },
+  // The pill and its card are shared with the weekday filter now; what is left
+  // here is only what is inside the radius panel.
   radiusLabels: { flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between' },
   radiusEdge:  { fontSize: 12, color: Colors.textSecondary },
   radiusValue: { fontSize: 15, fontWeight: '700', color: Colors.text },

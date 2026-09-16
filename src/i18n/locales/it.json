@@ -633,7 +633,9 @@
       "post": "Cerca un dog sitter",
       "anyDay": "Ogni giorno",
       "rate": "Valuta",
-      "sittingBy": "Accudito da {{name}}"
+      "sittingBy": "Accudito da {{name}}",
+      "daysPicked": "{{count}} giorno",
+      "daysPicked_other": "{{count}} giorni"
     },
     "request": {
       "title": "Cerca un dog sitter",
