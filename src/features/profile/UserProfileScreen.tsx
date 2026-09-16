@@ -10,7 +10,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { discoverService, DiscoverProfile } from '../../services/discoverService';
-import { sitterService } from '../../services/sitterService';
+import { sitterService, SitterRating } from '../../services/sitterService';
 import { userService } from '../../services/userService';
 import { Dog } from '../../services/dogService';
 import { RootStackParamList } from '../../types/navigation';
@@ -159,6 +159,8 @@ export default function UserProfileScreen({ navigation, route }: Readonly<Props>
   const [amSitter, setAmSitter] = useState(false);
   const [myId, setMyId] = useState<number | null>(null);
   const [contacting, setContacting] = useState(false);
+  /** Null until it loads; a sitter with no reviews yet is a real, different state. */
+  const [rating, setRating] = useState<SitterRating | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -168,6 +170,11 @@ export default function UserProfileScreen({ navigation, route }: Readonly<Props>
     userService.getMe()
       .then(me => { setAmSitter(me.isSitter); setMyId(me.id); })
       .catch(() => {});
+    // Unconditional: whether this person is a sitter is only known once the
+    // profile arrives, and an unrated sitter answers 0 rather than failing.
+    sitterService.getRating(userId)
+      .then(setRating)
+      .catch(() => setRating(null));
   }, [userId, t]);
 
   const contactSeeker = () => {
@@ -240,6 +247,26 @@ export default function UserProfileScreen({ navigation, route }: Readonly<Props>
                 <Ionicons name="shield-checkmark" size={18} color={Colors.primary} />
                 <Text style={styles.sitterBadgeText}>{t('sitter.profile.badge')}</Text>
               </View>
+
+              {/* What other owners said. The single most useful thing on this
+                  card for someone deciding whether to hand over a key — so it
+                  sits directly under the badge rather than below the tags. */}
+              <TouchableOpacity
+                style={styles.ratingRow}
+                activeOpacity={0.7}
+                onPress={() => navigation.navigate('SitterReviews', {
+                  sitterId: profile.userId,
+                  name: profile.name,
+                })}
+              >
+                <Ionicons name="star" size={15} color="#E8B931" />
+                <Text style={styles.ratingText}>
+                  {rating && rating.count > 0
+                    ? `${rating.average.toFixed(1)} · ${t('sitter.reviews.count', { count: rating.count })}`
+                    : t('sitter.reviews.none')}
+                </Text>
+                <Ionicons name="chevron-forward" size={15} color={Colors.textSecondary} />
+              </TouchableOpacity>
               {profile.sitterExperienceYears !== null && (
                 <Text style={styles.sitterLine}>
                   {t('sitter.profile.experience')}{' '}
@@ -340,6 +367,11 @@ const styles = StyleSheet.create({
   sectionTitle: { fontSize: 17, fontWeight: '800', color: Colors.text, marginTop: 24, marginBottom: 2 },
 
   sitterCard:      { marginTop: 16 },
+  ratingRow: {
+    flexDirection: 'row', alignItems: 'center', gap: 6,
+    paddingVertical: 8, marginBottom: 2,
+  },
+  ratingText: { flex: 1, fontSize: 14, fontWeight: '700', color: Colors.text },
   sitterBadgeRow:  { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 10 },
   sitterBadgeText: { fontSize: 15, fontWeight: '700', color: Colors.primary },
   sitterLine:      { fontSize: 13, color: Colors.textSecondary, marginBottom: 6 },

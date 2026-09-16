@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 import {
-  ActivityIndicator, Alert, FlatList, Modal, StyleSheet,
+  ActivityIndicator, Alert, FlatList, Modal, Pressable, StyleSheet,
   Text, TouchableOpacity, View,
 } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
@@ -51,6 +51,8 @@ export function WhosOutsideView() {
   const [loading, setLoading] = useState(true);
   const [inviting, setInviting] = useState(false);
   const [onMap, setOnMap] = useState<FriendStatus | null>(null);
+  /** The status photo being looked at full screen, with whose it is. */
+  const [photoViewer, setPhotoViewer] = useState<{ uri: string; name: string } | null>(null);
 
   const load = useCallback(() => {
     Promise.all([
@@ -183,6 +185,23 @@ export function WhosOutsideView() {
           </View>
           {hasPoint && <Ionicons name="map-outline" size={20} color={Colors.primary} />}
         </TouchableOpacity>
+
+        {/* The photo someone attached to their status. It was being uploaded,
+            stored and sent to everybody, and then never drawn — so the one part
+            of a status that is actually worth looking at was invisible to the
+            person who posted it and to every friend who received it.
+
+            Below the line rather than beside it: it is a picture of the walk,
+            not an avatar, and at thumbnail size next to the text it would say
+            nothing. */}
+        {item.photo && (
+          <TouchableOpacity
+            activeOpacity={0.9}
+            onPress={() => setPhotoViewer({ uri: item.photo!, name: item.name })}
+          >
+            <RemoteImage source={{ uri: item.photo }} style={styles.statusPhoto} resizeMode="cover" />
+          </TouchableOpacity>
+        )}
       </GlassCard>
     );
   };
@@ -222,6 +241,35 @@ export function WhosOutsideView() {
           </View>
         }
       />
+
+      {/* Full screen, on a dark ground: a photo of a dog at the lake is the one
+          thing in this list somebody actually wants to look at properly. */}
+      <Modal
+        visible={photoViewer !== null}
+        animationType="fade"
+        transparent
+        onRequestClose={() => setPhotoViewer(null)}
+      >
+        <Pressable style={styles.viewerBackdrop} onPress={() => setPhotoViewer(null)}>
+          {photoViewer && (
+            <>
+              <RemoteImage
+                source={{ uri: photoViewer.uri }}
+                style={styles.viewerImage}
+                resizeMode="contain"
+              />
+              <Text style={styles.viewerName} numberOfLines={1}>{photoViewer.name}</Text>
+            </>
+          )}
+          <TouchableOpacity
+            style={styles.viewerClose}
+            onPress={() => setPhotoViewer(null)}
+            hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+          >
+            <Ionicons name="close" size={28} color="#fff" />
+          </TouchableOpacity>
+        </Pressable>
+      </Modal>
 
       <InvitePicker
         visible={picking}
@@ -288,6 +336,23 @@ const styles = StyleSheet.create({
 
   list: { paddingHorizontal: 20, paddingBottom: 24, flexGrow: 1 },
   card:        { marginTop: 10 },
+
+  // ─── Status photo ──────────────────────────────────────────────────────────
+  statusPhoto: {
+    width: '100%', height: 190,
+    borderRadius: 14, marginTop: 10,
+    backgroundColor: 'rgba(46,158,107,0.08)',
+  },
+  viewerBackdrop: {
+    flex: 1, backgroundColor: 'rgba(0,0,0,0.92)',
+    alignItems: 'center', justifyContent: 'center',
+  },
+  viewerImage: { width: '100%', height: '78%' },
+  viewerName: {
+    color: '#fff', fontSize: 15, fontWeight: '700',
+    marginTop: 16, paddingHorizontal: 32,
+  },
+  viewerClose: { position: 'absolute', top: 56, right: 22 },
   // Quieter for the statuses that are not an invitation to go anywhere.
   cardResting: { opacity: 0.72 },
   cardMine:    { borderColor: Colors.primary, borderWidth: 1.5 },

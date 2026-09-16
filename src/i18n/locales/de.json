@@ -578,7 +578,19 @@
     "Flexible at short notice": "Kurzfristig flexibel",
     "Has a car": "Hat ein Auto",
     "Inappropriate photos": "Unangemessene Fotos",
-    "Inappropriate name or bio": "Unangemessener Name oder Bio"
+    "Inappropriate name or bio": "Unangemessener Name oder Bio",
+    "Great communication": "Super Kommunikation",
+    "Dog loved the sitter": "Hund liebte den Sitter",
+    "Punctual": "Pünktlich",
+    "Sent photo updates": "Schickte Fotos",
+    "Followed instructions": "Hielt sich an Absprachen",
+    "Went the extra mile": "Ging die Extrameile",
+    "Flexible with timing": "Zeitlich flexibel",
+    "Dog came back happy and tired": "Hund kam glücklich und müde zurück",
+    "Hate speech": "Hassrede",
+    "Harassment or abuse": "Belästigung oder Beschimpfung",
+    "Untrue — this sitting never happened": "Unwahr — diese Betreuung gab es nie",
+    "Personal information": "Persönliche Daten"
   },
   "sitter": {
     "tabTitle": "Dogsitting",
@@ -619,7 +631,9 @@
       "closeFailed": "Konnte gerade nicht geschlossen werden.",
       "contactFailed": "Chat konnte gerade nicht geöffnet werden.",
       "post": "Sitter suchen",
-      "anyDay": "Jeder Tag"
+      "anyDay": "Jeder Tag",
+      "rate": "Bewerten",
+      "sittingBy": "Betreuung: {{name}}"
     },
     "request": {
       "title": "Sitter suchen",
@@ -631,7 +645,39 @@
       "post": "Anfrage stellen",
       "pickADog": "Wähle mindestens einen Hund.",
       "endBeforeStart": "Das Ende muss nach dem Beginn liegen.",
-      "loadFailed": "Deine Hunde konnten nicht geladen werden."
+      "loadFailed": "Deine Hunde konnten nicht geladen werden.",
+      "editTitle": "Anfrage bearbeiten",
+      "save": "Änderungen speichern"
+    },
+    "offer": {
+      "label": "Betreuungsangebot",
+      "accept": "Diesen Sitter annehmen",
+      "accepted": "Du hast dieses Angebot angenommen.",
+      "wentToSomeoneElse": "Dieser Auftrag ging an jemand anderen.",
+      "expired": "Dieser Auftrag ist abgelaufen.",
+      "acceptFailedTitle": "Annehmen fehlgeschlagen",
+      "acceptFailedBody": "Etwas ist schiefgelaufen. Bitte versuche es nochmals."
+    },
+    "rate": {
+      "title": "Sitter bewerten",
+      "subtitle": "Wie ist die Betreuung gelaufen?",
+      "starsLabel": "{{count}} Sterne",
+      "pickStars": "Wähle zuerst eine Bewertung",
+      "highlightsLabel": "Was ist aufgefallen?",
+      "highlightsHint": "Bis zu {{count}} auswählen",
+      "commentLabel": "Möchtest du etwas ergänzen?",
+      "commentPlaceholder": "Optional — was sollten andere Halter wissen?",
+      "submit": "Bewertung senden",
+      "later": "Vielleicht später"
+    },
+    "reviews": {
+      "title": "Bewertungen für {{name}}",
+      "count": "{{count}} Bewertung",
+      "count_other": "{{count}} Bewertungen",
+      "empty": "{{name}} wurde noch nicht bewertet.",
+      "reportComment": "Diesen Kommentar melden",
+      "reportThanks": "Danke für den Hinweis. Der Kommentar ist ausgeblendet, solange wir ihn prüfen.",
+      "none": "Noch keine Bewertungen"
     }
   },
   "playdates": {

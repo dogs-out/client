@@ -81,7 +81,16 @@ const TAB_INNER_PAD_V  = 6;
 const TAB_INNER_GAP    = 3;
 const TAB_BAR_PAD_V    = 10;
 const TAB_BAR_BORDER   = 1.5;
-export const WRAPPER_PAD_B = Platform.OS === 'ios' ? 24 : 8;
+/**
+ * The gap under the bar, on top of whatever the system already reserves.
+ *
+ * <p>8 on both now. iOS used to add 24 here, but an iPhone's safe-area inset is
+ * already about 34 points for the home indicator — so the bar floated roughly
+ * 58 points off the bottom of the screen, a gap with nothing in it. Android's 8
+ * clears the three-button navigation bar via the inset in exactly the same way,
+ * so there was never a reason for the two to differ.
+ */
+export const WRAPPER_PAD_B = 8;
 const BLUR_MARGIN_B    = Platform.OS === 'ios' ? 0 : 8;
 
 /**

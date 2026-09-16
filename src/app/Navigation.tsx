@@ -29,6 +29,8 @@ import NotificationSettingsScreen from '../features/profile/NotificationSettings
 import LocationSettingsScreen from '../features/profile/LocationSettingsScreen';
 import AppearanceSettingsScreen from '../features/profile/AppearanceSettingsScreen';
 import PostSittingRequestScreen from '../features/sitter/PostSittingRequestScreen';
+import RateSitterScreen from '../features/sitter/RateSitterScreen';
+import SitterReviewsScreen from '../features/sitter/SitterReviewsScreen';
 import HelpFaqScreen from '../features/profile/HelpFaqScreen';
 import TermsPrivacyScreen from '../features/profile/TermsPrivacyScreen';
 import AboutScreen from '../features/profile/AboutScreen';
@@ -55,8 +57,11 @@ export default function Navigation() {
       if (!navigationRef.isReady()) return;
       // A birthday greeting or a walk invite is an invitation to write, so it
       // lands in the chat itself rather than on a list the user then has to search.
+      // A sitting offer is a message with a button on it, so it opens the chat
+      // like any other message would.
       const opensAChat = data.type === 'NEW_MESSAGE' || data.type === 'WALK_INVITE'
-        || data.type === 'DOG_BIRTHDAY' || data.type === 'USER_BIRTHDAY';
+        || data.type === 'DOG_BIRTHDAY' || data.type === 'USER_BIRTHDAY'
+        || data.type === 'SITTING_OFFER';
       if (opensAChat && data.matchId && data.otherUserId) {
         navigationRef.navigate('ChatDetail', {
           matchId: data.matchId,
@@ -70,6 +75,11 @@ export default function Navigation() {
         navigationRef.navigate('PlaydateChat', { playdateId: data.playdateId, title: '' });
       } else if (data.type?.startsWith('PLAYDATE') && data.playdateId) {
         navigationRef.navigate('PlaydateDetail', { playdateId: data.playdateId });
+      } else if (data.type === 'SITTING_RATE' || data.type === 'SITTING_ACCEPTED') {
+        // The rating screen needs the whole job, and a push carries only ids —
+        // so this lands on the dogsitting tab, where the job wears a Rate button.
+        // "FindSitter" is the route; "Dogsitting" is only what the tab is labelled.
+        navigationRef.navigate('MainTabs', { screen: 'FindSitter' } as never);
       }
     }), []);
 
@@ -152,6 +162,8 @@ export default function Navigation() {
         <Stack.Screen name="LocationSettings"     component={LocationSettingsScreen} />
         <Stack.Screen name="AppearanceSettings"   component={AppearanceSettingsScreen} />
         <Stack.Screen name="PostSittingRequest"   component={PostSittingRequestScreen} />
+        <Stack.Screen name="RateSitter"           component={RateSitterScreen} />
+        <Stack.Screen name="SitterReviews"        component={SitterReviewsScreen} />
         <Stack.Screen name="HelpFaq"              component={HelpFaqScreen} />
         <Stack.Screen name="TermsPrivacy"         component={TermsPrivacyScreen} />
         <Stack.Screen name="About"                component={AboutScreen} />

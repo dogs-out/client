@@ -578,7 +578,19 @@
     "Flexible at short notice": "Disponibile all'ultimo momento",
     "Has a car": "Ha un'auto",
     "Inappropriate photos": "Foto inappropriate",
-    "Inappropriate name or bio": "Nome o bio inappropriati"
+    "Inappropriate name or bio": "Nome o bio inappropriati",
+    "Great communication": "Ottima comunicazione",
+    "Dog loved the sitter": "Il cane ha adorato il sitter",
+    "Punctual": "Puntuale",
+    "Sent photo updates": "Ha inviato foto",
+    "Followed instructions": "Ha seguito le istruzioni",
+    "Went the extra mile": "Ha fatto di più",
+    "Flexible with timing": "Flessibile sugli orari",
+    "Dog came back happy and tired": "Il cane è tornato felice e stanco",
+    "Hate speech": "Incitazione all’odio",
+    "Harassment or abuse": "Molestie o insulti",
+    "Untrue — this sitting never happened": "Falso — questo accudimento non è mai avvenuto",
+    "Personal information": "Informazioni personali"
   },
   "sitter": {
     "tabTitle": "Dogsitting",
@@ -619,7 +631,9 @@
       "closeFailed": "Non è stato possibile chiuderla ora.",
       "contactFailed": "Non è stato possibile aprire la chat.",
       "post": "Cerca un dog sitter",
-      "anyDay": "Ogni giorno"
+      "anyDay": "Ogni giorno",
+      "rate": "Valuta",
+      "sittingBy": "Accudito da {{name}}"
     },
     "request": {
       "title": "Cerca un dog sitter",
@@ -631,7 +645,39 @@
       "post": "Pubblica la richiesta",
       "pickADog": "Scegli almeno un cane.",
       "endBeforeStart": "La fine deve venire dopo l'inizio.",
-      "loadFailed": "Non è stato possibile caricare i tuoi cani."
+      "loadFailed": "Non è stato possibile caricare i tuoi cani.",
+      "editTitle": "Modifica la richiesta",
+      "save": "Salva modifiche"
+    },
+    "offer": {
+      "label": "Offerta di accudimento",
+      "accept": "Accetta questo sitter",
+      "accepted": "Hai accettato questa offerta.",
+      "wentToSomeoneElse": "Questo incarico è andato a qualcun altro.",
+      "expired": "Questo incarico è scaduto.",
+      "acceptFailedTitle": "Impossibile accettare",
+      "acceptFailedBody": "Qualcosa è andato storto. Riprova."
+    },
+    "rate": {
+      "title": "Valuta il sitter",
+      "subtitle": "Com'è andata?",
+      "starsLabel": "{{count}} stelle",
+      "pickStars": "Scegli prima una valutazione",
+      "highlightsLabel": "Cosa ti ha colpito?",
+      "highlightsHint": "Scegline fino a {{count}}",
+      "commentLabel": "Vuoi aggiungere qualcosa?",
+      "commentPlaceholder": "Facoltativo — cosa dovrebbero sapere gli altri?",
+      "submit": "Invia valutazione",
+      "later": "Forse più tardi"
+    },
+    "reviews": {
+      "title": "Recensioni su {{name}}",
+      "count": "{{count}} recensione",
+      "count_other": "{{count}} recensioni",
+      "empty": "{{name}} non è ancora stato valutato.",
+      "reportComment": "Segnala questo commento",
+      "reportThanks": "Grazie per la segnalazione. Il commento è nascosto mentre lo esaminiamo.",
+      "none": "Ancora nessuna recensione"
     }
   },
   "playdates": {

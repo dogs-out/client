@@ -81,7 +81,10 @@ export default function FindSitterScreen() {
           setSeekers(seekerPool.filter(p => p.userId !== me.id));
           setSitters(sitterPool.filter(p => p.userId !== me.id));
           setOpenJobs(open.filter(r => !r.mine));
-          setMyJobs(own.filter(r => r.status === 'OPEN'));
+          // Anything still to come, plus anything finished that still owes a
+          // rating. A job that is over and rated has nothing left to do and drops
+          // off on its own — which is what stops this list growing forever.
+          setMyJobs(own.filter(r => !r.over || r.awaitingReview));
           // Land on the side that matches the single role they enabled; once they've
           // tapped the switcher themselves, leave their choice alone on refocus.
           // Requests is only reachable while lookingForSitter holds, so a pinned
@@ -219,34 +222,81 @@ export default function FindSitterScreen() {
       </TouchableOpacity>
       {job.note ? <Text style={styles.jobNote} numberOfLines={3}>{job.note}</Text> : null}
 
+      {/* Who is coming, once somebody is. The owner's most useful line by far —
+          and the sitter's name is how they recognise the knock at the door. */}
+      {job.sitterId != null && (
+        <View style={styles.jobSitter}>
+          <Ionicons name="checkmark-circle" size={15} color={Colors.primary} />
+          <Text style={styles.jobSitterText} numberOfLines={1}>
+            {t('sitter.jobs.sittingBy', { name: job.sitterName })}
+          </Text>
+        </View>
+      )}
+
       <View style={styles.jobFooter}>
         <Text style={styles.jobOwner} numberOfLines={1}>
           {job.mine
             ? t('sitter.jobs.yours')
             : `${job.ownerName}${job.distanceKm >= 0 ? ` · ${t('matching.discover.distanceAway', { km: job.distanceKm })}` : ''}`}
         </Text>
-        {job.mine ? (
-          <TouchableOpacity style={styles.jobBtn} onPress={() => closeJob(job)}>
-            <Text style={styles.jobBtnText}>{t('sitter.jobs.close')}</Text>
-          </TouchableOpacity>
-        ) : (
-          <TouchableOpacity style={[styles.jobBtn, styles.jobBtnPrimary]} onPress={() => contactOwner(job)}>
-            <Text style={[styles.jobBtnText, styles.jobBtnTextPrimary]}>{t('sitter.jobs.offer')}</Text>
-          </TouchableOpacity>
-        )}
+
+        <View style={styles.jobActions}>
+          {/* Rating comes first once it is due: it is the only thing left to do
+              with a finished job, and the reminder push lands people here. */}
+          {job.awaitingReview && (
+            <TouchableOpacity
+              style={[styles.jobBtn, styles.jobBtnPrimary]}
+              onPress={() => navigation.navigate('RateSitter', { job })}
+            >
+              <Text style={[styles.jobBtnText, styles.jobBtnTextPrimary]}>{t('sitter.jobs.rate')}</Text>
+            </TouchableOpacity>
+          )}
+
+          {job.canEdit && (
+            <TouchableOpacity
+              style={styles.jobBtn}
+              onPress={() => navigation.navigate('PostSittingRequest', { job })}
+            >
+              <Text style={styles.jobBtnText}>{t('common.edit')}</Text>
+            </TouchableOpacity>
+          )}
+
+          {job.mine && !job.over && (
+            <TouchableOpacity style={styles.jobBtn} onPress={() => closeJob(job)}>
+              <Text style={styles.jobBtnText}>{t('sitter.jobs.close')}</Text>
+            </TouchableOpacity>
+          )}
+
+          {!job.mine && (
+            <TouchableOpacity style={[styles.jobBtn, styles.jobBtnPrimary]} onPress={() => offerOnJob(job)}>
+              <Text style={[styles.jobBtnText, styles.jobBtnTextPrimary]}>{t('sitter.jobs.offer')}</Text>
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
     </GlassCard>
   );
 
-  /** Opens the chat with the owner. The offer itself is a message, not a state. */
-  const contactOwner = (job: SittingRequest) => {
-    sitterService.contact(job.ownerId)
-      .then(({ matchId }) => navigation.navigate('ChatDetail', {
-        matchId,
-        otherUserId: job.ownerId,
-        name: job.ownerName,
-        profilePicture: job.ownerProfilePicture,
-      }))
+  /**
+   * Offers to take the job, which opens the chat with the offer already in it.
+   *
+   * <p>The offer is a message rather than a row in a list of applicants: the owner
+   * is deciding who to leave their dog with, so the conversation is the part that
+   * matters and it should start straight away. The owner accepts from that bubble.
+   */
+  const offerOnJob = (job: SittingRequest) => {
+    sitterService.offer(job.id)
+      .then(({ matchId }) => {
+        // Taken jobs leave this list at once rather than on the next focus: the
+        // sitter has just acted on it and a row that ignores that reads as broken.
+        load();
+        navigation.navigate('ChatDetail', {
+          matchId,
+          otherUserId: job.ownerId,
+          name: job.ownerName,
+          profilePicture: job.ownerProfilePicture,
+        });
+      })
       .catch(() => Alert.alert(t('common.error'), t('sitter.jobs.contactFailed')));
   };
 
@@ -448,6 +498,9 @@ const styles = StyleSheet.create({
   jobsDivider: { fontSize: 13, fontWeight: '800', color: Colors.textSecondary, letterSpacing: 0.4, marginTop: 16, marginBottom: 2 },
   jobCard:     { marginBottom: 10 },
   jobHead:     { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  jobSitter:   { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 8 },
+  jobSitterText: { flex: 1, fontSize: 13, fontWeight: '700', color: Colors.primary },
+  jobActions:  { flexDirection: 'row', alignItems: 'center', gap: 8 },
   jobHeadBody: { flex: 1 },
   jobAvatar:   { width: 46, height: 46, borderRadius: 23 },
   jobAvatarPlaceholder: { backgroundColor: 'rgba(46,158,107,0.12)', alignItems: 'center', justifyContent: 'center' },

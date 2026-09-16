@@ -578,7 +578,19 @@
     "Flexible at short notice": "Disponible au pied levé",
     "Has a car": "A une voiture",
     "Inappropriate photos": "Photos inappropriées",
-    "Inappropriate name or bio": "Nom ou bio inapproprié"
+    "Inappropriate name or bio": "Nom ou bio inapproprié",
+    "Great communication": "Excellente communication",
+    "Dog loved the sitter": "Le chien a adoré",
+    "Punctual": "Ponctuel",
+    "Sent photo updates": "A envoyé des photos",
+    "Followed instructions": "A suivi les consignes",
+    "Went the extra mile": "En a fait plus",
+    "Flexible with timing": "Flexible sur les horaires",
+    "Dog came back happy and tired": "Le chien est rentré heureux et fatigué",
+    "Hate speech": "Discours haineux",
+    "Harassment or abuse": "Harcèlement ou insultes",
+    "Untrue — this sitting never happened": "Faux — cette garde n'a jamais eu lieu",
+    "Personal information": "Informations personnelles"
   },
   "sitter": {
     "tabTitle": "Dogsitting",
@@ -619,7 +631,9 @@
       "closeFailed": "Impossible de la clore pour le moment.",
       "contactFailed": "Impossible d'ouvrir la conversation.",
       "post": "Chercher un dog-sitter",
-      "anyDay": "Tous les jours"
+      "anyDay": "Tous les jours",
+      "rate": "Évaluer",
+      "sittingBy": "Gardé par {{name}}"
     },
     "request": {
       "title": "Chercher un dog-sitter",
@@ -631,7 +645,39 @@
       "post": "Publier la demande",
       "pickADog": "Choisis au moins un chien.",
       "endBeforeStart": "La fin doit être après le début.",
-      "loadFailed": "Impossible de charger tes chiens."
+      "loadFailed": "Impossible de charger tes chiens.",
+      "editTitle": "Modifier la demande",
+      "save": "Enregistrer"
+    },
+    "offer": {
+      "label": "Proposition de garde",
+      "accept": "Accepter ce gardien",
+      "accepted": "Tu as accepté cette proposition.",
+      "wentToSomeoneElse": "Cette garde a été confiée à quelqu'un d'autre.",
+      "expired": "Cette garde a expiré.",
+      "acceptFailedTitle": "Impossible d'accepter",
+      "acceptFailedBody": "Une erreur s'est produite. Réessaie."
+    },
+    "rate": {
+      "title": "Évalue ton gardien",
+      "subtitle": "Comment s'est passée la garde ?",
+      "starsLabel": "{{count}} étoiles",
+      "pickStars": "Choisis d'abord une note",
+      "highlightsLabel": "Qu'est-ce qui t'a marqué ?",
+      "highlightsHint": "Choisis-en jusqu'à {{count}}",
+      "commentLabel": "Un mot à ajouter ?",
+      "commentPlaceholder": "Facultatif — que devraient savoir les autres ?",
+      "submit": "Envoyer l'évaluation",
+      "later": "Plus tard"
+    },
+    "reviews": {
+      "title": "Avis sur {{name}}",
+      "count": "{{count}} avis",
+      "count_other": "{{count}} avis",
+      "empty": "{{name}} n'a pas encore été évalué.",
+      "reportComment": "Signaler ce commentaire",
+      "reportThanks": "Merci de nous avoir prévenus. Le commentaire est masqué pendant que nous l'examinons.",
+      "none": "Pas encore d'avis"
     }
   },
   "playdates": {
