@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import {
-  ActivityIndicator, Alert, KeyboardAvoidingView, Platform, ScrollView,
+  ActivityIndicator, Alert, KeyboardAvoidingView, Modal, Platform, ScrollView,
   StyleSheet, Text, TextInput, TouchableOpacity, View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -61,6 +61,19 @@ export default function PostSittingRequestScreen({ navigation }: Readonly<Props>
   const changeStart = (next: Date) => {
     setStart(next);
     if (end <= next) setEnd(new Date(next.getTime() + DEFAULT_LENGTH_HOURS * 3600_000));
+  };
+
+  /** What a picked value means depends on which field opened the picker. */
+  const applyPicked = (chosen?: Date) => {
+    if (!chosen) return;
+    if (picker === 'end-time') {
+      // The end keeps the start's day; only the clock time is being set.
+      setEnd(withTimeFrom(start, chosen));
+    } else if (picker === 'start-time') {
+      changeStart(withTimeFrom(start, chosen));
+    } else if (picker === 'start-date') {
+      changeStart(withDateFrom(chosen, start));
+    }
   };
 
   const submit = async () => {
@@ -172,25 +185,38 @@ export default function PostSittingRequestScreen({ navigation }: Readonly<Props>
         </ScrollView>
       </KeyboardAvoidingView>
 
-      {picker && (
+      {/* Android opens its own dialog; iOS would otherwise render the wheel inline
+          wherever it happens to sit, which put it in the bottom-left corner with
+          no relation to the field being edited. Same sheet as the playdate form. */}
+      {picker && Platform.OS !== 'ios' && (
         <DateTimePicker
           value={picker === 'end-time' ? end : start}
           mode={picker === 'start-date' ? 'date' : 'time'}
-          // Nothing in the past: a window that has already closed helps nobody.
           minimumDate={picker === 'start-date' ? new Date() : undefined}
-          onChange={(_, chosen) => {
-            setPicker(null);
-            if (!chosen) return;
-            if (picker === 'end-time') {
-              // The end keeps the start's day; only the clock time is being set.
-              setEnd(withTimeFrom(start, chosen));
-            } else if (picker === 'start-time') {
-              changeStart(withTimeFrom(start, chosen));
-            } else {
-              changeStart(withDateFrom(chosen, start));
-            }
-          }}
+          onChange={(_, chosen) => { setPicker(null); applyPicked(chosen); }}
         />
+      )}
+
+      {Platform.OS === 'ios' && (
+        <Modal visible={picker !== null} transparent animationType="slide">
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <View style={styles.modalHeader}>
+                <TouchableOpacity onPress={() => setPicker(null)}>
+                  <Text style={styles.modalDone}>{t('common.done')}</Text>
+                </TouchableOpacity>
+              </View>
+              <DateTimePicker
+                value={picker === 'end-time' ? end : start}
+                mode={picker === 'start-date' ? 'date' : 'time'}
+                display="spinner"
+                // Nothing in the past: a window that has already closed helps nobody.
+                minimumDate={picker === 'start-date' ? new Date() : undefined}
+                onChange={(_, chosen) => applyPicked(chosen)}
+              />
+            </View>
+          </View>
+        </Modal>
       )}
     </SafeAreaView>
   );
@@ -248,6 +274,11 @@ const styles = StyleSheet.create({
     borderRadius: 12, borderWidth: 1.5, borderColor: Colors.border,
     paddingHorizontal: 12, paddingVertical: 10,
   },
+
+  modalOverlay: { flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,0.35)' },
+  modalContent: { backgroundColor: Colors.background, borderTopLeftRadius: 20, borderTopRightRadius: 20 },
+  modalHeader:  { flexDirection: 'row', justifyContent: 'flex-end', padding: 16, borderBottomWidth: 1, borderBottomColor: Colors.border },
+  modalDone:    { fontSize: 16, color: Colors.primary, fontWeight: '700' },
 
   error: { color: Colors.error, fontSize: 13, marginBottom: 10, textAlign: 'center' },
   submit: { marginTop: 2 },

@@ -50,6 +50,7 @@ export default function FindSitterScreen() {
   const [myJobs, setMyJobs] = useState<SittingRequest[]>([]);
   /** Null is every day. A sitter who named no days is kept either way. */
   const [weekday, setWeekday] = useState<string | null>(null);
+  const [weekdayOpen, setWeekdayOpen] = useState(false);
   const [modePinned, setModePinned] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -193,12 +194,29 @@ export default function FindSitterScreen() {
 
   const renderJob = (job: SittingRequest) => (
     <GlassCard key={job.id} style={styles.jobCard}>
-      <Text style={styles.jobWindow}>{formatWindow(job)}</Text>
-      <Text style={styles.jobDogs} numberOfLines={2}>
-        {job.dogs.length > 0
-          ? t('sitter.jobs.forDogs', { dogs: job.dogs.join(' & ') })
-          : t('sitter.jobs.forADog')}
-      </Text>
+      {/* The whole heading is the way through to the profile: deciding whether to
+          take a job means looking at whose dog it is, and a request with no face
+          on it is a stranger asking for a favour. */}
+      <TouchableOpacity
+        style={styles.jobHead}
+        activeOpacity={0.7}
+        // Your own request already leads nowhere useful — it is your own profile.
+        disabled={job.mine}
+        onPress={() => navigation.navigate('UserProfile', { userId: job.ownerId })}
+      >
+        {job.ownerProfilePicture
+          ? <RemoteImage source={{ uri: job.ownerProfilePicture }} style={styles.jobAvatar} />
+          : <View style={[styles.jobAvatar, styles.jobAvatarPlaceholder]}><Text>🐶</Text></View>}
+        <View style={styles.jobHeadBody}>
+          <Text style={styles.jobWindow}>{formatWindow(job)}</Text>
+          <Text style={styles.jobDogs} numberOfLines={2}>
+            {job.dogs.length > 0
+              ? t('sitter.jobs.forDogs', { dogs: job.dogs.join(' & ') })
+              : t('sitter.jobs.forADog')}
+          </Text>
+        </View>
+        {!job.mine && <Ionicons name="chevron-forward" size={18} color={Colors.textSecondary} />}
+      </TouchableOpacity>
       {job.note ? <Text style={styles.jobNote} numberOfLines={3}>{job.note}</Text> : null}
 
       <View style={styles.jobFooter}>
@@ -308,27 +326,46 @@ export default function FindSitterScreen() {
       )}
 
       {mode === 'requests' && amSeeking && (
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.weekdayRow}
-        >
-          {/* Any day first, because it is the state most people want back. */}
-          {[null, ...WEEKDAYS].map(day => {
-            const active = weekday === day;
-            return (
-              <TouchableOpacity
-                key={day ?? 'any'}
-                style={[styles.weekdayChip, active && styles.weekdayChipActive]}
-                onPress={() => setWeekday(day)}
-              >
-                <Text style={[styles.weekdayText, active && styles.weekdayTextActive]}>
-                  {day ? translateTag(day, t) : t('sitter.jobs.anyDay')}
-                </Text>
-              </TouchableOpacity>
-            );
-          })}
-        </ScrollView>
+        <View style={styles.weekdayBlock}>
+          {/* A dropdown, not a row of chips: seven days plus "any" is more than a
+              row can hold without scrolling, and a horizontal scroller hides its
+              own options. The same shape as the radius control below it. */}
+          <TouchableOpacity
+            style={styles.weekdayPill}
+            onPress={() => setWeekdayOpen(open => !open)}
+            activeOpacity={0.7}
+          >
+            <Ionicons name="calendar-outline" size={15} color={Colors.primary} />
+            <Text style={styles.weekdayPillText}>
+              {weekday ? translateTag(weekday, t) : t('sitter.jobs.anyDay')}
+            </Text>
+            <Ionicons
+              name={weekdayOpen ? 'chevron-up' : 'chevron-down'}
+              size={15}
+              color={Colors.textSecondary}
+            />
+          </TouchableOpacity>
+
+          {weekdayOpen && (
+            <GlassCard style={styles.weekdayCard} padding={6}>
+              {[null, ...WEEKDAYS].map(day => {
+                const active = weekday === day;
+                return (
+                  <TouchableOpacity
+                    key={day ?? 'any'}
+                    style={styles.weekdayOption}
+                    onPress={() => { setWeekday(day); setWeekdayOpen(false); }}
+                  >
+                    <Text style={[styles.weekdayOptionText, active && styles.weekdayOptionTextActive]}>
+                      {day ? translateTag(day, t) : t('sitter.jobs.anyDay')}
+                    </Text>
+                    {active && <Ionicons name="checkmark" size={17} color={Colors.primary} />}
+                  </TouchableOpacity>
+                );
+              })}
+            </GlassCard>
+          )}
+        </View>
       )}
 
       {hasAnyRole && (
@@ -410,6 +447,10 @@ const styles = StyleSheet.create({
   jobsTitle:   { fontSize: 13, fontWeight: '800', color: Colors.textSecondary, letterSpacing: 0.4, marginBottom: 8 },
   jobsDivider: { fontSize: 13, fontWeight: '800', color: Colors.textSecondary, letterSpacing: 0.4, marginTop: 16, marginBottom: 2 },
   jobCard:     { marginBottom: 10 },
+  jobHead:     { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  jobHeadBody: { flex: 1 },
+  jobAvatar:   { width: 46, height: 46, borderRadius: 23 },
+  jobAvatarPlaceholder: { backgroundColor: 'rgba(46,158,107,0.12)', alignItems: 'center', justifyContent: 'center' },
   jobWindow:   { fontSize: 15, fontWeight: '800', color: Colors.text },
   jobDogs:     { fontSize: 14, color: Colors.text, marginTop: 3 },
   jobNote:     { fontSize: 13, color: Colors.textSecondary, marginTop: 6, lineHeight: 18 },
@@ -433,14 +474,21 @@ const styles = StyleSheet.create({
   postBtnText: { fontSize: 14, fontWeight: '700', color: Colors.primary },
 
   // ─── Weekday filter ───────────────────────────────────────────────────────
-  weekdayRow:  { paddingHorizontal: 20, paddingBottom: 10, gap: 8 },
-  weekdayChip: {
-    paddingHorizontal: 13, paddingVertical: 7,
+  weekdayBlock: { paddingHorizontal: 20, marginBottom: 8 },
+  weekdayPill: {
+    flexDirection: 'row', alignItems: 'center', alignSelf: 'flex-start', gap: 6,
+    paddingHorizontal: 12, paddingVertical: 7,
     borderRadius: 14, borderWidth: 1.5, borderColor: Colors.border,
+    backgroundColor: 'rgba(46,158,107,0.08)',
   },
-  weekdayChipActive: { borderColor: Colors.primary, backgroundColor: 'rgba(46,158,107,0.12)' },
-  weekdayText:       { fontSize: 13, fontWeight: '600', color: Colors.textSecondary },
-  weekdayTextActive: { color: Colors.primary },
+  weekdayPillText: { fontSize: 13, fontWeight: '700', color: Colors.text },
+  weekdayCard:     { marginTop: 8 },
+  weekdayOption: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    paddingVertical: 11, paddingHorizontal: 10,
+  },
+  weekdayOptionText:       { fontSize: 15, color: Colors.textSecondary },
+  weekdayOptionTextActive: { color: Colors.text, fontWeight: '700' },
 
   safe:     { flex: 1, backgroundColor: Colors.background },
   centered: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 32, paddingTop: 60 },
