@@ -60,12 +60,17 @@ export const sitterService = {
   /**
    * Users who toggled "I'm a dogsitter", distance-sorted — who an owner can ask.
    *
-   * <p>A weekday narrows it to sitters who said they are free then. Sitters who
-   * named no days stay in the list: silence means "ask me", not "never".
+   * <p>Weekdays narrow it to sitters free on any one of them, which is what
+   * picking several means: "Monday and Friday" is two days to cover, not one
+   * sitter who must do both. Sitters who named no days stay in the list —
+   * silence means "ask me", not "never".
+   *
+   * <p>Sent comma-separated. Spring binds that to a list without any custom
+   * serialiser, whereas axios' default array encoding (`weekday[]=`) would not.
    */
-  getAvailableSitters: (weekday?: string | null): Promise<DiscoverProfile[]> =>
+  getAvailableSitters: (weekdays?: readonly string[] | null): Promise<DiscoverProfile[]> =>
     api.get<DiscoverProfile[]>('/sitters/available', {
-      params: weekday ? { weekday } : undefined,
+      params: weekdays && weekdays.length > 0 ? { weekday: weekdays.join(',') } : undefined,
     }).then(r => r.data),
 
   /** Opens a chat with an owner from the seeker pool (idempotent). */

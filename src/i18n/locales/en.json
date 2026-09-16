@@ -526,7 +526,9 @@
       "post": "Ask for a sitter",
       "anyDay": "Any day",
       "rate": "Rate",
-      "sittingBy": "Sitting: {{name}}"
+      "sittingBy": "Sitting: {{name}}",
+      "daysPicked": "{{count}} day",
+      "daysPicked_other": "{{count}} days"
     },
     "request": {
       "title": "Ask for a sitter",

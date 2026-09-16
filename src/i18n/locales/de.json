@@ -633,7 +633,9 @@
       "post": "Sitter suchen",
       "anyDay": "Jeder Tag",
       "rate": "Bewerten",
-      "sittingBy": "Betreuung: {{name}}"
+      "sittingBy": "Betreuung: {{name}}",
+      "daysPicked": "{{count}} Tag",
+      "daysPicked_other": "{{count}} Tage"
     },
     "request": {
       "title": "Sitter suchen",

@@ -633,7 +633,9 @@
       "post": "Chercher un dog-sitter",
       "anyDay": "Tous les jours",
       "rate": "Évaluer",
-      "sittingBy": "Gardé par {{name}}"
+      "sittingBy": "Gardé par {{name}}",
+      "daysPicked": "{{count}} jour",
+      "daysPicked_other": "{{count}} jours"
     },
     "request": {
       "title": "Chercher un dog-sitter",
