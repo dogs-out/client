@@ -26,6 +26,8 @@ export type RootStackParamList = {
   /** No job means posting a new one; a job means editing that one in place. */
   PostSittingRequest: { job?: SittingRequest } | undefined;
   RateSitter: { job: SittingRequest };
+  /** The owner's handover: to-do list, emergency number, where the sitting is. */
+  SittingDetails: { job: SittingRequest; pickedPlace?: PlaceResult };
   SitterReviews: { sitterId: number; name: string };
   HelpFaq: undefined;
   TermsPrivacy: undefined;
@@ -37,7 +39,7 @@ export type RootStackParamList = {
     initialLat?: number;
     initialLng?: number;
     /** Which screen the pick goes back to. Defaults to CreatePlaydate. */
-    returnTo?: 'CreatePlaydate' | 'SetStatus';
+    returnTo?: 'CreatePlaydate' | 'SetStatus' | 'SittingDetails';
   } | undefined;
   PlaydateDetail: { playdateId: number };
   PlaydateChat: { playdateId: number; title: string };

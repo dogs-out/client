@@ -17,6 +17,8 @@ function job(over: Partial<SittingRequest>): SittingRequest {
     status: 'OPEN', mine: true,
     sitterId: null, sitterName: null, sitterProfilePicture: null,
     over: false, canEdit: true, awaitingReview: false, distanceKm: -1,
+    todoList: null, emergencyPhone: null, addressLabel: null,
+    addressLatitude: null, addressLongitude: null, detailsShared: false,
     ...over,
   };
 }

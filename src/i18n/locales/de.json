@@ -483,7 +483,8 @@
     "yearAbbrev_one": "{{count}} J.",
     "yearAbbrev_other": "{{count}} J.",
     "previewMyDog_one": "Meinen Hund ansehen",
-    "previewMyDog_other": "Meine Hunde ansehen"
+    "previewMyDog_other": "Meine Hunde ansehen",
+    "viewAsOthers": "Mein Profil so sehen wie andere"
   },
   "tags": {
     "Goofy": "Albern",
@@ -635,7 +636,8 @@
       "rate": "Bewerten",
       "sittingBy": "Betreuung: {{name}}",
       "daysPicked": "{{count}} Tag",
-      "daysPicked_other": "{{count}} Tage"
+      "daysPicked_other": "{{count}} Tage",
+      "committedTitle": "Du betreust"
     },
     "request": {
       "title": "Sitter suchen",
@@ -680,6 +682,35 @@
       "reportComment": "Diesen Kommentar melden",
       "reportThanks": "Danke für den Hinweis. Der Kommentar ist ausgeblendet, solange wir ihn prüfen.",
       "none": "Noch keine Bewertungen"
+    },
+    "cancel": {
+      "action": "Betreuung absagen",
+      "title": "Betreuung absagen?",
+      "keep": "Behalten",
+      "body": "Der Halter wird informiert und der Auftrag ist wieder offen für andere Sitter.",
+      "lateBody": "Das ist weniger als {{hours}} Stunden vor der Betreuung und zählt als kurzfristige Absage ({{count}} von {{allowed}} dieses Jahr). Bei {{allowed}} pausiert das Dogsitting einen Monat.",
+      "failed": "Absagen fehlgeschlagen. Bitte nochmals versuchen."
+    },
+    "details": {
+      "title": "Betreuungsdetails",
+      "intro": "Nur {{name}} sieht das. Es landet im Chat, damit es am Tag griffbereit ist.",
+      "todoLabel": "To-do-Liste",
+      "todoHint": "Eine Sache pro Zeile — Füttern, Schlüssel, die übliche Runde.",
+      "todoPlaceholder": "Füttern um 7 und 18 Uhr\nSchlüssel unter dem Blumentopf\nKeine anderen Hunde im Park",
+      "phoneLabel": "Notfallnummer",
+      "phoneHint": "Wen anrufen, wenn etwas ist und du nicht erreichbar bist.",
+      "phonePlaceholder": "Tierarzt, Nachbarn, Familie",
+      "addressLabel": "Wo",
+      "addressHint": "Wo die Betreuung stattfindet.",
+      "addressPlaceholder": "Strasse und Nummer",
+      "useCurrent": "Aktuellen Standort verwenden",
+      "pickOnMap": "Auf Karte wählen",
+      "pinDropped": "Pin gesetzt",
+      "send": "An Sitter senden",
+      "update": "Details aktualisieren",
+      "sendShort": "Details senden",
+      "editShort": "Details",
+      "cardLabel": "Betreuungsdetails"
     }
   },
   "playdates": {

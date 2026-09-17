@@ -483,7 +483,8 @@
     "yearAbbrev_one": "{{count}} yr",
     "yearAbbrev_other": "{{count}} yrs",
     "previewMyDog_one": "Preview my Dog",
-    "previewMyDog_other": "Preview my Dogs"
+    "previewMyDog_other": "Preview my Dogs",
+    "viewAsOthers": "View my profile as others see it"
   },
   "sitter": {
     "tabTitle": "Dogsitting",
@@ -528,7 +529,8 @@
       "rate": "Rate",
       "sittingBy": "Sitting: {{name}}",
       "daysPicked": "{{count}} day",
-      "daysPicked_other": "{{count}} days"
+      "daysPicked_other": "{{count}} days",
+      "committedTitle": "You’re sitting"
     },
     "request": {
       "title": "Ask for a sitter",
@@ -573,6 +575,35 @@
       "reportComment": "Report this comment",
       "reportThanks": "Thanks for letting us know. The comment is hidden while we look at it.",
       "none": "No reviews yet"
+    },
+    "cancel": {
+      "action": "Cancel sitting",
+      "title": "Cancel this sitting?",
+      "keep": "Keep it",
+      "body": "The owner is told and the job goes back up so another sitter can take it.",
+      "lateBody": "This is less than {{hours}} hours before the sitting, so it counts as a late cancellation ({{count}} of {{allowed}} this year). {{allowed}} of them pauses dogsitting for a month.",
+      "failed": "Could not cancel. Please try again."
+    },
+    "details": {
+      "title": "Sitting details",
+      "intro": "Only {{name}} sees this. It arrives in your chat so they have it to hand on the day.",
+      "todoLabel": "To-do list",
+      "todoHint": "One thing per line — feeding, keys, the usual walk.",
+      "todoPlaceholder": "Feed at 7am and 6pm\nKeys under the plant pot\nNo other dogs at the park",
+      "phoneLabel": "Emergency number",
+      "phoneHint": "Who to ring if something is wrong and you can’t be reached.",
+      "phonePlaceholder": "Vet, neighbour, family",
+      "addressLabel": "Where",
+      "addressHint": "Where the sitting happens.",
+      "addressPlaceholder": "Street and number",
+      "useCurrent": "Use current location",
+      "pickOnMap": "Pick on map",
+      "pinDropped": "Pin dropped",
+      "send": "Send to sitter",
+      "update": "Update details",
+      "sendShort": "Send details",
+      "editShort": "Details",
+      "cardLabel": "Sitting details"
     }
   },
   "playdates": {

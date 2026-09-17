@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
-  ActivityIndicator, Alert, FlatList, KeyboardAvoidingView, Modal,
+  ActivityIndicator, Alert, FlatList, KeyboardAvoidingView, Linking, Modal,
   Platform, Pressable, StyleSheet, Text, TextInput,
   TouchableOpacity, View, useWindowDimensions,
 } from 'react-native';
@@ -27,6 +27,7 @@ import { invertedListCounterTransform } from '../../utils/invertedList';
 import { GlassCard } from '../../components/GlassCard';
 import { ReportUserModal } from '../../components/ReportUserModal';
 import { sitterService, SittingRequest } from '../../services/sitterService';
+import { openInMaps } from '../../utils/placeAddress';
 
 const POLL_MS = 3000;
 // With a live socket, polling is only a safety net every SLOW_POLL_TICKS * POLL_MS
@@ -298,6 +299,63 @@ export default function ChatDetailScreen() {
     // A sitter's offer on a job. The owner gets a bubble they can accept from;
     // the sitter sees their own offer with its state, so "did that go through?"
     // is answered without leaving the conversation.
+    // The owner's handover card: what the sitter needs on the doorstep, sitting
+    // in the conversation where they will look for it.
+    if (message.sittingRequestId && message.sittingDetails) {
+      const job = offerJobs[message.sittingRequestId];
+      return (
+        <View style={[styles.bubbleRow, mine ? styles.bubbleRowMine : styles.bubbleRowTheirs]}>
+          <GlassCard padding={12} radius={16} compact style={{ maxWidth: bubbleMaxWidth }}>
+            <View style={styles.offerHead}>
+              <Ionicons name="clipboard-outline" size={15} color={Colors.primary} />
+              <Text style={styles.offerLabel}>{t('sitter.details.cardLabel')}</Text>
+            </View>
+
+            {job?.addressLabel ? (
+              <TouchableOpacity
+                style={styles.detailRow}
+                disabled={job.addressLatitude == null}
+                onPress={() => openInMaps({
+                  parkName: job.addressLabel!,
+                  address: job.addressLabel,
+                  latitude: job.addressLatitude!,
+                  longitude: job.addressLongitude!,
+                })}
+              >
+                <Ionicons name="location-outline" size={14} color={Colors.primary} />
+                <Text style={[styles.detailText, job.addressLatitude != null && styles.detailLink]}>
+                  {job.addressLabel}
+                </Text>
+              </TouchableOpacity>
+            ) : null}
+
+            {job?.emergencyPhone ? (
+              <TouchableOpacity style={styles.detailRow} onPress={() => Linking.openURL(`tel:${job.emergencyPhone}`)}>
+                <Ionicons name="call-outline" size={14} color={Colors.primary} />
+                <Text style={[styles.detailText, styles.detailLink]}>{job.emergencyPhone}</Text>
+              </TouchableOpacity>
+            ) : null}
+
+            {job?.todoList ? (
+              <View style={styles.todoBox}>
+                {job.todoList.split('\n').filter(l => l.trim()).map((line, i) => (
+                  <View key={i} style={styles.todoLine}>
+                    <Text style={styles.todoBullet}>•</Text>
+                    <Text style={styles.todoText}>{line.trim()}</Text>
+                  </View>
+                ))}
+              </View>
+            ) : null}
+
+            {/* The job is only fetched for the two people involved, so anyone
+                else sees the plain sentence rather than an empty card. */}
+            {!job && <Text style={styles.bubbleText}>{message.content}</Text>}
+          </GlassCard>
+          <Text style={styles.bubbleTime} numberOfLines={1}>{formatTime(message.sentAt)}</Text>
+        </View>
+      );
+    }
+
     if (message.sittingRequestId) {
       const job = offerJobs[message.sittingRequestId];
       const takenByMe = job?.sitterId != null && job.sitterId === message.senderId;
@@ -523,6 +581,14 @@ const styles = StyleSheet.create({
   },
   offerAcceptText: { color: '#fff', fontSize: 14, fontWeight: '800' },
   offerState: { marginTop: 8, fontSize: 12, fontWeight: '600', color: Colors.textSecondary },
+
+  detailRow:  { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 6 },
+  detailText: { flex: 1, fontSize: 14, color: Colors.text },
+  detailLink: { color: Colors.primary, fontWeight: '700' },
+  todoBox:    { marginTop: 10, gap: 4 },
+  todoLine:   { flexDirection: 'row', gap: 6 },
+  todoBullet: { fontSize: 14, color: Colors.primary, lineHeight: 20 },
+  todoText:   { flex: 1, fontSize: 14, color: Colors.text, lineHeight: 20 },
   // A little breathing room either side: at a large font the clock string
   // drew wider than it measured and lost its last digit — 18:13 became 18:1.
   bubbleTime:      { fontSize: 10, color: Colors.textSecondary, marginTop: 2, marginHorizontal: 4, paddingHorizontal: 2 },

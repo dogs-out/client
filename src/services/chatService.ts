@@ -24,6 +24,8 @@ export interface ChatMessage {
    * renders those with an Accept button instead of as plain text.
    */
   sittingRequestId?: number | null;
+  /** True when this is the owner's handover card rather than a sitter's offer. */
+  sittingDetails?: boolean;
 }
 
 export const chatService = {

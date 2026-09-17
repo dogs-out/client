@@ -30,6 +30,7 @@ import LocationSettingsScreen from '../features/profile/LocationSettingsScreen';
 import AppearanceSettingsScreen from '../features/profile/AppearanceSettingsScreen';
 import PostSittingRequestScreen from '../features/sitter/PostSittingRequestScreen';
 import RateSitterScreen from '../features/sitter/RateSitterScreen';
+import SittingDetailsScreen from '../features/sitter/SittingDetailsScreen';
 import SitterReviewsScreen from '../features/sitter/SitterReviewsScreen';
 import HelpFaqScreen from '../features/profile/HelpFaqScreen';
 import TermsPrivacyScreen from '../features/profile/TermsPrivacyScreen';
@@ -61,7 +62,7 @@ export default function Navigation() {
       // like any other message would.
       const opensAChat = data.type === 'NEW_MESSAGE' || data.type === 'WALK_INVITE'
         || data.type === 'DOG_BIRTHDAY' || data.type === 'USER_BIRTHDAY'
-        || data.type === 'SITTING_OFFER';
+        || data.type === 'SITTING_OFFER' || data.type === 'SITTING_DETAILS';
       if (opensAChat && data.matchId && data.otherUserId) {
         navigationRef.navigate('ChatDetail', {
           matchId: data.matchId,
@@ -75,7 +76,17 @@ export default function Navigation() {
         navigationRef.navigate('PlaydateChat', { playdateId: data.playdateId, title: '' });
       } else if (data.type?.startsWith('PLAYDATE') && data.playdateId) {
         navigationRef.navigate('PlaydateDetail', { playdateId: data.playdateId });
-      } else if (data.type === 'SITTING_RATE' || data.type === 'SITTING_ACCEPTED') {
+      } else if (data.type === 'SITTING_REVIEWED' && data.sitterId) {
+        // Straight to the review itself — being told one exists and then having
+        // to go looking for it is most of the annoyance of being told. sitterId,
+        // not otherUserId: they are being sent to read about themselves, and
+        // otherUserId is whoever wrote it.
+        navigationRef.navigate('SitterReviews', {
+          sitterId: data.sitterId,
+          name: data.name ?? '',
+        });
+      } else if (data.type === 'SITTING_RATE' || data.type === 'SITTING_ACCEPTED'
+        || data.type === 'SITTING_CANCELLED' || data.type === 'SITTING_BLOCKED') {
         // The rating screen needs the whole job, and a push carries only ids —
         // so this lands on the dogsitting tab, where the job wears a Rate button.
         // "FindSitter" is the route; "Dogsitting" is only what the tab is labelled.
@@ -163,6 +174,7 @@ export default function Navigation() {
         <Stack.Screen name="AppearanceSettings"   component={AppearanceSettingsScreen} />
         <Stack.Screen name="PostSittingRequest"   component={PostSittingRequestScreen} />
         <Stack.Screen name="RateSitter"           component={RateSitterScreen} />
+        <Stack.Screen name="SittingDetails"       component={SittingDetailsScreen} />
         <Stack.Screen name="SitterReviews"        component={SitterReviewsScreen} />
         <Stack.Screen name="HelpFaq"              component={HelpFaqScreen} />
         <Stack.Screen name="TermsPrivacy"         component={TermsPrivacyScreen} />

@@ -112,6 +112,21 @@ export default function HomeScreen({ navigation }: Readonly<Props>) {
             <Ionicons name="pencil-outline" size={16} color={Colors.text} style={{ marginRight: 6 }} />
             <Text style={styles.editButtonText}>{t('settings.rows.editProfile')}</Text>
           </GlassButton>
+
+          {/* The same screen everyone else gets, on your own id — which is the
+              only place your sitter reviews are shown. Not gated on having a dog:
+              a sitter may well not have one, and they are exactly who needs to
+              read their own reviews. */}
+          {user && (
+            <TouchableOpacity
+              style={styles.viewAsRow}
+              onPress={() => navigation.navigate('UserProfile', { userId: user.id })}
+            >
+              <Ionicons name="eye-outline" size={16} color={Colors.textSecondary} />
+              <Text style={styles.viewAsText}>{t('home.viewAsOthers')}</Text>
+              <Ionicons name="chevron-forward" size={15} color={Colors.textSecondary} />
+            </TouchableOpacity>
+          )}
         </GlassCard>
 
         {/* Dogs section */}
@@ -214,6 +229,11 @@ const styles = StyleSheet.create({
   meta:         { fontSize: 13, color: Colors.textSecondary, marginBottom: 6 },
   bio:          { fontSize: 14, color: Colors.text, lineHeight: 20 },
   bioEmpty:     { fontSize: 14, color: Colors.textSecondary, fontStyle: 'italic' },
+  viewAsRow: {
+    flexDirection: 'row', alignItems: 'center', gap: 7,
+    paddingVertical: 11, marginTop: 4,
+  },
+  viewAsText: { flex: 1, fontSize: 14, fontWeight: '700', color: Colors.textSecondary },
   editButton:   {},
   editButtonText: { fontSize: 15, fontWeight: '600', color: Colors.text },
 

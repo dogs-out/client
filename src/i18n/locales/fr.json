@@ -483,7 +483,8 @@
     "yearAbbrev_one": "{{count}} an",
     "yearAbbrev_other": "{{count}} ans",
     "previewMyDog_one": "Aperçu de mon chien",
-    "previewMyDog_other": "Aperçu de mes chiens"
+    "previewMyDog_other": "Aperçu de mes chiens",
+    "viewAsOthers": "Voir mon profil comme les autres"
   },
   "tags": {
     "Goofy": "Rigolo",
@@ -635,7 +636,8 @@
       "rate": "Évaluer",
       "sittingBy": "Gardé par {{name}}",
       "daysPicked": "{{count}} jour",
-      "daysPicked_other": "{{count}} jours"
+      "daysPicked_other": "{{count}} jours",
+      "committedTitle": "Tu gardes"
     },
     "request": {
       "title": "Chercher un dog-sitter",
@@ -680,6 +682,35 @@
       "reportComment": "Signaler ce commentaire",
       "reportThanks": "Merci de nous avoir prévenus. Le commentaire est masqué pendant que nous l'examinons.",
       "none": "Pas encore d'avis"
+    },
+    "cancel": {
+      "action": "Annuler la garde",
+      "title": "Annuler cette garde ?",
+      "keep": "Garder",
+      "body": "Le propriétaire est prévenu et l'annonce est de nouveau ouverte à d'autres gardiens.",
+      "lateBody": "C'est à moins de {{hours}} heures de la garde, donc cela compte comme une annulation tardive ({{count}} sur {{allowed}} cette année). À {{allowed}}, la garde est suspendue un mois.",
+      "failed": "Impossible d'annuler. Réessaie."
+    },
+    "details": {
+      "title": "Détails de la garde",
+      "intro": "Seul {{name}} le voit. Cela arrive dans le chat pour être sous la main le jour même.",
+      "todoLabel": "Liste à faire",
+      "todoHint": "Une chose par ligne — repas, clés, la promenade habituelle.",
+      "todoPlaceholder": "Repas à 7h et 18h\nClés sous le pot de fleurs\nPas d’autres chiens au parc",
+      "phoneLabel": "Numéro d'urgence",
+      "phoneHint": "Qui appeler si quelque chose ne va pas et que tu es injoignable.",
+      "phonePlaceholder": "Vétérinaire, voisin, famille",
+      "addressLabel": "Où",
+      "addressHint": "Où se déroule la garde.",
+      "addressPlaceholder": "Rue et numéro",
+      "useCurrent": "Utiliser ma position",
+      "pickOnMap": "Choisir sur la carte",
+      "pinDropped": "Point placé",
+      "send": "Envoyer au gardien",
+      "update": "Mettre à jour",
+      "sendShort": "Envoyer",
+      "editShort": "Détails",
+      "cardLabel": "Détails de la garde"
     }
   },
   "playdates": {
