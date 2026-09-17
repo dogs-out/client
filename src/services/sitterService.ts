@@ -27,6 +27,14 @@ export interface SittingRequest {
   awaitingReview: boolean;
   /** Which dogs, by id, so the edit screen can preselect them. */
   dogIds: number[];
+  /** The handover details. Only ever sent to the owner and the accepted sitter. */
+  todoList: string | null;
+  emergencyPhone: string | null;
+  addressLabel: string | null;
+  addressLatitude: number | null;
+  addressLongitude: number | null;
+  /** True once the owner has handed them over, so the card can say "updated". */
+  detailsShared: boolean;
   /** Rounded; -1 when either side has no location. */
   distanceKm: number;
 }
@@ -44,6 +52,18 @@ export interface SitterReview {
   tags: string[];
   mine: boolean;
   createdAt: string;
+}
+
+/**
+ * A sitter's cancellation record, so the app can warn before a penalty lands
+ * rather than after it.
+ */
+export interface SitterStanding {
+  lateCancellations: number;
+  strikesAllowed: number;
+  lateHours: number;
+  /** Null unless a suspension is currently running. */
+  blockedUntil: string | null;
 }
 
 export interface SitterRating {
@@ -144,4 +164,24 @@ export const sitterService = {
 
   getRating: (sitterId: number): Promise<SitterRating> =>
     api.get<SitterRating>(`/sitters/${sitterId}/rating`).then(r => r.data),
+
+  // ─── Cancelling and handover ────────────────────────────────────────────────
+
+  /** The sitter giving a job back; it returns to the board for someone else. */
+  cancelAsSitter: (id: number, reason?: string): Promise<SittingRequest> =>
+    api.put<SittingRequest>(`/sitters/requests/${id}/cancel`, { reason }).then(r => r.data),
+
+  /** This account's cancellation record, for the warning before confirming. */
+  getStanding: (): Promise<SitterStanding> =>
+    api.get<SitterStanding>('/sitters/standing').then(r => r.data),
+
+  /** The owner handing over the to-do list, emergency number and address. */
+  shareDetails: (id: number, body: {
+    todoList?: string;
+    emergencyPhone?: string;
+    addressLabel?: string;
+    addressLatitude?: number;
+    addressLongitude?: number;
+  }): Promise<SittingRequest> =>
+    api.put<SittingRequest>(`/sitters/requests/${id}/details`, body).then(r => r.data),
 };

@@ -21,6 +21,7 @@ import { GlassCard } from '../../components/GlassCard';
 import { CustomSlider } from '../../components/CustomSlider';
 import { DEFAULT_RADIUS_KM } from '../../constants/discover';
 import { translateBreed } from '../../i18n/translateBreed';
+import { isMyJobStillListed } from './jobVisibility';
 
 type SitterMode = 'jobs' | 'requests';
 
@@ -48,6 +49,8 @@ export default function FindSitterScreen() {
   /** Concrete jobs with hours attached, shown above the browsable pool. */
   const [openJobs, setOpenJobs] = useState<SittingRequest[]>([]);
   const [myJobs, setMyJobs] = useState<SittingRequest[]>([]);
+  /** Jobs this account took on as the sitter, so they can be given back. */
+  const [acceptedJobs, setAcceptedJobs] = useState<SittingRequest[]>([]);
   /** Null is every day. A sitter who named no days is kept either way. */
   /** Empty means any day. Several means any one of them — see the service. */
   const [weekdays, setWeekdays] = useState<string[]>([]);
@@ -78,14 +81,15 @@ export default function FindSitterScreen() {
           // Open jobs are for sitters to take; own requests are for owners to manage.
           me.isSitter ? sitterService.getOpenRequests().catch(() => []) : Promise.resolve([]),
           me.lookingForSitter ? sitterService.getMyRequests().catch(() => []) : Promise.resolve([]),
-        ]).then(([seekerPool, sitterPool, open, own]) => {
+          // What this account was accepted for, as the sitter — the jobs they
+          // committed to, and the only place they can give one back.
+          me.isSitter ? sitterService.getAcceptedJobs().catch(() => []) : Promise.resolve([]),
+        ]).then(([seekerPool, sitterPool, open, own, accepted]) => {
           setSeekers(seekerPool.filter(p => p.userId !== me.id));
           setSitters(sitterPool.filter(p => p.userId !== me.id));
           setOpenJobs(open.filter(r => !r.mine));
-          // Anything still to come, plus anything finished that still owes a
-          // rating. A job that is over and rated has nothing left to do and drops
-          // off on its own — which is what stops this list growing forever.
-          setMyJobs(own.filter(r => !r.over || r.awaitingReview));
+          setMyJobs(own.filter(isMyJobStillListed));
+          setAcceptedJobs(accepted.filter(r => !r.over));
           // Land on the side that matches the single role they enabled; once they've
           // tapped the switcher themselves, leave their choice alone on refocus.
           // Requests is only reachable while lookingForSitter holds, so a pinned
@@ -266,6 +270,26 @@ export default function FindSitterScreen() {
             </TouchableOpacity>
           )}
 
+          {/* Handing over the address and the to-do list is the owner's next
+              move the moment somebody is coming, so it leads. */}
+          {job.mine && job.sitterId != null && !job.over && (
+            <TouchableOpacity
+              style={[styles.jobBtn, !job.detailsShared && styles.jobBtnPrimary]}
+              onPress={() => navigation.navigate('SittingDetails', { job })}
+            >
+              <Text style={[styles.jobBtnText, !job.detailsShared && styles.jobBtnTextPrimary]}>
+                {t(job.detailsShared ? 'sitter.details.editShort' : 'sitter.details.sendShort')}
+              </Text>
+            </TouchableOpacity>
+          )}
+
+          {/* The sitter giving a job back. Only on a job they actually took. */}
+          {!job.mine && job.sitterId != null && !job.over && (
+            <TouchableOpacity style={styles.jobBtn} onPress={() => cancelJob(job)}>
+              <Text style={[styles.jobBtnText, styles.jobBtnTextWarn]}>{t('sitter.cancel.action')}</Text>
+            </TouchableOpacity>
+          )}
+
           {job.canEdit && (
             <TouchableOpacity
               style={styles.jobBtn}
@@ -281,7 +305,7 @@ export default function FindSitterScreen() {
             </TouchableOpacity>
           )}
 
-          {!job.mine && (
+          {!job.mine && job.sitterId == null && (
             <TouchableOpacity style={[styles.jobBtn, styles.jobBtnPrimary]} onPress={() => offerOnJob(job)}>
               <Text style={[styles.jobBtnText, styles.jobBtnTextPrimary]}>{t('sitter.jobs.offer')}</Text>
             </TouchableOpacity>
@@ -314,6 +338,44 @@ export default function FindSitterScreen() {
       .catch(() => Alert.alert(t('common.error'), t('sitter.jobs.contactFailed')));
   };
 
+  /**
+   * The sitter giving a job back.
+   *
+   * <p>Warns before it costs anything. A penalty nobody saw coming reads as the
+   * app punishing you at random — and the point of the rule is to discourage
+   * last-minute cancellations, which only works if people know it exists at the
+   * moment they are deciding.
+   */
+  const cancelJob = async (job: SittingRequest) => {
+    let standing: Awaited<ReturnType<typeof sitterService.getStanding>> | null = null;
+    try {
+      standing = await sitterService.getStanding();
+    } catch {
+      // The warning is a courtesy; failing to fetch it must not block cancelling.
+    }
+
+    const hoursAway = (new Date(job.startsAt).getTime() - Date.now()) / 3_600_000;
+    const late = standing != null && hoursAway < standing.lateHours;
+    const body = late && standing
+      ? t('sitter.cancel.lateBody', {
+          hours: standing.lateHours,
+          count: standing.lateCancellations + 1,
+          allowed: standing.strikesAllowed,
+        })
+      : t('sitter.cancel.body');
+
+    Alert.alert(t('sitter.cancel.title'), body, [
+      { text: t('sitter.cancel.keep'), style: 'cancel' },
+      {
+        text: t('sitter.cancel.action'),
+        style: 'destructive',
+        onPress: () => sitterService.cancelAsSitter(job.id)
+          .then(() => load())
+          .catch(() => Alert.alert(t('common.error'), t('sitter.cancel.failed'))),
+      },
+    ]);
+  };
+
   const closeJob = (job: SittingRequest) => {
     Alert.alert(t('sitter.jobs.closeTitle'), t('sitter.jobs.closeBody'), [
       { text: t('common.cancel'), style: 'cancel' },
@@ -328,13 +390,26 @@ export default function FindSitterScreen() {
 
   const listHeader = () => {
     const jobs = mode === 'jobs' ? openJobs : myJobs;
-    if (jobs.length === 0) return null;
+    // On the sitter's side, what they already committed to comes before what
+    // they could still take: a job with your name on it outranks a job advert.
+    const committed = mode === 'jobs' ? acceptedJobs : [];
+    if (jobs.length === 0 && committed.length === 0) return null;
     return (
       <View style={styles.jobsBlock}>
-        <Text style={styles.jobsTitle}>
-          {t(mode === 'jobs' ? 'sitter.jobs.openTitle' : 'sitter.jobs.mineTitle')}
-        </Text>
-        {jobs.map(renderJob)}
+        {committed.length > 0 && (
+          <>
+            <Text style={styles.jobsTitle}>{t('sitter.jobs.committedTitle')}</Text>
+            {committed.map(renderJob)}
+          </>
+        )}
+        {jobs.length > 0 && (
+          <>
+            <Text style={[styles.jobsTitle, committed.length > 0 && styles.jobsTitleSpaced]}>
+              {t(mode === 'jobs' ? 'sitter.jobs.openTitle' : 'sitter.jobs.mineTitle')}
+            </Text>
+            {jobs.map(renderJob)}
+          </>
+        )}
         <Text style={styles.jobsDivider}>
           {t(mode === 'jobs' ? 'sitter.jobs.thenBrowse' : 'sitter.jobs.thenSitters')}
         </Text>
@@ -524,13 +599,15 @@ export default function FindSitterScreen() {
 const styles = StyleSheet.create({
   // ─── Open jobs ────────────────────────────────────────────────────────────
   jobsBlock:   { marginBottom: 6 },
+  jobsTitleSpaced: { marginTop: 18 },
   jobsTitle:   { fontSize: 13, fontWeight: '800', color: Colors.textSecondary, letterSpacing: 0.4, marginBottom: 8 },
   jobsDivider: { fontSize: 13, fontWeight: '800', color: Colors.textSecondary, letterSpacing: 0.4, marginTop: 16, marginBottom: 2 },
   jobCard:     { marginBottom: 10 },
   jobHead:     { flexDirection: 'row', alignItems: 'center', gap: 12 },
   jobSitter:   { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 8 },
   jobSitterText: { flex: 1, fontSize: 13, fontWeight: '700', color: Colors.primary },
-  jobActions:  { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  jobActions:  { flexDirection: 'row', alignItems: 'center', gap: 8, flexWrap: 'wrap', justifyContent: 'flex-end' },
+  jobBtnTextWarn: { color: Colors.error },
   jobHeadBody: { flex: 1 },
   jobAvatar:   { width: 46, height: 46, borderRadius: 23 },
   jobAvatarPlaceholder: { backgroundColor: 'rgba(46,158,107,0.12)', alignItems: 'center', justifyContent: 'center' },

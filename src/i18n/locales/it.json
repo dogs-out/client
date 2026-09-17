@@ -483,7 +483,8 @@
     "yearAbbrev_one": "{{count}} anno",
     "yearAbbrev_other": "{{count}} anni",
     "previewMyDog_one": "Anteprima del mio cane",
-    "previewMyDog_other": "Anteprima dei miei cani"
+    "previewMyDog_other": "Anteprima dei miei cani",
+    "viewAsOthers": "Vedi il mio profilo come gli altri"
   },
   "tags": {
     "Goofy": "Buffo",
@@ -635,7 +636,8 @@
       "rate": "Valuta",
       "sittingBy": "Accudito da {{name}}",
       "daysPicked": "{{count}} giorno",
-      "daysPicked_other": "{{count}} giorni"
+      "daysPicked_other": "{{count}} giorni",
+      "committedTitle": "Stai accudendo"
     },
     "request": {
       "title": "Cerca un dog sitter",
@@ -680,6 +682,35 @@
       "reportComment": "Segnala questo commento",
       "reportThanks": "Grazie per la segnalazione. Il commento è nascosto mentre lo esaminiamo.",
       "none": "Ancora nessuna recensione"
+    },
+    "cancel": {
+      "action": "Annulla accudimento",
+      "title": "Annullare questo accudimento?",
+      "keep": "Mantieni",
+      "body": "Il proprietario viene avvisato e l'incarico torna disponibile per altri sitter.",
+      "lateBody": "Mancano meno di {{hours}} ore, quindi conta come annullamento tardivo ({{count}} su {{allowed}} quest'anno). Con {{allowed}} l'accudimento si sospende per un mese.",
+      "failed": "Impossibile annullare. Riprova."
+    },
+    "details": {
+      "title": "Dettagli accudimento",
+      "intro": "Solo {{name}} li vede. Arrivano in chat così sono a portata di mano il giorno stesso.",
+      "todoLabel": "Cose da fare",
+      "todoHint": "Una cosa per riga — pappa, chiavi, la solita passeggiata.",
+      "todoPlaceholder": "Pappa alle 7 e alle 18\nChiavi sotto il vaso\nNiente altri cani al parco",
+      "phoneLabel": "Numero di emergenza",
+      "phoneHint": "Chi chiamare se qualcosa non va e non sei raggiungibile.",
+      "phonePlaceholder": "Veterinario, vicino, famiglia",
+      "addressLabel": "Dove",
+      "addressHint": "Dove si svolge l'accudimento.",
+      "addressPlaceholder": "Via e numero",
+      "useCurrent": "Usa posizione attuale",
+      "pickOnMap": "Scegli sulla mappa",
+      "pinDropped": "Segnaposto impostato",
+      "send": "Invia al sitter",
+      "update": "Aggiorna dettagli",
+      "sendShort": "Invia dettagli",
+      "editShort": "Dettagli",
+      "cardLabel": "Dettagli accudimento"
     }
   },
   "playdates": {
@@ -870,7 +901,9 @@
     "openEnded": "fino a nuovo avviso",
     "openEndedLabel": "Fino a nuovo avviso",
     "openEndedHint": "Resta così finché non lo cambi, invece di scegliere un numero.",
-    "report": "Segnala"
+    "report": "Segnala",
+    "endStatus": "Termina stato",
+    "endFailed": "Impossibile aggiornare lo stato. Riprova."
   },
   "birthday": {
     "ownTitle": "Bau bau — buon compleanno!",

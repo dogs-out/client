@@ -122,9 +122,17 @@ export default function ParkPickerScreen({ navigation, route }: Readonly<Props>)
     // popTo guarantees we return to the screen that sent us here rather than
     // risking a second copy pushed on top of the picker, which is what leaves
     // someone staring at this form again after they have already saved.
-    const target = route.params?.returnTo === 'SetStatus' ? 'SetStatus' : 'CreatePlaydate';
-    const params = target === 'SetStatus' ? { pickedPlace: selected } : { pickedPark: selected };
-    navigation.popTo(target, params, { merge: true });
+    // Three callers now. Written out rather than computed because each route's
+    // params have a different shape, and merge:true carries the rest of them
+    // back — which the types cannot see, so a computed target will not narrow.
+    const target = route.params?.returnTo ?? 'CreatePlaydate';
+    if (target === 'SetStatus') {
+      navigation.popTo('SetStatus', { pickedPlace: selected }, { merge: true });
+    } else if (target === 'SittingDetails') {
+      navigation.popTo('SittingDetails', { pickedPlace: selected } as never, { merge: true });
+    } else {
+      navigation.popTo('CreatePlaydate', { pickedPark: selected }, { merge: true });
+    }
   };
 
   return (
