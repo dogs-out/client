@@ -901,7 +901,9 @@
     "openEnded": "fino a nuovo avviso",
     "openEndedLabel": "Fino a nuovo avviso",
     "openEndedHint": "Resta così finché non lo cambi, invece di scegliere un numero.",
-    "report": "Segnala"
+    "report": "Segnala",
+    "endStatus": "Termina stato",
+    "endFailed": "Impossibile aggiornare lo stato. Riprova."
   },
   "birthday": {
     "ownTitle": "Bau bau — buon compleanno!",

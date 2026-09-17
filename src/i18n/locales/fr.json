@@ -901,7 +901,9 @@
     "openEnded": "jusqu'à nouvel ordre",
     "openEndedLabel": "Jusqu'à nouvel ordre",
     "openEndedHint": "Reste actif jusqu'à ce que tu le changes, au lieu de choisir un chiffre.",
-    "report": "Signaler"
+    "report": "Signaler",
+    "endStatus": "Terminer",
+    "endFailed": "Impossible de mettre à jour ton statut. Réessaie."
   },
   "birthday": {
     "ownTitle": "Wouf wouf — joyeux anniversaire !",

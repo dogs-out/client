@@ -794,7 +794,9 @@
     "openEnded": "until further notice",
     "openEndedLabel": "Until further notice",
     "openEndedHint": "Leave it standing until you change it, instead of picking a number.",
-    "report": "Report"
+    "report": "Report",
+    "endStatus": "End status",
+    "endFailed": "Could not update your status. Please try again."
   },
   "birthday": {
     "ownTitle": "Woof woof — happy birthday!",

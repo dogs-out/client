@@ -901,7 +901,9 @@
     "openEnded": "bis auf Weiteres",
     "openEndedLabel": "Bis auf Weiteres",
     "openEndedHint": "Bleibt so, bis du es änderst — statt eine Zahl zu raten.",
-    "report": "Melden"
+    "report": "Melden",
+    "endStatus": "Status beenden",
+    "endFailed": "Status konnte nicht geändert werden. Bitte nochmals versuchen."
   },
   "birthday": {
     "ownTitle": "Wuff wuff — alles Gute zum Geburtstag!",

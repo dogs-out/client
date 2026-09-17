@@ -50,6 +50,7 @@ export function WhosOutsideView() {
   const [picking, setPicking] = useState(false);
   const [loading, setLoading] = useState(true);
   const [inviting, setInviting] = useState(false);
+  const [ending, setEnding] = useState(false);
   const [onMap, setOnMap] = useState<FriendStatus | null>(null);
   /** The status photo being looked at full screen, with whose it is. */
   const [photoViewer, setPhotoViewer] = useState<{ uri: string; name: string } | null>(null);
@@ -87,6 +88,25 @@ export function WhosOutsideView() {
   }, []);
 
   useFocusEffect(useCallback(() => { load(); }, [load]));
+
+  /**
+   * Straight back to the default, without the editor.
+   *
+   * <p>No confirmation: it is one tap to undo by setting the status again, and a
+   * dialog asking "really?" about going home is the kind of friction that made
+   * this worth adding in the first place.
+   */
+  const endStatus = async () => {
+    setEnding(true);
+    try {
+      await userService.setStatus({ status: DEFAULT_STATUS });
+      load();
+    } catch {
+      Alert.alert(t('common.error'), t('whosOutside.endFailed'));
+    } finally {
+      setEnding(false);
+    }
+  };
 
   const invite = async (userIds: number[]) => {
     setInviting(true);
@@ -215,9 +235,30 @@ export function WhosOutsideView() {
       <View style={styles.statusBar}>
         <TouchableOpacity style={styles.statusBtn} onPress={() => navigation.navigate('SetStatus')}>
           <Ionicons name={STATUS_ICONS[myStatus] as never} size={16} color={Colors.primary} />
-          <Text style={styles.statusBtnText}>{t(`whosOutside.status.${myStatus}`, { defaultValue: myStatus })}</Text>
+          <Text style={styles.statusBtnText} numberOfLines={1}>
+            {t(`whosOutside.status.${myStatus}`, { defaultValue: myStatus })}
+          </Text>
           <Ionicons name="chevron-forward" size={14} color={Colors.textSecondary} />
         </TouchableOpacity>
+
+        {/* One tap back to being at home. Ending a walk is the most frequent
+            thing anybody does here and it was three taps through the editor,
+            which is why statuses were being left standing for hours after
+            people got back. Only shown when there is something to end. */}
+        {myStatus !== DEFAULT_STATUS && (
+          <TouchableOpacity
+            style={styles.endBtn}
+            onPress={endStatus}
+            disabled={ending}
+            accessibilityRole="button"
+            accessibilityLabel={t('whosOutside.endStatus')}
+          >
+            {ending
+              ? <ActivityIndicator size="small" color={Colors.textSecondary} />
+              : <Ionicons name="checkmark-done" size={15} color={Colors.textSecondary} />}
+            <Text style={styles.endText} numberOfLines={1}>{t('whosOutside.endStatus')}</Text>
+          </TouchableOpacity>
+        )}
 
         {STATUS_IS_OUT[myStatus] && (
           <TouchableOpacity style={styles.inviteBtn} onPress={() => setPicking(true)} disabled={inviting}>
@@ -322,7 +363,7 @@ const styles = StyleSheet.create({
 
   statusBar: { flexDirection: 'row', alignItems: 'center', gap: 10, paddingHorizontal: 20, paddingBottom: 8 },
   statusBtn: {
-    flexDirection: 'row', alignItems: 'center', gap: 6, flex: 1,
+    flexDirection: 'row', alignItems: 'center', gap: 6, flex: 1, minWidth: 0,
     paddingHorizontal: 12, paddingVertical: 9,
     borderRadius: 14, borderWidth: 1.5, borderColor: Colors.border,
     backgroundColor: 'rgba(46,158,107,0.08)',
@@ -331,8 +372,19 @@ const styles = StyleSheet.create({
   inviteBtn: {
     backgroundColor: Colors.primary, borderRadius: 14,
     paddingHorizontal: 14, paddingVertical: 10, minWidth: 84, alignItems: 'center',
+    flexShrink: 0,
   },
   inviteText: { color: '#fff', fontSize: 13, fontWeight: '700' },
+  endBtn: {
+    flexDirection: 'row', alignItems: 'center', gap: 5,
+    paddingHorizontal: 11, paddingVertical: 8,
+    borderRadius: 14, borderWidth: 1.5, borderColor: Colors.border,
+    // Out walking shows all three of these at once. The status pill is the one
+    // that gives up width at a large system font — it is a label the reader
+    // already knows, where the two buttons are the things you came here to tap.
+    flexShrink: 0,
+  },
+  endText: { fontSize: 13, fontWeight: '700', color: Colors.textSecondary },
 
   list: { paddingHorizontal: 20, paddingBottom: 24, flexGrow: 1 },
   card:        { marginTop: 10 },
