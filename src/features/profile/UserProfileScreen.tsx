@@ -358,8 +358,11 @@ const styles = StyleSheet.create({
 
   scroll: { paddingHorizontal: 20, paddingTop: 4 },
 
-  photo:            { width: PHOTO_W, height: PHOTO_H, backgroundColor: '#e6f4ec' },
-  photoPlaceholder: { alignItems: 'center', justifyContent: 'center' },
+  // No width here on purpose. The carousel measures its own page width and hands
+  // it to CroppedImage; a width in this style used to override that silently.
+  photo:            { height: PHOTO_H, backgroundColor: '#e6f4ec' },
+  // The placeholder is a plain View, so it does need both.
+  photoPlaceholder: { width: PHOTO_W, alignItems: 'center', justifyContent: 'center' },
 
   dotsRow:   { position: 'absolute', bottom: 12, alignSelf: 'center', flexDirection: 'row', gap: 6 },
   dot:       { width: 7, height: 7, borderRadius: 4, backgroundColor: 'rgba(255,255,255,0.55)' },

@@ -13,7 +13,14 @@ type Props = Readonly<{
   uri: string;
   /** Null, or absent, shows the whole picture filled to the frame. */
   crop?: CropRect | null;
-  /** The frame the photo is shown in. Needs a concrete width and height. */
+  /**
+   * Cosmetics for the frame — background, corners, borders.
+   *
+   * <p>Any width or height in here is ignored: the props below win. They used to
+   * lose, which is how a carousel measured its page width, passed it in, and
+   * still laid every page out at the stale constant its stylesheet happened to
+   * carry — pages one width, snapping another, drifting further every page.
+   */
   style?: StyleProp<ViewStyle>;
   width: number;
   height: number;
@@ -35,7 +42,7 @@ export function CroppedImage({ uri, crop, style, width, height }: Props) {
   // No framing, or a framing that covers everything: the ordinary case, and the
   // cheaper one — no wrapper arithmetic, just fill the frame.
   if (!crop || (crop.x <= 0 && crop.y <= 0 && crop.width >= 1 && crop.height >= 1)) {
-    return <RemoteImage source={{ uri }} style={[{ width, height }, style as never]} resizeMode="cover" />;
+    return <RemoteImage source={{ uri }} style={[style as never, { width, height }]} resizeMode="cover" />;
   }
 
   // Guard against a rectangle that would divide by zero or blow up to infinity;
@@ -50,7 +57,7 @@ export function CroppedImage({ uri, crop, style, width, height }: Props) {
   const scaledHeight = height / h;
 
   return (
-    <View style={[{ width, height, overflow: 'hidden' }, style]}>
+    <View style={[style, { width, height, overflow: 'hidden' }]}>
       <RemoteImage
         source={{ uri }}
         style={{
