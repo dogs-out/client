@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
-  ActivityIndicator, Alert, Dimensions, ScrollView,
+  ActivityIndicator, Alert, Dimensions, Pressable, ScrollView,
   StyleSheet, Text, TouchableOpacity, View,
 } from 'react-native';
 import { RemoteImage } from '../../components/ui/RemoteImage';
@@ -35,11 +35,11 @@ interface CarouselPhoto { uri: string; crop: CropRect | null }
 
 function PhotoCarousel({ photos, placeholder }: Readonly<{ photos: CarouselPhoto[]; placeholder: string }>) {
   const [index, setIndex] = useState(0);
-  // pagingEnabled snaps by the *viewport* width. The card's border makes the
-  // viewport a few px narrower than PHOTO_W, so fixed-width pages drift a bit
-  // further each page (previous photo bleeds in at the left edge). Measure the
-  // real viewport and size each page to exactly that.
+  // Measured rather than assumed: the card's border makes the viewport a couple
+  // of points narrower than PHOTO_W, and pages sized from the wrong number drift
+  // a little further every page until the previous photo bleeds in at the edge.
   const [pageW, setPageW] = useState(PHOTO_W);
+  const scrollRef = useRef<ScrollView>(null);
 
   if (photos.length === 0) {
     return (
@@ -49,23 +49,48 @@ function PhotoCarousel({ photos, placeholder }: Readonly<{ photos: CarouselPhoto
     );
   }
 
+  const goTo = (next: number) => {
+    const clamped = Math.max(0, Math.min(next, photos.length - 1));
+    if (clamped === index) return;
+    setIndex(clamped);
+    scrollRef.current?.scrollTo({ x: clamped * pageW, animated: true });
+  };
+
   return (
     <View onLayout={e => setPageW(e.nativeEvent.layout.width)}>
       <ScrollView
+        ref={scrollRef}
         horizontal
-        pagingEnabled
         showsHorizontalScrollIndicator={false}
+        // snapToInterval rather than pagingEnabled. pagingEnabled snaps to the
+        // *scroll view's* width, which is not necessarily the width the pages
+        // were laid out at — and every point of difference accumulates, so by
+        // the fifth photo the fourth one is visible down the left edge. Snapping
+        // to the page width itself cannot drift, whatever the viewport measures.
+        snapToInterval={pageW}
+        snapToAlignment="start"
+        decelerationRate="fast"
+        disableIntervalMomentum
         onMomentumScrollEnd={e => setIndex(Math.round(e.nativeEvent.contentOffset.x / pageW))}
       >
         {photos.map((photo, i) => (
-          <CroppedImage
+          /* Tapping a side moves a photo, the way it already does in Discover.
+             A Pressable per page rather than one overlay across the whole strip:
+             an overlay would take the gesture before the scroll view could, and
+             swiping would stop working. Inside a page, the scroll view still wins
+             as soon as the finger moves, so both gestures live together. */
+          <Pressable
             key={i}
-            uri={photo.uri}
-            crop={photo.crop}
-            width={pageW}
-            height={PHOTO_H}
-            style={styles.photo}
-          />
+            onPress={e => goTo(e.nativeEvent.locationX < pageW / 2 ? index - 1 : index + 1)}
+          >
+            <CroppedImage
+              uri={photo.uri}
+              crop={photo.crop}
+              width={pageW}
+              height={PHOTO_H}
+              style={styles.photo}
+            />
+          </Pressable>
         ))}
       </ScrollView>
       {photos.length > 1 && (

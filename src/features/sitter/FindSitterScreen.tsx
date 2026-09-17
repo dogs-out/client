@@ -21,6 +21,7 @@ import { GlassCard } from '../../components/GlassCard';
 import { CustomSlider } from '../../components/CustomSlider';
 import { DEFAULT_RADIUS_KM } from '../../constants/discover';
 import { translateBreed } from '../../i18n/translateBreed';
+import { isMyJobStillListed } from './jobVisibility';
 
 type SitterMode = 'jobs' | 'requests';
 
@@ -82,10 +83,7 @@ export default function FindSitterScreen() {
           setSeekers(seekerPool.filter(p => p.userId !== me.id));
           setSitters(sitterPool.filter(p => p.userId !== me.id));
           setOpenJobs(open.filter(r => !r.mine));
-          // Anything still to come, plus anything finished that still owes a
-          // rating. A job that is over and rated has nothing left to do and drops
-          // off on its own — which is what stops this list growing forever.
-          setMyJobs(own.filter(r => !r.over || r.awaitingReview));
+          setMyJobs(own.filter(isMyJobStillListed));
           // Land on the side that matches the single role they enabled; once they've
           // tapped the switcher themselves, leave their choice alone on refocus.
           // Requests is only reachable while lookingForSitter holds, so a pinned
