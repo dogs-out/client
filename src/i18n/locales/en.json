@@ -835,5 +835,25 @@
     "Harassment or abuse": null,
     "Untrue — this sitting never happened": null,
     "Personal information": null
+  },
+  "walk": {
+    "inviteButton": "Invite for a walk",
+    "title": "Walk with {{name}}",
+    "noteLabel": "Add a note (optional)",
+    "send": "Send invite",
+    "message": "🐾 Walk invite: {{place}}, {{when}}",
+    "cardLabel": "Walk invite",
+    "accept": "I'm in",
+    "decline": "Decline",
+    "state": {
+      "waiting": "Waiting for {{name}}",
+      "theyAreComing": "{{name}} is coming ✓",
+      "theyDeclined": "{{name}} can't make it",
+      "youAreGoing": "You're going ✓",
+      "declinedByMe": "You declined, or this walk is no longer open",
+      "unavailable": "This walk is no longer available",
+      "cancelled": "This walk was cancelled",
+      "past": "This walk has passed"
+    }
   }
 }

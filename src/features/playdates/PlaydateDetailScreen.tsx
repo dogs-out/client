@@ -21,6 +21,7 @@ import * as Clipboard from 'expo-clipboard';
 import { FloatingBackground } from '../../components/FloatingBackground';
 import { GlassCard } from '../../components/GlassCard';
 import { formatPlaydateTime } from './PlaydatesScreen';
+import { playdateTitle } from './playdateTitle';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'PlaydateDetail'>;
 
@@ -90,7 +91,7 @@ export default function PlaydateDetailScreen({ navigation, route }: Readonly<Pro
 
   const openChat = () => {
     if (!playdate) return;
-    navigation.navigate('PlaydateChat', { playdateId, title: playdate.title ?? playdate.parkName });
+    navigation.navigate('PlaydateChat', { playdateId, title: playdateTitle(playdate) });
   };
 
   if (!playdate) {
@@ -153,7 +154,7 @@ export default function PlaydateDetailScreen({ navigation, route }: Readonly<Pro
         <TouchableOpacity onPress={() => navigation.goBack()} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
           <Ionicons name="chevron-back" size={26} color={Colors.text} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle} numberOfLines={1}>{playdate.title ?? playdate.parkName}</Text>
+        <Text style={styles.headerTitle} numberOfLines={1}>{playdateTitle(playdate)}</Text>
         <View style={{ width: 26 }} />
       </View>
 

@@ -40,6 +40,10 @@ function defaultStart(): Date {
 export default function CreatePlaydateScreen({ navigation, route }: Readonly<Props>) {
   const { t, i18n } = useTranslation();
   const playdateId = route.params?.playdateId;
+  // Walk mode: the same form cut down to where and when, sent into a chat as a
+  // card instead of posted to the Playdates tab. Everything else about a walk is
+  // fixed — two people, invite-only — so there is nothing else to ask.
+  const walkWith = route.params?.walkWith;
 
   const [park, setPark] = useState<PlaceResult | null>(null);
   const [startsAt, setStartsAt] = useState<Date>(defaultStart());
@@ -128,6 +132,21 @@ export default function CreatePlaydateScreen({ navigation, route }: Readonly<Pro
         maxParticipants: hasLimit ? limit : undefined,
         sittersWelcome,
       };
+      if (walkWith) {
+        await chatService.sendWalkInvite(walkWith.matchId, {
+          content: t('walk.message', { place: park.name, when: `${formatDate(startsAt)}, ${formatTime(startsAt)}` }),
+          parkName: payload.parkName,
+          address: payload.address,
+          latitude: payload.latitude,
+          longitude: payload.longitude,
+          startsAt: payload.startsAt,
+          note: payload.description,
+        });
+        // ParkPicker can sit under this screen (it returns via navigate), so pop
+        // straight back to the conversation rather than one step.
+        navigation.popTo('ChatDetail', walkWith);
+        return;
+      }
       if (playdateId) {
         await playdateService.updatePlaydate(playdateId, payload);
         navigation.goBack();
@@ -180,7 +199,9 @@ export default function CreatePlaydateScreen({ navigation, route }: Readonly<Pro
           <Ionicons name="chevron-back" size={26} color={Colors.text} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>
-          {playdateId ? t('playdates.create.editTitle') : t('playdates.create.title')}
+          {walkWith
+            ? t('walk.title', { name: walkWith.name })
+            : playdateId ? t('playdates.create.editTitle') : t('playdates.create.title')}
         </Text>
         <View style={{ width: 26 }} />
       </View>
@@ -230,6 +251,7 @@ export default function CreatePlaydateScreen({ navigation, route }: Readonly<Pro
           {/* DETAILS */}
           <GlassCard style={styles.card}>
             <Text style={styles.sectionLabel}>{t('playdates.create.detailsLabel')}</Text>
+            {!walkWith && (
             <TextInput
               style={styles.input}
               placeholder={t('playdates.create.titleLabel')}
@@ -237,9 +259,10 @@ export default function CreatePlaydateScreen({ navigation, route }: Readonly<Pro
               value={title}
               onChangeText={v => setTitle(v.slice(0, 100))}
             />
+            )}
             <TextInput
               style={[styles.input, styles.descriptionInput]}
-              placeholder={t('playdates.create.descriptionLabel')}
+              placeholder={walkWith ? t('walk.noteLabel') : t('playdates.create.descriptionLabel')}
               placeholderTextColor={Colors.textSecondary}
               value={description}
               onChangeText={v => setDescription(v.slice(0, 1000))}
@@ -248,11 +271,13 @@ export default function CreatePlaydateScreen({ navigation, route }: Readonly<Pro
               textAlignVertical="top"
             />
 
+            {!walkWith && (
             <View style={styles.limitRow}>
               <Text style={styles.limitLabel}>{t('playdates.create.limitLabel')}</Text>
               <Switch value={hasLimit} onValueChange={setHasLimit} trackColor={{ true: Colors.primary }} />
             </View>
-            {hasLimit && (
+            )}
+            {!walkWith && hasLimit && (
               <>
                 <Text style={styles.limitValue}>{t('playdates.create.limitValue', { count: limit })}</Text>
                 <CustomSlider
@@ -265,6 +290,7 @@ export default function CreatePlaydateScreen({ navigation, route }: Readonly<Pro
           </GlassCard>
 
           {/* WHO MAY JOIN */}
+          {!walkWith && (
           <GlassCard style={styles.card}>
             <View style={styles.limitRow}>
               <View style={{ flex: 1, marginRight: 12 }}>
@@ -278,9 +304,10 @@ export default function CreatePlaydateScreen({ navigation, route }: Readonly<Pro
               />
             </View>
           </GlassCard>
+          )}
 
           {/* VISIBILITY (immutable when editing) */}
-          {!playdateId && (
+          {!playdateId && !walkWith && (
             <GlassCard style={styles.card}>
               <Text style={styles.sectionLabel}>{t('playdates.create.visibilityLabel')}</Text>
               {VISIBILITY_OPTIONS.map(option => {
@@ -343,7 +370,9 @@ export default function CreatePlaydateScreen({ navigation, route }: Readonly<Pro
                 minimumFontScale={0.75}
                 maxFontSizeMultiplier={1.2}
               >
-                {playdateId ? t('playdates.create.saveChanges') : t('playdates.create.save')}
+                {walkWith
+                  ? t('walk.send')
+                  : playdateId ? t('playdates.create.saveChanges') : t('playdates.create.save')}
               </Text>
             </GlassButton>
           )}

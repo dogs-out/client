@@ -928,5 +928,25 @@
     "save": "Speichern",
     "discard": "Verwerfen",
     "keepEditing": "Weiter bearbeiten"
+  },
+  "walk": {
+    "inviteButton": "Zum Spaziergang einladen",
+    "title": "Spaziergang mit {{name}}",
+    "noteLabel": "Notiz hinzufügen (optional)",
+    "send": "Einladung senden",
+    "message": "🐾 Einladung zum Spaziergang: {{place}}, {{when}}",
+    "cardLabel": "Spaziergang",
+    "accept": "Bin dabei",
+    "decline": "Absagen",
+    "state": {
+      "waiting": "Warte auf {{name}}",
+      "theyAreComing": "{{name}} kommt ✓",
+      "theyDeclined": "{{name}} kann nicht",
+      "youAreGoing": "Du bist dabei ✓",
+      "declinedByMe": "Du hast abgesagt, oder der Spaziergang ist nicht mehr offen",
+      "unavailable": "Dieser Spaziergang ist nicht mehr verfügbar",
+      "cancelled": "Dieser Spaziergang wurde abgesagt",
+      "past": "Dieser Spaziergang ist vorbei"
+    }
   }
 }

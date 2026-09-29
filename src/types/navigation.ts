@@ -34,7 +34,12 @@ export type RootStackParamList = {
   About: undefined;
   Feedback: undefined;
   Language: undefined;
-  CreatePlaydate: { playdateId?: number; pickedPark?: PlaceResult } | undefined;
+  CreatePlaydate: {
+    playdateId?: number;
+    pickedPark?: PlaceResult;
+    /** Walk mode: a 1:1 walk with the person in this chat, sent back into it. */
+    walkWith?: RootStackParamList['ChatDetail'];
+  } | undefined;
   ParkPicker: {
     initialLat?: number;
     initialLng?: number;

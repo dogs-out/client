@@ -928,5 +928,25 @@
     "save": "Salva",
     "discard": "Scarta",
     "keepEditing": "Continua a modificare"
+  },
+  "walk": {
+    "inviteButton": "Invita a una passeggiata",
+    "title": "Passeggiata con {{name}}",
+    "noteLabel": "Aggiungi una nota (facoltativa)",
+    "send": "Invia invito",
+    "message": "🐾 Invito a una passeggiata: {{place}}, {{when}}",
+    "cardLabel": "Passeggiata",
+    "accept": "Ci sono",
+    "decline": "Rifiuta",
+    "state": {
+      "waiting": "In attesa di {{name}}",
+      "theyAreComing": "{{name}} viene ✓",
+      "theyDeclined": "{{name}} non può venire",
+      "youAreGoing": "Ci vai ✓",
+      "declinedByMe": "Hai rifiutato, o questa passeggiata non è più aperta",
+      "unavailable": "Questa passeggiata non è più disponibile",
+      "cancelled": "Questa passeggiata è stata annullata",
+      "past": "Questa passeggiata è passata"
+    }
   }
 }

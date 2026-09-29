@@ -62,7 +62,9 @@ export default function ChatsScreen() {
         setMatches(matchData);
         // Only playdates you're actually in have a group chat; INVITED users can't
         // post until they accept, and PUBLIC ones you haven't joined aren't yours.
-        setGroups(playdateData.filter(p => p.myStatus === 'HOST' || p.myStatus === 'JOINED'));
+        // A walk already lives in the 1:1 conversation it was invited from; listing
+        // it again as a group chat would split one conversation in two.
+        setGroups(playdateData.filter(p => !p.walk && (p.myStatus === 'HOST' || p.myStatus === 'JOINED')));
         setError(null);
       })
       .catch(() => setError(t('chat.chatsScreen.loadError')))

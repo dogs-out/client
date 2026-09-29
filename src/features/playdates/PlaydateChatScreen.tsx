@@ -24,6 +24,7 @@ import { scaledLineHeight } from '../../utils/typography';
 import { FloatingBackground } from '../../components/FloatingBackground';
 import { invertedListCounterTransform } from '../../utils/invertedList';
 import { GlassCard } from '../../components/GlassCard';
+import { playdateTitle } from './playdateTitle';
 
 const POLL_MS = 3000;
 // With a live socket, polling is only a safety net every SLOW_POLL_TICKS * POLL_MS
@@ -100,7 +101,7 @@ export default function PlaydateChatScreen({ navigation, route }: Readonly<Props
       // Deep links arrive without a title — fetch it
       if (!headerTitle) {
         playdateService.getPlaydate(playdateId)
-          .then(p => setHeaderTitle(p.title ?? p.parkName))
+          .then(p => setHeaderTitle(playdateTitle(p)))
           .catch(() => {});
       }
       const unsubscribe = chatSocket.subscribe(event => {

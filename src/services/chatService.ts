@@ -26,6 +26,19 @@ export interface ChatMessage {
   sittingRequestId?: number | null;
   /** True when this is the owner's handover card rather than a sitter's offer. */
   sittingDetails?: boolean;
+  /** Set when the message is a walk invite; the playdate holds where, when and who said yes. */
+  playdateId?: number | null;
+}
+
+export interface WalkInvitePayload {
+  /** The invite as a sentence in the sender's language — what older app versions show. */
+  content: string;
+  parkName: string;
+  address?: string;
+  latitude: number;
+  longitude: number;
+  startsAt: string; // ISO-8601 UTC
+  note?: string;
 }
 
 export const chatService = {
@@ -42,4 +55,7 @@ export const chatService = {
 
   sendMessage: (matchId: number, content: string): Promise<ChatMessage> =>
     api.post<ChatMessage>(`/chats/${matchId}/messages`, { content }).then(r => r.data),
+
+  sendWalkInvite: (matchId: number, payload: WalkInvitePayload): Promise<ChatMessage> =>
+    api.post<ChatMessage>(`/chats/${matchId}/walk-invite`, payload).then(r => r.data),
 };

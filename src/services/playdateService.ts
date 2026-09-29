@@ -33,6 +33,8 @@ export interface Playdate {
   /** Group-chat preview for the Chats screen; null unless you're HOST or JOINED. */
   lastMessageContent: string | null;
   lastMessageSentAt: string | null;
+  /** A 1:1 walk invited from a chat rather than a meetup made in the Playdates tab. */
+  walk?: boolean;
 }
 
 export interface PlaydateMessage {

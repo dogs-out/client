@@ -28,6 +28,8 @@ import { GlassCard } from '../../components/GlassCard';
 import { ReportUserModal } from '../../components/ReportUserModal';
 import { sitterService, SittingRequest } from '../../services/sitterService';
 import { openInMaps } from '../../utils/placeAddress';
+import { useHasDog } from '../../hooks/useHasDog';
+import { WalkInviteCard } from './WalkInviteCard';
 
 const POLL_MS = 3000;
 // With a live socket, polling is only a safety net every SLOW_POLL_TICKS * POLL_MS
@@ -78,6 +80,9 @@ export default function ChatDetailScreen() {
   // The server answers with a boolean rather than a date — nobody's birth date
   // needs to travel for the chat to look festive.
   const [celebrating, setCelebrating] = useState(false);
+  // Walks are hosted by dog owners, the same rule as any playdate; null (still
+  // loading) counts as an owner so the button does not pop in after a moment.
+  const hasDog = useHasDog();
 
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [loading, setLoading] = useState(true);
@@ -356,6 +361,22 @@ export default function ChatDetailScreen() {
       );
     }
 
+    if (message.playdateId) {
+      return (
+        <View style={[styles.bubbleRow, mine ? styles.bubbleRowMine : styles.bubbleRowTheirs]}>
+          <WalkInviteCard
+            playdateId={message.playdateId}
+            content={message.content}
+            mine={mine}
+            otherName={name}
+            maxWidth={bubbleMaxWidth}
+            onOpen={id => navigation.navigate('PlaydateDetail', { playdateId: id })}
+          />
+          <Text style={styles.bubbleTime} numberOfLines={1}>{formatTime(message.sentAt)}</Text>
+        </View>
+      );
+    }
+
     if (message.sittingRequestId) {
       const job = offerJobs[message.sittingRequestId];
       const takenByMe = job?.sitterId != null && job.sitterId === message.senderId;
@@ -469,6 +490,15 @@ export default function ChatDetailScreen() {
         {/* Floating glass input bar */}
         <BlurView intensity={60} tint="light" style={styles.inputBlur}>
           <View style={styles.inputBar}>
+            {hasDog !== false && (
+              <TouchableOpacity
+                style={styles.walkBtn}
+                onPress={() => navigation.navigate('CreatePlaydate', { walkWith: params })}
+                accessibilityLabel={t('walk.inviteButton')}
+              >
+                <Ionicons name="paw" size={20} color={Colors.primary} />
+              </TouchableOpacity>
+            )}
             <TextInput
               style={styles.input}
               value={draft}
@@ -636,6 +666,12 @@ const styles = StyleSheet.create({
     alignItems: 'center', justifyContent: 'center',
   },
   sendBtnDisabled: { opacity: 0.4 },
+  walkBtn: {
+    width: 42, height: 42, borderRadius: 21,
+    backgroundColor: Colors.glass.inputBg,
+    borderWidth: 1, borderColor: Colors.glass.inputBorder,
+    alignItems: 'center', justifyContent: 'center',
+  },
 
   menuBackdrop: { ...StyleSheet.absoluteFill, backgroundColor: 'rgba(13,40,24,0.40)' },
   menuSheetWrap: {

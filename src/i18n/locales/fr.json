@@ -928,5 +928,25 @@
     "save": "Enregistrer",
     "discard": "Abandonner",
     "keepEditing": "Continuer"
+  },
+  "walk": {
+    "inviteButton": "Inviter à une balade",
+    "title": "Balade avec {{name}}",
+    "noteLabel": "Ajouter une note (facultatif)",
+    "send": "Envoyer l'invitation",
+    "message": "🐾 Invitation à une balade : {{place}}, {{when}}",
+    "cardLabel": "Balade",
+    "accept": "Je viens",
+    "decline": "Refuser",
+    "state": {
+      "waiting": "En attente de {{name}}",
+      "theyAreComing": "{{name}} vient ✓",
+      "theyDeclined": "{{name}} ne peut pas venir",
+      "youAreGoing": "Tu y vas ✓",
+      "declinedByMe": "Tu as refusé, ou cette balade n'est plus ouverte",
+      "unavailable": "Cette balade n'est plus disponible",
+      "cancelled": "Cette balade a été annulée",
+      "past": "Cette balade est passée"
+    }
   }
 }

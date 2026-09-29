@@ -19,6 +19,7 @@ import { FloatingBackground } from '../../components/FloatingBackground';
 import { GlassCard } from '../../components/GlassCard';
 import { useTabBarHeight } from '../../components/GlassTabBar';
 import { WhosOutsideView } from './WhosOutsideView';
+import { playdateTitle } from './playdateTitle';
 
 type PlaydateMode = 'playdates' | 'outside';
 
@@ -80,7 +81,7 @@ export default function PlaydatesScreen() {
         <GlassCard style={styles.card}>
           <View style={styles.cardHeader}>
             <View style={styles.cardTitleWrap}>
-              <Text style={styles.cardTitle} numberOfLines={1}>{item.title ?? item.parkName}</Text>
+              <Text style={styles.cardTitle} numberOfLines={1}>{playdateTitle(item)}</Text>
               {item.title && <Text style={styles.cardPark} numberOfLines={1}>
                 <Ionicons name="location-outline" size={12} color={Colors.textSecondary} /> {item.parkName}
               </Text>}
