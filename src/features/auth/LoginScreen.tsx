@@ -13,6 +13,7 @@ import { RootStackParamList } from '../../types/navigation';
 import { AxiosError } from 'axios';
 import { authService } from '../../services/authService';
 import { tokenStorage } from '../../utils/tokenStorage';
+import { signedInRoute } from '../../utils/signedInRoute';
 import { getApiError } from '../../utils/apiError';
 import { FloatingBackground } from '../../components/FloatingBackground';
 import { GlassCard } from '../../components/GlassCard';
@@ -84,7 +85,7 @@ export default function LoginScreen({ navigation }: Readonly<Props>) {
     authService.googleAuth({ code, codeVerifier, redirectUri: REDIRECT_URI, clientId: CLIENT_ID })
       .then(async res => {
         await tokenStorage.set(res.token);
-        navigation.reset({ index: 0, routes: [{ name: res.isNewUser ? 'ProfileSetup' : 'MainTabs' }] });
+        navigation.reset({ index: 0, routes: [await signedInRoute()] });
       })
       .catch(e => setError(getApiError(e)))
       .finally(() => setLoading(false));
@@ -97,7 +98,7 @@ export default function LoginScreen({ navigation }: Readonly<Props>) {
     try {
       const res = await authService.login(email, password);
       await tokenStorage.set(res.token);
-      navigation.reset({ index: 0, routes: [{ name: res.isNewUser ? 'ProfileSetup' : 'MainTabs' }] });
+      navigation.reset({ index: 0, routes: [await signedInRoute()] });
     } catch (e) {
       const status = e instanceof AxiosError ? e.response?.status : null;
       if (status === 404) {
@@ -144,7 +145,7 @@ export default function LoginScreen({ navigation }: Readonly<Props>) {
     try {
       const res = await authService.appleAuth(credential.identityToken, appleName || undefined);
       await tokenStorage.set(res.token);
-      navigation.reset({ index: 0, routes: [{ name: res.isNewUser ? 'ProfileSetup' : 'MainTabs' }] });
+      navigation.reset({ index: 0, routes: [await signedInRoute()] });
     } catch (e) {
       setError(getApiError(e));
     } finally {

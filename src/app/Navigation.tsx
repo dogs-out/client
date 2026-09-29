@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, View } from 'react-native';
+import { ActivityIndicator, AppState, View } from 'react-native';
 import { createNavigationContainerRef, NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { AxiosError } from 'axios';
 import { RootStackParamList } from '../types/navigation';
 import { tokenStorage } from '../utils/tokenStorage';
 import { appPrefs } from '../utils/appPrefs';
-import { userService } from '../services/userService';
+import { signedInRoute } from '../utils/signedInRoute';
 import { notificationService } from '../services/notificationService';
 import LoginScreen from '../features/auth/LoginScreen';
 import RegisterScreen from '../features/auth/RegisterScreen';
@@ -47,6 +47,11 @@ import { BirthdayGreeting } from '../components/BirthdayGreeting';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const navigationRef = createNavigationContainerRef<RootStackParamList>();
+
+/** Screens before the app proper, where the foreground terms check has nothing to guard. */
+const PRE_APP_ROUTES = new Set<string>([
+  'Login', 'Register', 'VerifyEmail', 'ForgotPassword', 'ResetPassword', 'AcceptTerms',
+]);
 
 export default function Navigation() {
   const [initialRoute, setInitialRoute] = useState<keyof RootStackParamList | null>(null);
@@ -103,16 +108,9 @@ export default function Navigation() {
       const token = await tokenStorage.get();
       if (!token) { setInitialRoute('Login'); return; }
       try {
-        const user = await userService.getMe();
-        // The terms come before everything, including finishing a profile —
-        // otherwise someone types their name and date of birth into an app whose
-        // terms they have not been shown.
-        if (!user.termsAccepted) {
-          setTermsNext(user.dateOfBirth ? 'MainTabs' : 'ProfileSetup');
-          setInitialRoute('AcceptTerms');
-          return;
-        }
-        setInitialRoute(user.dateOfBirth ? 'MainTabs' : 'ProfileSetup');
+        const route = await signedInRoute();
+        if (route.name === 'AcceptTerms') setTermsNext(route.params.next);
+        setInitialRoute(route.name);
       } catch (e) {
         const status = e instanceof AxiosError ? e.response?.status : null;
         if (status === 401 || status === 403 || status === 404) {
@@ -122,6 +120,25 @@ export default function Navigation() {
       }
     };
     resolve();
+  }, []);
+
+  // Most "opening the app" on a phone is resuming it, not a cold start, so the
+  // terms are re-checked every time the app comes back to the foreground. Someone
+  // who has not accepted them lands on the gate the next time they open it.
+  useEffect(() => {
+    const sub = AppState.addEventListener('change', async state => {
+      if (state !== 'active' || !navigationRef.isReady()) return;
+      const current = navigationRef.getCurrentRoute()?.name;
+      if (!current || PRE_APP_ROUTES.has(current)) return;
+      if (!(await tokenStorage.get())) return;
+      try {
+        const route = await signedInRoute();
+        if (route.name === 'AcceptTerms') navigationRef.reset({ index: 0, routes: [route] });
+      } catch {
+        // Offline or a failed request: try again on the next foreground.
+      }
+    });
+    return () => sub.remove();
   }, []);
 
   if (!initialRoute) {

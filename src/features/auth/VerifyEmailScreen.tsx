@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { RootStackParamList } from '../../types/navigation';
 import { authService } from '../../services/authService';
 import { tokenStorage } from '../../utils/tokenStorage';
+import { signedInRoute } from '../../utils/signedInRoute';
 import { getApiError } from '../../utils/apiError';
 import { FloatingBackground } from '../../components/FloatingBackground';
 import { GlassCard } from '../../components/GlassCard';
@@ -32,7 +33,7 @@ export default function VerifyEmailScreen({ route, navigation }: Readonly<Props>
     try {
       const res = await authService.verifyEmail(email, code);
       await tokenStorage.set(res.token);
-      navigation.reset({ index: 0, routes: [{ name: res.isNewUser ? 'ProfileSetup' : 'MainTabs' }] });
+      navigation.reset({ index: 0, routes: [await signedInRoute()] });
     } catch (e) {
       setError(getApiError(e));
     } finally {
