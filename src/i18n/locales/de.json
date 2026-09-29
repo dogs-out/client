@@ -961,5 +961,50 @@
       "cancelled": "Dieser Spaziergang wurde abgesagt",
       "past": "Dieser Spaziergang ist vorbei"
     }
+  },
+  "sos": {
+    "home": {
+      "reportLost": "Als vermisst melden",
+      "viewAlert": "Vermisst – Meldung ansehen"
+    },
+    "raise": {
+      "title": "Hund vermisst melden",
+      "intro": "Alle im Umkreis von 100 km erhalten eine Mitteilung mit den Fotos deines Hundes und können dir sofort schreiben. Du kannst jeweils eine Meldung offen haben.",
+      "dogLabel": "Welcher Hund?",
+      "noDogs": "Füge zuerst deinen Hund zu deinem Profil hinzu.",
+      "whereLabel": "Zuletzt gesehen",
+      "useHere": "Hier",
+      "pickOnMap": "Auf der Karte",
+      "whereHint": "Dieser Ort wird allen im Umkreis von 100 km angezeigt. Wähle, wo dein Hund zuletzt gesehen wurde, nicht deine Wohnadresse.",
+      "noteLabel": "Was sonst hilft (optional)",
+      "notePlaceholder": "z. B. rotes Halsband, scheu bei Fremden, hört auf Pfiff",
+      "send": "Meldung senden",
+      "pickDog": "Wähle den vermissten Hund.",
+      "pickPlace": "Gib an, wo dein Hund zuletzt gesehen wurde.",
+      "confirmTitle": "Meldung für {{name}} senden?",
+      "confirmBody": "Alle im Umkreis von 100 km erhalten eine Mitteilung mit den Fotos, dem Ort und deinem Namen.",
+      "confirmSend": "Meldung senden"
+    },
+    "detail": {
+      "title": "{{name}} wird vermisst",
+      "lastSeen": "Zuletzt gesehen: {{place}}",
+      "onTheMap": "auf der Karte ansehen",
+      "kmAway": "{{km}} km entfernt",
+      "owner": "Halter:in: {{name}}",
+      "message": "{{name}} schreiben",
+      "found": "Gefunden! 🎉",
+      "close": "Meldung schliessen",
+      "foundConfirmTitle": "Ist dein Hund zurück?",
+      "foundConfirmBody": "Alle, die die Meldung erhalten haben, erfahren die gute Nachricht.",
+      "closeConfirmTitle": "Meldung schliessen?",
+      "closeConfirmBody": "Sie wird nicht mehr angezeigt. Niemand wird benachrichtigt.",
+      "isHome": "🎉 {{name}} ist wieder zu Hause!",
+      "closed": "Diese Meldung ist geschlossen."
+    },
+    "banner": {
+      "mine": "Deine Meldung für {{name}} ist aktiv",
+      "nearby": "{{name}} wird in der Nähe vermisst – kannst du helfen?",
+      "nearbyKm": "{{name}} wird {{km}} km entfernt vermisst – kannst du helfen?"
+    }
   }
 }

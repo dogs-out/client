@@ -128,6 +128,8 @@ export default function ParkPickerScreen({ navigation, route }: Readonly<Props>)
     const target = route.params?.returnTo ?? 'CreatePlaydate';
     if (target === 'SetStatus') {
       navigation.popTo('SetStatus', { pickedPlace: selected }, { merge: true });
+    } else if (target === 'RaiseSos') {
+      navigation.popTo('RaiseSos', { pickedPlace: selected }, { merge: true });
     } else if (target === 'SittingDetails') {
       navigation.popTo('SittingDetails', { pickedPlace: selected } as never, { merge: true });
     } else {

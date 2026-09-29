@@ -44,9 +44,11 @@ export type RootStackParamList = {
     initialLat?: number;
     initialLng?: number;
     /** Which screen the pick goes back to. Defaults to CreatePlaydate. */
-    returnTo?: 'CreatePlaydate' | 'SetStatus' | 'SittingDetails';
+    returnTo?: 'CreatePlaydate' | 'SetStatus' | 'SittingDetails' | 'RaiseSos';
   } | undefined;
   PlaydateDetail: { playdateId: number };
   PlaydateChat: { playdateId: number; title: string };
   SetStatus: { pickedPlace?: PlaceResult } | undefined;
+  RaiseSos: { dogId?: number; pickedPlace?: PlaceResult } | undefined;
+  SosDetail: { alertId: number };
 };

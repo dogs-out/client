@@ -22,6 +22,7 @@ import { CustomSlider } from '../../components/CustomSlider';
 import { DEFAULT_RADIUS_KM } from '../../constants/discover';
 import { translateBreed } from '../../i18n/translateBreed';
 import { isMyJobStillListed } from './jobVisibility';
+import { SosBanner } from '../sos/SosBanner';
 
 type SitterMode = 'jobs' | 'requests';
 
@@ -437,6 +438,8 @@ export default function FindSitterScreen() {
           {t(mode === 'jobs' ? 'sitter.list.subtitleJobs' : 'sitter.list.subtitleRequests')}
         </Text>
       </View>
+
+      <SosBanner />
 
       {showSwitcher && (
         <View style={styles.segmented}>

@@ -961,5 +961,50 @@
       "cancelled": "Cette balade a été annulée",
       "past": "Cette balade est passée"
     }
+  },
+  "sos": {
+    "home": {
+      "reportLost": "Signaler perdu",
+      "viewAlert": "Perdu – voir l'alerte"
+    },
+    "raise": {
+      "title": "Signaler un chien perdu",
+      "intro": "Toutes les personnes dans un rayon de 100 km reçoivent une notification avec les photos de ton chien et peuvent t'écrire tout de suite. Tu peux avoir une alerte ouverte à la fois.",
+      "dogLabel": "Quel chien ?",
+      "noDogs": "Ajoute d'abord ton chien à ton profil.",
+      "whereLabel": "Vu pour la dernière fois",
+      "useHere": "Ici",
+      "pickOnMap": "Sur la carte",
+      "whereHint": "Ce lieu est montré à toutes les personnes dans un rayon de 100 km. Choisis l'endroit où ton chien a été vu pour la dernière fois plutôt que ton adresse.",
+      "noteLabel": "Ce qui peut aider (facultatif)",
+      "notePlaceholder": "p. ex. collier rouge, timide avec les inconnus, répond au sifflet",
+      "send": "Envoyer l'alerte",
+      "pickDog": "Choisis le chien disparu.",
+      "pickPlace": "Indique où ton chien a été vu pour la dernière fois.",
+      "confirmTitle": "Envoyer une alerte pour {{name}} ?",
+      "confirmBody": "Toutes les personnes dans un rayon de 100 km recevront une notification avec les photos, le lieu et ton nom.",
+      "confirmSend": "Envoyer l'alerte"
+    },
+    "detail": {
+      "title": "{{name}} est perdu·e",
+      "lastSeen": "Vu pour la dernière fois : {{place}}",
+      "onTheMap": "voir sur la carte",
+      "kmAway": "à {{km}} km",
+      "owner": "Propriétaire : {{name}}",
+      "message": "Écrire à {{name}}",
+      "found": "Retrouvé ! 🎉",
+      "close": "Fermer l'alerte",
+      "foundConfirmTitle": "Ton chien est-il de retour ?",
+      "foundConfirmBody": "Toutes les personnes qui ont reçu l'alerte apprendront la bonne nouvelle.",
+      "closeConfirmTitle": "Fermer cette alerte ?",
+      "closeConfirmBody": "Elle ne sera plus affichée. Personne n'est notifié.",
+      "isHome": "🎉 {{name}} est rentré·e !",
+      "closed": "Cette alerte est fermée."
+    },
+    "banner": {
+      "mine": "Ton alerte pour {{name}} est active",
+      "nearby": "{{name}} est perdu·e près d'ici – peux-tu aider ?",
+      "nearbyKm": "{{name}} est perdu·e à {{km}} km – peux-tu aider ?"
+    }
   }
 }

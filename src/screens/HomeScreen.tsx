@@ -14,6 +14,7 @@ import { RootStackParamList } from '../types/navigation';
 import { MainTabParamList } from '../app/TabNavigator';
 import { userService, UserProfile } from '../services/userService';
 import { dogService, Dog } from '../services/dogService';
+import { sosService, LostDogAlert } from '../services/sosService';
 import { FloatingBackground } from '../components/FloatingBackground';
 import { GlassCard } from '../components/GlassCard';
 import { GlassButton } from '../components/GlassButton';
@@ -29,6 +30,8 @@ export default function HomeScreen({ navigation }: Readonly<Props>) {
   const { t, i18n } = useTranslation();
   const [user, setUser]             = useState<UserProfile | null>(null);
   const [dogs, setDogs]             = useState<Dog[]>([]);
+  /** My own open lost-dog alerts, so a lost dog's card links to its alert instead of offering a second. */
+  const [myAlerts, setMyAlerts]     = useState<LostDogAlert[]>([]);
   const [loading, setLoading]       = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -40,6 +43,9 @@ export default function HomeScreen({ navigation }: Readonly<Props>) {
       ]);
       setUser(userRes);
       setDogs(dogsRes);
+      sosService.nearby()
+        .then(list => setMyAlerts(list.filter(a => a.mine && a.open)))
+        .catch(() => {});
     } catch {
       // network error — keep stale data
     } finally {
@@ -185,6 +191,22 @@ export default function HomeScreen({ navigation }: Readonly<Props>) {
                       <Ionicons name="pencil-outline" size={15} color={Colors.textSecondary} style={{ marginRight: 4 }} />
                       <Text style={[styles.dogActionText, { color: Colors.textSecondary }]}>{t('common.edit')}</Text>
                     </TouchableOpacity>
+                    {(() => {
+                      const alert = myAlerts.find(a => a.dog.id === dog.id);
+                      return (
+                        <TouchableOpacity
+                          style={[styles.dogAction, styles.dogActionEnd]}
+                          onPress={() => alert
+                            ? navigation.navigate('SosDetail', { alertId: alert.id })
+                            : navigation.navigate('RaiseSos', { dogId: dog.id })}
+                        >
+                          <Ionicons name="alert-circle-outline" size={15} color={Colors.error} style={{ marginRight: 4 }} />
+                          <Text style={[styles.dogActionText, { color: Colors.error }]}>
+                            {alert ? t('sos.home.viewAlert') : t('sos.home.reportLost')}
+                          </Text>
+                        </TouchableOpacity>
+                      );
+                    })()}
                   </View>
                 </GlassCard>
               );
@@ -252,6 +274,7 @@ const styles = StyleSheet.create({
   dogRow:         { flexDirection: 'row', alignItems: 'center', padding: 16 },
   dogActions:     { flexDirection: 'row', borderTopWidth: 1, borderTopColor: Colors.border, paddingHorizontal: 16, paddingVertical: 10, gap: 16 },
   dogAction:      { flexDirection: 'row', alignItems: 'center' },
+  dogActionEnd:   { marginLeft: 'auto' },
   dogActionText:  { fontSize: 13, fontWeight: '600', color: Colors.primary },
   dogPhoto:     { width: 72, height: 72, borderRadius: 36, marginRight: 16 },
   dogPhotoPlaceholder: {

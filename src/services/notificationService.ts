@@ -29,7 +29,8 @@ export interface PushData {
     | 'DOG_BIRTHDAY' | 'DOG_BIRTHDAY_OWN' | 'USER_BIRTHDAY'
     | 'WALK_INVITE'
     | 'SITTING_OFFER' | 'SITTING_ACCEPTED' | 'SITTING_RATE'
-    | 'SITTING_CANCELLED' | 'SITTING_DETAILS' | 'SITTING_REVIEWED' | 'SITTING_BLOCKED';
+    | 'SITTING_CANCELLED' | 'SITTING_DETAILS' | 'SITTING_REVIEWED' | 'SITTING_BLOCKED'
+    | 'SOS_ALERT' | 'SOS_FOUND';
   matchId?: number;
   otherUserId?: number;
   name?: string;
@@ -37,6 +38,8 @@ export interface PushData {
   requestId?: number;
   /** Whose reviews to open — the sitter being reviewed, not whoever wrote it. */
   sitterId?: number;
+  /** A lost-dog alert to open. */
+  alertId?: number;
 }
 
 export const notificationService = {

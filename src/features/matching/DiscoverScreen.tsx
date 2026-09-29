@@ -27,6 +27,7 @@ import { FloatingBackground } from '../../components/FloatingBackground';
 import { translateTag } from '../../i18n/translateTag';
 import { translateBreed } from '../../i18n/translateBreed';
 import { DiscoveryLocationChip } from './DiscoveryLocationChip';
+import { SosBanner } from '../sos/SosBanner';
 
 const { width: SW } = Dimensions.get('window');
 const CARD_W = SW - 32;
@@ -429,6 +430,8 @@ export default function DiscoverScreen() {
           <Text style={styles.headerDist}>{formatDistance(profile.distanceKm, t)}</Text>
         )}
       </View>
+
+      <SosBanner />
 
       <View style={styles.locationRow}>
         <DiscoveryLocationChip

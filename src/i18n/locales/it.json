@@ -961,5 +961,50 @@
       "cancelled": "Questa passeggiata è stata annullata",
       "past": "Questa passeggiata è passata"
     }
+  },
+  "sos": {
+    "home": {
+      "reportLost": "Segnala smarrito",
+      "viewAlert": "Smarrito – vedi avviso"
+    },
+    "raise": {
+      "title": "Segnala un cane smarrito",
+      "intro": "Tutti entro 100 km ricevono una notifica con le foto del tuo cane e possono scriverti subito. Puoi avere un solo avviso aperto alla volta.",
+      "dogLabel": "Quale cane?",
+      "noDogs": "Aggiungi prima il tuo cane al profilo.",
+      "whereLabel": "Visto l'ultima volta",
+      "useHere": "Qui",
+      "pickOnMap": "Sulla mappa",
+      "whereHint": "Questo luogo viene mostrato a tutti entro 100 km. Scegli dove il tuo cane è stato visto l'ultima volta, non il tuo indirizzo di casa.",
+      "noteLabel": "Qualcosa che può aiutare (facoltativo)",
+      "notePlaceholder": "es. collare rosso, timido con gli sconosciuti, risponde al fischio",
+      "send": "Invia avviso",
+      "pickDog": "Scegli il cane smarrito.",
+      "pickPlace": "Indica dove il tuo cane è stato visto l'ultima volta.",
+      "confirmTitle": "Inviare un avviso per {{name}}?",
+      "confirmBody": "Tutti entro 100 km riceveranno una notifica con le foto, il luogo e il tuo nome.",
+      "confirmSend": "Invia avviso"
+    },
+    "detail": {
+      "title": "{{name}} è smarrito",
+      "lastSeen": "Visto l'ultima volta: {{place}}",
+      "onTheMap": "vedi sulla mappa",
+      "kmAway": "a {{km}} km",
+      "owner": "Proprietario: {{name}}",
+      "message": "Scrivi a {{name}}",
+      "found": "Ritrovato! 🎉",
+      "close": "Chiudi avviso",
+      "foundConfirmTitle": "Il tuo cane è tornato?",
+      "foundConfirmBody": "Tutti quelli che hanno ricevuto l'avviso sapranno la bella notizia.",
+      "closeConfirmTitle": "Chiudere questo avviso?",
+      "closeConfirmBody": "Non verrà più mostrato. Nessuno viene avvisato.",
+      "isHome": "🎉 {{name}} è tornato a casa!",
+      "closed": "Questo avviso è chiuso."
+    },
+    "banner": {
+      "mine": "Il tuo avviso per {{name}} è attivo",
+      "nearby": "{{name}} è smarrito qui vicino – puoi aiutare?",
+      "nearbyKm": "{{name}} è smarrito a {{km}} km – puoi aiutare?"
+    }
   }
 }

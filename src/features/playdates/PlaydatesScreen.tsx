@@ -20,6 +20,7 @@ import { GlassCard } from '../../components/GlassCard';
 import { useTabBarHeight } from '../../components/GlassTabBar';
 import { WhosOutsideView } from './WhosOutsideView';
 import { playdateTitle } from './playdateTitle';
+import { SosBanner } from '../sos/SosBanner';
 
 type PlaydateMode = 'playdates' | 'outside';
 
@@ -126,6 +127,8 @@ export default function PlaydatesScreen() {
           {t(mode === 'playdates' ? 'playdates.headerTitle' : 'whosOutside.tab')}
         </Text>
       </View>
+
+      <SosBanner />
 
       <View style={styles.segmented}>
         {(['playdates', 'outside'] as PlaydateMode[]).map(m => (

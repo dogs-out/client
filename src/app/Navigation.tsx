@@ -42,6 +42,8 @@ import ParkPickerScreen from '../features/playdates/ParkPickerScreen';
 import PlaydateDetailScreen from '../features/playdates/PlaydateDetailScreen';
 import PlaydateChatScreen from '../features/playdates/PlaydateChatScreen';
 import SetStatusScreen from '../features/playdates/SetStatusScreen';
+import RaiseSosScreen from '../features/sos/RaiseSosScreen';
+import SosDetailScreen from '../features/sos/SosDetailScreen';
 import TabNavigator from './TabNavigator';
 import { BirthdayGreeting } from '../components/BirthdayGreeting';
 
@@ -90,6 +92,8 @@ export default function Navigation() {
           sitterId: data.sitterId,
           name: data.name ?? '',
         });
+      } else if ((data.type === 'SOS_ALERT' || data.type === 'SOS_FOUND') && data.alertId) {
+        navigationRef.navigate('SosDetail', { alertId: Number(data.alertId) });
       } else if (data.type === 'SITTING_RATE' || data.type === 'SITTING_ACCEPTED'
         || data.type === 'SITTING_CANCELLED' || data.type === 'SITTING_BLOCKED') {
         // The rating screen needs the whole job, and a push carries only ids —
@@ -203,6 +207,8 @@ export default function Navigation() {
         <Stack.Screen name="PlaydateDetail"         component={PlaydateDetailScreen} />
         <Stack.Screen name="PlaydateChat"           component={PlaydateChatScreen} />
         <Stack.Screen name="SetStatus"              component={SetStatusScreen} />
+        <Stack.Screen name="RaiseSos"               component={RaiseSosScreen} />
+        <Stack.Screen name="SosDetail"              component={SosDetailScreen} />
       </Stack.Navigator>
       {/* Above the navigator, so the greeting finds the user on whatever screen
           they opened the app to. */}

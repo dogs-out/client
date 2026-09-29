@@ -868,5 +868,50 @@
       "cancelled": "This walk was cancelled",
       "past": "This walk has passed"
     }
+  },
+  "sos": {
+    "home": {
+      "reportLost": "Report lost",
+      "viewAlert": "Lost – view alert"
+    },
+    "raise": {
+      "title": "Report a lost dog",
+      "intro": "Everyone within 100 km gets a push with your dog's photos and can message you straight away. You can have one alert open at a time.",
+      "dogLabel": "Which dog?",
+      "noDogs": "Add your dog to your profile first.",
+      "whereLabel": "Last seen",
+      "useHere": "Here",
+      "pickOnMap": "On the map",
+      "whereHint": "This point is shown to everyone within 100 km. Pick where your dog was last seen rather than your home address.",
+      "noteLabel": "Anything that helps (optional)",
+      "notePlaceholder": "e.g. red collar, shy with strangers, answers to a whistle",
+      "send": "Send alert",
+      "pickDog": "Pick the dog that is missing.",
+      "pickPlace": "Say where your dog was last seen.",
+      "confirmTitle": "Send an alert for {{name}}?",
+      "confirmBody": "Everyone within 100 km will get a notification with the photos, the place and your name.",
+      "confirmSend": "Send alert"
+    },
+    "detail": {
+      "title": "{{name}} is lost",
+      "lastSeen": "Last seen: {{place}}",
+      "onTheMap": "see on the map",
+      "kmAway": "{{km}} km away",
+      "owner": "Owner: {{name}}",
+      "message": "Message {{name}}",
+      "found": "Found! 🎉",
+      "close": "Close alert",
+      "foundConfirmTitle": "Is your dog back?",
+      "foundConfirmBody": "Everyone who got the alert will be told the good news.",
+      "closeConfirmTitle": "Close this alert?",
+      "closeConfirmBody": "It stops being shown. Nobody is notified.",
+      "isHome": "🎉 {{name}} is home!",
+      "closed": "This alert is closed."
+    },
+    "banner": {
+      "mine": "Your alert for {{name}} is active",
+      "nearby": "{{name}} is lost nearby – can you help?",
+      "nearbyKm": "{{name}} is lost {{km}} km away – can you help?"
+    }
   }
 }
