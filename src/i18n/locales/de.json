@@ -42,7 +42,8 @@
       "termsPrivacy": "AGB & Datenschutz",
       "aboutDogsOut": "Über Dogs Out",
       "deleteAccount": "Konto löschen",
-      "appTour": "App-Tour"
+      "appTour": "App-Tour",
+      "adPrivacy": "Datenschutz bei Werbung"
     },
     "appearance": {
       "title": "Darstellung",
@@ -463,7 +464,7 @@
       },
       "dataUse": {
         "title": "6. Wie deine Daten verwendet werden",
-        "body": "Deine Daten werden ausschließlich zum Betrieb von Dogs Out verwendet: um dein Profil Nutzern in deiner Nähe zu zeigen, Nachrichten zuzustellen und Push-Benachrichtigungen zu senden, die du jederzeit ausschalten kannst. Wir verkaufen deine Daten nicht und geben sie nicht an Werbetreibende weiter. Gemeldete Chats werden von unserem Moderationsteam geprüft."
+        "body": "Deine Daten werden ausschließlich zum Betrieb von Dogs Out verwendet: um dein Profil Nutzern in deiner Nähe zu zeigen, Nachrichten zuzustellen und Push-Benachrichtigungen zu senden, die du jederzeit ausschalten kannst. Wir verkaufen deine Daten nicht. Unter Entdecken erscheint gelegentlich Werbung von Google AdMob (nie in Chats); Google erhält dabei die Werbe-ID deines Geräts, deine IP-Adresse und deine Interaktionen mit der Werbung und personalisiert sie, wenn du zustimmst. Deine Wahl kannst du jederzeit unter Einstellungen → Datenschutz bei Werbung ändern. Gemeldete Chats werden von unserem Moderationsteam geprüft."
       },
       "deletingData": {
         "title": "7. Deine Daten löschen",
@@ -1090,5 +1091,9 @@
         "body": "Du kannst diese Tour jederzeit in den Einstellungen wieder ansehen."
       }
     }
+  },
+  "ads": {
+    "sponsored": "Anzeige",
+    "swipeHint": "Wische in eine Richtung, um weiterzumachen"
   }
 }

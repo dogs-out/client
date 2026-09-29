@@ -28,6 +28,11 @@ import { translateTag } from '../../i18n/translateTag';
 import { translateBreed } from '../../i18n/translateBreed';
 import { DiscoveryLocationChip } from './DiscoveryLocationChip';
 import { SosBanner } from '../sos/SosBanner';
+import type { NativeAd } from 'react-native-google-mobile-ads';
+import { initAds } from '../../services/ads';
+import { useDeckAd } from '../ads/useDeckAd';
+import { DeckAdCard } from '../ads/DeckAdCard';
+import { AD_EVERY_N_SWIPES } from '../../constants/ads';
 
 const { width: SW } = Dimensions.get('window');
 const CARD_W = SW - 32;
@@ -211,6 +216,15 @@ export default function DiscoverScreen() {
     { latitude: null, longitude: null, radiusKm: null }
   );
   const [error, setError] = useState<string | null>(null);
+  // A sponsored card after every AD_EVERY_N_SWIPES swipes. Ads start only after the
+  // first swipe (see initAds), and a slot with no ad loaded is simply skipped.
+  const [adsEnabled, setAdsEnabled] = useState(false);
+  const [adCard, setAdCard] = useState<NativeAd | null>(null);
+  const swipeCountRef = useRef(0);
+  const { take: takeDeckAd } = useDeckAd(adsEnabled);
+  const adCardRef = useRef<NativeAd | null>(null);
+  adCardRef.current = adCard;
+  useEffect(() => () => adCardRef.current?.destroy(), []);
   // Sitter-only accounts (no dog) don't get the swipe feed — they see a locked state
   const [locked, setLocked] = useState(false);
   const lockedRef = useRef(false);
@@ -277,10 +291,37 @@ export default function DiscoverScreen() {
     setSwiping(false);
   }, [pan]);
 
+  /** Counts real swipes, starts ads after the first, and fills every Nth slot. */
+  const afterSwipe = useCallback((hasNext: boolean) => {
+    swipeCountRef.current += 1;
+    if (swipeCountRef.current === 1) initAds().then(setAdsEnabled);
+    // Only between two profiles: an ad as the last card would sit on top of the
+    // "no more dogs" screen with nothing behind it.
+    if (hasNext && swipeCountRef.current % AD_EVERY_N_SWIPES === 0) {
+      const ad = takeDeckAd();
+      if (ad) setAdCard(ad);
+    }
+  }, [takeDeckAd]);
+
   const handleSwipe = useCallback((action: 'LIKE' | 'PASS', dy: number) => {
     if (swiping) return;
+
+    // An ad card goes either way without a like or a pass being sent for anyone.
+    if (adCard) {
+      setSwiping(true);
+      const toX = action === 'LIKE' ? SW + 100 : -SW - 100;
+      Animated.timing(pan, { toValue: { x: toX, y: dy }, duration: 280, useNativeDriver: false }).start(() => {
+        adCard.destroy();
+        setAdCard(null);
+        pan.setValue({ x: 0, y: 0 });
+        setSwiping(false);
+      });
+      return;
+    }
+
     const profile = feed[idx];
     if (!profile) return;
+    const hasNext = idx + 1 < feed.length;
 
     setSwiping(true);
     if (action === 'LIKE') setShowBoneCatch(true);
@@ -290,9 +331,9 @@ export default function DiscoverScreen() {
       discoverService.swipe(profile.userId, action)
         .then(res => { if (res.match) setMatchInfo({ profile, matchId: res.matchId }); })
         .catch(() => {})
-        .finally(() => advanceCard());
+        .finally(() => { advanceCard(); afterSwipe(hasNext); });
     });
-  }, [swiping, feed, idx, pan, advanceCard]);
+  }, [swiping, adCard, feed, idx, pan, advanceCard, afterSwipe]);
 
   const openMatchChat = useCallback(() => {
     if (!matchInfo) return;
@@ -408,7 +449,8 @@ export default function DiscoverScreen() {
   const ownerPhotos = profile.photos.map(p => ({ uri: p.url, crop: p.crop }));
   const ownerAge = profile.age;
   const ownerTags = [...(profile.lifestyleTags ?? []), ...(profile.personalityTags ?? [])];
-  const nextProfile = feed[idx + 1];
+  // Behind an ad card waits the profile it interrupted; otherwise the next one.
+  const nextProfile = adCard ? profile : feed[idx + 1];
 
   const tapPhoto = (side: 'left' | 'right') => {
     if (showOwner) {
@@ -470,9 +512,20 @@ export default function DiscoverScreen() {
           </Animated.View>
         )}
 
+        {adCard && (
+          <Animated.View
+            key="deck-ad"
+            style={[styles.card, { height: cardH, transform: [{ translateX: pan.x }, { translateY: pan.y }, { rotate }] }]}
+            {...panResponder.panHandlers}
+          >
+            <DeckAdCard nativeAd={adCard} width={CARD_W} height={cardH} />
+          </Animated.View>
+        )}
+
         {/* Foreground (current) card — keyed per profile so advancing fully
             remounts the subtree; reusing it can leave a stale ghost of the
             previous owner/dog info block on Android */}
+        {!adCard && (
         <Animated.View
           key={profile.userId}
           style={[styles.card, { height: cardH, transform: [{ translateX: pan.x }, { translateY: pan.y }, { rotate }] }]}
@@ -626,6 +679,7 @@ export default function DiscoverScreen() {
             <Ionicons name="ellipsis-horizontal" size={18} color="rgba(255,255,255,0.95)" />
           </TouchableOpacity>
         </Animated.View>
+        )}
       </View>
 
       <ProfileActionsSheet

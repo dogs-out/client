@@ -11,6 +11,7 @@ import { Colors } from '../../constants/colors';
 import { tokenStorage } from '../../utils/tokenStorage';
 import { userService } from '../../services/userService';
 import { notificationService } from '../../services/notificationService';
+import { showAdPrivacyOptions } from '../../services/ads';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Settings'>;
 
@@ -70,6 +71,7 @@ export default function SettingsScreen({ navigation }: Readonly<Props>) {
       title: t('settings.sections.privacy'),
       rows: [
         { icon: 'location-outline',      label: t('settings.rows.locationSettings'),   onPress: () => navigation.navigate('LocationSettings') },
+        { icon: 'megaphone-outline',     label: t('settings.rows.adPrivacy'),          onPress: () => { showAdPrivacyOptions().catch(() => {}); } },
         { icon: 'eye-off-outline',        label: t('settings.rows.blockedUsers'),       onPress: () => navigation.navigate('BlockedUsers') },
       ],
     },

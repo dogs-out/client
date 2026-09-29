@@ -42,7 +42,8 @@
       "termsPrivacy": "Termini e privacy",
       "aboutDogsOut": "Informazioni su Dogs Out",
       "deleteAccount": "Elimina account",
-      "appTour": "Tour dell'app"
+      "appTour": "Tour dell'app",
+      "adPrivacy": "Privacy degli annunci"
     },
     "appearance": {
       "title": "Aspetto",
@@ -463,7 +464,7 @@
       },
       "dataUse": {
         "title": "6. Come vengono usati i tuoi dati",
-        "body": "I tuoi dati vengono usati esclusivamente per far funzionare Dogs Out: mostrare il tuo profilo agli utenti nelle vicinanze, consegnare i messaggi e inviare notifiche push che puoi disattivare in qualsiasi momento. Non vendiamo i tuoi dati né li condividiamo con inserzionisti. Le chat segnalate vengono esaminate dal nostro team di moderazione."
+        "body": "I tuoi dati vengono usati esclusivamente per far funzionare Dogs Out: mostrare il tuo profilo agli utenti nelle vicinanze, consegnare i messaggi e inviare notifiche push che puoi disattivare in qualsiasi momento. Non vendiamo i tuoi dati. In Scopri compaiono occasionalmente annunci di Google AdMob (mai nelle chat); Google riceve l'identificativo pubblicitario del dispositivo, l'indirizzo IP e le interazioni con gli annunci e, se acconsenti, personalizza gli annunci. Puoi cambiare la tua scelta in qualsiasi momento in Impostazioni → Privacy degli annunci. Le chat segnalate vengono esaminate dal nostro team di moderazione."
       },
       "deletingData": {
         "title": "7. Eliminare i tuoi dati",
@@ -1090,5 +1091,9 @@
         "body": "Puoi rivedere questo tour in qualsiasi momento nelle impostazioni."
       }
     }
+  },
+  "ads": {
+    "sponsored": "Sponsorizzato",
+    "swipeHint": "Scorri in una direzione per continuare"
   }
 }

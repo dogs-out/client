@@ -38,9 +38,6 @@
           "apiKey": "AIzaSyD2NMYRgYr7O72xHLgvmnylObOrSB8CMsQ"
         }
       },
-      "blockedPermissions": [
-        "com.google.android.gms.permission.AD_ID"
-      ],
       "versionCode": 16
     },
     "web": {
@@ -87,6 +84,21 @@
           "calendarPermission": "DogsOut adds playdates you save to your calendar.",
           "writeOnlyCalendarPermission": "DogsOut adds playdates you save to your calendar.",
           "writeOnlyAccess": true
+        }
+      ],
+      [
+        "react-native-google-mobile-ads",
+        {
+          "androidAppId": "ca-app-pub-3940256099942544~3347511713",
+          "iosAppId": "ca-app-pub-3940256099942544~1458002511",
+          "delayAppMeasurementInit": true,
+          "userTrackingUsageDescription": "Your data will be used to show you more relevant ads. Dogs Out stays free either way."
+        }
+      ],
+      [
+        "expo-tracking-transparency",
+        {
+          "userTrackingPermission": "Your data will be used to show you more relevant ads. Dogs Out stays free either way."
         }
       ]
     ],

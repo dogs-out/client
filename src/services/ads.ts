@@ -1,0 +1,47 @@
+import { Platform } from 'react-native';
+import mobileAds, { AdsConsent } from 'react-native-google-mobile-ads';
+import {
+  getTrackingPermissionsAsync,
+  requestTrackingPermissionsAsync,
+} from 'expo-tracking-transparency';
+
+let ready: Promise<boolean> | null = null;
+
+/**
+ * Consent, tracking permission and SDK start-up, in the order the rules want them:
+ *
+ * <ol>
+ *   <li>Google's consent form (UMP). The app is used in Switzerland and the EU, where
+ *       personalised ads need consent first; UMP decides whether to show the form.</li>
+ *   <li>Apple's App Tracking Transparency prompt on iOS, after that — personalised
+ *       ads on iOS also need the IDFA, and asking twice in a row reads as one ask.</li>
+ *   <li>Only then the SDK, and only if consent allows any ads at all.</li>
+ * </ol>
+ *
+ * <p>Started lazily from the first Discover swipe rather than at launch, so neither
+ * system dialog lands on top of sign-in or the app tour. Shared: every caller gets
+ * the same answer. Resolves false whenever ads cannot or may not be requested; the
+ * deck then simply has no ad cards.
+ */
+export function initAds(): Promise<boolean> {
+  ready ??= (async () => {
+    try {
+      const consent = await AdsConsent.gatherConsent();
+      if (Platform.OS === 'ios') {
+        const { status } = await getTrackingPermissionsAsync();
+        if (status === 'undetermined') await requestTrackingPermissionsAsync();
+      }
+      if (!consent.canRequestAds) return false;
+      await mobileAds().initialize();
+      return true;
+    } catch {
+      return false;
+    }
+  })();
+  return ready;
+}
+
+/** Re-opens the consent choices — required by UMP to be reachable somewhere in the app. */
+export async function showAdPrivacyOptions(): Promise<void> {
+  await AdsConsent.showPrivacyOptionsForm();
+}
