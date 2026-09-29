@@ -1,5 +1,5 @@
 import { Platform, StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
-import { GlassView } from 'expo-glass-effect';
+import { ClippedGlass } from './ClippedGlass';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Colors } from '../constants/colors';
 
@@ -23,7 +23,7 @@ export function GlassButton({ onPress, children, style, disabled, tint }: Readon
       style={[styles.shadow, disabled && styles.disabled, style]}
     >
       <View style={styles.clip}>
-        {isIOS && <GlassView isInteractive glassEffectStyle="clear" style={StyleSheet.absoluteFill} />}
+        {isIOS && <ClippedGlass isInteractive />}
         {tint && <View style={[StyleSheet.absoluteFill, { backgroundColor: tint, borderRadius: 12 }]} />}
         {isIOS && (
           <LinearGradient

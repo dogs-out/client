@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Animated, PanResponder, Platform, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
-import { GlassView } from 'expo-glass-effect';
+import { ClippedGlass } from './ClippedGlass';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Colors } from '../constants/colors';
 
@@ -71,7 +71,7 @@ export function GlassThumb({ pressed, style }: Readonly<{
         style={[StyleSheet.absoluteFill, styles.glassClip, { borderRadius: radius, opacity: grow }]}
       >
         {isIOS
-          ? <GlassView glassEffectStyle="clear" style={StyleSheet.absoluteFill} />
+          ? <ClippedGlass />
           : <View style={[StyleSheet.absoluteFill, styles.frost]} />
         }
         <LinearGradient

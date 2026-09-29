@@ -1,5 +1,5 @@
 import { Platform, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
-import { GlassView } from 'expo-glass-effect';
+import { ClippedGlass } from './ClippedGlass';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Colors } from '../constants/colors';
 
@@ -27,7 +27,7 @@ export function GlassCard({ children, style, padding = 28, radius = 28, tint, co
   return (
     <View style={[shadow, { borderRadius: radius }, style]}>
       <View style={[styles.clip, { borderRadius: radius }, isIOS && plain && styles.frostPlain]}>
-        {liveGlass && <GlassView glassEffectStyle="clear" style={StyleSheet.absoluteFill} />}
+        {liveGlass && <ClippedGlass />}
         {tint && <View style={[StyleSheet.absoluteFill, { backgroundColor: tint, borderRadius: radius }]} />}
         {liveGlass && (
           <LinearGradient
