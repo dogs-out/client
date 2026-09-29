@@ -1006,5 +1006,25 @@
       "nearby": "{{name}} est perdu·e près d'ici – peux-tu aider ?",
       "nearbyKm": "{{name}} est perdu·e à {{km}} km – peux-tu aider ?"
     }
+  },
+  "shelters": {
+    "entry": "Adopter dans un refuge",
+    "title": "Refuges pour chiens",
+    "intro": "Un refuge par canton et par Land. Touche-en un pour voir ses chiens et comment l'adoption s'y passe.",
+    "filter": {
+      "ALL": "Tous",
+      "CH": "Suisse",
+      "AT": "Autriche",
+      "DE": "Allemagne"
+    },
+    "country": {
+      "CH": "CH",
+      "AT": "AT",
+      "DE": "DE"
+    },
+    "kmAway": "à ~{{km}} km",
+    "coversNeighbour": "S'occupe aussi de ce canton, qui n'a pas de refuge propre",
+    "closedUntil": "Fermé pour travaux jusqu'en {{when}}",
+    "loadError": "La liste des refuges n'a pas pu être chargée. Réessaie plus tard."
   }
 }

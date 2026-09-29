@@ -913,5 +913,25 @@
       "nearby": "{{name}} is lost nearby – can you help?",
       "nearbyKm": "{{name}} is lost {{km}} km away – can you help?"
     }
+  },
+  "shelters": {
+    "entry": "Adopt from a shelter",
+    "title": "Dog shelters",
+    "intro": "One shelter for every canton and Bundesland. Tap one to see its dogs and how adopting works there.",
+    "filter": {
+      "ALL": "All",
+      "CH": "Switzerland",
+      "AT": "Austria",
+      "DE": "Germany"
+    },
+    "country": {
+      "CH": "CH",
+      "AT": "AT",
+      "DE": "DE"
+    },
+    "kmAway": "~{{km}} km away",
+    "coversNeighbour": "Also serves this canton, which has no shelter of its own",
+    "closedUntil": "Closed for rebuilding until {{when}}",
+    "loadError": "The shelter list could not be loaded. Please try again later."
   }
 }

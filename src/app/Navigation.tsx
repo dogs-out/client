@@ -44,6 +44,7 @@ import PlaydateChatScreen from '../features/playdates/PlaydateChatScreen';
 import SetStatusScreen from '../features/playdates/SetStatusScreen';
 import RaiseSosScreen from '../features/sos/RaiseSosScreen';
 import SosDetailScreen from '../features/sos/SosDetailScreen';
+import SheltersScreen from '../features/shelters/SheltersScreen';
 import TabNavigator from './TabNavigator';
 import { BirthdayGreeting } from '../components/BirthdayGreeting';
 
@@ -209,6 +210,7 @@ export default function Navigation() {
         <Stack.Screen name="SetStatus"              component={SetStatusScreen} />
         <Stack.Screen name="RaiseSos"               component={RaiseSosScreen} />
         <Stack.Screen name="SosDetail"              component={SosDetailScreen} />
+        <Stack.Screen name="Shelters"               component={SheltersScreen} />
       </Stack.Navigator>
       {/* Above the navigator, so the greeting finds the user on whatever screen
           they opened the app to. */}

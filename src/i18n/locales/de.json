@@ -1006,5 +1006,25 @@
       "nearby": "{{name}} wird in der Nähe vermisst – kannst du helfen?",
       "nearbyKm": "{{name}} wird {{km}} km entfernt vermisst – kannst du helfen?"
     }
+  },
+  "shelters": {
+    "entry": "Hund aus dem Tierheim adoptieren",
+    "title": "Tierheime",
+    "intro": "Ein Tierheim für jeden Kanton und jedes Bundesland. Tippe darauf, um seine Hunde zu sehen und wie die Adoption dort funktioniert.",
+    "filter": {
+      "ALL": "Alle",
+      "CH": "Schweiz",
+      "AT": "Österreich",
+      "DE": "Deutschland"
+    },
+    "country": {
+      "CH": "CH",
+      "AT": "AT",
+      "DE": "DE"
+    },
+    "kmAway": "~{{km}} km entfernt",
+    "coversNeighbour": "Betreut auch diesen Kanton, der kein eigenes Tierheim hat",
+    "closedUntil": "Wegen Umbau geschlossen bis {{when}}",
+    "loadError": "Die Liste der Tierheime konnte nicht geladen werden. Bitte versuche es später erneut."
   }
 }

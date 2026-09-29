@@ -1006,5 +1006,25 @@
       "nearby": "{{name}} è smarrito qui vicino – puoi aiutare?",
       "nearbyKm": "{{name}} è smarrito a {{km}} km – puoi aiutare?"
     }
+  },
+  "shelters": {
+    "entry": "Adotta da un rifugio",
+    "title": "Rifugi per cani",
+    "intro": "Un rifugio per ogni cantone e Land. Toccane uno per vedere i suoi cani e come funziona l'adozione.",
+    "filter": {
+      "ALL": "Tutti",
+      "CH": "Svizzera",
+      "AT": "Austria",
+      "DE": "Germania"
+    },
+    "country": {
+      "CH": "CH",
+      "AT": "AT",
+      "DE": "DE"
+    },
+    "kmAway": "a ~{{km}} km",
+    "coversNeighbour": "Si occupa anche di questo cantone, che non ha un rifugio proprio",
+    "closedUntil": "Chiuso per lavori fino a {{when}}",
+    "loadError": "Non è stato possibile caricare l'elenco dei rifugi. Riprova più tardi."
   }
 }

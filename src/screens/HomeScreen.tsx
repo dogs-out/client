@@ -223,6 +223,12 @@ export default function HomeScreen({ navigation }: Readonly<Props>) {
           </GlassButton>
         )}
 
+        {/* Everyone, with or without a dog: "no dog yet" is exactly who this is for. */}
+        <GlassButton onPress={() => navigation.navigate('Shelters')} style={styles.previewButton}>
+          <Ionicons name="home-outline" size={17} color={Colors.text} style={{ marginRight: 8 }} />
+          <Text style={styles.previewButtonText}>{t('shelters.entry')}</Text>
+        </GlassButton>
+
         <View style={styles.bottomPad} />
       </ScrollView>
     </View>
