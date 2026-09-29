@@ -41,7 +41,8 @@
       "helpFaq": "Help & FAQ",
       "termsPrivacy": "Terms & Privacy",
       "aboutDogsOut": "About Dogs Out",
-      "deleteAccount": "Delete account"
+      "deleteAccount": "Delete account",
+      "appTour": "App tour"
     },
     "appearance": {
       "title": "Appearance",
@@ -933,5 +934,68 @@
     "coversNeighbour": "Also serves this canton, which has no shelter of its own",
     "closedUntil": "Closed for rebuilding until {{when}}",
     "loadError": "The shelter list could not be loaded. Please try again later."
+  },
+  "tour": {
+    "skip": "Skip",
+    "next": "Next",
+    "start": "Let's go",
+    "slides": {
+      "welcome": {
+        "title": "Welcome to Dogs Out",
+        "body": "A quick look at what you can do here. It takes less than a minute."
+      },
+      "discover": {
+        "title": "Meet dogs nearby",
+        "body": "Swipe right to give a treat, left to pass. When you both give a treat, it's a match and you can chat."
+      },
+      "playdates": {
+        "title": "Playdates",
+        "body": "Plan a meetup in the park, or join one nearby. Every playdate has its own group chat."
+      },
+      "status": {
+        "title": "Who's outside",
+        "body": "Set your status when you head out for a walk or to the park, and your matches can see who's around right now."
+      },
+      "walk": {
+        "title": "Walk together",
+        "body": "In any chat, tap the paw to invite that person for a walk: pick a spot, a day and a time."
+      },
+      "findSitter": {
+        "title": "Find a dogsitter",
+        "body": "In Dogsitting, find sitters near you by day and time of day, or post a request and let them offer."
+      },
+      "sosOwner": {
+        "title": "If your dog gets lost",
+        "body": "Tap “Report lost” on your dog in your profile. Everyone within 100 km gets a push with the photos and can message you."
+      },
+      "sittingJobs": {
+        "title": "Sitting jobs",
+        "body": "In Dogsitting, see families nearby who need a sitter and offer to help. Add your free days and times to your profile."
+      },
+      "sittingStatus": {
+        "title": "Out with a dog?",
+        "body": "Set your status to “Sitting a dog” when you're out with a dog you look after, so your matches know where you are."
+      },
+      "playdatesSitter": {
+        "title": "Playdates",
+        "body": "You can join playdates where the host welcomes sitters, and bring the dog you're looking after."
+      },
+      "sosHelp": {
+        "title": "Help find lost dogs",
+        "body": "If a dog goes missing near you, you'll get an alert with its photos. Spotted it? Message the owner straight from the alert."
+      },
+      "shelters": {
+        "title": "Adopt from a shelter",
+        "body": "Your profile has a list of dog shelters, one for every canton and Bundesland, nearest first."
+      },
+      "addDog": {
+        "title": "Got a dog?",
+        "body": "Add your dog in your profile to unlock Discover and playdates."
+      },
+      "done": {
+        "title": "You're all set",
+        "body": "You can watch this tour again any time in Settings."
+      }
+    }
   }
 }

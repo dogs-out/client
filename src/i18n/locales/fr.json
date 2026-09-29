@@ -41,7 +41,8 @@
       "helpFaq": "Aide & FAQ",
       "termsPrivacy": "Conditions & confidentialité",
       "aboutDogsOut": "À propos de Dogs Out",
-      "deleteAccount": "Supprimer le compte"
+      "deleteAccount": "Supprimer le compte",
+      "appTour": "Visite de l'app"
     },
     "appearance": {
       "title": "Apparence",
@@ -1026,5 +1027,68 @@
     "coversNeighbour": "S'occupe aussi de ce canton, qui n'a pas de refuge propre",
     "closedUntil": "Fermé pour travaux jusqu'en {{when}}",
     "loadError": "La liste des refuges n'a pas pu être chargée. Réessaie plus tard."
+  },
+  "tour": {
+    "skip": "Passer",
+    "next": "Suivant",
+    "start": "C'est parti",
+    "slides": {
+      "welcome": {
+        "title": "Bienvenue sur Dogs Out",
+        "body": "Un rapide aperçu de ce que tu peux faire ici. Moins d'une minute."
+      },
+      "discover": {
+        "title": "Rencontre des chiens près de chez toi",
+        "body": "Glisse à droite pour donner une friandise, à gauche pour passer. Si vous en donnez tous les deux, c'est un match et vous pouvez discuter."
+      },
+      "playdates": {
+        "title": "Playdates",
+        "body": "Organise une rencontre au parc ou rejoins-en une près de chez toi. Chaque playdate a son propre chat de groupe."
+      },
+      "status": {
+        "title": "Qui est dehors",
+        "body": "Indique ton statut quand tu pars en balade ou au parc, et tes matchs voient qui est dehors en ce moment."
+      },
+      "walk": {
+        "title": "Se balader ensemble",
+        "body": "Dans n'importe quel chat, touche la patte pour inviter la personne à une balade : choisis un lieu, un jour et une heure."
+      },
+      "findSitter": {
+        "title": "Trouver un dogsitter",
+        "body": "Dans Dogsitting, trouve des gardiens près de chez toi par jour et moment de la journée, ou publie une demande et laisse-les proposer."
+      },
+      "sosOwner": {
+        "title": "Si ton chien se perd",
+        "body": "Touche « Signaler perdu » sur ton chien dans ton profil. Toutes les personnes dans un rayon de 100 km reçoivent une notification avec les photos et peuvent t'écrire."
+      },
+      "sittingJobs": {
+        "title": "Gardes",
+        "body": "Dans Dogsitting, vois les familles près de chez toi qui cherchent un gardien et propose ton aide. Ajoute tes jours et horaires libres à ton profil."
+      },
+      "sittingStatus": {
+        "title": "Dehors avec un chien ?",
+        "body": "Mets ton statut sur « Je garde un chien » quand tu sors avec un chien que tu gardes, pour que tes matchs sachent où tu es."
+      },
+      "playdatesSitter": {
+        "title": "Playdates",
+        "body": "Tu peux rejoindre les playdates où les gardiens sont les bienvenus, avec le chien que tu gardes."
+      },
+      "sosHelp": {
+        "title": "Aide à retrouver des chiens perdus",
+        "body": "Si un chien disparaît près de chez toi, tu reçois une alerte avec ses photos. Tu l'as vu ? Écris au propriétaire directement depuis l'alerte."
+      },
+      "shelters": {
+        "title": "Adopter dans un refuge",
+        "body": "Ton profil contient une liste de refuges, un par canton et par Land, les plus proches d'abord."
+      },
+      "addDog": {
+        "title": "Tu as un chien ?",
+        "body": "Ajoute ton chien dans ton profil pour débloquer Découvrir et les playdates."
+      },
+      "done": {
+        "title": "Tout est prêt",
+        "body": "Tu peux revoir cette visite à tout moment dans les réglages."
+      }
+    }
   }
 }

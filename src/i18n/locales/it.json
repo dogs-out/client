@@ -41,7 +41,8 @@
       "helpFaq": "Aiuto e FAQ",
       "termsPrivacy": "Termini e privacy",
       "aboutDogsOut": "Informazioni su Dogs Out",
-      "deleteAccount": "Elimina account"
+      "deleteAccount": "Elimina account",
+      "appTour": "Tour dell'app"
     },
     "appearance": {
       "title": "Aspetto",
@@ -1026,5 +1027,68 @@
     "coversNeighbour": "Si occupa anche di questo cantone, che non ha un rifugio proprio",
     "closedUntil": "Chiuso per lavori fino a {{when}}",
     "loadError": "Non è stato possibile caricare l'elenco dei rifugi. Riprova più tardi."
+  },
+  "tour": {
+    "skip": "Salta",
+    "next": "Avanti",
+    "start": "Andiamo",
+    "slides": {
+      "welcome": {
+        "title": "Benvenuto su Dogs Out",
+        "body": "Uno sguardo veloce a cosa puoi fare qui. Ci vuole meno di un minuto."
+      },
+      "discover": {
+        "title": "Incontra cani vicino a te",
+        "body": "Scorri a destra per dare un premio, a sinistra per passare. Se ve lo date a vicenda è un match e potete chattare."
+      },
+      "playdates": {
+        "title": "Playdate",
+        "body": "Organizza un incontro al parco o unisciti a uno vicino. Ogni playdate ha la sua chat di gruppo."
+      },
+      "status": {
+        "title": "Chi è fuori",
+        "body": "Imposta il tuo stato quando esci per una passeggiata o vai al parco, e i tuoi match vedono chi è in giro adesso."
+      },
+      "walk": {
+        "title": "Passeggiate insieme",
+        "body": "In qualsiasi chat, tocca la zampa per invitare quella persona a una passeggiata: scegli un posto, un giorno e un'ora."
+      },
+      "findSitter": {
+        "title": "Trova un dogsitter",
+        "body": "In Dogsitting trovi dogsitter vicino a te per giorno e momento della giornata, oppure pubblica una richiesta e lascia che si propongano."
+      },
+      "sosOwner": {
+        "title": "Se il tuo cane si perde",
+        "body": "Tocca «Segnala smarrito» sul tuo cane nel profilo. Tutti entro 100 km ricevono una notifica con le foto e possono scriverti."
+      },
+      "sittingJobs": {
+        "title": "Lavori da dogsitter",
+        "body": "In Dogsitting vedi le famiglie vicine che cercano un dogsitter e puoi offrire il tuo aiuto. Aggiungi i tuoi giorni e orari liberi al profilo."
+      },
+      "sittingStatus": {
+        "title": "Fuori con un cane?",
+        "body": "Imposta lo stato su «Sto con un cane» quando esci con un cane che accudisci, così i tuoi match sanno dove sei."
+      },
+      "playdatesSitter": {
+        "title": "Playdate",
+        "body": "Puoi partecipare ai playdate in cui i dogsitter sono benvenuti, con il cane che accudisci."
+      },
+      "sosHelp": {
+        "title": "Aiuta a trovare cani smarriti",
+        "body": "Se un cane scompare vicino a te, ricevi un avviso con le sue foto. L'hai visto? Scrivi al proprietario direttamente dall'avviso."
+      },
+      "shelters": {
+        "title": "Adotta da un rifugio",
+        "body": "Nel tuo profilo trovi un elenco di rifugi, uno per ogni cantone e Land, i più vicini per primi."
+      },
+      "addDog": {
+        "title": "Hai un cane?",
+        "body": "Aggiungi il tuo cane nel profilo per sbloccare Scopri e i playdate."
+      },
+      "done": {
+        "title": "Tutto pronto",
+        "body": "Puoi rivedere questo tour in qualsiasi momento nelle impostazioni."
+      }
+    }
   }
 }

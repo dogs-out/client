@@ -52,4 +52,5 @@ export type RootStackParamList = {
   RaiseSos: { dogId?: number; pickedPlace?: PlaceResult } | undefined;
   SosDetail: { alertId: number };
   Shelters: undefined;
+  Tour: undefined;
 };

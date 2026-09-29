@@ -11,10 +11,12 @@ export interface AppPrefs {
    * what stops the greeting reappearing on every launch for a whole day.
    */
   birthdayGreetedYear: number;
+  /** Whether this device has opened the app tour. It then only comes back from Settings. */
+  tourSeen: boolean;
 }
 
 const KEY = 'dogsout_prefs';
-const DEFAULTS: AppPrefs = { freezeBackground: false, birthdayGreetedYear: 0 };
+const DEFAULTS: AppPrefs = { freezeBackground: false, birthdayGreetedYear: 0, tourSeen: false };
 
 /**
  * Device-local settings.
@@ -25,7 +27,7 @@ const DEFAULTS: AppPrefs = { freezeBackground: false, birthdayGreetedYear: 0 };
  * synchronous, with SecureStore behind it only for persistence across restarts.
  */
 let cache: AppPrefs = { ...DEFAULTS };
-let loaded = false;
+let loading: Promise<void> | null = null;
 const listeners = new Set<() => void>();
 
 async function read(): Promise<string | null> {
@@ -39,17 +41,22 @@ async function write(value: string): Promise<void> {
 }
 
 export const appPrefs = {
-  /** Called once at startup; until it resolves the defaults apply. */
-  async load(): Promise<void> {
-    if (loaded) return;
-    loaded = true;
-    try {
-      const raw = await read();
-      if (raw) cache = { ...DEFAULTS, ...JSON.parse(raw) };
-    } catch {
-      // A corrupt or unreadable preference is not worth a broken launch.
-    }
-    listeners.forEach(l => l());
+  /**
+   * Called at startup; until it resolves the defaults apply. Every caller shares the
+   * one read, so a second caller awaiting it really does wait for the stored values
+   * rather than getting the defaults back while the first read is still in flight.
+   */
+  load(): Promise<void> {
+    loading ??= (async () => {
+      try {
+        const raw = await read();
+        if (raw) cache = { ...DEFAULTS, ...JSON.parse(raw) };
+      } catch {
+        // A corrupt or unreadable preference is not worth a broken launch.
+      }
+      listeners.forEach(l => l());
+    })();
+    return loading;
   },
 
   get(): AppPrefs {

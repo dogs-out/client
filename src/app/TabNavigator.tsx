@@ -1,4 +1,8 @@
 import { useEffect } from 'react';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../types/navigation';
+import { appPrefs } from '../utils/appPrefs';
 import { AppState, Text, TouchableOpacity, View } from 'react-native';
 import { createBottomTabNavigator, BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { notificationService } from '../services/notificationService';
@@ -98,8 +102,18 @@ function GlassTabBar({ state, descriptors, navigation }: Readonly<BottomTabBarPr
 }
 
 export default function TabNavigator() {
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
   // The user is authenticated once the main tabs mount — register this device for push
   useEffect(() => { notificationService.register(); }, []);
+
+  // The tour, once per device: new accounts on their first arrival, and everyone
+  // already here on the first launch after it shipped. Settings replays it.
+  useEffect(() => {
+    appPrefs.load().then(() => {
+      if (!appPrefs.get().tourSeen) navigation.navigate('Tour');
+    });
+  }, [navigation]);
 
   // Hold the socket open for as long as the app is in the foreground.
   //

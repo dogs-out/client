@@ -78,6 +78,7 @@ export default function SettingsScreen({ navigation }: Readonly<Props>) {
       rows: [
         { icon: 'chatbubble-ellipses-outline', label: t('settings.rows.sendFeedback'), onPress: () => navigation.navigate('Feedback') },
         { icon: 'help-circle-outline',   label: t('settings.rows.helpFaq'),          onPress: () => navigation.navigate('HelpFaq') },
+        { icon: 'compass-outline',       label: t('settings.rows.appTour'),          onPress: () => navigation.navigate('Tour') },
         { icon: 'document-text-outline', label: t('settings.rows.termsPrivacy'),     onPress: () => navigation.navigate('TermsPrivacy') },
         { icon: 'information-circle-outline', label: t('settings.rows.aboutDogsOut'), onPress: () => navigation.navigate('About') },
       ],

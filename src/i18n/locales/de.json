@@ -41,7 +41,8 @@
       "helpFaq": "Hilfe & FAQ",
       "termsPrivacy": "AGB & Datenschutz",
       "aboutDogsOut": "Über Dogs Out",
-      "deleteAccount": "Konto löschen"
+      "deleteAccount": "Konto löschen",
+      "appTour": "App-Tour"
     },
     "appearance": {
       "title": "Darstellung",
@@ -1026,5 +1027,68 @@
     "coversNeighbour": "Betreut auch diesen Kanton, der kein eigenes Tierheim hat",
     "closedUntil": "Wegen Umbau geschlossen bis {{when}}",
     "loadError": "Die Liste der Tierheime konnte nicht geladen werden. Bitte versuche es später erneut."
+  },
+  "tour": {
+    "skip": "Überspringen",
+    "next": "Weiter",
+    "start": "Los geht's",
+    "slides": {
+      "welcome": {
+        "title": "Willkommen bei Dogs Out",
+        "body": "Ein kurzer Überblick, was du hier machen kannst. Dauert weniger als eine Minute."
+      },
+      "discover": {
+        "title": "Hunde in der Nähe treffen",
+        "body": "Wische nach rechts für ein Leckerli, nach links zum Weitergehen. Gebt ihr euch beide eins, ist es ein Match und ihr könnt chatten."
+      },
+      "playdates": {
+        "title": "Playdates",
+        "body": "Plane ein Treffen im Park oder schliess dich einem in der Nähe an. Jedes Playdate hat seinen eigenen Gruppenchat."
+      },
+      "status": {
+        "title": "Wer ist draussen",
+        "body": "Setze deinen Status, wenn du spazieren oder in den Park gehst, und deine Matches sehen, wer gerade unterwegs ist."
+      },
+      "walk": {
+        "title": "Gemeinsam spazieren",
+        "body": "Tippe in einem Chat auf die Pfote, um die Person zu einem Spaziergang einzuladen: Ort, Tag und Uhrzeit wählen."
+      },
+      "findSitter": {
+        "title": "Dogsitter finden",
+        "body": "Unter Dogsitting findest du Sitter in deiner Nähe nach Tag und Tageszeit, oder du erstellst eine Anfrage und lässt sie sich melden."
+      },
+      "sosOwner": {
+        "title": "Wenn dein Hund verloren geht",
+        "body": "Tippe in deinem Profil bei deinem Hund auf «Als vermisst melden». Alle im Umkreis von 100 km erhalten eine Mitteilung mit den Fotos und können dir schreiben."
+      },
+      "sittingJobs": {
+        "title": "Sitter-Jobs",
+        "body": "Unter Dogsitting siehst du Familien in der Nähe, die einen Sitter brauchen, und kannst deine Hilfe anbieten. Trage deine freien Tage und Zeiten im Profil ein."
+      },
+      "sittingStatus": {
+        "title": "Mit einem Hund unterwegs?",
+        "body": "Setze deinen Status auf «Hüte einen Hund», wenn du mit einem betreuten Hund unterwegs bist, damit deine Matches wissen, wo du bist."
+      },
+      "playdatesSitter": {
+        "title": "Playdates",
+        "body": "Du kannst an Playdates teilnehmen, bei denen Sitter willkommen sind, und den betreuten Hund mitbringen."
+      },
+      "sosHelp": {
+        "title": "Vermisste Hunde finden",
+        "body": "Wird in deiner Nähe ein Hund vermisst, erhältst du eine Meldung mit Fotos. Gesehen? Schreib der Halterin oder dem Halter direkt aus der Meldung."
+      },
+      "shelters": {
+        "title": "Aus dem Tierheim adoptieren",
+        "body": "In deinem Profil findest du eine Liste von Tierheimen, eines pro Kanton und Bundesland, die nächsten zuerst."
+      },
+      "addDog": {
+        "title": "Hast du einen Hund?",
+        "body": "Füge deinen Hund im Profil hinzu, um Entdecken und Playdates freizuschalten."
+      },
+      "done": {
+        "title": "Alles bereit",
+        "body": "Du kannst diese Tour jederzeit in den Einstellungen wieder ansehen."
+      }
+    }
   }
 }
