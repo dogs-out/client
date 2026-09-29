@@ -334,7 +334,8 @@
       "experienceYears": "anni",
       "sitterTagsLabel": "Tag da sitter",
       "sitterTagsHint": "(fino a 4)",
-      "cameraPermission": "Dogs Out ha bisogno dell'accesso alla fotocamera. Puoi consentirlo nelle impostazioni."
+      "cameraPermission": "Dogs Out ha bisogno dell'accesso alla fotocamera. Puoi consentirlo nelle impostazioni.",
+      "timeSlotsLabel": "Orari in cui posso fare il dogsitter"
     },
     "userProfile": {
       "profileFallback": "Profilo",
@@ -591,7 +592,10 @@
     "Hate speech": "Incitazione all’odio",
     "Harassment or abuse": "Molestie o insulti",
     "Untrue — this sitting never happened": "Falso — questo accudimento non è mai avvenuto",
-    "Personal information": "Informazioni personali"
+    "Personal information": "Informazioni personali",
+    "Morning": "Mattina · 8–12",
+    "Afternoon": "Pomeriggio · 12–16",
+    "Evening": "Sera · 16–20"
   },
   "sitter": {
     "tabTitle": "Dogsitting",
@@ -637,7 +641,16 @@
       "sittingBy": "Accudito da {{name}}",
       "daysPicked": "{{count}} giorno",
       "daysPicked_other": "{{count}} giorni",
-      "committedTitle": "Stai accudendo"
+      "committedTitle": "Stai accudendo",
+      "timeOfDay": "Momento della giornata",
+      "anyTime": "Ogni giorno, a qualsiasi ora",
+      "slotShort": {
+        "Morning": "Mattine",
+        "Afternoon": "Pomeriggi",
+        "Evening": "Sere"
+      },
+      "slotsPicked": "{{count}} fascia",
+      "slotsPicked_other": "{{count}} fasce"
     },
     "request": {
       "title": "Cerca un dog sitter",

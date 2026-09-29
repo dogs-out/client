@@ -98,6 +98,7 @@ export interface UserProfile {
   isSitter: boolean;
   lookingForSitter: boolean;
   sitterWeekdays: string[];
+  sitterTimeSlots: string[];
   sitterExperienceYears: number | null;
   sitterTags: string[];
   createdAt: string;
@@ -139,6 +140,7 @@ export interface UpdateProfilePayload {
   isSitter?: boolean;
   lookingForSitter?: boolean;
   sitterWeekdays?: string[];
+  sitterTimeSlots?: string[];
   sitterExperienceYears?: number;
   sitterTags?: string[];
   maxDistanceKm?: number | null;

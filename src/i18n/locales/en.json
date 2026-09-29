@@ -334,7 +334,8 @@
       "experienceYears": "years",
       "sitterTagsLabel": "Sitter tags",
       "sitterTagsHint": "(up to 4)",
-      "cameraPermission": "Dogs Out needs camera access to take a photo. You can allow it in Settings."
+      "cameraPermission": "Dogs Out needs camera access to take a photo. You can allow it in Settings.",
+      "timeSlotsLabel": "Times I'm free to sit"
     },
     "userProfile": {
       "profileFallback": "Profile",
@@ -530,7 +531,16 @@
       "sittingBy": "Sitting: {{name}}",
       "daysPicked": "{{count}} day",
       "daysPicked_other": "{{count}} days",
-      "committedTitle": "You’re sitting"
+      "committedTitle": "You’re sitting",
+      "timeOfDay": "Time of day",
+      "anyTime": "Any day, any time",
+      "slotShort": {
+        "Morning": "Mornings",
+        "Afternoon": "Afternoons",
+        "Evening": "Evenings"
+      },
+      "slotsPicked": "{{count}} time",
+      "slotsPicked_other": "{{count}} times"
     },
     "request": {
       "title": "Ask for a sitter",
@@ -834,7 +844,10 @@
     "Hate speech": null,
     "Harassment or abuse": null,
     "Untrue — this sitting never happened": null,
-    "Personal information": null
+    "Personal information": null,
+    "Morning": "Morning · 8–12",
+    "Afternoon": "Afternoon · 12–16",
+    "Evening": "Evening · 16–20"
   },
   "walk": {
     "inviteButton": "Invite for a walk",

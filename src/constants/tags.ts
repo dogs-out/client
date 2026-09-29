@@ -73,6 +73,9 @@ export const WEEKDAYS = [
   'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday',
 ];
 
+/** Morning 08–12, afternoon 12–16, evening 16–20. Stored as these English words, like the weekdays. */
+export const TIME_SLOTS = ['Morning', 'Afternoon', 'Evening'];
+
 export const RELATIONSHIP_STATUS_OPTIONS = [
   'Single', 'In a relationship', 'Married', "It's complicated", 'Prefer not to say',
 ];

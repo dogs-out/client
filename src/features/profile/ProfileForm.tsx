@@ -15,7 +15,7 @@ import { userService } from '../../services/userService';
 import { dogService } from '../../services/dogService';
 import {
   OWNER_LIFESTYLE_TAGS, OWNER_PERSONALITY_TAGS, RELATIONSHIP_STATUS_OPTIONS,
-  SITTER_LIFESTYLE_TAGS, SITTER_PERSONALITY_TAGS, SITTER_TAGS, WEEKDAYS,
+  SITTER_LIFESTYLE_TAGS, SITTER_PERSONALITY_TAGS, SITTER_TAGS, TIME_SLOTS, WEEKDAYS,
 } from '../../constants/tags';
 import { translateTag } from '../../i18n/translateTag';
 import { getApiError } from '../../utils/apiError';
@@ -85,6 +85,7 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: R
   const [isSitter, setIsSitter]             = useState(false);
   const [lookingForSitter, setLookingForSitter] = useState(false);
   const [sitterWeekdays, setSitterWeekdays] = useState<string[]>([]);
+  const [sitterTimeSlots, setSitterTimeSlots] = useState<string[]>([]);
   const [sitterExperienceYears, setSitterExperienceYears] = useState(0);
   const [sitterTags, setSitterTags]         = useState<string[]>([]);
   const [dogCount, setDogCount]             = useState(0);
@@ -110,6 +111,7 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: R
       setIsSitter(user.isSitter ?? false);
       setLookingForSitter(user.lookingForSitter ?? false);
       if (user.sitterWeekdays?.length) setSitterWeekdays(user.sitterWeekdays);
+      if (user.sitterTimeSlots?.length) setSitterTimeSlots(user.sitterTimeSlots);
       if (user.sitterExperienceYears != null) setSitterExperienceYears(user.sitterExperienceYears);
       if (user.sitterTags?.length) setSitterTags(user.sitterTags);
       if (user.photos?.length) {
@@ -218,6 +220,12 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: R
     );
   };
 
+  const toggleTimeSlot = (slot: string) => {
+    setSitterTimeSlots(prev =>
+      prev.includes(slot) ? prev.filter(s => s !== slot) : [...prev, slot]
+    );
+  };
+
   const toggleWeekday = (day: string) => {
     setSitterWeekdays(prev =>
       prev.includes(day) ? prev.filter(d => d !== day) : [...prev, day]
@@ -284,6 +292,7 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: R
         isSitter,
         lookingForSitter,
         sitterWeekdays,
+        sitterTimeSlots,
         sitterExperienceYears: isSitter ? sitterExperienceYears : undefined,
         sitterTags,
       });
@@ -522,6 +531,22 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: R
                       onPress={() => toggleWeekday(day)}
                     >
                       <Text style={[styles.chipText, sel && styles.chipTextActive]}>{translateTag(day, t)}</Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+
+              <Text style={styles.tagCat}>{t('profile.form.timeSlotsLabel')}</Text>
+              <View style={styles.chipRow}>
+                {TIME_SLOTS.map(slot => {
+                  const sel = sitterTimeSlots.includes(slot);
+                  return (
+                    <TouchableOpacity
+                      key={slot}
+                      style={[styles.chip, sel && styles.chipActive]}
+                      onPress={() => toggleTimeSlot(slot)}
+                    >
+                      <Text style={[styles.chipText, sel && styles.chipTextActive]}>{translateTag(slot, t)}</Text>
                     </TouchableOpacity>
                   );
                 })}

@@ -16,6 +16,7 @@ export interface DiscoverProfile {
   distanceKm: number;
   isSitter: boolean;
   sitterWeekdays: string[];
+  sitterTimeSlots: string[];
   sitterExperienceYears: number | null;
   sitterTags: string[];
   lookingForSitter: boolean;

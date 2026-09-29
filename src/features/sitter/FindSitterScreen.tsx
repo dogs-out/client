@@ -27,6 +27,7 @@ type SitterMode = 'jobs' | 'requests';
 
 /** The same names the sitter profile stores, so the filter compares like with like. */
 const WEEKDAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] as const;
+const TIME_SLOTS = ['Morning', 'Afternoon', 'Evening'] as const;
 
 function formatDistance(km: number, t: TFunction): string {
   if (km < 0) return '';
@@ -54,6 +55,8 @@ export default function FindSitterScreen() {
   /** Null is every day. A sitter who named no days is kept either way. */
   /** Empty means any day. Several means any one of them — see the service. */
   const [weekdays, setWeekdays] = useState<string[]>([]);
+  /** Empty means any time of day; several means any one of them, like the days. */
+  const [timeSlots, setTimeSlots] = useState<string[]>([]);
   const [weekdayOpen, setWeekdayOpen] = useState(false);
   const [modePinned, setModePinned] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -77,7 +80,7 @@ export default function FindSitterScreen() {
         // Don't ask for a pool we aren't entitled to.
         return Promise.all([
           me.isSitter ? sitterService.getSeekers() : Promise.resolve([]),
-          me.lookingForSitter ? sitterService.getAvailableSitters(weekdays) : Promise.resolve([]),
+          me.lookingForSitter ? sitterService.getAvailableSitters(weekdays, timeSlots) : Promise.resolve([]),
           // Open jobs are for sitters to take; own requests are for owners to manage.
           me.isSitter ? sitterService.getOpenRequests().catch(() => []) : Promise.resolve([]),
           me.lookingForSitter ? sitterService.getMyRequests().catch(() => []) : Promise.resolve([]),
@@ -102,7 +105,7 @@ export default function FindSitterScreen() {
       })
       .catch(() => setError(true))
       .finally(() => setLoading(false));
-  }, [modePinned, weekdays]);
+  }, [modePinned, weekdays, timeSlots]);
 
   useFocusEffect(useCallback(() => { load(); }, [load]));
 
@@ -208,9 +211,16 @@ export default function FindSitterScreen() {
    * stop fitting on half a row — so a count takes over.
    */
   const weekdayLabel = (() => {
-    if (weekdays.length === 0) return t('sitter.jobs.anyDay');
-    if (weekdays.length === 1) return translateTag(weekdays[0], t);
-    return t('sitter.jobs.daysPicked', { count: weekdays.length });
+    const days = (() => {
+      if (weekdays.length === 0) return t('sitter.jobs.anyDay');
+      if (weekdays.length === 1) return translateTag(weekdays[0], t);
+      return t('sitter.jobs.daysPicked', { count: weekdays.length });
+    })();
+    if (timeSlots.length === 0) return days;
+    const times = timeSlots.length === 1
+      ? t(`sitter.jobs.slotShort.${timeSlots[0]}`)
+      : t('sitter.jobs.slotsPicked', { count: timeSlots.length });
+    return `${days} · ${times}`;
   })();
 
   const renderJob = (job: SittingRequest) => (
@@ -511,11 +521,11 @@ export default function FindSitterScreen() {
               {/* Stays open as days are tapped: picking Monday and Friday is two
                   taps, and a panel that shut after the first would make the
                   second one a chore. "Any day" is the way back to no filter. */}
-              <TouchableOpacity style={styles.weekdayOption} onPress={() => setWeekdays([])}>
-                <Text style={[styles.weekdayOptionText, weekdays.length === 0 && styles.weekdayOptionTextActive]}>
-                  {t('sitter.jobs.anyDay')}
+              <TouchableOpacity style={styles.weekdayOption} onPress={() => { setWeekdays([]); setTimeSlots([]); }}>
+                <Text style={[styles.weekdayOptionText, weekdays.length + timeSlots.length === 0 && styles.weekdayOptionTextActive]}>
+                  {t('sitter.jobs.anyTime')}
                 </Text>
-                {weekdays.length === 0 && <Ionicons name="checkmark" size={17} color={Colors.primary} />}
+                {weekdays.length + timeSlots.length === 0 && <Ionicons name="checkmark" size={17} color={Colors.primary} />}
               </TouchableOpacity>
 
               {WEEKDAYS.map(day => {
@@ -529,6 +539,28 @@ export default function FindSitterScreen() {
                   >
                     <Text style={[styles.weekdayOptionText, active && styles.weekdayOptionTextActive]}>
                       {translateTag(day, t)}
+                    </Text>
+                    <Ionicons
+                      name={active ? 'checkbox' : 'square-outline'}
+                      size={19}
+                      color={active ? Colors.primary : Colors.border}
+                    />
+                  </TouchableOpacity>
+                );
+              })}
+
+              <Text style={styles.filterSection}>{t('sitter.jobs.timeOfDay')}</Text>
+              {TIME_SLOTS.map(slot => {
+                const active = timeSlots.includes(slot);
+                return (
+                  <TouchableOpacity
+                    key={slot}
+                    style={styles.weekdayOption}
+                    onPress={() => setTimeSlots(prev =>
+                      prev.includes(slot) ? prev.filter(s => s !== slot) : [...prev, slot])}
+                  >
+                    <Text style={[styles.weekdayOptionText, active && styles.weekdayOptionTextActive]}>
+                      {translateTag(slot, t)}
                     </Text>
                     <Ionicons
                       name={active ? 'checkbox' : 'square-outline'}
@@ -652,6 +684,10 @@ const styles = StyleSheet.create({
   },
   weekdayOptionText:       { fontSize: 15, color: Colors.textSecondary },
   weekdayOptionTextActive: { color: Colors.text, fontWeight: '700' },
+  filterSection: {
+    fontSize: 11, fontWeight: '800', color: Colors.textSecondary, letterSpacing: 0.4,
+    textTransform: 'uppercase', paddingHorizontal: 10, paddingTop: 12, paddingBottom: 2,
+  },
 
   safe:     { flex: 1, backgroundColor: Colors.background },
   centered: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 32, paddingTop: 60 },

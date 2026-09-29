@@ -88,9 +88,17 @@ export const sitterService = {
    * <p>Sent comma-separated. Spring binds that to a list without any custom
    * serialiser, whereas axios' default array encoding (`weekday[]=`) would not.
    */
-  getAvailableSitters: (weekdays?: readonly string[] | null): Promise<DiscoverProfile[]> =>
+  getAvailableSitters: (
+    weekdays?: readonly string[] | null,
+    timeSlots?: readonly string[] | null,
+  ): Promise<DiscoverProfile[]> =>
     api.get<DiscoverProfile[]>('/sitters/available', {
-      params: weekdays && weekdays.length > 0 ? { weekday: weekdays.join(',') } : undefined,
+      params: {
+        ...(weekdays && weekdays.length > 0 ? { weekday: weekdays.join(',') } : {}),
+        // Same rules as the weekdays: any one of them, and a sitter who named no
+        // times stays in the list.
+        ...(timeSlots && timeSlots.length > 0 ? { slot: timeSlots.join(',') } : {}),
+      },
     }).then(r => r.data),
 
   /** Opens a chat with an owner from the seeker pool (idempotent). */

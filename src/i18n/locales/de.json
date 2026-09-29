@@ -334,7 +334,8 @@
       "experienceYears": "Jahre",
       "sitterTagsLabel": "Sitter-Tags",
       "sitterTagsHint": "(bis zu 4)",
-      "cameraPermission": "Dogs Out braucht Kamerazugriff, um ein Foto aufzunehmen. Du kannst das in den Einstellungen erlauben."
+      "cameraPermission": "Dogs Out braucht Kamerazugriff, um ein Foto aufzunehmen. Du kannst das in den Einstellungen erlauben.",
+      "timeSlotsLabel": "Zeiten, zu denen ich sitten kann"
     },
     "userProfile": {
       "profileFallback": "Profil",
@@ -591,7 +592,10 @@
     "Hate speech": "Hassrede",
     "Harassment or abuse": "Belästigung oder Beschimpfung",
     "Untrue — this sitting never happened": "Unwahr — diese Betreuung gab es nie",
-    "Personal information": "Persönliche Daten"
+    "Personal information": "Persönliche Daten",
+    "Morning": "Morgen · 8–12",
+    "Afternoon": "Nachmittag · 12–16",
+    "Evening": "Abend · 16–20"
   },
   "sitter": {
     "tabTitle": "Dogsitting",
@@ -637,7 +641,16 @@
       "sittingBy": "Betreuung: {{name}}",
       "daysPicked": "{{count}} Tag",
       "daysPicked_other": "{{count}} Tage",
-      "committedTitle": "Du betreust"
+      "committedTitle": "Du betreust",
+      "timeOfDay": "Tageszeit",
+      "anyTime": "Jeder Tag, jede Zeit",
+      "slotShort": {
+        "Morning": "Morgens",
+        "Afternoon": "Nachmittags",
+        "Evening": "Abends"
+      },
+      "slotsPicked": "{{count}} Zeit",
+      "slotsPicked_other": "{{count}} Zeiten"
     },
     "request": {
       "title": "Sitter suchen",

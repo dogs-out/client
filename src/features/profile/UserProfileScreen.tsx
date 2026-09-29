@@ -300,12 +300,12 @@ export default function UserProfileScreen({ navigation, route }: Readonly<Props>
                   </Text>
                 </Text>
               )}
-              {profile.sitterWeekdays.length > 0 && (
+              {(profile.sitterWeekdays.length > 0 || (profile.sitterTimeSlots?.length ?? 0) > 0) && (
                 <>
                   <Text style={styles.sitterLine}>{t('sitter.profile.availability')}</Text>
                   <View style={styles.tagRow}>
-                    {profile.sitterWeekdays.map(day => (
-                      <View key={day} style={styles.tag}><Text style={styles.tagText}>{translateTag(day, t)}</Text></View>
+                    {[...profile.sitterWeekdays, ...(profile.sitterTimeSlots ?? [])].map(value => (
+                      <View key={value} style={styles.tag}><Text style={styles.tagText}>{translateTag(value, t)}</Text></View>
                     ))}
                   </View>
                 </>
