@@ -66,8 +66,20 @@ export interface PlaydatePayload {
 }
 
 export const playdateService = {
-  getPlaydates: (): Promise<Playdate[]> =>
-    api.get<Playdate[]>('/playdates').then(r => r.data),
+  /**
+   * The feed. Days and times narrow it to playdates starting on any one of them
+   * (by start time, in Swiss time); your own and the ones you joined always stay.
+   */
+  getPlaydates: (
+    weekdays?: readonly string[] | null,
+    timeSlots?: readonly string[] | null,
+  ): Promise<Playdate[]> =>
+    api.get<Playdate[]>('/playdates', {
+      params: {
+        ...(weekdays && weekdays.length > 0 ? { weekday: weekdays.join(',') } : {}),
+        ...(timeSlots && timeSlots.length > 0 ? { slot: timeSlots.join(',') } : {}),
+      },
+    }).then(r => r.data),
 
   getPlaydate: (id: number): Promise<Playdate> =>
     api.get<Playdate>(`/playdates/${id}`).then(r => r.data),

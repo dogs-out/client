@@ -17,6 +17,9 @@ import { NeedsDogNotice } from '../../components/NeedsDogNotice';
 import { useHasDog } from '../../hooks/useHasDog';
 import { FloatingBackground } from '../../components/FloatingBackground';
 import { GlassCard } from '../../components/GlassCard';
+import { WhenWhereFilter } from '../../components/WhenWhereFilter';
+import { userService } from '../../services/userService';
+import { DEFAULT_RADIUS_KM } from '../../constants/discover';
 import { useTabBarHeight } from '../../components/GlassTabBar';
 import { WhosOutsideView } from './WhosOutsideView';
 import { playdateTitle } from './playdateTitle';
@@ -56,13 +59,26 @@ export default function PlaydatesScreen() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState(false);
+  // The same day, time and distance filter as the Dogsitting lists. The distance
+  // is the account's search distance, shared with Discover.
+  const [weekdays, setWeekdays] = useState<string[]>([]);
+  const [timeSlots, setTimeSlots] = useState<string[]>([]);
+  const [radiusKm, setRadiusKm] = useState(DEFAULT_RADIUS_KM);
 
   const load = useCallback(() => {
-    playdateService.getPlaydates()
+    userService.getMe().then(me => setRadiusKm(me.maxDistanceKm ?? DEFAULT_RADIUS_KM)).catch(() => {});
+    playdateService.getPlaydates(weekdays, timeSlots)
       .then(data => { setPlaydates(data); setError(false); })
       .catch(() => setError(true))
       .finally(() => { setLoading(false); setRefreshing(false); });
-  }, []);
+  }, [weekdays, timeSlots]);
+
+  // Persisted on release, then reloaded: public playdates are filtered by it server-side.
+  const commitRadius = () => {
+    userService.updateProfile({ maxDistanceKm: radiusKm })
+      .then(() => load())
+      .catch(() => setError(true));
+  };
 
   useFocusEffect(
     useCallback(() => {
@@ -166,6 +182,19 @@ export default function PlaydatesScreen() {
           </TouchableOpacity>
         ))}
       </View>
+
+      {/* Walks are your own 1:1 plans, so only the open playdates get a filter. */}
+      <WhenWhereFilter
+        showWhen={mode === 'playdates'}
+        showRadius={mode === 'playdates'}
+        weekdays={weekdays}
+        onWeekdaysChange={setWeekdays}
+        timeSlots={timeSlots}
+        onTimeSlotsChange={setTimeSlots}
+        radiusKm={radiusKm}
+        onRadiusChange={setRadiusKm}
+        onRadiusCommit={commitRadius}
+      />
 
       {mode === 'outside' ? <WhosOutsideView /> : loading ? (
         <View style={styles.centered}><ActivityIndicator size="large" color={Colors.primary} /></View>
