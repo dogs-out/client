@@ -110,6 +110,8 @@ export interface UserProfile {
   sitterWeekdays: string[];
   sitterTimeSlots: string[];
   sitterAvailability?: string[];
+  /** When they usually need a sitter, as "Day:Slot" pairs. */
+  seekerAvailability?: string[];
   sitterExperienceYears: number | null;
   sitterTags: string[];
   createdAt: string;
@@ -154,6 +156,8 @@ export interface UpdateProfilePayload {
   sitterWeekdays?: string[];
   sitterTimeSlots?: string[];
   sitterAvailability?: string[];
+  /** When they usually need a sitter, as "Day:Slot" pairs. */
+  seekerAvailability?: string[];
   sitterExperienceYears?: number;
   sitterTags?: string[];
   maxDistanceKm?: number | null;

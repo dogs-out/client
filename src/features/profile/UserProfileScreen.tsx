@@ -318,6 +318,17 @@ export default function UserProfileScreen({ navigation, route }: Readonly<Props>
             </GlassCard>
           )}
 
+          {/* When this owner needs a sitter — what a sitter wants to know first. */}
+          {profile.lookingForSitter && (profile.seekerAvailability?.length ?? 0) > 0 && (
+            <GlassCard style={styles.sitterCard}>
+              <View style={styles.sitterBadgeRow}>
+                <Ionicons name="calendar-outline" size={18} color={Colors.primary} />
+                <Text style={styles.sitterBadgeText}>{t('sitter.profile.needsSitter')}</Text>
+              </View>
+              <AvailabilityGrid value={profile.seekerAvailability ?? []} />
+            </GlassCard>
+          )}
+
           {/* Contact as sitter */}
           {profile.lookingForSitter && amSitter && myId !== null && myId !== profile.userId && (
             <TouchableOpacity style={styles.contactBtn} onPress={contactSeeker} disabled={contacting}>

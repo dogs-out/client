@@ -48,9 +48,14 @@ export default function SheltersScreen({ navigation }: Readonly<Props>) {
       }));
     // Nearest first when we know where you are; otherwise by country and region,
     // which is how anyone would look for "their" canton by hand.
-    return withDistance.sort((a, b) => a.km != null && b.km != null
+    const sorted = withDistance.sort((a, b) => a.km != null && b.km != null
       ? a.km - b.km
       : a.shelter.country.localeCompare(b.shelter.country) || a.shelter.region.localeCompare(b.shelter.region));
+    // The nearest shelter that is open goes first and is marked as the one to try:
+    // a closed one may well be nearer, but it is no use to someone who wants a dog now.
+    const closest = sorted.findIndex(r => r.km != null && !r.shelter.closedUntil);
+    if (closest > 0) sorted.unshift(sorted.splice(closest, 1)[0]);
+    return sorted.map((r, i) => ({ ...r, recommended: i === 0 && closest >= 0 }));
   }, [shelters, filter, origin]);
 
   const closedLabel = (closedUntil: string) => {
@@ -91,11 +96,17 @@ export default function SheltersScreen({ navigation }: Readonly<Props>) {
           keyExtractor={r => r.shelter.id}
           contentContainerStyle={styles.list}
           ListHeaderComponent={<Text style={styles.intro}>{t('shelters.intro')}</Text>}
-          renderItem={({ item: { shelter, km } }) => (
+          renderItem={({ item: { shelter, km, recommended } }) => (
             <TouchableOpacity activeOpacity={0.8} onPress={() => WebBrowser.openBrowserAsync(shelter.website)}>
-              <GlassCard style={styles.card} padding={16}>
+              <GlassCard style={[styles.card, recommended && styles.cardRecommended]} padding={16}>
                 <View style={styles.row}>
                   <View style={styles.info}>
+                    {recommended && (
+                      <View style={styles.badge}>
+                        <Ionicons name="star" size={11} color="#fff" />
+                        <Text style={styles.badgeText}>{t('shelters.closest')}</Text>
+                      </View>
+                    )}
                     <Text style={styles.region}>{t(`shelters.country.${shelter.country}`)} · {shelter.region}</Text>
                     <Text style={styles.name}>{shelter.name}</Text>
                     <Text style={styles.town}>
@@ -138,6 +149,12 @@ const styles = StyleSheet.create({
   intro: { fontSize: 14, color: Colors.textSecondary, lineHeight: 20, marginBottom: 12, marginTop: 4 },
   hint:  { fontSize: 14, color: Colors.textSecondary, textAlign: 'center' },
   card:  { marginBottom: 10 },
+  cardRecommended: { borderWidth: 2, borderColor: Colors.primary },
+  badge: {
+    flexDirection: 'row', alignItems: 'center', gap: 4, alignSelf: 'flex-start',
+    backgroundColor: Colors.primary, borderRadius: 10, paddingHorizontal: 8, paddingVertical: 3, marginBottom: 6,
+  },
+  badgeText: { color: '#fff', fontSize: 11, fontWeight: '800' },
   row:   { flexDirection: 'row', alignItems: 'center', gap: 12 },
   info:  { flex: 1 },
   region: {

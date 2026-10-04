@@ -346,6 +346,8 @@
       "cameraPermission": "Dogs Out a besoin d'accéder à l'appareil photo. Tu peux l'autoriser dans les réglages.",
       "timeSlotsLabel": "Moments où je peux garder",
       "availabilityLabel": "Quand je peux garder",
+      "seekerAvailabilityLabel": "Quand as-tu généralement besoin d’un dogsitter ?",
+      "seekerAvailabilityHint": "Touche les jours et les moments. Les dogsitters le voient sur ton profil et peuvent filtrer selon cela.",
       "availabilityHint": "Coche les moments où tu es généralement libre. Touche un jour pour remplir toute la ligne."
     },
     "userProfile": {
@@ -630,6 +632,7 @@
       "badge": "Disponible comme dogsitter",
       "experience": "Expérience avec les chiens :",
       "experienceYears": "ans",
+      "needsSitter": "A souvent besoin d’un dogsitter :",
       "availability": "Disponible le :"
     },
     "jobs": {
@@ -834,7 +837,7 @@
   "needsDog": {
     "addDog": "Ajouter ton chien",
     "adoptTitle": "Pas encore de chien ?",
-    "adoptSoon": "L'adoption via Dogs Out arrive bientôt.",
+    "adoptBody": "Trouve un refuge près de chez toi : un pour chaque canton et chaque Land.",
     "adoptDog": "Adopter un chien",
     "discover": {
       "title": "Découvrir nécessite un chien",
@@ -1045,6 +1048,7 @@
       "DE": "DE"
     },
     "kmAway": "à ~{{km}} km",
+    "closest": "Le plus proche de toi",
     "coversNeighbour": "S'occupe aussi de ce canton, qui n'a pas de refuge propre",
     "closedUntil": "Fermé pour travaux jusqu'en {{when}}",
     "loadError": "La liste des refuges n'a pas pu être chargée. Réessaie plus tard."

@@ -346,6 +346,8 @@
       "cameraPermission": "Dogs Out needs camera access to take a photo. You can allow it in Settings.",
       "timeSlotsLabel": "Times I'm free to sit",
       "availabilityLabel": "When I can sit",
+      "seekerAvailabilityLabel": "When do you usually need a sitter?",
+      "seekerAvailabilityHint": "Tap the days and times. Sitters see this on your profile and can filter for it.",
       "availabilityHint": "Tick the times you're usually free. Tap a day to fill its whole row."
     },
     "userProfile": {
@@ -520,6 +522,7 @@
       "badge": "Available as dogsitter",
       "experience": "Experience with dogs:",
       "experienceYears": "years",
+      "needsSitter": "Usually needs a sitter:",
       "availability": "Available on:"
     },
     "jobs": {
@@ -724,7 +727,7 @@
   "needsDog": {
     "addDog": "Add your dog",
     "adoptTitle": "No dog yet?",
-    "adoptSoon": "Adopting through Dogs Out is coming soon.",
+    "adoptBody": "Find a shelter near you: one for every canton and Bundesland.",
     "adoptDog": "Adopt a dog",
     "discover": {
       "title": "Discover needs a dog",
@@ -952,6 +955,7 @@
       "DE": "DE"
     },
     "kmAway": "~{{km}} km away",
+    "closest": "Closest to you",
     "coversNeighbour": "Also serves this canton, which has no shelter of its own",
     "closedUntil": "Closed for rebuilding until {{when}}",
     "loadError": "The shelter list could not be loaded. Please try again later."

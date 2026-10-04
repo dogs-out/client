@@ -346,6 +346,8 @@
       "cameraPermission": "Dogs Out ha bisogno dell'accesso alla fotocamera. Puoi consentirlo nelle impostazioni.",
       "timeSlotsLabel": "Orari in cui posso fare il dogsitter",
       "availabilityLabel": "Quando posso fare il dogsitter",
+      "seekerAvailabilityLabel": "Quando ti serve di solito un dogsitter?",
+      "seekerAvailabilityHint": "Tocca i giorni e le fasce orarie. I dogsitter lo vedono sul tuo profilo e possono filtrare in base a questo.",
       "availabilityHint": "Spunta gli orari in cui sei di solito libero. Tocca un giorno per riempire tutta la riga."
     },
     "userProfile": {
@@ -630,6 +632,7 @@
       "badge": "Disponibile come dogsitter",
       "experience": "Esperienza con i cani:",
       "experienceYears": "anni",
+      "needsSitter": "Di solito cerca un dogsitter:",
       "availability": "Disponibile il:"
     },
     "jobs": {
@@ -834,7 +837,7 @@
   "needsDog": {
     "addDog": "Aggiungi il tuo cane",
     "adoptTitle": "Non hai ancora un cane?",
-    "adoptSoon": "L'adozione tramite Dogs Out arriva presto.",
+    "adoptBody": "Trova un rifugio vicino a te: uno per ogni cantone e ogni Land.",
     "adoptDog": "Adotta un cane",
     "discover": {
       "title": "Scopri richiede un cane",
@@ -1045,6 +1048,7 @@
       "DE": "DE"
     },
     "kmAway": "a ~{{km}} km",
+    "closest": "Il più vicino a te",
     "coversNeighbour": "Si occupa anche di questo cantone, che non ha un rifugio proprio",
     "closedUntil": "Chiuso per lavori fino a {{when}}",
     "loadError": "Non è stato possibile caricare l'elenco dei rifugi. Riprova più tardi."

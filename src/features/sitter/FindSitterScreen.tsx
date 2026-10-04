@@ -82,7 +82,7 @@ export default function FindSitterScreen() {
         // browse sitters until you're looking for one, or jobs until you are one.
         // Don't ask for a pool we aren't entitled to.
         return Promise.all([
-          me.isSitter ? sitterService.getSeekers() : Promise.resolve([]),
+          me.isSitter ? sitterService.getSeekers(weekdays, timeSlots) : Promise.resolve([]),
           me.lookingForSitter ? sitterService.getAvailableSitters(weekdays, timeSlots) : Promise.resolve([]),
           // Open jobs are for sitters to take; own requests are for owners to manage.
           me.isSitter ? sitterService.getOpenRequests().catch(() => []) : Promise.resolve([]),
@@ -206,8 +206,11 @@ export default function FindSitterScreen() {
     return `${day} · ${time(from)} – ${time(to)}`;
   };
 
-  /** The weekday filter only makes sense while browsing sitters to ask. */
-  const showWeekdayFilter = mode === 'requests' && amSeeking;
+  /**
+   * Days and times filter whichever pool is showing: sitters free then, or owners
+   * who need someone then.
+   */
+  const showWeekdayFilter = (mode === 'requests' && amSeeking) || (mode === 'jobs' && amSitter);
 
   /**
    * One day reads better as its own name than as "1 day", and past two the names

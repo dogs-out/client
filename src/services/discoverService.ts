@@ -19,6 +19,8 @@ export interface DiscoverProfile {
   sitterTimeSlots: string[];
   /** Weekday x time-of-day cells, "Monday:Morning". Empty for sitters who never filled the grid in. */
   sitterAvailability?: string[];
+  /** When they usually need a sitter, as "Day:Slot" pairs. */
+  seekerAvailability?: string[];
   sitterExperienceYears: number | null;
   sitterTags: string[];
   lookingForSitter: boolean;

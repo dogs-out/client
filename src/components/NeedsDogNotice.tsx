@@ -1,11 +1,11 @@
-import { Linking, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../types/navigation';
 import { Colors } from '../constants/colors';
 import { GlassCard } from './GlassCard';
-
-/** Zürcher Tierschutz — the shelter the adopt button points at until the feature exists. */
-const SHELTER_URL = 'https://www.zuerchertierschutz.ch';
 
 /**
  * Shown where a feature needs a dog and the account has none.
@@ -13,8 +13,7 @@ const SHELTER_URL = 'https://www.zuerchertierschutz.ch';
  * <p>The tab stays in place rather than disappearing: a feature that vanishes
  * looks like a bug, and someone who has just removed their last dog has no way to
  * find out why the app changed shape. This says what is missing and offers the two
- * ways out — one of which is the adoption idea, standing in for itself until the
- * feature lands.
+ * ways out: add a dog you already have, or find one in the shelter list.
  */
 export function NeedsDogNotice({ reason, onAddDog }: Readonly<{
   /** Which feature is asking — 'discover' or 'playdates'. */
@@ -22,6 +21,7 @@ export function NeedsDogNotice({ reason, onAddDog }: Readonly<{
   onAddDog: () => void;
 }>) {
   const { t } = useTranslation();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   return (
     <View style={styles.wrap}>
@@ -36,15 +36,15 @@ export function NeedsDogNotice({ reason, onAddDog }: Readonly<{
 
       <GlassCard style={styles.adoptCard} padding={16}>
         <Text style={styles.adoptLabel}>{t('needsDog.adoptTitle')}</Text>
-        <Text style={styles.adoptSoon}>{t('needsDog.adoptSoon')}</Text>
+        <Text style={styles.adoptBody}>{t('needsDog.adoptBody')}</Text>
         <TouchableOpacity
           style={styles.secondary}
-          onPress={() => Linking.openURL(SHELTER_URL)}
+          onPress={() => navigation.navigate('Shelters')}
           activeOpacity={0.8}
         >
           <Ionicons name="heart-outline" size={17} color={Colors.primary} />
           <Text style={styles.secondaryText}>{t('needsDog.adoptDog')}</Text>
-          <Ionicons name="open-outline" size={14} color={Colors.textSecondary} />
+          <Ionicons name="chevron-forward" size={15} color={Colors.textSecondary} />
         </TouchableOpacity>
       </GlassCard>
     </View>
@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
 
   adoptCard:  { marginTop: 22, width: '100%' },
   adoptLabel: { fontSize: 14, fontWeight: '700', color: Colors.text, textAlign: 'center' },
-  adoptSoon:  { fontSize: 12, color: Colors.textSecondary, textAlign: 'center', marginTop: 2, marginBottom: 12 },
+  adoptBody:  { fontSize: 12, color: Colors.textSecondary, textAlign: 'center', marginTop: 2, marginBottom: 12 },
   secondary: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 7,
     borderRadius: 20, borderWidth: 1.5, borderColor: Colors.primary, paddingVertical: 10,

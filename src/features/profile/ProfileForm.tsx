@@ -87,6 +87,8 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: R
   const [lookingForSitter, setLookingForSitter] = useState(false);
   /** Weekday x time-of-day cells, "Monday:Morning". */
   const [sitterAvailability, setSitterAvailability] = useState<string[]>([]);
+  /** When this owner usually needs a sitter — the same grid, the other side of it. */
+  const [seekerAvailability, setSeekerAvailability] = useState<string[]>([]);
   const [sitterExperienceYears, setSitterExperienceYears] = useState(0);
   const [sitterTags, setSitterTags]         = useState<string[]>([]);
   const [dogCount, setDogCount]             = useState(0);
@@ -112,6 +114,7 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: R
       setIsSitter(user.isSitter ?? false);
       setLookingForSitter(user.lookingForSitter ?? false);
       setSitterAvailability(availabilityGrid(user));
+      setSeekerAvailability(user.seekerAvailability ?? []);
       if (user.sitterExperienceYears != null) setSitterExperienceYears(user.sitterExperienceYears);
       if (user.sitterTags?.length) setSitterTags(user.sitterTags);
       if (user.photos?.length) {
@@ -281,6 +284,7 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: R
         isSitter,
         lookingForSitter,
         sitterAvailability,
+        seekerAvailability,
         sitterExperienceYears: isSitter ? sitterExperienceYears : undefined,
         sitterTags,
       });
@@ -557,6 +561,14 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: R
               testID="looking-for-sitter-switch"
             />
           </View>
+
+          {lookingForSitter && (
+            <View style={styles.sitterBox}>
+              <Text style={styles.tagCat}>{t('profile.form.seekerAvailabilityLabel')}</Text>
+              <Text style={styles.gridHint}>{t('profile.form.seekerAvailabilityHint')}</Text>
+              <AvailabilityGrid value={seekerAvailability} onChange={setSeekerAvailability} />
+            </View>
+          )}
 
           {/* OWNER TAGS */}
           <Text style={[styles.label, { marginTop: 24 }]}>

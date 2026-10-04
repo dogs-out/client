@@ -346,6 +346,8 @@
       "cameraPermission": "Dogs Out braucht Kamerazugriff, um ein Foto aufzunehmen. Du kannst das in den Einstellungen erlauben.",
       "timeSlotsLabel": "Zeiten, zu denen ich sitten kann",
       "availabilityLabel": "Wann ich sitten kann",
+      "seekerAvailabilityLabel": "Wann brauchst du meistens einen Sitter?",
+      "seekerAvailabilityHint": "Tippe Tage und Tageszeiten an. Sitter sehen das in deinem Profil und können danach filtern.",
       "availabilityHint": "Kreuze an, wann du meistens Zeit hast. Tippe auf einen Tag, um die ganze Zeile zu füllen."
     },
     "userProfile": {
@@ -630,6 +632,7 @@
       "badge": "Als Dogsitter verfügbar",
       "experience": "Erfahrung mit Hunden:",
       "experienceYears": "Jahre",
+      "needsSitter": "Braucht meistens einen Sitter:",
       "availability": "Verfügbar am:"
     },
     "jobs": {
@@ -834,7 +837,7 @@
   "needsDog": {
     "addDog": "Hund hinzufügen",
     "adoptTitle": "Noch keinen Hund?",
-    "adoptSoon": "Adoptieren über Dogs Out kommt bald.",
+    "adoptBody": "Finde ein Tierheim in deiner Nähe: eines für jeden Kanton und jedes Bundesland.",
     "adoptDog": "Hund adoptieren",
     "discover": {
       "title": "Entdecken braucht einen Hund",
@@ -1045,6 +1048,7 @@
       "DE": "DE"
     },
     "kmAway": "~{{km}} km entfernt",
+    "closest": "Am nächsten bei dir",
     "coversNeighbour": "Betreut auch diesen Kanton, der kein eigenes Tierheim hat",
     "closedUntil": "Wegen Umbau geschlossen bis {{when}}",
     "loadError": "Die Liste der Tierheime konnte nicht geladen werden. Bitte versuche es später erneut."

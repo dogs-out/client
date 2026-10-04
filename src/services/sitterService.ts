@@ -73,9 +73,21 @@ export interface SitterRating {
 }
 
 export const sitterService = {
-  /** Users who toggled "I'm looking for a dogsitter", distance-sorted — a sitter's jobs. */
-  getSeekers: (): Promise<DiscoverProfile[]> =>
-    api.get<DiscoverProfile[]>('/sitters/seekers').then(r => r.data),
+  /**
+   * Users who toggled "I'm looking for a dogsitter", distance-sorted — a sitter's jobs.
+   * Days and times narrow it to owners who need someone at any one of them; owners
+   * who have not filled in when they need a sitter stay in the list.
+   */
+  getSeekers: (
+    weekdays?: readonly string[] | null,
+    timeSlots?: readonly string[] | null,
+  ): Promise<DiscoverProfile[]> =>
+    api.get<DiscoverProfile[]>('/sitters/seekers', {
+      params: {
+        ...(weekdays && weekdays.length > 0 ? { weekday: weekdays.join(',') } : {}),
+        ...(timeSlots && timeSlots.length > 0 ? { slot: timeSlots.join(',') } : {}),
+      },
+    }).then(r => r.data),
 
   /**
    * Users who toggled "I'm a dogsitter", distance-sorted — who an owner can ask.
