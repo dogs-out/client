@@ -177,6 +177,7 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Re
     if (!NAME_REGEX.test(name.trim())) { setError(t('auth.register.invalidName')); return; }
     if (containsProfanity(name)) { setError(t('dogs.form.nameProfanity')); return; }
     if (bio && containsProfanity(bio)) { setError(t('dogs.form.bioProfanity')); return; }
+    if (photos.length === 0) { setError(t('dogs.form.photoRequired')); return; }
     setLoading(true);
     setError(null);
     try {
@@ -204,8 +205,14 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Re
         savedDogId = created.id;
       }
 
-      // Delete removed photos
-      await Promise.all(removedIds.map(pid => dogService.deletePhoto(savedDogId, pid)));
+      // Delete removed photos. The server refuses to delete a dog's last photo, so
+      // when every existing one is being replaced, one is held back until the
+      // first new photo is up and only removed after it.
+      const keepsAnExisting = photos.some(p => p.kind === 'existing');
+      const heldBack = !keepsAnExisting && removedIds.length > 0 ? removedIds[removedIds.length - 1] : null;
+      await Promise.all(removedIds
+        .filter(pid => pid !== heldBack)
+        .map(pid => dogService.deletePhoto(savedDogId, pid)));
 
       // Upload new photos sequentially (parallel uploads race the server-side
       // sort order) and persist the display order — first photo = main photo.
@@ -220,6 +227,7 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Re
         } else {
           const saved = await dogService.addPhoto(savedDogId, p.uri);
           orderedIds.push(saved.id);
+          if (heldBack !== null && orderedIds.length === 1) await dogService.deletePhoto(savedDogId, heldBack);
           if (p.crop) crops.push({ photoId: saved.id, crop: p.crop, changed: true });
         }
       }

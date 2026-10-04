@@ -186,6 +186,19 @@ export default function HomeScreen({ navigation }: Readonly<Props>) {
                       {dog.bio && <Text style={styles.dogBio} numberOfLines={2}>{dog.bio}</Text>}
                     </View>
                   </View>
+                  {/* Every dog needs a photo now; dogs saved before that rule get
+                      a nudge here rather than vanishing from anyone's deck. */}
+                  {dog.photos.length === 0 && (
+                    <TouchableOpacity
+                      style={styles.photoNudge}
+                      onPress={() => navigation.navigate('EditDog', { dogId: dog.id })}
+                      activeOpacity={0.7}
+                    >
+                      <Ionicons name="camera-outline" size={16} color={Colors.primary} />
+                      <Text style={styles.photoNudgeText}>{t('home.addDogPhoto', { name: dog.name })}</Text>
+                      <Ionicons name="chevron-forward" size={15} color={Colors.primary} />
+                    </TouchableOpacity>
+                  )}
                   <View style={styles.dogActions}>
                     <TouchableOpacity style={styles.dogAction} onPress={() => navigation.navigate('EditDog', { dogId: dog.id })}>
                       <Ionicons name="pencil-outline" size={15} color={Colors.textSecondary} style={{ marginRight: 4 }} />
@@ -278,6 +291,12 @@ const styles = StyleSheet.create({
 
   dogCard:        { marginBottom: 12 },
   dogRow:         { flexDirection: 'row', alignItems: 'center', padding: 16 },
+  photoNudge: {
+    flexDirection: 'row', alignItems: 'center', gap: 8,
+    marginHorizontal: 14, marginBottom: 10, paddingVertical: 9, paddingHorizontal: 12,
+    borderRadius: 12, backgroundColor: 'rgba(46,158,107,0.10)',
+  },
+  photoNudgeText: { flex: 1, fontSize: 13, fontWeight: '700', color: Colors.primary },
   dogActions:     { flexDirection: 'row', borderTopWidth: 1, borderTopColor: Colors.border, paddingHorizontal: 16, paddingVertical: 10, gap: 16 },
   dogAction:      { flexDirection: 'row', alignItems: 'center' },
   dogActionEnd:   { marginLeft: 'auto' },
