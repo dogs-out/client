@@ -52,6 +52,13 @@
       "on": "Animation on",
       "off": "Animation off",
       "footNote": "This setting lives on this device, so it does not follow your account to another phone."
+    },
+    "adPrivacy": {
+      "title": "Ad privacy",
+      "noFormIos": "Where you are, Google doesn't ask for ad consent, so there are no choices to change here. You can turn tracking off for Dogs Out in the iPhone settings.",
+      "noFormAndroid": "Where you are, Google doesn't ask for ad consent, so there are no choices to change here. You can reset or delete your advertising ID in Android Settings → Privacy → Ads.",
+      "openSettings": "Open Settings",
+      "failed": "The ad privacy choices couldn't be loaded. Please check your connection and try again."
     }
   },
   "auth": {

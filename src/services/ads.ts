@@ -1,5 +1,5 @@
 import { Platform } from 'react-native';
-import mobileAds, { AdsConsent } from 'react-native-google-mobile-ads';
+import mobileAds, { AdsConsent, AdsConsentPrivacyOptionsRequirementStatus } from 'react-native-google-mobile-ads';
 import {
   getTrackingPermissionsAsync,
   requestTrackingPermissionsAsync,
@@ -41,7 +41,21 @@ export function initAds(): Promise<boolean> {
   return ready;
 }
 
-/** Re-opens the consent choices — required by UMP to be reachable somewhere in the app. */
-export async function showAdPrivacyOptions(): Promise<void> {
+/**
+ * Re-opens the consent choices — required by UMP to be reachable somewhere in the app.
+ *
+ * <p>The consent status has to be loaded in this app session first, or the form has
+ * nothing to show and the call quietly does nothing — which is what made the Settings
+ * row look dead for anyone who opened Settings before their first swipe.
+ *
+ * @returns false when Google has no form for this user (consent not required where
+ *          they are), so the caller can say so instead of appearing to ignore the tap
+ */
+export async function showAdPrivacyOptions(): Promise<boolean> {
+  const info = await AdsConsent.requestInfoUpdate();
+  if (info.privacyOptionsRequirementStatus !== AdsConsentPrivacyOptionsRequirementStatus.REQUIRED) {
+    return false;
+  }
   await AdsConsent.showPrivacyOptionsForm();
+  return true;
 }

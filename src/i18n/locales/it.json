@@ -52,6 +52,13 @@
       "on": "Animazione attiva",
       "off": "Animazione disattivata",
       "footNote": "Questa impostazione resta su questo dispositivo e non segue il tuo account su un altro telefono."
+    },
+    "adPrivacy": {
+      "title": "Privacy degli annunci",
+      "noFormIos": "Dove ti trovi, Google non chiede il consenso pubblicitario, quindi qui non c'è nulla da cambiare. Puoi disattivare il tracciamento per Dogs Out nelle impostazioni dell'iPhone.",
+      "noFormAndroid": "Dove ti trovi, Google non chiede il consenso pubblicitario, quindi qui non c'è nulla da cambiare. Puoi reimpostare o eliminare l'ID pubblicità in Impostazioni Android → Privacy → Annunci.",
+      "openSettings": "Apri impostazioni",
+      "failed": "Non è stato possibile caricare le scelte sulla privacy degli annunci. Controlla la connessione e riprova."
     }
   },
   "auth": {

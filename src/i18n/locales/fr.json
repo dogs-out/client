@@ -52,6 +52,13 @@
       "on": "Animation activée",
       "off": "Animation désactivée",
       "footNote": "Ce réglage reste sur cet appareil : il ne suit pas ton compte sur un autre téléphone."
+    },
+    "adPrivacy": {
+      "title": "Confidentialité des publicités",
+      "noFormIos": "Là où tu te trouves, Google ne demande pas de consentement publicitaire, il n'y a donc rien à modifier ici. Tu peux désactiver le suivi pour Dogs Out dans les réglages de l'iPhone.",
+      "noFormAndroid": "Là où tu te trouves, Google ne demande pas de consentement publicitaire, il n'y a donc rien à modifier ici. Tu peux réinitialiser ou supprimer ton identifiant publicitaire dans Paramètres Android → Confidentialité → Annonces.",
+      "openSettings": "Ouvrir les réglages",
+      "failed": "Les choix de confidentialité des publicités n'ont pas pu être chargés. Vérifie ta connexion et réessaie."
     }
   },
   "auth": {

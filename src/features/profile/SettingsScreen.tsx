@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Linking, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
@@ -33,6 +33,23 @@ export default function SettingsScreen({ navigation }: Readonly<Props>) {
       .then(u => setIsLocalAuth(u.authProvider !== 'GOOGLE' && u.authProvider !== 'APPLE'))
       .catch(() => {});
   }, []);
+
+  const openAdPrivacy = async () => {
+    try {
+      if (await showAdPrivacyOptions()) return;
+      // No Google form applies here. Tracking is still the user's to switch off,
+      // and on iOS that lives in the system settings for this app.
+      Alert.alert(
+        t('settings.adPrivacy.title'),
+        t(Platform.OS === 'ios' ? 'settings.adPrivacy.noFormIos' : 'settings.adPrivacy.noFormAndroid'),
+        Platform.OS === 'ios'
+          ? [{ text: t('common.cancel'), style: 'cancel' }, { text: t('settings.adPrivacy.openSettings'), onPress: () => Linking.openSettings() }]
+          : [{ text: t('common.ok') }],
+      );
+    } catch {
+      Alert.alert(t('common.error'), t('settings.adPrivacy.failed'));
+    }
+  };
 
   const handleSignOut = () => {
     Alert.alert(t('settings.signOutTitle'), t('settings.signOutConfirm'), [
@@ -71,7 +88,7 @@ export default function SettingsScreen({ navigation }: Readonly<Props>) {
       title: t('settings.sections.privacy'),
       rows: [
         { icon: 'location-outline',      label: t('settings.rows.locationSettings'),   onPress: () => navigation.navigate('LocationSettings') },
-        { icon: 'megaphone-outline',     label: t('settings.rows.adPrivacy'),          onPress: () => { showAdPrivacyOptions().catch(() => {}); } },
+        { icon: 'megaphone-outline',     label: t('settings.rows.adPrivacy'),          onPress: openAdPrivacy },
         { icon: 'eye-off-outline',        label: t('settings.rows.blockedUsers'),       onPress: () => navigation.navigate('BlockedUsers') },
       ],
     },

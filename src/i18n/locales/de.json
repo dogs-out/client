@@ -52,6 +52,13 @@
       "on": "Animation ein",
       "off": "Animation aus",
       "footNote": "Diese Einstellung gilt nur für dieses Gerät und wandert nicht mit deinem Konto auf ein anderes Handy."
+    },
+    "adPrivacy": {
+      "title": "Datenschutz bei Werbung",
+      "noFormIos": "Wo du bist, fragt Google nicht nach einer Werbe-Einwilligung, deshalb gibt es hier nichts zu ändern. Das Tracking für Dogs Out kannst du in den iPhone-Einstellungen ausschalten.",
+      "noFormAndroid": "Wo du bist, fragt Google nicht nach einer Werbe-Einwilligung, deshalb gibt es hier nichts zu ändern. Deine Werbe-ID kannst du unter Android-Einstellungen → Datenschutz → Werbung zurücksetzen oder löschen.",
+      "openSettings": "Einstellungen öffnen",
+      "failed": "Die Datenschutzoptionen für Werbung konnten nicht geladen werden. Prüfe deine Verbindung und versuche es erneut."
     }
   },
   "auth": {
