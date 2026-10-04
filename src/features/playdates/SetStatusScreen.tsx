@@ -17,12 +17,13 @@ import { GlassButton } from '../../components/GlassButton';
 import { RemoteImage } from '../../components/ui/RemoteImage';
 import { CustomSlider } from '../../components/CustomSlider';
 import {
-  userService, DEFAULT_STATUS, SittableDog, STATUS_EXPIRES, STATUS_MAY_BE_INDEFINITE,
+  userService, DEFAULT_STATUS, SittableDog, STATUS_EXPIRES, STATUS_IS_OUT, STATUS_MAY_BE_INDEFINITE,
   STATUS_SHARES_LOCATION, WalkStatus,
 } from '../../services/userService';
 import { STATUS_DURATIONS, durationLabel, nearestStop } from '../../utils/statusDuration';
 import { getApiError } from '../../utils/apiError';
 import { STATUS_ICONS } from './statusIcons';
+import { CompanionPicker, CompanionPick } from './CompanionPicker';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'SetStatus'>;
 
@@ -69,6 +70,7 @@ export default function SetStatusScreen({ navigation, route }: Readonly<Props>) 
   const [point, setPoint] = useState<Point | null>(null);
   const [dogs, setDogs] = useState<SittableDog[]>([]);
   const [dogId, setDogId] = useState<number | null>(null);
+  const [companions, setCompanions] = useState<CompanionPick[]>([]);
   const [options, setOptions] = useState<WalkStatus[]>(statusesFor(true, false));
 
   const [locating, setLocating] = useState(false);
@@ -84,6 +86,7 @@ export default function SetStatusScreen({ navigation, route }: Readonly<Props>) 
         if (!me.walkStatus) return;
         setStatus(me.walkStatus);
         setDogId(me.walkStatusDogId);
+        setCompanions((me.walkStatusCompanions ?? []).map(c => ({ userId: c.userId, dogId: c.dogId })));
         // No expiry on an expiring status means it was set open-ended.
         setIndefinite(me.walkStatusExpiresAt === null);
         setPhoto(me.walkStatusPhoto);
@@ -183,6 +186,7 @@ export default function SetStatusScreen({ navigation, route }: Readonly<Props>) 
         ...(shares ? { latitude: point.latitude, longitude: point.longitude } : {}),
         ...(shares && point.name ? { placeName: point.name } : {}),
         ...(needsDog && dogId !== null ? { dogId } : {}),
+        ...(STATUS_IS_OUT[status] ? { companions } : {}),
         // A photo describes the status it was taken for, so it only survives a
         // save that leaves the status alone. Carrying this morning's "at home"
         // picture into an afternoon walk says nothing about the walk.
@@ -364,6 +368,15 @@ export default function SetStatusScreen({ navigation, route }: Readonly<Props>) 
                 </View>
               </>
             )}
+          </GlassCard>
+        )}
+
+        {STATUS_IS_OUT[status] && (
+          <GlassCard style={styles.card}>
+            <Text style={styles.sectionLabel}>{t('whosOutside.companionsLabel')}</Text>
+            <Text style={styles.hint}>{t('whosOutside.companionsHint')}</Text>
+            <View style={{ height: 10 }} />
+            <CompanionPicker value={companions} onChange={setCompanions} />
           </GlassCard>
         )}
 

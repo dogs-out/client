@@ -79,6 +79,7 @@ export function WhosOutsideView() {
           longitude: me.walkStatusLongitude,
           placeName: me.walkStatusPlaceName,
           photo: me.walkStatusPhoto,
+          companions: me.walkStatusCompanions ?? [],
           until: me.walkStatusExpiresAt ?? '',
           distanceKm: -1,
         });
@@ -158,11 +159,18 @@ export function WhosOutsideView() {
     // defaultValue because the status comes from the server: a value added after
     // this build shipped has no wording here, and a name alone still reads as a
     // row about a person rather than as a broken string.
-    const line = t(`${prefix}.${item.status}`, {
+    const base = t(`${prefix}.${item.status}`, {
       name: item.name,
       dog: dogs || t('whosOutside.theDog'),
       defaultValue: item.name,
     });
+    // "…, accompanied by Lea with Maylie and Tom"
+    const company = (item.companions ?? []).map(c => c.dogName
+      ? t('whosOutside.companionWithDog', { name: c.name, dog: c.dogName })
+      : c.name);
+    const line = out && company.length > 0
+      ? t('whosOutside.accompanied', { line: base, list: company.join(', ') })
+      : base;
     const subtitle = renderSubtitle(item, hasPoint, isMine);
     const until = untilLabel(item.until, i18n.language);
     return (

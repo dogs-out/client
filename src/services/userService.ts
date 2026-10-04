@@ -57,6 +57,16 @@ export interface FriendStatus {
   photo: string | null;
   until: string;
   distanceKm: number;
+  /** Friends out with them right now. */
+  companions?: StatusCompanion[];
+}
+
+export interface StatusCompanion {
+  userId: number;
+  name: string;
+  /** Null when they came along without a dog. */
+  dogId: number | null;
+  dogName: string | null;
 }
 
 /** A dog you may say you are looking after: one belonging to a match. */
@@ -116,6 +126,7 @@ export interface UserProfile {
   walkStatusDogId: number | null;
   /** Optional photo on the current status. */
   walkStatusPhoto: string | null;
+  walkStatusCompanions?: StatusCompanion[];
   /** Today is this user's birthday, or one of their dogs'. */
   celebratingToday: boolean;
   birthdayToday: boolean;
@@ -165,6 +176,8 @@ export const userService = {
     keepPhoto?: boolean;
     /** Leaves the status standing until it is changed; only honoured where allowed. */
     indefinite?: boolean;
+    /** Friends out with you; only kept for out-and-about statuses. */
+    companions?: { userId: number; dogId: number | null }[];
   }): Promise<UserProfile> => api.put<UserProfile>('/users/me/status', body).then(r => r.data),
 
   /** Attaches a photo to the current status. Takes a local file URI from the picker. */

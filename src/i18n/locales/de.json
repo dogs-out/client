@@ -927,7 +927,14 @@
     "openEndedHint": "Bleibt so, bis du es änderst — statt eine Zahl zu raten.",
     "report": "Melden",
     "endStatus": "Status beenden",
-    "endFailed": "Status konnte nicht geändert werden. Bitte nochmals versuchen."
+    "endFailed": "Status konnte nicht geändert werden. Bitte nochmals versuchen.",
+    "companionsLabel": "Mit Freunden unterwegs",
+    "companionsHint": "Optional – wer dabei ist und mit welchem Hund.",
+    "companionsNoMatches": "Freunde erscheinen hier, sobald ihr ein Match seid.",
+    "companionWhichDog": "Welcher Hund von {{name}} ist dabei?",
+    "companionNoDog": "Kein Hund",
+    "companionWithDog": "{{name}} mit {{dog}}",
+    "accompanied": "{{line}}, begleitet von {{list}}"
   },
   "birthday": {
     "ownTitle": "Wuff wuff — alles Gute zum Geburtstag!",

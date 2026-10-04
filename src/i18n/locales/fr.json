@@ -927,7 +927,14 @@
     "openEndedHint": "Reste actif jusqu'à ce que tu le changes, au lieu de choisir un chiffre.",
     "report": "Signaler",
     "endStatus": "Terminer",
-    "endFailed": "Impossible de mettre à jour ton statut. Réessaie."
+    "endFailed": "Impossible de mettre à jour ton statut. Réessaie.",
+    "companionsLabel": "Dehors avec des amis",
+    "companionsHint": "Facultatif — qui est avec toi, et avec quel chien.",
+    "companionsNoMatches": "Tes amis apparaissent ici une fois que vous avez matché.",
+    "companionWhichDog": "Quel chien de {{name}} est venu ?",
+    "companionNoDog": "Sans chien",
+    "companionWithDog": "{{name}} avec {{dog}}",
+    "accompanied": "{{line}}, accompagné·e de {{list}}"
   },
   "birthday": {
     "ownTitle": "Wouf wouf — joyeux anniversaire !",

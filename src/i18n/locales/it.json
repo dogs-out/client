@@ -927,7 +927,14 @@
     "openEndedHint": "Resta così finché non lo cambi, invece di scegliere un numero.",
     "report": "Segnala",
     "endStatus": "Termina stato",
-    "endFailed": "Impossibile aggiornare lo stato. Riprova."
+    "endFailed": "Impossibile aggiornare lo stato. Riprova.",
+    "companionsLabel": "Fuori con amici",
+    "companionsHint": "Facoltativo — chi è con te e con quale cane.",
+    "companionsNoMatches": "Gli amici appaiono qui dopo un match.",
+    "companionWhichDog": "Quale cane di {{name}} è venuto?",
+    "companionNoDog": "Nessun cane",
+    "companionWithDog": "{{name}} con {{dog}}",
+    "accompanied": "{{line}}, insieme a {{list}}"
   },
   "birthday": {
     "ownTitle": "Bau bau — buon compleanno!",
