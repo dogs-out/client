@@ -1,16 +1,12 @@
-import { Platform } from 'react-native';
-
 /**
  * How KeyboardAvoidingView should move content out from under the keyboard.
  *
- * <p>Padding on iOS, and nothing at all on Android. Android already resizes the
- * window when the keyboard appears, so adding padding on top of that counts the
- * keyboard twice — and worse, the padding is measured once when the keyboard
- * opens and does not follow it. Opening the emoji panel, which is taller than
- * the keyboard, therefore hid the message being written behind it.
- *
- * <p>Undefined is a real value here, not an oversight: it tells
- * KeyboardAvoidingView to leave the layout alone and let the window resize do
- * the work, which tracks whatever height the input method actually takes.
+ * <p>Padding on both platforms, with KeyboardAvoidingView taken from
+ * react-native-keyboard-controller rather than React Native. Android used to be
+ * left to resize the window on its own, but since the app draws edge-to-edge
+ * (enforced from Expo SDK 57) Android no longer resizes it, and the keyboard
+ * covered the message being written. React Native's own padding was no answer
+ * either: it measured the keyboard once, so the taller emoji panel still hid the
+ * input. The controller's version follows the keyboard frame as it changes.
  */
-export const KEYBOARD_BEHAVIOR = Platform.OS === 'ios' ? 'padding' : undefined;
+export const KEYBOARD_BEHAVIOR = 'padding' as const;

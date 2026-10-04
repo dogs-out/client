@@ -1,9 +1,8 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 import {
-  ActivityIndicator, FlatList, KeyboardAvoidingView,
-  Platform, StyleSheet, Text, TextInput, TouchableOpacity, View,
-  useWindowDimensions,
+  ActivityIndicator, FlatList, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View, useWindowDimensions,
 } from 'react-native';
+import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
 import { RemoteImage } from '../../components/ui/RemoteImage';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { BlurView } from 'expo-blur';

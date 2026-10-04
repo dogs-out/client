@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import {
-  KeyboardAvoidingView, Modal, Pressable, StyleSheet,
-  Text, TextInput, TouchableOpacity, View,
+  Modal, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View,
 } from 'react-native';
+import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
 import { BlurView } from 'expo-blur';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';

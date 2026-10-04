@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import {
-  ActivityIndicator, KeyboardAvoidingView, Platform,
-  StyleSheet, Text, TextInput, TouchableOpacity, View,
+  ActivityIndicator, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View,
 } from 'react-native';
+import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
 import { Ionicons } from '@expo/vector-icons';
 import * as AuthSession from 'expo-auth-session';
 import * as WebBrowser from 'expo-web-browser';

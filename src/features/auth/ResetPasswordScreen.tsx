@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import {
-  ActivityIndicator, KeyboardAvoidingView,
-  StyleSheet, Text, TextInput, View,
+  ActivityIndicator, StyleSheet, Text, TextInput, View,
 } from 'react-native';
+import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useTranslation } from 'react-i18next';
 import { RootStackParamList } from '../../types/navigation';

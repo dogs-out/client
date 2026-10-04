@@ -1,9 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
-  ActivityIndicator, Alert, KeyboardAvoidingView, Modal,
-  Platform, ScrollView, StyleSheet, Text, TextInput,
-  TouchableOpacity, View,
+  ActivityIndicator, Alert, Modal, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View,
 } from 'react-native';
+import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
 import { RemoteImage } from '../../components/ui/RemoteImage';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import * as ImagePicker from 'expo-image-picker';
