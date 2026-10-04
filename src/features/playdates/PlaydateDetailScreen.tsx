@@ -123,15 +123,11 @@ export default function PlaydateDetailScreen({ navigation, route }: Readonly<Pro
       Alert.alert(t('playdates.detail.calendarAdded'), t('playdates.detail.calendarAddedBody'));
       return;
     }
-    if (result === 'denied') {
-      Alert.alert(t('playdates.detail.calendarFailedTitle'), t('playdates.detail.calendarDenied'));
-      return;
-    }
+    // Closed the system sheet: they have seen it and decided, nothing to add.
+    if (result === 'closed') return;
 
-    // Not an error to the person holding the phone: plenty of devices simply have
-    // no calendar an app may write to. Offer the route that needs no permission
-    // and no synced account, worded as the next step rather than a failure —
-    // testers read the old "Couldn't add it" as something being broken.
+    // The sheet could not be shown. Offer the route that needs nothing from the
+    // phone, worded as the next step rather than a failure.
     if (reason) console.warn('[calendar] write failed:', reason);
     Alert.alert(
       t('playdates.detail.calendarFallbackTitle'),
