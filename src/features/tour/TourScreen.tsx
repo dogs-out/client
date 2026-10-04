@@ -14,6 +14,7 @@ import { GlassButton } from '../../components/GlassButton';
 import { userService } from '../../services/userService';
 import { appPrefs } from '../../utils/appPrefs';
 import { TourSlide, tourSlides, tourVariant } from './tourSlides';
+import { tourProgress } from './tourProgress';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Tour'>;
 
@@ -24,11 +25,12 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Tour'>;
  * walking status, walks from a chat, dogsitting, SOS — and each account type
  * uses a different half of it, so the tour is picked by role.
  */
-export default function TourScreen({ navigation }: Readonly<Props>) {
+export default function TourScreen({ navigation, route }: Readonly<Props>) {
   const { t } = useTranslation();
   const { width } = useWindowDimensions();
+  const startAt = route.params?.startAt ?? 0;
   const [slides, setSlides] = useState<TourSlide[] | null>(null);
-  const [index, setIndex] = useState(0);
+  const [index, setIndex] = useState(startAt);
   const listRef = useRef<FlatList<TourSlide>>(null);
 
   useEffect(() => {
@@ -38,9 +40,26 @@ export default function TourScreen({ navigation }: Readonly<Props>) {
     // Seen once it has opened, not once it is finished: someone who backgrounds
     // the app halfway through has seen enough not to be shown it again.
     appPrefs.set('tourSeen', true);
+    // Back in the tour, so the "continue" bar has done its job.
+    tourProgress.clear();
   }, []);
 
   const finish = () => navigation.goBack();
+
+  /**
+   * Opens the real screen for this slide, leaving a bar there to come back to the
+   * tour at the next slide — so each feature can be looked at in place without
+   * starting the tour over.
+   */
+  const showMe = (slide: TourSlide) => {
+    if (!slide.target || !slides) return;
+    const target = slide.target;
+    tourProgress.pause(Math.min(index + 1, slides.length - 1));
+    navigation.goBack();
+    if ('tab' in target) navigation.navigate('MainTabs', { screen: target.tab } as never);
+    else if (target.screen === 'AddDog') navigation.navigate('AddDog', {});
+    else navigation.navigate(target.screen);
+  };
 
   const onScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
     setIndex(Math.round(e.nativeEvent.contentOffset.x / width));
@@ -78,6 +97,7 @@ export default function TourScreen({ navigation }: Readonly<Props>) {
           showsHorizontalScrollIndicator={false}
           onMomentumScrollEnd={onScroll}
           getItemLayout={(_, i) => ({ length: width, offset: width * i, index: i })}
+          initialScrollIndex={Math.min(startAt, slides.length - 1)}
           renderItem={({ item }) => (
             <View style={[styles.slide, { width }]}>
               <GlassCard style={styles.art} radius={90} padding={0}>
@@ -85,6 +105,11 @@ export default function TourScreen({ navigation }: Readonly<Props>) {
               </GlassCard>
               <Text style={styles.title}>{t(`tour.slides.${item.key}.title`)}</Text>
               <Text style={styles.body}>{t(`tour.slides.${item.key}.body`)}</Text>
+              {item.target && (
+                <TouchableOpacity style={styles.showMe} onPress={() => showMe(item)}>
+                  <Text style={styles.showMeText}>{t('tour.showMe')}</Text>
+                </TouchableOpacity>
+              )}
             </View>
           )}
         />
@@ -116,6 +141,11 @@ const styles = StyleSheet.create({
   emoji: { fontSize: 84 },
   title: { fontSize: 26, fontWeight: '800', color: Colors.text, textAlign: 'center', marginBottom: 12 },
   body:  { fontSize: 16, color: Colors.textSecondary, textAlign: 'center', lineHeight: 23 },
+  showMe: {
+    marginTop: 22, paddingHorizontal: 20, paddingVertical: 10, borderRadius: 18,
+    borderWidth: 1.5, borderColor: Colors.primary,
+  },
+  showMeText: { fontSize: 15, fontWeight: '800', color: Colors.primary },
 
   bottom: { paddingHorizontal: 24, paddingBottom: 16, gap: 18 },
   dots: { flexDirection: 'row', justifyContent: 'center', gap: 7 },

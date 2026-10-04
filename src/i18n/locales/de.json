@@ -1109,7 +1109,9 @@
         "title": "Alles bereit",
         "body": "Du kannst diese Tour jederzeit in den Einstellungen wieder ansehen."
       }
-    }
+    },
+    "showMe": "Zeig's mir",
+    "continue": "Tour fortsetzen"
   },
   "ads": {
     "sponsored": "Anzeige",

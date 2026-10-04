@@ -1109,7 +1109,9 @@
         "title": "Tout est prêt",
         "body": "Tu peux revoir cette visite à tout moment dans les réglages."
       }
-    }
+    },
+    "showMe": "Montre-moi",
+    "continue": "Continuer la visite"
   },
   "ads": {
     "sponsored": "Sponsorisé",

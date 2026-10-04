@@ -46,6 +46,8 @@ import RaiseSosScreen from '../features/sos/RaiseSosScreen';
 import SosDetailScreen from '../features/sos/SosDetailScreen';
 import SheltersScreen from '../features/shelters/SheltersScreen';
 import TourScreen from '../features/tour/TourScreen';
+import { TourResumeBar } from '../features/tour/TourResumeBar';
+import { tourProgress } from '../features/tour/tourProgress';
 import TabNavigator from './TabNavigator';
 import { BirthdayGreeting } from '../components/BirthdayGreeting';
 
@@ -221,6 +223,12 @@ export default function Navigation() {
       {/* Above the navigator, so the greeting finds the user on whatever screen
           they opened the app to. */}
       <BirthdayGreeting />
+      <TourResumeBar
+        onContinue={startAt => {
+          tourProgress.clear();
+          navigationRef.navigate('Tour', { startAt });
+        }}
+      />
     </NavigationContainer>
   );
 }

@@ -39,4 +39,16 @@ describe('tourSlides', () => {
     expect(keys('owner')).not.toContain('sosHelp');
     expect(keys('sitter')).toContain('sosHelp');
   });
+
+  it('offers "Show me" for every feature slide, and not for the welcome or the send-off', () => {
+    for (const v of ['owner', 'sitter', 'neither'] as const) {
+      for (const slide of tourSlides(v)) {
+        if (slide.key === 'welcome' || slide.key === 'done' || slide.key === 'sosHelp') {
+          expect(slide.target).toBeUndefined();
+        } else {
+          expect(slide.target).toBeDefined();
+        }
+      }
+    }
+  });
 });

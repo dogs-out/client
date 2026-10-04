@@ -52,5 +52,6 @@ export type RootStackParamList = {
   RaiseSos: { dogId?: number; pickedPlace?: PlaceResult } | undefined;
   SosDetail: { alertId: number };
   Shelters: undefined;
-  Tour: undefined;
+  /** startAt: resume after a "Show me" at this slide. */
+  Tour: { startAt?: number } | undefined;
 };

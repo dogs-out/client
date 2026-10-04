@@ -1016,7 +1016,9 @@
         "title": "You're all set",
         "body": "You can watch this tour again any time in Settings."
       }
-    }
+    },
+    "showMe": "Show me",
+    "continue": "Continue walkthrough"
   },
   "ads": {
     "sponsored": "Sponsored",

@@ -1109,7 +1109,9 @@
         "title": "Tutto pronto",
         "body": "Puoi rivedere questo tour in qualsiasi momento nelle impostazioni."
       }
-    }
+    },
+    "showMe": "Mostrami",
+    "continue": "Continua il tour"
   },
   "ads": {
     "sponsored": "Sponsorizzato",
