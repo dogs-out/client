@@ -329,7 +329,7 @@ export default function PlaydateDetailScreen({ navigation, route }: Readonly<Pro
                 {(playdate.myStatus === 'JOINED' || playdate.myStatus === 'HOST') && (
                   <TouchableOpacity style={styles.primaryBtn} onPress={openChat}>
                     <Ionicons name="chatbubbles-outline" size={17} color="#fff" style={{ marginRight: 8 }} />
-                    <Text style={styles.primaryBtnText}>{t('playdates.detail.openChat')}</Text>
+                    <Text style={styles.primaryBtnText}>{t(playdate.walk ? 'playdates.detail.openWalkChat' : 'playdates.detail.openChat')}</Text>
                   </TouchableOpacity>
                 )}
 

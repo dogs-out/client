@@ -684,6 +684,7 @@
       "cancelConfirm": "This cancels the playdate for everyone and notifies all attendees. Are you sure?",
       "cancelled": "This playdate was cancelled",
       "openChat": "Open group chat",
+      "openWalkChat": "Open chat",
       "hosting": "Hosting",
       "going": "Going",
       "invited": "Invited",
