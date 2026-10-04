@@ -34,7 +34,7 @@ import { useDeckAd } from '../ads/useDeckAd';
 import { DeckAdCard } from '../ads/DeckAdCard';
 import { AD_EVERY_N_SWIPES } from '../../constants/ads';
 
-const { width: SW } = Dimensions.get('window');
+const { width: SW, height: SH } = Dimensions.get('window');
 const CARD_W = SW - 32;
 /** The card's preferred height; it shrinks below this on shorter screens. */
 const CARD_H = CARD_W * 1.42;
@@ -295,13 +295,26 @@ export default function DiscoverScreen() {
   const afterSwipe = useCallback((hasNext: boolean) => {
     swipeCountRef.current += 1;
     if (swipeCountRef.current === 1) initAds().then(setAdsEnabled);
-    // Only between two profiles: an ad as the last card would sit on top of the
-    // "no more dogs" screen with nothing behind it.
-    if (hasNext && swipeCountRef.current % AD_EVERY_N_SWIPES === 0) {
+    // Every Nth swipe, and also as the very last card: when the deck runs out
+    // there is nothing left to interrupt, so the slot costs nobody a profile.
+    if (!hasNext || swipeCountRef.current % AD_EVERY_N_SWIPES === 0) {
       const ad = takeDeckAd();
       if (ad) setAdCard(ad);
     }
   }, [takeDeckAd]);
+
+  // An empty deck gets one ad card of its own, swiped away to reveal the "no more
+  // dogs" screen. Nothing can be swiped on an empty deck, so this is also where
+  // ads start for someone who opens Discover to find it empty.
+  const emptyAdShownRef = useRef(false);
+  const deckEmpty = !loading && !locked && !error && feed[idx] === undefined;
+  useEffect(() => {
+    if (!deckEmpty) { emptyAdShownRef.current = false; return; }
+    if (!adsEnabled) { initAds().then(setAdsEnabled); return; }
+    if (emptyAdShownRef.current || adCard) return;
+    const ad = takeDeckAd();
+    if (ad) { emptyAdShownRef.current = true; setAdCard(ad); }
+  }, [deckEmpty, adsEnabled, adCard, takeDeckAd]);
 
   const handleSwipe = useCallback((action: 'LIKE' | 'PASS', dy: number) => {
     if (swiping) return;
@@ -402,6 +415,24 @@ export default function DiscoverScreen() {
   }
 
   const profile = feed[idx];
+
+  if (!profile && adCard) {
+    const h = Math.min(CARD_H, Math.round(SH * 0.62));
+    return (
+      <SafeAreaView style={styles.safe}>
+        <FloatingBackground />
+        <View style={styles.centered}>
+          <Animated.View
+            key="deck-ad-empty"
+            style={[styles.card, { height: h, transform: [{ translateX: pan.x }, { translateY: pan.y }, { rotate }] }]}
+            {...panResponder.panHandlers}
+          >
+            <DeckAdCard nativeAd={adCard} width={CARD_W} height={h} />
+          </Animated.View>
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   if (!profile) {
     return (
