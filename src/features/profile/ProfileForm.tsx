@@ -15,7 +15,7 @@ import { userService } from '../../services/userService';
 import { dogService } from '../../services/dogService';
 import {
   OWNER_LIFESTYLE_TAGS, OWNER_PERSONALITY_TAGS, RELATIONSHIP_STATUS_OPTIONS,
-  SITTER_LIFESTYLE_TAGS, SITTER_PERSONALITY_TAGS, SITTER_TAGS, TIME_SLOTS, WEEKDAYS,
+  SITTER_LIFESTYLE_TAGS, SITTER_PERSONALITY_TAGS, SITTER_TAGS,
 } from '../../constants/tags';
 import { translateTag } from '../../i18n/translateTag';
 import { getApiError } from '../../utils/apiError';
@@ -28,6 +28,8 @@ import { CropRect, CroppedImage } from '../../components/ui/CroppedImage';
 import { useUnsavedChanges } from '../../hooks/useUnsavedChanges';
 import { KEYBOARD_BEHAVIOR } from '../../utils/keyboardBehavior';
 import { Colors } from '../../constants/colors';
+import { AvailabilityGrid } from '../../components/AvailabilityGrid';
+import { availabilityGrid } from '../../utils/availability';
 
 interface Props {
   title: string;
@@ -84,8 +86,8 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: R
   const [hasDog, setHasDog]                 = useState(true);
   const [isSitter, setIsSitter]             = useState(false);
   const [lookingForSitter, setLookingForSitter] = useState(false);
-  const [sitterWeekdays, setSitterWeekdays] = useState<string[]>([]);
-  const [sitterTimeSlots, setSitterTimeSlots] = useState<string[]>([]);
+  /** Weekday x time-of-day cells, "Monday:Morning". */
+  const [sitterAvailability, setSitterAvailability] = useState<string[]>([]);
   const [sitterExperienceYears, setSitterExperienceYears] = useState(0);
   const [sitterTags, setSitterTags]         = useState<string[]>([]);
   const [dogCount, setDogCount]             = useState(0);
@@ -110,8 +112,7 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: R
       setHasDog(user.hasDog ?? true);
       setIsSitter(user.isSitter ?? false);
       setLookingForSitter(user.lookingForSitter ?? false);
-      if (user.sitterWeekdays?.length) setSitterWeekdays(user.sitterWeekdays);
-      if (user.sitterTimeSlots?.length) setSitterTimeSlots(user.sitterTimeSlots);
+      setSitterAvailability(availabilityGrid(user));
       if (user.sitterExperienceYears != null) setSitterExperienceYears(user.sitterExperienceYears);
       if (user.sitterTags?.length) setSitterTags(user.sitterTags);
       if (user.photos?.length) {
@@ -220,17 +221,6 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: R
     );
   };
 
-  const toggleTimeSlot = (slot: string) => {
-    setSitterTimeSlots(prev =>
-      prev.includes(slot) ? prev.filter(s => s !== slot) : [...prev, slot]
-    );
-  };
-
-  const toggleWeekday = (day: string) => {
-    setSitterWeekdays(prev =>
-      prev.includes(day) ? prev.filter(d => d !== day) : [...prev, day]
-    );
-  };
 
   // Everything the form holds, as one string. Photos are included by id, uri and
   // framing, so adding, cropping or reordering one counts as a change too.
@@ -291,8 +281,7 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: R
         hasDog,
         isSitter,
         lookingForSitter,
-        sitterWeekdays,
-        sitterTimeSlots,
+        sitterAvailability,
         sitterExperienceYears: isSitter ? sitterExperienceYears : undefined,
         sitterTags,
       });
@@ -520,37 +509,9 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: R
 
           {isSitter && (
             <View style={styles.sitterBox}>
-              <Text style={styles.tagCat}>{t('profile.form.weekdaysLabel')}</Text>
-              <View style={styles.chipRow}>
-                {WEEKDAYS.map(day => {
-                  const sel = sitterWeekdays.includes(day);
-                  return (
-                    <TouchableOpacity
-                      key={day}
-                      style={[styles.chip, sel && styles.chipActive]}
-                      onPress={() => toggleWeekday(day)}
-                    >
-                      <Text style={[styles.chipText, sel && styles.chipTextActive]}>{translateTag(day, t)}</Text>
-                    </TouchableOpacity>
-                  );
-                })}
-              </View>
-
-              <Text style={styles.tagCat}>{t('profile.form.timeSlotsLabel')}</Text>
-              <View style={styles.chipRow}>
-                {TIME_SLOTS.map(slot => {
-                  const sel = sitterTimeSlots.includes(slot);
-                  return (
-                    <TouchableOpacity
-                      key={slot}
-                      style={[styles.chip, sel && styles.chipActive]}
-                      onPress={() => toggleTimeSlot(slot)}
-                    >
-                      <Text style={[styles.chipText, sel && styles.chipTextActive]}>{translateTag(slot, t)}</Text>
-                    </TouchableOpacity>
-                  );
-                })}
-              </View>
+              <Text style={styles.tagCat}>{t('profile.form.availabilityLabel')}</Text>
+              <Text style={styles.gridHint}>{t('profile.form.availabilityHint')}</Text>
+              <AvailabilityGrid value={sitterAvailability} onChange={setSitterAvailability} />
 
               <Text style={styles.tagCat}>
                 {t('profile.form.experienceLabel')}
@@ -780,6 +741,7 @@ const styles = StyleSheet.create({
   modalCancel:   { fontSize: 16, color: Colors.textSecondary },
   modalDone:     { fontSize: 16, color: Colors.primary, fontWeight: '700' },
 
+  gridHint:     { fontSize: 12, color: Colors.textSecondary, marginTop: -4, marginBottom: 10 },
   tagCat:       { fontSize: 12, fontWeight: '600', color: Colors.textSecondary, marginTop: 12, marginBottom: 8, textTransform: 'uppercase', letterSpacing: 0.5 },
   tagCatHint:   { fontWeight: '400', textTransform: 'none', letterSpacing: 0 },
   chipRow:      { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 4 },

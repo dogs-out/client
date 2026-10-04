@@ -337,7 +337,9 @@
       "sitterTagsLabel": "Sitter-Tags",
       "sitterTagsHint": "(bis zu 4)",
       "cameraPermission": "Dogs Out braucht Kamerazugriff, um ein Foto aufzunehmen. Du kannst das in den Einstellungen erlauben.",
-      "timeSlotsLabel": "Zeiten, zu denen ich sitten kann"
+      "timeSlotsLabel": "Zeiten, zu denen ich sitten kann",
+      "availabilityLabel": "Wann ich sitten kann",
+      "availabilityHint": "Kreuze an, wann du meistens Zeit hast. Tippe auf einen Tag, um die ganze Zeile zu füllen."
     },
     "userProfile": {
       "profileFallback": "Profil",

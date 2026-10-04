@@ -337,7 +337,9 @@
       "sitterTagsLabel": "Tag da sitter",
       "sitterTagsHint": "(fino a 4)",
       "cameraPermission": "Dogs Out ha bisogno dell'accesso alla fotocamera. Puoi consentirlo nelle impostazioni.",
-      "timeSlotsLabel": "Orari in cui posso fare il dogsitter"
+      "timeSlotsLabel": "Orari in cui posso fare il dogsitter",
+      "availabilityLabel": "Quando posso fare il dogsitter",
+      "availabilityHint": "Spunta gli orari in cui sei di solito libero. Tocca un giorno per riempire tutta la riga."
     },
     "userProfile": {
       "profileFallback": "Profilo",

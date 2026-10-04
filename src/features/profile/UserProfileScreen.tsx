@@ -19,6 +19,8 @@ import { FloatingBackground } from '../../components/FloatingBackground';
 import { GlassCard } from '../../components/GlassCard';
 import { translateTag } from '../../i18n/translateTag';
 import { translateBreed } from '../../i18n/translateBreed';
+import { AvailabilityGrid } from '../../components/AvailabilityGrid';
+import { availabilityGrid } from '../../utils/availability';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'UserProfile'>;
 
@@ -300,14 +302,10 @@ export default function UserProfileScreen({ navigation, route }: Readonly<Props>
                   </Text>
                 </Text>
               )}
-              {(profile.sitterWeekdays.length > 0 || (profile.sitterTimeSlots?.length ?? 0) > 0) && (
+              {availabilityGrid(profile).length > 0 && (
                 <>
                   <Text style={styles.sitterLine}>{t('sitter.profile.availability')}</Text>
-                  <View style={styles.tagRow}>
-                    {[...profile.sitterWeekdays, ...(profile.sitterTimeSlots ?? [])].map(value => (
-                      <View key={value} style={styles.tag}><Text style={styles.tagText}>{translateTag(value, t)}</Text></View>
-                    ))}
-                  </View>
+                  <AvailabilityGrid value={availabilityGrid(profile)} />
                 </>
               )}
               {profile.sitterTags.length > 0 && (

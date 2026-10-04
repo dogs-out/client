@@ -337,7 +337,9 @@
       "sitterTagsLabel": "Tags de sitter",
       "sitterTagsHint": "(jusqu'à 4)",
       "cameraPermission": "Dogs Out a besoin d'accéder à l'appareil photo. Tu peux l'autoriser dans les réglages.",
-      "timeSlotsLabel": "Moments où je peux garder"
+      "timeSlotsLabel": "Moments où je peux garder",
+      "availabilityLabel": "Quand je peux garder",
+      "availabilityHint": "Coche les moments où tu es généralement libre. Touche un jour pour remplir toute la ligne."
     },
     "userProfile": {
       "profileFallback": "Profil",

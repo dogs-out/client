@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 import {
   ActivityIndicator, Alert, FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View,
+  useWindowDimensions,
 } from 'react-native';
 import { RemoteImage } from '../../components/ui/RemoteImage';
 import { translateTag } from '../../i18n/translateTag';
@@ -55,6 +56,7 @@ export default function FindSitterScreen() {
   const [acceptedJobs, setAcceptedJobs] = useState<SittingRequest[]>([]);
   /** Null is every day. A sitter who named no days is kept either way. */
   /** Empty means any day. Several means any one of them — see the service. */
+  const { height: windowHeight } = useWindowDimensions();
   const [weekdays, setWeekdays] = useState<string[]>([]);
   /** Empty means any time of day; several means any one of them, like the days. */
   const [timeSlots, setTimeSlots] = useState<string[]>([]);
@@ -521,6 +523,9 @@ export default function FindSitterScreen() {
 
           {weekdayOpen && (
             <GlassCard style={styles.filterCard} padding={6}>
+              {/* Scrolls inside a capped height: seven days plus three times of day
+                  run past the tab bar on most phones, and Evening was unreachable. */}
+              <ScrollView style={{ maxHeight: Math.round(windowHeight * 0.5) }} nestedScrollEnabled>
               {/* Stays open as days are tapped: picking Monday and Friday is two
                   taps, and a panel that shut after the first would make the
                   second one a chore. "Any day" is the way back to no filter. */}
@@ -573,6 +578,7 @@ export default function FindSitterScreen() {
                   </TouchableOpacity>
                 );
               })}
+              </ScrollView>
             </GlassCard>
           )}
 

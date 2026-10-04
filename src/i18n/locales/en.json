@@ -337,7 +337,9 @@
       "sitterTagsLabel": "Sitter tags",
       "sitterTagsHint": "(up to 4)",
       "cameraPermission": "Dogs Out needs camera access to take a photo. You can allow it in Settings.",
-      "timeSlotsLabel": "Times I'm free to sit"
+      "timeSlotsLabel": "Times I'm free to sit",
+      "availabilityLabel": "When I can sit",
+      "availabilityHint": "Tick the times you're usually free. Tap a day to fill its whole row."
     },
     "userProfile": {
       "profileFallback": "Profile",
