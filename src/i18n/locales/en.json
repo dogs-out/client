@@ -878,7 +878,10 @@
       "unavailable": "This walk is no longer available",
       "cancelled": "This walk was cancelled",
       "past": "This walk has passed"
-    }
+    },
+    "tab": "Walks",
+    "empty": "No walks planned. Invite a match from your chat with them — tap the paw next to the message field.",
+    "chatUnavailable": "The chat for this walk is no longer available."
   },
   "sos": {
     "home": {

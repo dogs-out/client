@@ -971,7 +971,10 @@
       "unavailable": "Questa passeggiata non è più disponibile",
       "cancelled": "Questa passeggiata è stata annullata",
       "past": "Questa passeggiata è passata"
-    }
+    },
+    "tab": "Passeggiate",
+    "empty": "Nessuna passeggiata in programma. Invita un match dalla vostra chat: tocca la zampa accanto al campo del messaggio.",
+    "chatUnavailable": "La chat di questa passeggiata non è più disponibile."
   },
   "sos": {
     "home": {

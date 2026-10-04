@@ -22,7 +22,13 @@ import { WhosOutsideView } from './WhosOutsideView';
 import { playdateTitle } from './playdateTitle';
 import { SosBanner } from '../sos/SosBanner';
 
-type PlaydateMode = 'playdates' | 'outside';
+type PlaydateMode = 'playdates' | 'walks' | 'outside';
+
+const MODE_LABEL: Record<PlaydateMode, string> = {
+  playdates: 'playdates.headerTitle',
+  walks: 'walk.tab',
+  outside: 'whosOutside.tab',
+};
 
 const VISIBILITY_ICONS: Record<Playdate['visibility'], string> = {
   PUBLIC: 'earth-outline',
@@ -75,6 +81,15 @@ export default function PlaydatesScreen() {
     return null;
   };
 
+  // Walks are 1:1 and started from a chat, so they get their own list rather than
+  // sitting among the meetups anyone nearby can join.
+  const shown = playdates.filter(p => mode === 'walks' ? p.walk : !p.walk);
+
+  /** The person a walk is with: the host if someone invited me, else the one I invited. */
+  const walkPartner = (p: Playdate) => p.myStatus === 'HOST'
+    ? p.participants?.find(x => x.status !== 'HOST')?.name ?? ''
+    : p.hostName;
+
   const renderPlaydate = ({ item }: { item: Playdate }) => {
     const badge = myBadge(item);
     return (
@@ -82,8 +97,10 @@ export default function PlaydatesScreen() {
         <GlassCard style={styles.card}>
           <View style={styles.cardHeader}>
             <View style={styles.cardTitleWrap}>
-              <Text style={styles.cardTitle} numberOfLines={1}>{playdateTitle(item)}</Text>
-              {item.title && <Text style={styles.cardPark} numberOfLines={1}>
+              <Text style={styles.cardTitle} numberOfLines={1}>
+                {item.walk ? `🐾 ${t('walk.title', { name: walkPartner(item) })}` : playdateTitle(item)}
+              </Text>
+              {(item.title || item.walk) && <Text style={styles.cardPark} numberOfLines={1}>
                 <Ionicons name="location-outline" size={12} color={Colors.textSecondary} /> {item.parkName}
               </Text>}
             </View>
@@ -124,14 +141,14 @@ export default function PlaydatesScreen() {
 
       <View style={styles.header}>
         <Text style={styles.headerTitle}>
-          {t(mode === 'playdates' ? 'playdates.headerTitle' : 'whosOutside.tab')}
+          {t(MODE_LABEL[mode])}
         </Text>
       </View>
 
       <SosBanner />
 
       <View style={styles.segmented}>
-        {(['playdates', 'outside'] as PlaydateMode[]).map(m => (
+        {(['playdates', 'walks', 'outside'] as PlaydateMode[]).map(m => (
           <TouchableOpacity
             key={m}
             style={[styles.segment, mode === m && styles.segmentActive]}
@@ -144,7 +161,7 @@ export default function PlaydatesScreen() {
               minimumFontScale={0.8}
               maxFontSizeMultiplier={1.2}
             >
-              {t(m === 'playdates' ? 'playdates.headerTitle' : 'whosOutside.tab')}
+              {t(MODE_LABEL[m])}
             </Text>
           </TouchableOpacity>
         ))}
@@ -154,7 +171,7 @@ export default function PlaydatesScreen() {
         <View style={styles.centered}><ActivityIndicator size="large" color={Colors.primary} /></View>
       ) : (
         <FlatList
-          data={playdates}
+          data={shown}
           keyExtractor={item => String(item.id)}
           renderItem={renderPlaydate}
           contentContainerStyle={[styles.list, { paddingBottom: tabBarHeight + 24 }]}
@@ -165,7 +182,9 @@ export default function PlaydatesScreen() {
           ListEmptyComponent={
             <View style={styles.centered}>
               <Text style={styles.emptyEmoji}>{error ? '⚠️' : '🐾'}</Text>
-              <Text style={styles.emptyText}>{error ? t('playdates.loadError') : t('playdates.empty')}</Text>
+              <Text style={styles.emptyText}>
+                {error ? t('playdates.loadError') : t(mode === 'walks' ? 'walk.empty' : 'playdates.empty')}
+              </Text>
             </View>
           }
         />

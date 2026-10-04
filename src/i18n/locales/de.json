@@ -971,7 +971,10 @@
       "unavailable": "Dieser Spaziergang ist nicht mehr verfügbar",
       "cancelled": "Dieser Spaziergang wurde abgesagt",
       "past": "Dieser Spaziergang ist vorbei"
-    }
+    },
+    "tab": "Spaziergänge",
+    "empty": "Keine Spaziergänge geplant. Lade ein Match im Chat ein – tippe auf die Pfote neben dem Nachrichtenfeld.",
+    "chatUnavailable": "Der Chat zu diesem Spaziergang ist nicht mehr verfügbar."
   },
   "sos": {
     "home": {

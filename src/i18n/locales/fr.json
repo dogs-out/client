@@ -971,7 +971,10 @@
       "unavailable": "Cette balade n'est plus disponible",
       "cancelled": "Cette balade a été annulée",
       "past": "Cette balade est passée"
-    }
+    },
+    "tab": "Balades",
+    "empty": "Aucune balade prévue. Invite un match depuis votre chat — touche la patte à côté du champ de message.",
+    "chatUnavailable": "Le chat de cette balade n'est plus disponible."
   },
   "sos": {
     "home": {

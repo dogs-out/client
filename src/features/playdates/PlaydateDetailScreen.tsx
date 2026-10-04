@@ -22,6 +22,7 @@ import { FloatingBackground } from '../../components/FloatingBackground';
 import { GlassCard } from '../../components/GlassCard';
 import { formatPlaydateTime } from './PlaydatesScreen';
 import { playdateTitle } from './playdateTitle';
+import { chatService } from '../../services/chatService';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'PlaydateDetail'>;
 
@@ -89,9 +90,30 @@ export default function PlaydateDetailScreen({ navigation, route }: Readonly<Pro
     );
   };
 
-  const openChat = () => {
+  const openChat = async () => {
     if (!playdate) return;
-    navigation.navigate('PlaydateChat', { playdateId, title: playdateTitle(playdate) });
+    if (!playdate.walk) {
+      navigation.navigate('PlaydateChat', { playdateId, title: playdateTitle(playdate) });
+      return;
+    }
+    // A walk was invited from a 1:1 chat and is talked about there. A group chat
+    // for two people would split that one conversation in two.
+    const otherId = playdate.myStatus === 'HOST'
+      ? playdate.participants?.find(p => p.status !== 'HOST')?.userId
+      : playdate.hostId;
+    try {
+      const match = (await chatService.getMatches()).find(m => m.otherUserId === otherId);
+      if (match) {
+        navigation.navigate('ChatDetail', {
+          matchId: match.matchId,
+          otherUserId: match.otherUserId,
+          name: match.otherUserName,
+          profilePicture: match.otherUserProfilePicture,
+        });
+        return;
+      }
+    } catch { /* fall through to the message below */ }
+    Alert.alert(t('common.error'), t('walk.chatUnavailable'));
   };
 
   if (!playdate) {
