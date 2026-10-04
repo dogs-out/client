@@ -89,7 +89,7 @@
       [
         "react-native-google-mobile-ads",
         {
-          "androidAppId": "ca-app-pub-3940256099942544~3347511713",
+          "androidAppId": "ca-app-pub-6036286386570373~9602453960",
           "iosAppId": "ca-app-pub-6036286386570373~6533830708",
           "delayAppMeasurementInit": true,
           "userTrackingUsageDescription": "Your data will be used to show you more relevant ads. Dogs Out stays free either way."
@@ -110,7 +110,7 @@
     "owner": "moritzdav"
   },
   "react-native-google-mobile-ads": {
-    "android_app_id": "ca-app-pub-3940256099942544~3347511713",
+    "android_app_id": "ca-app-pub-6036286386570373~9602453960",
     "ios_app_id": "ca-app-pub-6036286386570373~6533830708"
   }
 }
