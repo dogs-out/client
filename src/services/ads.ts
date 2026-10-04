@@ -26,15 +26,25 @@ let ready: Promise<boolean> | null = null;
 export function initAds(): Promise<boolean> {
   ready ??= (async () => {
     try {
+      if (__DEV__) console.log('[ads] gathering consent');
       const consent = await AdsConsent.gatherConsent();
+      if (__DEV__) console.log('[ads] consent', consent.status, 'canRequestAds', consent.canRequestAds);
       if (Platform.OS === 'ios') {
         const { status } = await getTrackingPermissionsAsync();
         if (status === 'undetermined') await requestTrackingPermissionsAsync();
       }
-      if (!consent.canRequestAds) return false;
+      if (!consent.canRequestAds) {
+        console.warn('[ads] consent does not allow ads', consent.status);
+        return false;
+      }
       await mobileAds().initialize();
+      if (__DEV__) console.log('[ads] SDK initialised');
       return true;
-    } catch {
+    } catch (err) {
+      console.warn('[ads] start-up failed:', err instanceof Error ? err.message : String(err));
+      // An error (offline, say) is not an answer, so the next call tries again. A
+      // consent that rules ads out, above, is an answer and is kept.
+      ready = null;
       return false;
     }
   })();

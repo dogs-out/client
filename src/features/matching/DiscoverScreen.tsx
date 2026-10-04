@@ -294,14 +294,16 @@ export default function DiscoverScreen() {
   /** Counts real swipes, starts ads after the first, and fills every Nth slot. */
   const afterSwipe = useCallback((hasNext: boolean) => {
     swipeCountRef.current += 1;
-    if (swipeCountRef.current === 1) initAds().then(setAdsEnabled);
+    // Any swipe while ads are not running yet, not only the first: a start-up that
+    // failed (offline, a slow consent form) gets another chance on the next one.
+    if (!adsEnabled) initAds().then(setAdsEnabled);
     // Every Nth swipe, and also as the very last card: when the deck runs out
     // there is nothing left to interrupt, so the slot costs nobody a profile.
     if (!hasNext || swipeCountRef.current % AD_EVERY_N_SWIPES === 0) {
       const ad = takeDeckAd();
       if (ad) setAdCard(ad);
     }
-  }, [takeDeckAd]);
+  }, [takeDeckAd, adsEnabled]);
 
   // An empty deck gets one ad card of its own, swiped away to reveal the "no more
   // dogs" screen. Nothing can be swiped on an empty deck, so this is also where

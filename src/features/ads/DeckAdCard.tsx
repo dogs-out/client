@@ -23,11 +23,17 @@ interface Props {
  */
 export function DeckAdCard({ nativeAd, width, height }: Readonly<Props>) {
   const { t } = useTranslation();
-  const mediaHeight = Math.round(height * 0.58);
+  // Sized by the creative's own shape and centred on a dark band, so a square
+  // image does not leave a white strip beside it on a card that is taller than wide.
+  const aspect = nativeAd.mediaContent?.aspectRatio || 16 / 9;
+  const mediaHeight = Math.round(Math.min(height * 0.58, width / aspect));
+  const mediaWidth = Math.round(Math.min(width, mediaHeight * aspect));
 
   return (
     <NativeAdView nativeAd={nativeAd} style={[styles.card, { width, height }]}>
-      <NativeMediaView style={{ width, height: mediaHeight }} resizeMode="cover" />
+      <View style={[styles.mediaBand, { height: mediaHeight }]}>
+        <NativeMediaView style={{ width: mediaWidth, height: mediaHeight }} resizeMode="cover" />
+      </View>
 
       <View style={styles.badge}>
         <Text style={styles.badgeText}>{t('ads.sponsored')}</Text>
@@ -72,6 +78,7 @@ export function DeckAdCard({ nativeAd, width, height }: Readonly<Props>) {
 
 const styles = StyleSheet.create({
   card: { backgroundColor: '#fff', borderRadius: 24, overflow: 'hidden' },
+  mediaBand: { width: '100%', backgroundColor: '#111', alignItems: 'center', justifyContent: 'center' },
   badge: {
     position: 'absolute', top: 12, left: 12,
     backgroundColor: 'rgba(13,40,24,0.72)', borderRadius: 8,

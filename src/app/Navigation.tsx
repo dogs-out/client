@@ -54,6 +54,14 @@ import { BirthdayGreeting } from '../components/BirthdayGreeting';
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const navigationRef = createNavigationContainerRef<RootStackParamList>();
 
+/**
+ * Where the tour's "continue" bar shows: the tabs and screens "Show me" opens. One
+ * level further in — a single chat, say — it would sit on top of what is being read.
+ */
+const TOUR_BAR_ROUTES = new Set<string>([
+  'Discover', 'FindSitter', 'Playdates', 'Chats', 'Profile', 'SetStatus', 'Shelters', 'AddDog',
+]);
+
 /** Screens before the app proper, where the foreground terms check has nothing to guard. */
 const PRE_APP_ROUTES = new Set<string>([
   'Login', 'Register', 'VerifyEmail', 'ForgotPassword', 'ResetPassword', 'AcceptTerms',
@@ -62,6 +70,7 @@ const PRE_APP_ROUTES = new Set<string>([
 export default function Navigation() {
   const [initialRoute, setInitialRoute] = useState<keyof RootStackParamList | null>(null);
   const [termsNext, setTermsNext] = useState<'MainTabs' | 'ProfileSetup'>('ProfileSetup');
+  const [currentRoute, setCurrentRoute] = useState<string | undefined>();
 
   // Tapping a push notification jumps straight to the relevant chat
   useEffect(() =>
@@ -158,7 +167,11 @@ export default function Navigation() {
   }
 
   return (
-    <NavigationContainer ref={navigationRef}>
+    <NavigationContainer
+      ref={navigationRef}
+      onReady={() => setCurrentRoute(navigationRef.getCurrentRoute()?.name)}
+      onStateChange={() => setCurrentRoute(navigationRef.getCurrentRoute()?.name)}
+    >
       <Stack.Navigator
         initialRouteName={initialRoute}
         screenOptions={{
@@ -224,6 +237,8 @@ export default function Navigation() {
           they opened the app to. */}
       <BirthdayGreeting />
       <TourResumeBar
+        visible={!!currentRoute && TOUR_BAR_ROUTES.has(currentRoute)}
+        raised={currentRoute === 'Discover'}
         onContinue={startAt => {
           tourProgress.clear();
           navigationRef.navigate('Tour', { startAt });

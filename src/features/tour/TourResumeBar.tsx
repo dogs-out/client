@@ -5,6 +5,10 @@ import { Colors } from '../../constants/colors';
 import { tourProgress, useTourResumeAt } from './tourProgress';
 
 interface Props {
+  /** False on screens one level deeper than "Show me" went, where it would cover content. */
+  visible: boolean;
+  /** Discover keeps its pass/treat buttons just above the tab bar, so the bar sits higher there. */
+  raised?: boolean;
   onContinue: (startAt: number) => void;
 }
 
@@ -13,15 +17,15 @@ interface Props {
  * left off, or out of it. Rendered at the root so it follows the user around the
  * app while they look.
  */
-export function TourResumeBar({ onContinue }: Readonly<Props>) {
+export function TourResumeBar({ visible, raised, onContinue }: Readonly<Props>) {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const resumeAt = useTourResumeAt();
-  if (resumeAt === null) return null;
+  if (resumeAt === null || !visible) return null;
 
   return (
     // Above the floating tab bar, so it never covers the tab it is showing off.
-    <View style={[styles.wrap, { bottom: insets.bottom + 96 }]} pointerEvents="box-none">
+    <View style={[styles.wrap, { bottom: insets.bottom + (raised ? 200 : 96) }]} pointerEvents="box-none">
       <View style={styles.bar}>
         <TouchableOpacity onPress={() => tourProgress.clear()} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
           <Text style={styles.skip}>{t('tour.skip')}</Text>

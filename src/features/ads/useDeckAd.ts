@@ -36,7 +36,9 @@ export function useDeckAd(enabled: boolean): { take: () => NativeAd | null } {
     loadingRef.current = true;
     NativeAd.createForAdRequest(DECK_NATIVE_AD_UNIT, { startVideoMuted: true })
       .then(loaded => { if (mountedRef.current) setAd(loaded); else loaded.destroy(); })
-      .catch(() => { /* no fill or offline: this slot just has no ad */ })
+      // No fill or offline: this slot just has no ad. Logged, because "no ads ever"
+      // is otherwise indistinguishable from "no ads yet".
+      .catch(err => console.warn('[ads] native ad failed to load:', err instanceof Error ? err.message : String(err)))
       .finally(() => { loadingRef.current = false; });
   }, [enabled, ad, attempt]);
 
