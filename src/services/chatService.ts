@@ -45,6 +45,14 @@ export const chatService = {
   getMatches: (): Promise<MatchSummary[]> =>
     api.get<MatchSummary[]>('/matches').then(r => r.data),
 
+  /** Matches this user liked first and has not been shown the match screen for yet. */
+  getUncelebratedMatches: (): Promise<MatchSummary[]> =>
+    api.get<MatchSummary[]>('/matches/uncelebrated').then(r => r.data),
+
+  /** Marks the match screen as shown, so it is offered only once. */
+  markMatchCelebrated: (matchId: number): Promise<void> =>
+    api.post(`/matches/${matchId}/celebrated`).then(() => undefined),
+
   /** Also marks everything addressed to you in this chat as read, server-side. */
   getMessages: (matchId: number): Promise<ChatMessage[]> =>
     api.get<ChatMessage[]>(`/chats/${matchId}/messages`).then(r => {

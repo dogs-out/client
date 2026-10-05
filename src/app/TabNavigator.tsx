@@ -19,6 +19,7 @@ import HomeScreen from '../screens/HomeScreen';
 import { glassTabBarStyles as styles, TAB_ICON_SIZE, WRAPPER_PAD_B } from '../components/GlassTabBar';
 import { useHasDog } from '../hooks/useHasDog';
 import { useUnreadCount } from '../hooks/useUnreadCount';
+import { PendingMatchCelebration } from '../components/PendingMatchCelebration';
 import { Colors } from '../constants/colors';
 
 export type MainTabParamList = {
@@ -144,17 +145,21 @@ export default function TabNavigator() {
   const hasDog = useHasDog();
 
   return (
-    <Tab.Navigator
-      tabBar={props => <GlassTabBar {...props} />}
-      screenOptions={{ headerShown: false }}
-      initialRouteName={hasDog === false ? 'FindSitter' : 'Discover'}
-    >
-      <Tab.Screen name="Discover" component={DiscoverScreen} />
-      <Tab.Screen name="FindSitter" component={FindSitterScreen} />
-      <Tab.Screen name="Playdates"  component={PlaydatesScreen} />
-      <Tab.Screen name="Chats"      component={ChatsScreen} />
-      <Tab.Screen name="Profile"  component={HomeScreen} />
-    </Tab.Navigator>
+    <>
+      {/* "It's a Match!" for whoever liked first, on their next visit. */}
+      <PendingMatchCelebration />
+      <Tab.Navigator
+        tabBar={props => <GlassTabBar {...props} />}
+        screenOptions={{ headerShown: false }}
+        initialRouteName={hasDog === false ? 'FindSitter' : 'Discover'}
+      >
+        <Tab.Screen name="Discover" component={DiscoverScreen} />
+        <Tab.Screen name="FindSitter" component={FindSitterScreen} />
+        <Tab.Screen name="Playdates"  component={PlaydatesScreen} />
+        <Tab.Screen name="Chats"      component={ChatsScreen} />
+        <Tab.Screen name="Profile"  component={HomeScreen} />
+      </Tab.Navigator>
+    </>
   );
 }
 
