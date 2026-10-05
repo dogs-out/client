@@ -1,4 +1,6 @@
 import axios from 'axios';
+import { Platform } from 'react-native';
+import Constants from 'expo-constants';
 import { tokenStorage } from '../utils/tokenStorage';
 
 // Raised from 10s when photos were inline base64 and /discover was ~18 MB, which
@@ -8,9 +10,22 @@ import { tokenStorage } from '../utils/tokenStorage';
 // left, a photo upload on a slow mobile connection.
 const REQUEST_TIMEOUT_MS = 30000;
 
+/**
+ * Which app is asking — "ios"/"android" and "1.3.0 (26)" — for the admin page's
+ * platform split and version spread. Builds before 1.3 do not send these; the
+ * server recognises those from their HTTP client instead.
+ */
+const expo = Constants.expoConfig;
+const build = Platform.OS === 'ios' ? expo?.ios?.buildNumber : expo?.android?.versionCode;
+const CLIENT_HEADERS = {
+  'X-Client-Platform': Platform.OS,
+  'X-App-Version': build != null ? `${expo?.version ?? '?'} (${build})` : (expo?.version ?? 'unknown'),
+};
+
 const api = axios.create({
   baseURL: process.env.EXPO_PUBLIC_API_URL ?? 'http://localhost:8080',
   timeout: REQUEST_TIMEOUT_MS,
+  headers: CLIENT_HEADERS,
 });
 
 api.interceptors.request.use(async config => {
