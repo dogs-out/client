@@ -1123,5 +1123,19 @@
   "ads": {
     "sponsored": "Sponsorizzato",
     "swipeHint": "Scorri in una direzione per continuare"
+  },
+  "location": {
+    "chooseManually": "Inserisci invece località o NPA",
+    "problem": {
+      "denied": "Dogs Out non può usare la tua posizione. Puoi consentirlo quando ti viene chiesto oppure inserire la tua località.",
+      "blocked": "L’accesso alla posizione è disattivato per Dogs Out, quindi il telefono non lo chiederà più. Consentilo nelle impostazioni del telefono oppure inserisci la tua località.",
+      "failed": "Non è stato possibile determinare la tua posizione. Riprova oppure inserisci la tua località.",
+      "openSettings": "Apri impostazioni"
+    },
+    "picker": {
+      "searchPlaceholder": "Località o NPA, ad es. 6900 Lugano",
+      "longPressHint": "Oppure tieni premuto sulla mappa per mettere uno spillo",
+      "confirm": "Usa questa posizione"
+    }
   }
 }

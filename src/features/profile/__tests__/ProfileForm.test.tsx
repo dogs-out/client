@@ -3,6 +3,7 @@ import { ProfileForm } from '../ProfileForm';
 import { OWNER_LIFESTYLE_TAGS } from '../../../constants/tags';
 import { Colors } from '../../../constants/colors';
 import { userService } from '../../../services/userService';
+import * as Location from 'expo-location';
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key, i18n: { language: 'en' } }),
@@ -68,13 +69,15 @@ jest.mock('../../../components/GlassButton', () => {
 
 const getMeMock = userService.getMe as jest.Mock;
 
-async function renderForm() {
+async function renderForm(extra: Partial<React.ComponentProps<typeof ProfileForm>> = {}) {
   await render(
     <ProfileForm
       title="TITLE"
       subtitle="SUBTITLE"
       submitLabel="SUBMIT"
       onSaved={jest.fn()}
+      onChooseLocation={jest.fn()}
+      {...extra}
     />
   );
 }
@@ -179,5 +182,33 @@ describe('ProfileForm', () => {
     const props = mockDateTimePicker.mock.calls.at(-1)![0];
     expect(props.minimumDate).toBeDefined();
     expect(props.minimumDate!.getFullYear()).toBe(1900);
+  });
+
+  describe('location', () => {
+    it('explains a permanently refused permission right under the button, with a way to settings', async () => {
+      (Location.requestForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'denied', canAskAgain: false });
+      await renderForm();
+      await waitFor(() => expect(screen.getByText('profile.form.detectLocation')).toBeTruthy());
+
+      await fireEvent.press(screen.getByText('profile.form.detectLocation'));
+
+      await waitFor(() => expect(screen.getByTestId('location-problem')).toBeTruthy());
+      expect(screen.getByText('location.problem.blocked')).toBeTruthy();
+      expect(screen.getByText('location.problem.openSettings')).toBeTruthy();
+    });
+
+    it('offers choosing a place by hand', async () => {
+      const onChooseLocation = jest.fn();
+      await renderForm({ onChooseLocation });
+      await waitFor(() => expect(screen.getByTestId('choose-location')).toBeTruthy());
+
+      await fireEvent.press(screen.getByTestId('choose-location'));
+      expect(onChooseLocation).toHaveBeenCalled();
+    });
+
+    it('shows a place picked on the map', async () => {
+      await renderForm({ pickedPlace: { name: 'Opfikon', address: '8152 Opfikon, Switzerland', latitude: 47.43, longitude: 8.57 } });
+      await waitFor(() => expect(screen.getByText('8152 Opfikon, Switzerland')).toBeTruthy());
+    });
   });
 });

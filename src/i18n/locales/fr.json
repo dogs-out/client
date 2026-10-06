@@ -1123,5 +1123,19 @@
   "ads": {
     "sponsored": "Sponsorisé",
     "swipeHint": "Glisse d'un côté ou de l'autre pour continuer"
+  },
+  "location": {
+    "chooseManually": "Saisir plutôt une localité ou un NPA",
+    "problem": {
+      "denied": "Dogs Out n’a pas accès à ta position. Tu peux l’autoriser lorsqu’on te le demande ou saisir ta localité.",
+      "blocked": "L’accès à la position est désactivé pour Dogs Out, ton téléphone ne le demandera donc plus. Autorise-le dans les réglages de ton téléphone ou saisis ta localité.",
+      "failed": "Ta position n’a pas pu être déterminée. Réessaie ou saisis ta localité.",
+      "openSettings": "Ouvrir les réglages"
+    },
+    "picker": {
+      "searchPlaceholder": "Localité ou NPA, p. ex. 1003 Lausanne",
+      "longPressHint": "Ou maintiens le doigt sur la carte pour placer une épingle",
+      "confirm": "Utiliser cette position"
+    }
   }
 }

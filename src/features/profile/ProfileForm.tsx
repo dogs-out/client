@@ -7,7 +7,9 @@ import { RemoteImage } from '../../components/ui/RemoteImage';
 import { useNavigation } from '@react-navigation/native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import * as ImagePicker from 'expo-image-picker';
-import * as Location from 'expo-location';
+import { currentDeviceLocation, DeviceLocationResult } from '../../utils/deviceLocation';
+import { LocationProblem } from '../../components/LocationProblem';
+import type { PlaceResult } from '../../services/playdateService';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { userService } from '../../services/userService';
@@ -36,6 +38,10 @@ interface Props {
   submitLabel: string;
   onBack?: () => void;
   onSaved: (saved: { hasDog: boolean }) => void;
+  /** Opens the map picker in 'home' mode; the screen hands the result back as pickedPlace. */
+  onChooseLocation: () => void;
+  /** A place chosen by hand, passed back from the picker. */
+  pickedPlace?: PlaceResult;
 }
 
 const MIN_AGE = 18;
@@ -63,7 +69,7 @@ type PhotoItem =
   | { kind: 'existing'; photoId: number; uri: string; crop: CropRect | null }
   | { kind: 'new'; uri: string; crop: CropRect | null };
 
-export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: Readonly<Props>) {
+export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved, onChooseLocation, pickedPlace }: Readonly<Props>) {
   const { t } = useTranslation();
   const navigation = useNavigation();
   const [name, setName]                     = useState('');
@@ -79,6 +85,9 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: R
   const cropIndex = cropQueue.length > 0 ? cropQueue[0] : null;
   const nextInQueue = () => setCropQueue(q => q.slice(1));
   const [location, setLocation]             = useState<{ latitude: number; longitude: number } | null>(null);
+  /** The name of a place chosen by hand, shown on the button instead of "detected". */
+  const [locationLabel, setLocationLabel]   = useState<string | null>(null);
+  const [locationProblem, setLocationProblem] = useState<Exclude<DeviceLocationResult, { ok: true }> | null>(null);
   const [lifestyleTags, setLifestyleTags]   = useState<string[]>([]);
   const [personalityTags, setPersonalityTags] = useState<string[]>([]);
   const [relationshipStatus, setRelationshipStatus] = useState<string | null>(null);
@@ -174,20 +183,25 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: R
   const detectLocation = async () => {
     setLocating(true);
     setError(null);
-    try {
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        setError(t('profile.form.locationPermission'));
-        return;
-      }
-      const loc = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
-      setLocation({ latitude: loc.coords.latitude, longitude: loc.coords.longitude });
-    } catch {
-      setError(t('profile.form.locationError'));
-    } finally {
-      setLocating(false);
+    setLocationProblem(null);
+    const result = await currentDeviceLocation();
+    if (result.ok) {
+      setLocation({ latitude: result.latitude, longitude: result.longitude });
+      setLocationLabel(null);
+    } else {
+      // Shown right under the button, with a way out — see LocationProblem.
+      setLocationProblem(result);
     }
+    setLocating(false);
   };
+
+  // A place picked on the map comes back through the route; take it over once.
+  useEffect(() => {
+    if (!pickedPlace) return;
+    setLocation({ latitude: pickedPlace.latitude, longitude: pickedPlace.longitude });
+    setLocationLabel(pickedPlace.address ?? pickedPlace.name);
+    setLocationProblem(null);
+  }, [pickedPlace]);
 
   // Dragging the experience slider is the same motion as iOS's swipe-to-go-back, and
   // the system edge recognizer starts tracking at touch-down — before the slider's
@@ -472,12 +486,21 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved }: R
                   color={location ? '#48bb78' : Colors.text}
                   style={{ marginRight: 8 }}
                 />
-                <Text style={[styles.locationButtonText, location && styles.locationButtonTextActive]}>
-                  {location ? t('profile.form.locationDetected') : t('profile.form.detectLocation')}
+                <Text style={[styles.locationButtonText, location && styles.locationButtonTextActive]} numberOfLines={1}>
+                  {location ? (locationLabel ?? t('profile.form.locationDetected')) : t('profile.form.detectLocation')}
                 </Text>
               </>
             )}
           </GlassButton>
+          {locationProblem
+            ? <LocationProblem problem={locationProblem} onChooseManually={onChooseLocation} />
+            : (
+              <TouchableOpacity style={styles.chooseLocation} onPress={onChooseLocation} testID="choose-location">
+                <Ionicons name="search-outline" size={15} color={Colors.primary} />
+                <Text style={styles.chooseLocationText}>{t('location.chooseManually')}</Text>
+              </TouchableOpacity>
+            )}
+          <View style={{ height: 24 }} />
 
           {/* DOGSITTING */}
           <Text style={[styles.label, { marginTop: 8 }]}>{t('profile.form.dogsitting')}</Text>
@@ -726,7 +749,9 @@ const styles = StyleSheet.create({
   dateText:     { fontSize: 16, color: Colors.text },
   datePlaceholder: { fontSize: 16, color: Colors.textSecondary },
 
-  locationButton:          { marginBottom: 32 },
+  locationButton:          { marginBottom: 0 },
+  chooseLocation:          { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, paddingVertical: 10 },
+  chooseLocationText:      { color: Colors.primary, fontSize: 14, fontWeight: '700' },
 
   switchRow: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',

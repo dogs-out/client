@@ -10,6 +10,8 @@ import { Colors } from '../../constants/colors';
 import { FloatingBackground } from '../../components/FloatingBackground';
 import { GlassCard } from '../../components/GlassCard';
 import { userService } from '../../services/userService';
+import { currentDeviceLocation, DeviceLocationResult } from '../../utils/deviceLocation';
+import { LocationProblem } from '../../components/LocationProblem';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'LocationSettings'>;
 
@@ -22,12 +24,14 @@ async function describe(latitude: number, longitude: number): Promise<string> {
   return `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
 }
 
-export default function LocationSettingsScreen({ navigation }: Readonly<Props>) {
+export default function LocationSettingsScreen({ navigation, route }: Readonly<Props>) {
   const { t } = useTranslation();
   const [place, setPlace] = useState<string | null>(null);
   const [loaded, setLoaded] = useState(false);
   const [updating, setUpdating] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [problem, setProblem] = useState<Exclude<DeviceLocationResult, { ok: true }> | null>(null);
+  const chooseManually = () => navigation.navigate('ParkPicker', { mode: 'home', returnTo: 'LocationSettings' });
 
   useEffect(() => {
     userService.getMe()
@@ -40,24 +44,34 @@ export default function LocationSettingsScreen({ navigation }: Readonly<Props>) 
       .finally(() => setLoaded(true));
   }, []);
 
+  const save = async (latitude: number, longitude: number, label?: string | null) => {
+    try {
+      await userService.updateProfile({ latitude, longitude });
+      setPlace(label ?? await describe(latitude, longitude));
+    } catch {
+      setError(t('profile.locationSettings.updateError'));
+    }
+  };
+
   const updateLocation = async () => {
     setUpdating(true);
     setError(null);
-    try {
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        setError(t('profile.locationSettings.permissionNeeded'));
-        return;
-      }
-      const loc = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
-      await userService.updateProfile({ latitude: loc.coords.latitude, longitude: loc.coords.longitude });
-      setPlace(await describe(loc.coords.latitude, loc.coords.longitude));
-    } catch {
-      setError(t('profile.locationSettings.updateError'));
-    } finally {
-      setUpdating(false);
-    }
+    setProblem(null);
+    const result = await currentDeviceLocation();
+    if (result.ok) await save(result.latitude, result.longitude);
+    else setProblem(result);
+    setUpdating(false);
   };
+
+  // A place picked on the map comes back through the route.
+  const picked = route.params?.pickedPlace;
+  useEffect(() => {
+    if (!picked) return;
+    setError(null);
+    setProblem(null);
+    save(picked.latitude, picked.longitude, picked.address ?? picked.name);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [picked]);
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -96,6 +110,15 @@ export default function LocationSettingsScreen({ navigation }: Readonly<Props>) 
           <Text style={styles.updateText}>{updating ? t('profile.locationSettings.updating') : t('profile.locationSettings.updateToCurrentLocation')}</Text>
         </TouchableOpacity>
 
+        {problem
+          ? <LocationProblem problem={problem} onChooseManually={chooseManually} />
+          : (
+            <TouchableOpacity style={styles.manualBtn} onPress={chooseManually}>
+              <Ionicons name="search-outline" size={16} color={Colors.primary} />
+              <Text style={styles.manualText}>{t('location.chooseManually')}</Text>
+            </TouchableOpacity>
+          )}
+
         {error && <Text style={styles.errorText}>{error}</Text>}
 
         <Text style={styles.hint}>
@@ -125,6 +148,9 @@ const styles = StyleSheet.create({
   },
   updateBtnDisabled: { opacity: 0.6 },
   updateText:        { color: '#fff', fontSize: 15, fontWeight: '700' },
+
+  manualBtn:  { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, paddingVertical: 12, marginTop: 4 },
+  manualText: { color: Colors.primary, fontSize: 15, fontWeight: '700' },
 
   errorText: { color: Colors.error, fontSize: 13, marginTop: 12, textAlign: 'center' },
   hint:      { fontSize: 13, color: Colors.textSecondary, marginTop: 16, marginHorizontal: 4, lineHeight: 18 },

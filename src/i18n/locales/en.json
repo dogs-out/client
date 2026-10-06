@@ -1030,5 +1030,19 @@
   "ads": {
     "sponsored": "Sponsored",
     "swipeHint": "Swipe either way to keep going"
+  },
+  "location": {
+    "chooseManually": "Enter town or postcode instead",
+    "problem": {
+      "denied": "Dogs Out may not use your location. You can allow it when asked, or enter your town instead.",
+      "blocked": "Location access is turned off for Dogs Out, so your phone will not ask again. Allow it in your phone's settings, or enter your town instead.",
+      "failed": "Your location could not be found just now. Try again, or enter your town instead.",
+      "openSettings": "Open settings"
+    },
+    "picker": {
+      "searchPlaceholder": "Town or postcode, e.g. 8044 Zürich",
+      "longPressHint": "Or press and hold the map to drop a pin",
+      "confirm": "Use this location"
+    }
   }
 }

@@ -8,9 +8,10 @@ export type RootStackParamList = {
   VerifyEmail: { email: string; name?: string; password?: string; emailFailed?: boolean };
   ForgotPassword: undefined;
   ResetPassword: { email: string };
-  ProfileSetup: undefined;
+  /** pickedPlace: a home location chosen by hand in ParkPicker (mode 'home'). */
+  ProfileSetup: { pickedPlace?: PlaceResult } | undefined;
   MainTabs: undefined;
-  EditProfile: undefined;
+  EditProfile: { pickedPlace?: PlaceResult } | undefined;
   Settings: undefined;
   AddDog: { fromOnboarding?: boolean };
   EditDog: { dogId: number };
@@ -21,7 +22,7 @@ export type RootStackParamList = {
   UserProfile: { userId: number };
   BlockedUsers: undefined;
   NotificationSettings: undefined;
-  LocationSettings: undefined;
+  LocationSettings: { pickedPlace?: PlaceResult } | undefined;
   AppearanceSettings: undefined;
   /** No job means posting a new one; a job means editing that one in place. */
   PostSittingRequest: { job?: SittingRequest } | undefined;
@@ -44,7 +45,10 @@ export type RootStackParamList = {
     initialLat?: number;
     initialLng?: number;
     /** Which screen the pick goes back to. Defaults to CreatePlaydate. */
-    returnTo?: 'CreatePlaydate' | 'SetStatus' | 'SittingDetails' | 'RaiseSos';
+    returnTo?: 'CreatePlaydate' | 'SetStatus' | 'SittingDetails' | 'RaiseSos'
+      | 'ProfileSetup' | 'EditProfile' | 'LocationSettings';
+    /** 'home': choosing your own location — towns and postcodes, never asks for GPS. */
+    mode?: 'park' | 'home';
   } | undefined;
   PlaydateDetail: { playdateId: number };
   PlaydateChat: { playdateId: number; title: string };

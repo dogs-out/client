@@ -39,21 +39,27 @@ export default function ParkPickerScreen({ navigation, route }: Readonly<Props>)
   const [searching, setSearching] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // 'home' is someone setting their own location by hand, usually because they
+  // will not or cannot share GPS: towns and postcodes instead of parks, and the
+  // phone's location is never asked for here.
+  const home = route.params?.mode === 'home';
 
   // Center on the user: device GPS first, stored profile location as fallback
   useEffect(() => {
     if (route.params?.initialLat != null) return;
     (async () => {
-      try {
-        const { status } = await Location.requestForegroundPermissionsAsync();
-        if (status === 'granted') {
-          const loc = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
-          const next = { latitude: loc.coords.latitude, longitude: loc.coords.longitude, latitudeDelta: 0.05, longitudeDelta: 0.05 };
-          setRegion(next);
-          mapRef.current?.animateToRegion(next, 400);
-          return;
-        }
-      } catch { /* fall through to profile location */ }
+      if (!home) {
+        try {
+          const { status } = await Location.requestForegroundPermissionsAsync();
+          if (status === 'granted') {
+            const loc = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
+            const next = { latitude: loc.coords.latitude, longitude: loc.coords.longitude, latitudeDelta: 0.05, longitudeDelta: 0.05 };
+            setRegion(next);
+            mapRef.current?.animateToRegion(next, 400);
+            return;
+          }
+        } catch { /* fall through to profile location */ }
+      }
       try {
         const me = await userService.getMe();
         if (me.latitude != null && me.longitude != null) {
@@ -63,7 +69,7 @@ export default function ParkPickerScreen({ navigation, route }: Readonly<Props>)
         }
       } catch { /* keep default */ }
     })();
-  }, [route.params?.initialLat]);
+  }, [route.params?.initialLat, home]);
 
   const search = (text: string) => {
     setQuery(text);
@@ -72,7 +78,7 @@ export default function ParkPickerScreen({ navigation, route }: Readonly<Props>)
     if (text.trim().length < 2) { setResults([]); setSearching(false); return; }
     setSearching(true);
     debounceRef.current = setTimeout(() => {
-      playdateService.searchParks(text.trim(), region.latitude, region.longitude)
+      (home ? playdateService.searchAreas : playdateService.searchParks)(text.trim(), region.latitude, region.longitude)
         .then(found => { setResults(found); if (found.length === 0) setSearchError(t('playdates.parkPicker.noResults')); })
         .catch(err => {
           setResults([]);
@@ -126,7 +132,9 @@ export default function ParkPickerScreen({ navigation, route }: Readonly<Props>)
     // params have a different shape, and merge:true carries the rest of them
     // back — which the types cannot see, so a computed target will not narrow.
     const target = route.params?.returnTo ?? 'CreatePlaydate';
-    if (target === 'SetStatus') {
+    if (target === 'ProfileSetup' || target === 'EditProfile' || target === 'LocationSettings') {
+      navigation.popTo(target, { pickedPlace: selected }, { merge: true });
+    } else if (target === 'SetStatus') {
       navigation.popTo('SetStatus', { pickedPlace: selected }, { merge: true });
     } else if (target === 'RaiseSos') {
       navigation.popTo('RaiseSos', { pickedPlace: selected }, { merge: true });
@@ -146,7 +154,7 @@ export default function ParkPickerScreen({ navigation, route }: Readonly<Props>)
         initialRegion={region}
         onRegionChangeComplete={setRegion}
         onLongPress={e => dropPin(e.nativeEvent.coordinate.latitude, e.nativeEvent.coordinate.longitude)}
-        showsUserLocation
+        showsUserLocation={!home}
       >
         {selected && (
           <Marker
@@ -167,7 +175,7 @@ export default function ParkPickerScreen({ navigation, route }: Readonly<Props>)
             <Ionicons name="search" size={18} color={Colors.textSecondary} style={{ marginRight: 8 }} />
             <TextInput
               style={styles.searchInput}
-              placeholder={t('playdates.parkPicker.searchPlaceholder')}
+              placeholder={t(home ? 'location.picker.searchPlaceholder' : 'playdates.parkPicker.searchPlaceholder')}
               placeholderTextColor={Colors.textSecondary}
               value={query}
               onChangeText={search}
@@ -188,7 +196,7 @@ export default function ParkPickerScreen({ navigation, route }: Readonly<Props>)
                 keyExtractor={(item, i) => `${item.latitude},${item.longitude},${i}`}
                 renderItem={({ item }) => (
                   <TouchableOpacity style={styles.resultRow} onPress={() => pickResult(item)}>
-                    <Ionicons name="leaf-outline" size={18} color={Colors.primary} style={{ marginRight: 10 }} />
+                    <Ionicons name={home ? 'location-outline' : 'leaf-outline'} size={18} color={Colors.primary} style={{ marginRight: 10 }} />
                     <View style={styles.resultText}>
                       <Text style={styles.resultName} numberOfLines={1}>{item.name}</Text>
                       {item.address && <Text style={styles.resultAddress} numberOfLines={1}>{item.address}</Text>}
@@ -203,7 +211,7 @@ export default function ParkPickerScreen({ navigation, route }: Readonly<Props>)
 
       {/* Bottom confirm */}
       <View style={styles.bottomOverlay}>
-        <Text style={styles.hint}>{t('playdates.parkPicker.longPressHint')}</Text>
+        <Text style={styles.hint}>{t(home ? 'location.picker.longPressHint' : 'playdates.parkPicker.longPressHint')}</Text>
         {selected && (
           <View style={styles.selectedBox}>
             <Text style={styles.selectedName} numberOfLines={1}>{selected.name}</Text>
@@ -215,7 +223,7 @@ export default function ParkPickerScreen({ navigation, route }: Readonly<Props>)
           onPress={confirm}
           disabled={!selected}
         >
-          <Text style={styles.confirmText}>{t('playdates.parkPicker.confirm')}</Text>
+          <Text style={styles.confirmText}>{t(home ? 'location.picker.confirm' : 'playdates.parkPicker.confirm')}</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>

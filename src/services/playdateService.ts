@@ -110,4 +110,8 @@ export const playdateService = {
 
   searchParks: (query: string, lat?: number, lng?: number): Promise<PlaceResult[]> =>
     api.get<PlaceResult[]>('/places/search', { params: { query, lat, lng } }).then(r => r.data),
+
+  /** Towns, postcodes and addresses — for setting your own location without GPS. */
+  searchAreas: (query: string, lat?: number, lng?: number): Promise<PlaceResult[]> =>
+    api.get<PlaceResult[]>('/places/search', { params: { query, lat, lng, kind: 'area' } }).then(r => r.data),
 };

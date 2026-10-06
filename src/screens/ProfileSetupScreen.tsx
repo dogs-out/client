@@ -5,12 +5,14 @@ import { ProfileForm } from '../features/profile/ProfileForm';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ProfileSetup'>;
 
-export default function ProfileSetupScreen({ navigation }: Readonly<Props>) {
+export default function ProfileSetupScreen({ navigation, route }: Readonly<Props>) {
   const { t } = useTranslation();
   return (
     <ProfileForm
       title={t('profile.setup.title')}
       subtitle={t('profile.setup.subtitle')}
+      pickedPlace={route.params?.pickedPlace}
+      onChooseLocation={() => navigation.navigate('ParkPicker', { mode: 'home', returnTo: 'ProfileSetup' })}
       submitLabel={t('dogs.form.letsGo')}
       onSaved={({ hasDog }) =>
         // Sitter-only accounts have no dog to introduce — go straight to the app

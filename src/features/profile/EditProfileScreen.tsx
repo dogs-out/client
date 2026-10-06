@@ -5,12 +5,14 @@ import { ProfileForm } from './ProfileForm';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'EditProfile'>;
 
-export default function EditProfileScreen({ navigation }: Readonly<Props>) {
+export default function EditProfileScreen({ navigation, route }: Readonly<Props>) {
   const { t } = useTranslation();
   return (
     <ProfileForm
       title={t('profile.editProfile.title')}
       subtitle={t('profile.editProfile.subtitle')}
+      pickedPlace={route.params?.pickedPlace}
+      onChooseLocation={() => navigation.navigate('ParkPicker', { mode: 'home', returnTo: 'EditProfile' })}
       submitLabel={t('dogs.form.saveChanges')}
       onBack={() => navigation.goBack()}
       onSaved={() => navigation.goBack()}

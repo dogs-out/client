@@ -1123,5 +1123,19 @@
   "ads": {
     "sponsored": "Anzeige",
     "swipeHint": "Wische in eine Richtung, um weiterzumachen"
+  },
+  "location": {
+    "chooseManually": "Stattdessen Ort oder PLZ eingeben",
+    "problem": {
+      "denied": "Dogs Out darf deinen Standort nicht verwenden. Du kannst ihn beim Nachfragen erlauben oder stattdessen deinen Ort eingeben.",
+      "blocked": "Der Standortzugriff ist für Dogs Out ausgeschaltet, deshalb fragt dein Handy nicht mehr nach. Erlaube ihn in den Einstellungen deines Handys oder gib stattdessen deinen Ort ein.",
+      "failed": "Dein Standort konnte gerade nicht ermittelt werden. Versuch es nochmals oder gib stattdessen deinen Ort ein.",
+      "openSettings": "Einstellungen öffnen"
+    },
+    "picker": {
+      "searchPlaceholder": "Ort oder PLZ, z. B. 8044 Zürich",
+      "longPressHint": "Oder halte die Karte gedrückt, um eine Nadel zu setzen",
+      "confirm": "Diesen Standort verwenden"
+    }
   }
 }
