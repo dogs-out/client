@@ -26,7 +26,7 @@ import { moderationService, PROFILE_REPORT_REASONS } from '../../services/modera
 import { useTabBarHeight } from '../../components/GlassTabBar';
 import { FloatingBackground } from '../../components/FloatingBackground';
 import { translateTag } from '../../i18n/translateTag';
-import { translateBreed } from '../../i18n/translateBreed';
+import { breedAndSex } from '../../utils/dogLine';
 import { DiscoveryLocationChip } from './DiscoveryLocationChip';
 import { SosBanner } from '../sos/SosBanner';
 import type { NativeAd } from 'react-native-google-mobile-ads';
@@ -588,7 +588,7 @@ export default function DiscoverScreen() {
                     );
                   })}
                 </View>
-                {currentDog?.breed && <Text style={styles.subLine}>{translateBreed(currentDog.breed, i18n.language)}</Text>}
+                {currentDog && breedAndSex(currentDog, t, i18n.language) !== '' && <Text style={styles.subLine}>{breedAndSex(currentDog, t, i18n.language)}</Text>}
                 {currentDog?.tags && currentDog.tags.length > 0 && (
                   <View style={styles.tagRow}>
                     {currentDog.tags.slice(0, 5).map(tag => (

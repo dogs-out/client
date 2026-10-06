@@ -28,10 +28,14 @@ export interface Dog {
   socialBehavior: string | null;
   loves: string[];
   offLeash: string | null;
+  /** 'MALE' or 'FEMALE'; null for dogs saved before it was asked. */
+  sex?: DogSex | null;
   kidsComfort: number | null;
   tags: string[];
   photos: DogPhoto[];
 }
+
+export type DogSex = 'MALE' | 'FEMALE';
 
 export interface DogPayload {
   name: string;
@@ -42,6 +46,7 @@ export interface DogPayload {
   socialBehavior?: string;
   loves?: string[];
   offLeash?: string;
+  sex?: DogSex;
   kidsComfort?: number;
   tags?: string[];
 }

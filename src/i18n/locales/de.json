@@ -187,6 +187,10 @@
     }
   },
   "dogs": {
+    "sex": {
+      "MALE": "Rüde",
+      "FEMALE": "Hündin"
+    },
     "form": {
       "loadFailed": "Hundeprofil konnte nicht geladen werden.",
       "maxPhotos": "Maximal 6 Fotos pro Hund.",
@@ -206,6 +210,7 @@
       "photosLabel": "Fotos ({{count}}/6)",
       "photosHint": "Mindestens 1, bis zu 6 tolle Fotos deines Hundes",
       "photoRequired": "Füge mindestens ein Foto deines Hundes hinzu.",
+      "sexRequired": "Wähle, ob dein Hund ein Rüde oder eine Hündin ist.",
       "mainBadge": "Hauptfoto",
       "basicInfo": "Grundlegende Infos",
       "namePlaceholder": "Name *",

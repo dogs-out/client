@@ -19,7 +19,7 @@ import { FloatingBackground } from '../components/FloatingBackground';
 import { GlassCard } from '../components/GlassCard';
 import { GlassButton } from '../components/GlassButton';
 import { Colors } from '../constants/colors';
-import { translateBreed } from '../i18n/translateBreed';
+import { breedAndSex } from '../utils/dogLine';
 
 type Props = CompositeScreenProps<
   BottomTabScreenProps<MainTabParamList, 'Profile'>,
@@ -176,8 +176,8 @@ export default function HomeScreen({ navigation }: Readonly<Props>) {
                     <View style={styles.dogInfo}>
                       <Text style={styles.dogName}>{dog.name}</Text>
                       <View style={styles.dogMeta}>
-                        {dog.breed && <Text style={styles.dogMetaText}>{translateBreed(dog.breed, i18n.language)}</Text>}
-                        {dog.breed && dog.dateOfBirth != null && <Text style={styles.dogMetaDot}> · </Text>}
+                        {breedAndSex(dog, t, i18n.language) !== '' && <Text style={styles.dogMetaText}>{breedAndSex(dog, t, i18n.language)}</Text>}
+                        {breedAndSex(dog, t, i18n.language) !== '' && dog.dateOfBirth != null && <Text style={styles.dogMetaDot}> · </Text>}
                         {dog.dateOfBirth != null && (() => {
                           const age = Math.floor((Date.now() - new Date(dog.dateOfBirth).getTime()) / (1000 * 60 * 60 * 24 * 365.25));
                           return <Text style={styles.dogMetaText}>{t('home.yearAbbrev', { count: age })}</Text>;

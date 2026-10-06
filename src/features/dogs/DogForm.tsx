@@ -8,7 +8,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
-import { dogService } from '../../services/dogService';
+import { DogSex, dogService } from '../../services/dogService';
 import { getApiError } from '../../utils/apiError';
 import { containsProfanity } from '../../utils/profanityFilter';
 import { FloatingBackground } from '../../components/FloatingBackground';
@@ -58,6 +58,7 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Re
   const { t, i18n } = useTranslation();
   const [name, setName]               = useState('');
   const [breed, setBreed]             = useState<string | null>(null);
+  const [sex, setSex]                 = useState<DogSex | null>(null);
   const [dateOfBirth, setDateOfBirth] = useState<Date | null>(null);
   const [bio, setBio]                 = useState('');
   const [photos, setPhotos]           = useState<PhotoState[]>([]);
@@ -89,6 +90,7 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Re
     dogService.getDog(dogId).then(dog => {
       setName(dog.name);
       setBreed(dog.breed);
+      setSex(dog.sex ?? null);
       if (dog.dateOfBirth) setDateOfBirth(new Date(dog.dateOfBirth));
       setBio(dog.bio ?? '');
       // Thumbs: these render as small grid tiles, never full size.
@@ -160,10 +162,10 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Re
   // Everything the form holds, as one string. Photos are included by id, uri and
   // framing, so adding, cropping or reordering one counts as a change too.
   const fingerprint = useMemo(() => JSON.stringify([
-    name, breed, dateOfBirth?.toISOString() ?? null, bio,
+    name, breed, sex, dateOfBirth?.toISOString() ?? null, bio,
     energyLevel, socialBehavior, loves, offLeash, kidsComfort, dogTags, removedIds,
     photos.map(p => [p.kind, p.kind === 'existing' ? p.photoId : p.uri, p.crop]),
-  ]), [name, breed, dateOfBirth, bio, energyLevel, socialBehavior, loves,
+  ]), [name, breed, sex, dateOfBirth, bio, energyLevel, socialBehavior, loves,
        offLeash, kidsComfort, dogTags, removedIds, photos]);
 
   const { markSaved } = useUnsavedChanges({
@@ -178,12 +180,14 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Re
     if (containsProfanity(name)) { setError(t('dogs.form.nameProfanity')); return; }
     if (bio && containsProfanity(bio)) { setError(t('dogs.form.bioProfanity')); return; }
     if (photos.length === 0) { setError(t('dogs.form.photoRequired')); return; }
+    if (!sex) { setError(t('dogs.form.sexRequired')); return; }
     setLoading(true);
     setError(null);
     try {
       const payload = {
         name: name.trim(),
         breed: breed ?? undefined,
+        sex: sex ?? undefined,
         dateOfBirth: dateOfBirth ? dateOfBirth.toISOString().split('T')[0] : undefined,
         bio: bio.trim() || undefined,
         // profilePicture is no longer sent: the server derives it from the first
@@ -391,6 +395,22 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Re
                 {breed ? translateBreed(breed, i18n.language) : t('dogs.form.breedPlaceholder')}
               </Text>
             </TouchableOpacity>
+
+            {/* Many dogs get on differently with males and females, so owners asked for it. */}
+            <View style={styles.sexRow}>
+              {(['MALE', 'FEMALE'] as const).map(opt => (
+                <TouchableOpacity
+                  key={opt}
+                  style={[styles.optionChip, styles.sexChip, sex === opt && styles.optionChipActive]}
+                  onPress={() => setSex(opt)}
+                  testID={`dog-sex-${opt}`}
+                >
+                  <Text style={[styles.optionText, sex === opt && styles.optionTextActive]}>
+                    {opt === 'MALE' ? '♂ ' : '♀ '}{t(`dogs.sex.${opt}`)}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
 
             {Platform.OS === 'web' ? (
               <View style={styles.input}>
@@ -671,6 +691,8 @@ const styles = StyleSheet.create({
   levelNumActive: { color: '#fff' },
 
   optionWrap: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 4 },
+  sexRow:  { flexDirection: 'row', gap: 10, marginBottom: 12 },
+  sexChip: { flex: 1, alignItems: 'center' },
   optionChip: {
     paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20,
     borderWidth: 1.5, borderColor: Colors.border, backgroundColor: Colors.glass.inputBg,

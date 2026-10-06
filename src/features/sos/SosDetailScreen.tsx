@@ -14,7 +14,7 @@ import { FloatingBackground } from '../../components/FloatingBackground';
 import { GlassCard } from '../../components/GlassCard';
 import { RemoteImage } from '../../components/ui/RemoteImage';
 import { sosService, LostDogAlert } from '../../services/sosService';
-import { translateBreed } from '../../i18n/translateBreed';
+import { breedAndSex } from '../../utils/dogLine';
 import { openInMaps } from '../../utils/placeAddress';
 import { getApiError } from '../../utils/apiError';
 
@@ -120,7 +120,7 @@ export default function SosDetailScreen({ navigation, route }: Readonly<Props>) 
 
         <GlassCard style={styles.card}>
           <Text style={styles.dogName}>{alert.dog.name}</Text>
-          {alert.dog.breed ? <Text style={styles.breed}>{translateBreed(alert.dog.breed, i18n.language)}</Text> : null}
+          {breedAndSex(alert.dog, t, i18n.language) !== '' ? <Text style={styles.breed}>{breedAndSex(alert.dog, t, i18n.language)}</Text> : null}
 
           <TouchableOpacity
             style={styles.row}

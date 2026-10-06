@@ -15,7 +15,7 @@ import { dogService, Dog } from '../../services/dogService';
 import { userService, UserProfile } from '../../services/userService';
 import { Colors } from '../../constants/colors';
 import { translateTag } from '../../i18n/translateTag';
-import { translateBreed } from '../../i18n/translateBreed';
+import { breedAndSex } from '../../utils/dogLine';
 import { FloatingBackground } from '../../components/FloatingBackground';
 import { GlassTabBar } from '../../components/GlassTabBar';
 
@@ -242,7 +242,7 @@ export default function SwipePreviewScreen({ navigation }: Readonly<Props>) {
                     );
                   })}
                 </View>
-                {currentDog.breed && <Text style={styles.subLine}>{translateBreed(currentDog.breed, i18n.language)}</Text>}
+                {breedAndSex(currentDog, t, i18n.language) !== '' && <Text style={styles.subLine}>{breedAndSex(currentDog, t, i18n.language)}</Text>}
                 {currentDog.tags.length > 0 && (
                   <View style={styles.tagRow}>
                     {currentDog.tags.slice(0, 5).map(tag => (

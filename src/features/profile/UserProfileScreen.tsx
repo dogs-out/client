@@ -18,7 +18,7 @@ import { Colors } from '../../constants/colors';
 import { FloatingBackground } from '../../components/FloatingBackground';
 import { GlassCard } from '../../components/GlassCard';
 import { translateTag } from '../../i18n/translateTag';
-import { translateBreed } from '../../i18n/translateBreed';
+import { breedAndSex } from '../../utils/dogLine';
 import { AvailabilityGrid } from '../../components/AvailabilityGrid';
 import { availabilityGrid } from '../../utils/availability';
 
@@ -130,7 +130,7 @@ function DogCard({ dog }: Readonly<{ dog: Dog }>) {
         <Text style={styles.dogName}>
           {dog.name}{age !== null ? `, ${age}` : ''}
         </Text>
-        {dog.breed && <Text style={styles.subLine}>{translateBreed(dog.breed, i18n.language)}</Text>}
+        {breedAndSex(dog, t, i18n.language) !== '' && <Text style={styles.subLine}>{breedAndSex(dog, t, i18n.language)}</Text>}
         {dog.tags.length > 0 && (
           <View style={styles.tagRow}>
             {dog.tags.map(tag => (

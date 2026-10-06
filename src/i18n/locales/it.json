@@ -187,6 +187,10 @@
     }
   },
   "dogs": {
+    "sex": {
+      "MALE": "Maschio",
+      "FEMALE": "Femmina"
+    },
     "form": {
       "loadFailed": "Impossibile caricare il profilo del cane.",
       "maxPhotos": "Massimo 6 foto per cane.",
@@ -206,6 +210,7 @@
       "photosLabel": "Foto ({{count}}/6)",
       "photosHint": "Almeno 1, fino a 6 belle foto del tuo cane",
       "photoRequired": "Aggiungi almeno una foto del tuo cane.",
+      "sexRequired": "Indica se il tuo cane è maschio o femmina.",
       "mainBadge": "Principale",
       "basicInfo": "Informazioni di base",
       "namePlaceholder": "Nome *",

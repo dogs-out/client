@@ -187,6 +187,10 @@
     }
   },
   "dogs": {
+    "sex": {
+      "MALE": "Mâle",
+      "FEMALE": "Femelle"
+    },
     "form": {
       "loadFailed": "Échec du chargement du profil du chien.",
       "maxPhotos": "Maximum 6 photos par chien.",
@@ -206,6 +210,7 @@
       "photosLabel": "Photos ({{count}}/6)",
       "photosHint": "Au moins 1, jusqu’à 6 belles photos de ton chien",
       "photoRequired": "Ajoute au moins une photo de ton chien.",
+      "sexRequired": "Indique si ton chien est un mâle ou une femelle.",
       "mainBadge": "Principale",
       "basicInfo": "Infos de base",
       "namePlaceholder": "Nom *",
