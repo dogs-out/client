@@ -52,6 +52,15 @@ export function initAds(): Promise<boolean> {
 }
 
 /**
+ * Whether ads are already running, without starting them. Screens other than
+ * Discover use this, so the consent form and the tracking prompt only ever appear
+ * where they were designed to — never on top of someone's chat list.
+ */
+export function adsAlreadyStarted(): Promise<boolean> {
+  return ready ?? Promise.resolve(false);
+}
+
+/**
  * Re-opens the consent choices — required by UMP to be reachable somewhere in the app.
  *
  * <p>The consent status has to be loaded in this app session first, or the form has

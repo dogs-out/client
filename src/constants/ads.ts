@@ -2,7 +2,7 @@ import { Platform } from 'react-native';
 import { TestIds } from 'react-native-google-mobile-ads';
 
 /** A native ad card is slotted into the Discover deck after every this many swipes. */
-export const AD_EVERY_N_SWIPES = 4;
+export const AD_EVERY_N_SWIPES = 3;
 
 /**
  * Release builds use the real "Discover deck" Native ad units from the DogsOut AdMob
@@ -17,3 +17,9 @@ const RELEASE_NATIVE_UNIT = Platform.select({
 
 /** Development builds always use test ads: clicking your own real ads gets an AdMob account banned. */
 export const DECK_NATIVE_AD_UNIT = __DEV__ ? TestIds.NATIVE : RELEASE_NATIVE_UNIT;
+
+/**
+ * The ad card in the Chats list. Same Native unit as the deck for now; give it its
+ * own unit in AdMob ("Chats list") to see the two placements apart in reports.
+ */
+export const CHATS_NATIVE_AD_UNIT = DECK_NATIVE_AD_UNIT;
