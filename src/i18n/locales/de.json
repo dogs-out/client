@@ -131,7 +131,9 @@
       "title": "Bevor es losgeht",
       "subtitle": "Bitte lies und akzeptiere unsere Bedingungen, um Dogs Out zu nutzen.",
       "accept": "Gelesen und akzeptiert",
-      "footNote": "Du kannst sie jederzeit unter Einstellungen → Bedingungen & Datenschutz nachlesen."
+      "footNote": "Du kannst sie jederzeit unter Einstellungen → Bedingungen & Datenschutz nachlesen.",
+      "updatedTitle": "Wir haben unsere Bedingungen aktualisiert",
+      "updatedSubtitle": "Seit deinem letzten Besuch haben wir die Regeln und die gespeicherten Daten präzisiert: Werbung erscheint auch in Listen, Meldungen werden aufbewahrt, und wir erfassen Gerätetyp und App-Version. Bitte lies sie und stimme zu, um weiterzumachen."
     }
   },
   "chat": {
@@ -460,39 +462,43 @@
     },
     "termsPrivacy": {
       "headerTitle": "AGB & Datenschutz",
-      "updated": "Zuletzt aktualisiert: Juli 2026",
+      "updated": "Version 2.2 · 19. Oktober 2026 · Eine Zusammenfassung — es gelten die vollständigen Nutzungsbedingungen und die Datenschutzerklärung unten.",
       "whoCanUse": {
         "title": "1. Wer Dogs Out nutzen darf",
-        "body": "Du musst mindestens 18 Jahre alt sein, um ein Konto zu erstellen. Du bist für die Richtigkeit deines Profils und für die Sicherheit deiner Anmeldedaten verantwortlich."
+        "body": "Dogs Out ist für Erwachsene: Du musst mindestens 18 sein. Ein Konto pro Person, mit wahren Angaben zu dir und deinen Hunden. Behalte deine Zugangsdaten für dich. Dogs Out wird von Moritz Davinghausen und Lea Mutschler, Opfikon, Schweiz, betrieben."
       },
       "contentBehaviour": {
         "title": "2. Deine Inhalte & dein Verhalten",
-        "body": "Sei nett. Inhalte, die beleidigend, diskriminierend, sexuell explizit, irreführend oder nicht damit verbunden sind, andere Hundehalter zu treffen oder Dogsitting zu vereinbaren, sind nicht erlaubt. Wir filtern offensichtliche Vulgärsprache automatisch und prüfen jede Nutzermeldung. Wir können Inhalte entfernen oder Konten sperren, die gegen diese Regeln verstoßen. Du kannst jeden Nutzer aus eurem Chat heraus melden oder blockieren."
+        "body": "Sei freundlich. Nicht erlaubt: Belästigung, Drohungen, Diskriminierung, sexuelle oder hetzerische Inhalte, gefälschte Profile, Spam sowie das Anbieten, Verkaufen oder Züchten von Tieren. Lade nur Fotos hoch, an denen du die Rechte hast, und bitte keine, auf denen Kinder erkennbar sind. Texte werden automatisch auf Beleidigungen geprüft; wir prüfen jede Meldung und können Inhalte entfernen oder Konten sperren. Du kannst jede Person melden oder blockieren."
       },
       "meetingInPerson": {
-        "title": "3. Sich persönlich treffen",
-        "body": "Dogs Out hilft dir, andere Hundehalter zu treffen, aber Treffen erfolgen in deiner eigenen Verantwortung. Trefft euch an öffentlichen Orten wie Parks und stellt sicher, dass sich euer Hund im Umgang mit anderen Hunden wohlfühlt."
+        "title": "3. Treffen, Spaziergänge, Playdates & SOS",
+        "body": "Treffen, Spaziergänge und Playdates erfolgen auf eigene Verantwortung — trefft euch an öffentlichen Orten; du bleibst für deinen Hund und die Leinenregeln vor Ort verantwortlich. Ein SOS-Alarm erreicht alle im Umkreis von 100 km; löse ihn nur für einen wirklich vermissten Hund aus und schliesse ihn, sobald er gefunden ist. Dogs Out ist kostenlos und zeigt gelegentlich Werbung unter Entdecken und in den Listen der Chats, Playdates und Spaziergänge, nie innerhalb einer Unterhaltung."
       },
       "dogsitting": {
         "title": "4. Dogsitting",
-        "body": "Dogs Out stellt lediglich die Möglichkeit bereit, dass Halter und Sitter einander finden und kontaktieren können. Wir sind an keiner Betreuungsvereinbarung beteiligt: Wir beschäftigen, prüfen, empfehlen oder beaufsichtigen keine Sitter und verifizieren keine Angaben der Nutzer zu Erfahrung oder Qualifikation. Ob und zu welchen Bedingungen ein Dogsitting zustande kommt, entscheidet ihr ausschließlich untereinander. Wir empfehlen dringend ein persönliches Kennenlerngespräch und ein Probetreffen mit dem Hund sowie die vorherige Absprache aller Details (Zeiten, Pflegehinweise, Vergütung, Notfälle). Halter bleiben für ihre Hunde verantwortlich, Sitter für die vereinbarte Betreuung. Soweit gesetzlich zulässig, haftet Dogs Out nicht für Verletzungen, Verluste oder Schäden im Zusammenhang mit über die App vereinbartem Dogsitting."
+        "body": "Dogs Out bringt Halter und Betreuungspersonen nur zusammen. Jede Vereinbarung, auch die Bezahlung, gilt allein zwischen euch; wir prüfen weder Identität noch Erfahrung oder Zuverlässigkeit und sind nicht Vertragspartei. Klärt alles im Voraus und lernt euch zuerst kennen. Übergabedetails (Adresse, Notfallnummer) sieht nur die angenommene Betreuungsperson. Drei kurzfristige Absagen (weniger als 24 Stunden vorher) innerhalb eines Jahres sperren die Annahme von Aufträgen für 30 Tage. Soweit gesetzlich zulässig, haften wir nicht für Schäden aus Treffen oder Betreuungen."
       },
       "dataStored": {
         "title": "5. Welche Daten wir speichern",
-        "body": "Dein Konto (Name, E-Mail, Geburtsdatum), dein Profil und Hundeprofile inklusive Fotos, dein ungefährer Standort (nur für entfernungsbasiertes Matching verwendet — andere Nutzer sehen niemals deine genaue Position), deine Matches und Chat-Nachrichten sowie deine Benachrichtigungseinstellungen."
+        "body": "Dein Konto (E-Mail, Name, Geburtsdatum), Profil, Hunde und Fotos, den Standort, den du festlegst (per GPS oder Ortssuche), Matches, Nachrichten, Playdates, Status, Betreuungsaufträge und Bewertungen, SOS-Alarme, Blockierungen und Meldungen sowie wann, auf welchem Gerätetyp (iPhone oder Android) und mit welcher App-Version du Dogs Out zuletzt genutzt hast. Unsere Server stehen in den USA (Railway)."
       },
       "dataUse": {
-        "title": "6. Wie deine Daten verwendet werden",
-        "body": "Deine Daten werden ausschließlich zum Betrieb von Dogs Out verwendet: um dein Profil Nutzern in deiner Nähe zu zeigen, Nachrichten zuzustellen und Push-Benachrichtigungen zu senden, die du jederzeit ausschalten kannst. Wir verkaufen deine Daten nicht. Unter Entdecken und in den Listen der Chats, Playdates und Spaziergänge erscheint gelegentlich Werbung von Google AdMob (nie innerhalb einer Unterhaltung); Google erhält dabei die Werbe-ID deines Geräts, deine IP-Adresse und deine Interaktionen mit der Werbung und personalisiert sie, wenn du zustimmst. Deine Wahl kannst du jederzeit unter Einstellungen → Datenschutz bei Werbung ändern. Gemeldete Chats werden von unserem Moderationsteam geprüft."
+        "title": "6. Wer was sieht",
+        "body": "Andere sehen dein Profil und wie weit du entfernt bist — nie deinen gespeicherten Standort. Ein Ort wird nur geteilt, wo du es willst: in einem Status, einem SOS-Alarm, einem Playdate oder den Übergabedetails. Google zeigt die Werbung und erhält deine Werbe-ID (auf dem iPhone nur, wenn du Tracking erlaubst), deine IP-Adresse und Interaktionen mit Anzeigen; über personalisierte Werbung entscheidest du unter Einstellungen → Datenschutz bei Werbung. Wir verkaufen deine Daten nie."
       },
       "deletingData": {
-        "title": "7. Deine Daten löschen",
-        "body": "Einstellungen → Konto löschen entfernt dauerhaft dein Profil, deine Fotos, Hunde, Matches, Nachrichten und Blockierungen. Dies geschieht sofort und kann nicht rückgängig gemacht werden."
+        "title": "7. Konto löschen",
+        "body": "Einstellungen → Konto löschen entfernt dein Konto, Profil, Fotos, Hunde, Matches, Chats, Status, Alarme und Betreuungsaufträge sofort und endgültig. Meldungen bleiben erhalten, damit wir wiederholtes Verhalten erkennen. Du kannst auch Auskunft, Berichtigung oder eine Kopie deiner Daten verlangen."
       },
       "contact": {
         "title": "8. Kontakt",
-        "body": "Fragen zu diesen Bedingungen oder deinen Daten? Kontaktiere uns unter help@dogsout.app."
-      }
+        "body": "help@dogsout.app · Moritz Davinghausen und Lea Mutschler, c/o Moritz Davinghausen, Wallisellerstrasse 124, 8152 Opfikon, Schweiz. Es gilt Schweizer Recht."
+      },
+      "fullTerms": "Vollständige Nutzungsbedingungen",
+      "fullPrivacy": "Vollständige Datenschutzerklärung",
+      "termsUrl": "https://dogsout.app/legal/nutzungsbedingungen.html",
+      "privacyUrl": "https://dogsout.app/legal/datenschutz.html"
     }
   },
   "home": {

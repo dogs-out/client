@@ -30,4 +30,14 @@ describe('signedInRoute', () => {
     getMe.mockResolvedValue({ termsAccepted: true, dateOfBirth: '1990-01-01', latitude: 47.4 });
     expect(await signedInRoute()).toEqual({ name: 'MainTabs' });
   });
+
+  it('asks once more when the terms were accepted before the current version', async () => {
+    getMe.mockResolvedValue({ termsAccepted: true, termsAcceptedAt: '2026-10-05T10:00:00Z', dateOfBirth: '1990-01-01', latitude: 47.4 });
+    expect(await signedInRoute()).toEqual({ name: 'AcceptTerms', params: { next: 'MainTabs', updated: true } });
+  });
+
+  it('lets a current acceptance through', async () => {
+    getMe.mockResolvedValue({ termsAccepted: true, termsAcceptedAt: '2026-10-20T08:00:00.123456Z', dateOfBirth: '1990-01-01', latitude: 47.4 });
+    expect(await signedInRoute()).toEqual({ name: 'MainTabs' });
+  });
 });

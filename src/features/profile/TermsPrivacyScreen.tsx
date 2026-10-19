@@ -7,6 +7,7 @@ import { RootStackParamList } from '../../types/navigation';
 import { Colors } from '../../constants/colors';
 import { FloatingBackground } from '../../components/FloatingBackground';
 import { GlassCard } from '../../components/GlassCard';
+import { FullLegalLinks } from '../../components/FullLegalLinks';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'TermsPrivacy'>;
 
@@ -28,6 +29,7 @@ export default function TermsPrivacyScreen({ navigation }: Readonly<Props>) {
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         <Text style={styles.updated}>{t('profile.termsPrivacy.updated')}</Text>
+        <FullLegalLinks />
         {SECTION_KEYS.map(key => (
           <GlassCard key={key} padding={0} style={styles.card}>
             <View style={styles.cardInner}>

@@ -4,7 +4,8 @@ import { SittingRequest } from '../services/sitterService';
 export type RootStackParamList = {
   Login: undefined;
   Register: { prefillEmail?: string; prefillPassword?: string } | undefined;
-  AcceptTerms: { next?: 'MainTabs' | 'ProfileSetup' } | undefined;
+  /** updated: they had accepted an older version — say what changed. */
+  AcceptTerms: { next?: 'MainTabs' | 'ProfileSetup'; updated?: boolean } | undefined;
   VerifyEmail: { email: string; name?: string; password?: string; emailFailed?: boolean };
   ForgotPassword: undefined;
   ResetPassword: { email: string };

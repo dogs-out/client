@@ -131,7 +131,9 @@
       "title": "Avant de commencer",
       "subtitle": "Merci de lire et d'accepter nos conditions pour utiliser Dogs Out.",
       "accept": "J'ai lu et j'accepte",
-      "footNote": "Tu peux les relire à tout moment dans Réglages → Conditions et confidentialité."
+      "footNote": "Tu peux les relire à tout moment dans Réglages → Conditions et confidentialité.",
+      "updatedTitle": "Nous avons mis à jour nos conditions",
+      "updatedSubtitle": "Depuis ta dernière visite, nous avons précisé les règles et les données enregistrées : des publicités apparaissent aussi dans les listes, les signalements sont conservés et nous enregistrons le type d’appareil et la version de l’app. Merci de lire et d’accepter pour continuer."
     }
   },
   "chat": {
@@ -460,39 +462,43 @@
     },
     "termsPrivacy": {
       "headerTitle": "Conditions & confidentialité",
-      "updated": "Dernière mise à jour : juillet 2026",
+      "updated": "Version 2.2 · 19 octobre 2026 · Un résumé — les conditions d’utilisation et la politique de confidentialité complètes ci-dessous s’appliquent.",
       "whoCanUse": {
         "title": "1. Qui peut utiliser Dogs Out",
-        "body": "Tu dois avoir au moins 18 ans pour créer un compte. Tu es responsable de l'exactitude de ton profil et de la sécurité de tes identifiants de connexion."
+        "body": "Dogs Out est réservé aux adultes : tu dois avoir au moins 18 ans. Un compte par personne, avec des informations exactes sur toi et tes chiens. Garde tes identifiants pour toi. Dogs Out est exploité par Moritz Davinghausen et Lea Mutschler, Opfikon, Suisse."
       },
       "contentBehaviour": {
-        "title": "2. Ton contenu et ton comportement",
-        "body": "Sois bienveillant. Les contenus abusifs, discriminatoires, sexuellement explicites, trompeurs ou sans rapport avec la rencontre d'autres propriétaires de chiens ou l'organisation de dogsitting ne sont pas autorisés. Nous filtrons automatiquement les grossièretés évidentes et examinons chaque signalement d'utilisateur. Nous pouvons supprimer du contenu ou suspendre des comptes qui enfreignent ces règles. Tu peux signaler ou bloquer n'importe quel utilisateur depuis votre discussion."
+        "title": "2. Tes contenus & ton comportement",
+        "body": "Sois bienveillant·e. Interdits : harcèlement, menaces, discrimination, contenus sexuels ou haineux, faux profils, spam, ainsi que l’offre, la vente ou l’élevage d’animaux. Ne publie que des photos dont tu as les droits, et pas de photos où des enfants sont reconnaissables. Les textes sont vérifiés automatiquement ; nous examinons chaque signalement et pouvons retirer des contenus ou suspendre des comptes. Tu peux signaler ou bloquer n’importe qui."
       },
       "meetingInPerson": {
-        "title": "3. Se rencontrer en personne",
-        "body": "Dogs Out t'aide à rencontrer d'autres propriétaires de chiens, mais les rencontres se déroulent sous ta propre responsabilité. Retrouvez-vous dans des lieux publics comme les parcs, et assure-toi que ton chien est à l'aise avec les autres chiens."
+        "title": "3. Rencontres, balades, playdates & SOS",
+        "body": "Les rencontres, balades et playdates se font sous ta propre responsabilité — rencontrez-vous dans des lieux publics ; tu restes responsable de ton chien et des règles locales sur la laisse. Une alerte SOS atteint tout le monde dans un rayon de 100 km ; ne la lance que pour un chien vraiment perdu et ferme-la dès qu’il est retrouvé. Dogs Out est gratuit et affiche parfois des publicités dans Découvrir et dans les listes des chats, playdates et balades, jamais dans une conversation."
       },
       "dogsitting": {
         "title": "4. Dogsitting",
-        "body": "Dogs Out se limite à permettre aux propriétaires et aux sitters de se trouver et de se contacter. Nous ne sommes partie à aucun accord de garde : nous n'employons, ne contrôlons, ne recommandons ni ne supervisons les sitters, et nous ne vérifions aucune information déclarée par les utilisateurs (expérience, qualifications). La décision d'organiser un dogsitting, et à quelles conditions, vous appartient entièrement, à toi et à l'autre utilisateur. Nous recommandons vivement un entretien en personne et une rencontre d'essai avec le chien, ainsi que de convenir à l'avance de tous les détails (horaires, consignes de soin, rémunération, urgences). Les propriétaires restent responsables de leurs chiens, les sitters de la garde convenue. Dans toute la mesure permise par la loi applicable, Dogs Out décline toute responsabilité pour les blessures, pertes ou dommages liés à un dogsitting organisé via l'application."
+        "body": "Dogs Out met seulement en relation propriétaires et dogsitters. Tout accord, y compris le paiement, vous concerne uniquement ; nous ne vérifions ni l’identité, ni l’expérience, ni la fiabilité et ne sommes pas partie à l’accord. Mettez-vous d’accord sur tout à l’avance et rencontrez-vous d’abord. Les détails de remise (adresse, numéro d’urgence) ne sont visibles que par le dogsitter accepté. Trois annulations tardives (moins de 24 heures avant) en un an bloquent l’acceptation de missions pendant 30 jours. Dans la mesure permise par la loi, nous déclinons toute responsabilité pour les dommages liés aux rencontres ou aux gardes."
       },
       "dataStored": {
-        "title": "5. Quelles données nous stockons",
-        "body": "Ton compte (nom, e-mail, date de naissance), ton profil et les profils de tes chiens y compris les photos, ta position approximative (utilisée uniquement pour le matching par distance — les autres utilisateurs ne voient jamais ta position exacte), tes matchs et messages de discussion, ainsi que tes préférences de notification."
+        "title": "5. Données enregistrées",
+        "body": "Ton compte (e-mail, nom, date de naissance), ton profil, tes chiens et photos, la position que tu définis (par GPS ou recherche de localité), les matchs, messages, playdates, statuts, missions de garde et évaluations, alertes SOS, blocages et signalements, ainsi que quand, sur quel type d’appareil (iPhone ou Android) et avec quelle version tu as utilisé Dogs Out pour la dernière fois. Nos serveurs sont aux États-Unis (Railway)."
       },
       "dataUse": {
-        "title": "6. Comment tes données sont utilisées",
-        "body": "Tes données ne sont utilisées que pour faire fonctionner Dogs Out : montrer ton profil aux utilisateurs à proximité, transmettre les messages et envoyer des notifications push que tu peux désactiver à tout moment. Nous ne vendons pas tes données. Découvrir et les listes des chats, playdates et balades affichent parfois des publicités de Google AdMob (jamais dans une conversation) ; Google reçoit l'identifiant publicitaire de ton appareil, ton adresse IP et tes interactions avec les publicités et, si tu l'acceptes, personnalise les publicités. Tu peux changer ton choix à tout moment dans Réglages → Confidentialité des publicités. Les discussions signalées sont examinées par notre équipe de modération."
+        "title": "6. Qui voit quoi",
+        "body": "Les autres voient ton profil et à quelle distance tu te trouves — jamais ta position enregistrée. Un lieu n’est partagé que si tu le choisis : dans un statut, une alerte SOS, un playdate ou les détails de remise. Google affiche les publicités et reçoit ton identifiant publicitaire (sur iPhone seulement si tu autorises le suivi), ton adresse IP et tes interactions ; tu choisis les publicités personnalisées dans Réglages → Confidentialité des publicités. Nous ne vendons jamais tes données."
       },
       "deletingData": {
-        "title": "7. Supprimer tes données",
-        "body": "Réglages → Supprimer le compte supprime définitivement ton profil, tes photos, tes chiens, tes matchs, tes messages et tes blocages. Cette action est immédiate et irréversible."
+        "title": "7. Supprimer ton compte",
+        "body": "Réglages → Supprimer le compte efface immédiatement et définitivement ton compte, profil, photos, chiens, matchs, chats, statuts, alertes et missions de garde. Les signalements sont conservés afin de reconnaître les comportements répétés. Tu peux aussi demander l’accès à tes données, leur correction ou une copie."
       },
       "contact": {
         "title": "8. Contact",
-        "body": "Des questions sur ces conditions ou tes données ? Contacte-nous à help@dogsout.app."
-      }
+        "body": "help@dogsout.app · Moritz Davinghausen et Lea Mutschler, c/o Moritz Davinghausen, Wallisellerstrasse 124, 8152 Opfikon, Suisse. Le droit suisse s’applique."
+      },
+      "fullTerms": "Conditions d’utilisation complètes (en anglais)",
+      "fullPrivacy": "Politique de confidentialité complète (en anglais)",
+      "termsUrl": "https://dogsout.app/legal/terms.html",
+      "privacyUrl": "https://dogsout.app/legal/privacy.html"
     }
   },
   "home": {

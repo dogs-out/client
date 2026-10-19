@@ -119,6 +119,8 @@ export interface UserProfile {
   maxDistanceKm: number | null;
   /** False until the account has accepted the terms. */
   termsAccepted: boolean;
+  /** When the terms were last accepted (ISO); absent from servers before 1.3. */
+  termsAcceptedAt?: string | null;
   /** Null when there is none, or when it has run out. */
   walkStatus: WalkStatus | null;
   walkStatusExpiresAt: string | null;

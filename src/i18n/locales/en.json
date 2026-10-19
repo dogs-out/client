@@ -131,7 +131,9 @@
       "title": "Before you start",
       "subtitle": "Please read and accept our terms to use Dogs Out.",
       "accept": "I have read and accept",
-      "footNote": "You can read these again any time under Settings → Terms & Privacy."
+      "footNote": "You can read these again any time under Settings → Terms & Privacy.",
+      "updatedTitle": "We have updated our terms",
+      "updatedSubtitle": "Since your last visit we have clarified the rules and what we store: ads also appear in lists, reports are kept, and we now record which device and app version you use. Please read and accept to continue."
     }
   },
   "chat": {
@@ -460,39 +462,43 @@
     },
     "termsPrivacy": {
       "headerTitle": "Terms & Privacy",
-      "updated": "Last updated: July 2026",
+      "updated": "Version 2.2 · 19 October 2026 · A summary — the full Terms of Use and Privacy Policy below apply.",
       "whoCanUse": {
         "title": "1. Who can use Dogs Out",
-        "body": "You must be at least 18 years old to create an account. You are responsible for the accuracy of your profile and for keeping your login credentials safe."
+        "body": "Dogs Out is for adults: you must be at least 18. One account per person, with true information about you and your dogs. Keep your login to yourself. Dogs Out is operated by Moritz Davinghausen and Lea Mutschler, Opfikon, Switzerland."
       },
       "contentBehaviour": {
         "title": "2. Your content & behaviour",
-        "body": "Be kind. Content that is abusive, discriminatory, sexually explicit, misleading, or unrelated to meeting other dog owners or arranging dogsitting is not allowed. We filter obvious profanity automatically and review every user report. We may remove content or suspend accounts that violate these rules. You can report or block any user from your chat with them."
+        "body": "Be kind. Not allowed: harassment, threats, discrimination, sexual or hateful content, fake profiles, spam, and offering, selling or breeding animals. Only upload photos you have the rights to; please no photos in which children can be recognised. Text is checked automatically for offensive language; we review every report and may remove content or suspend accounts. You can report or block anyone."
       },
       "meetingInPerson": {
-        "title": "3. Meeting in person",
-        "body": "Dogs Out helps you meet other dog owners, but meetings happen at your own responsibility. Meet in public places like parks, and make sure your dog is comfortable around other dogs."
+        "title": "3. Meeting, walks, playdates & SOS",
+        "body": "Meetings, walks and playdates happen at your own responsibility — meet in public places, and you remain responsible for your dog and for local leash rules. An SOS alert reaches everyone within 100 km; raise one only for a dog that is really missing and close it once it is found. Dogs Out is free and shows occasional ads in Discover and in the lists of chats, playdates and walks, never inside a conversation."
       },
       "dogsitting": {
         "title": "4. Dogsitting",
-        "body": "Dogs Out only provides a way for owners and sitters to find and contact each other. We are not a party to any sitting arrangement: we do not employ, vet, endorse, or supervise sitters, and we do not verify any user's experience, qualifications, or other self-declared information. Whether, and on what terms, you arrange dogsitting is decided entirely between you and the other user. We strongly recommend a personal interview and a trial meet-and-greet with the dog first, and agreeing on all details (times, care instructions, compensation, emergencies) in advance. Owners remain responsible for their dogs, and sitters for the care they agree to provide. To the maximum extent permitted by applicable law, Dogs Out is not liable for any injury, loss, or damage arising from dogsitting arrangements made through the app."
+        "body": "Dogs Out only connects owners and sitters. Any agreement, including payment, is solely between you; we do not check identity, experience or reliability and are not a party to it. Agree on everything in advance and meet first. Handover details (address, emergency number) are shown only to the sitter you accepted. Three late cancellations (less than 24 hours before) within a year pause taking jobs for 30 days. To the extent permitted by law, we are not liable for damage arising from meetings or sittings."
       },
       "dataStored": {
         "title": "5. What data we store",
-        "body": "Your account (name, email, date of birth), your profile and dog profiles including photos, your approximate location (used only for distance-based matching — other users never see your exact position), your matches and chat messages, and your notification preferences."
+        "body": "Your account (email, name, date of birth), profile, dogs and photos, the location you set (from GPS or a town you search), matches, messages, playdates, statuses, dogsitting jobs and reviews, SOS alerts, blocks and reports, and when and on which kind of device (iPhone or Android) and app version you last used Dogs Out. Our servers are in the USA (Railway)."
       },
       "dataUse": {
-        "title": "6. How your data is used",
-        "body": "Your data is used solely to run Dogs Out: showing your profile to nearby users, delivering messages, and sending push notifications you can switch off at any time. We do not sell your data. Discover and the lists of chats, playdates and walks show occasional ads from Google AdMob (never inside a conversation); Google receives your device's advertising identifier, IP address and ad interactions and, if you agree, personalises ads. Change your choice any time in Settings → Ad privacy choices. Reported chats are reviewed by our moderation team."
+        "title": "6. Who sees what",
+        "body": "Others see your profile and how far away you are — never your saved location. A place is shared only where you choose to: a status, an SOS alert, a playdate or the handover details. Google shows the ads and receives your advertising identifier (on iPhone only if you allow tracking), IP address and ad interactions; you decide about personalised ads in Settings → Ad privacy choices. We never sell your data."
       },
       "deletingData": {
-        "title": "7. Deleting your data",
-        "body": "Settings → Delete account permanently removes your profile, photos, dogs, matches, messages, and blocks. This is immediate and cannot be undone."
+        "title": "7. Deleting your account",
+        "body": "Settings → Delete account removes your account, profile, photos, dogs, matches, chats, statuses, alerts and dogsitting jobs immediately and for good. Reports are kept so we can recognise repeat behaviour. You may also ask us what we store, have it corrected, or receive a copy."
       },
       "contact": {
         "title": "8. Contact",
-        "body": "Questions about these terms or your data? Contact us at help@dogsout.app."
-      }
+        "body": "help@dogsout.app · Moritz Davinghausen and Lea Mutschler, c/o Moritz Davinghausen, Wallisellerstrasse 124, 8152 Opfikon, Switzerland. Swiss law applies."
+      },
+      "fullTerms": "Full Terms of Use",
+      "fullPrivacy": "Full Privacy Policy",
+      "termsUrl": "https://dogsout.app/legal/terms.html",
+      "privacyUrl": "https://dogsout.app/legal/privacy.html"
     }
   },
   "home": {

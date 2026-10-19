@@ -8,6 +8,7 @@ import { Colors } from '../../constants/colors';
 import { FloatingBackground } from '../../components/FloatingBackground';
 import { GlassCard } from '../../components/GlassCard';
 import { GlassButton } from '../../components/GlassButton';
+import { FullLegalLinks } from '../../components/FullLegalLinks';
 import { userService } from '../../services/userService';
 import { getApiError } from '../../utils/apiError';
 
@@ -48,12 +49,13 @@ export default function AcceptTermsScreen({ navigation, route }: Readonly<Props>
       <FloatingBackground />
 
       <View style={styles.header}>
-        <Text style={styles.title}>{t('auth.acceptTerms.title')}</Text>
-        <Text style={styles.subtitle}>{t('auth.acceptTerms.subtitle')}</Text>
+        <Text style={styles.title}>{t(route.params?.updated ? 'auth.acceptTerms.updatedTitle' : 'auth.acceptTerms.title')}</Text>
+        <Text style={styles.subtitle}>{t(route.params?.updated ? 'auth.acceptTerms.updatedSubtitle' : 'auth.acceptTerms.subtitle')}</Text>
       </View>
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         <Text style={styles.updated}>{t('profile.termsPrivacy.updated')}</Text>
+        <FullLegalLinks />
         {SECTION_KEYS.map(key => (
           <GlassCard key={key} padding={0} style={styles.card}>
             <View style={styles.cardInner}>
