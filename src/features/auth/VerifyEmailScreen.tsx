@@ -1,5 +1,7 @@
 import { useState } from 'react';
-import { ActivityIndicator, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Keyboard, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
+import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
+import { KEYBOARD_BEHAVIOR } from '../../utils/keyboardBehavior';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useTranslation } from 'react-i18next';
 import { RootStackParamList } from '../../types/navigation';
@@ -26,12 +28,13 @@ export default function VerifyEmailScreen({ route, navigation }: Readonly<Props>
   const [resent, setResent] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleVerify = async () => {
-    if (code.length !== 6) { setError(t('auth.verifyEmail.enterCode')); return; }
+  const handleVerify = async (entered: string = code) => {
+    if (entered.length !== 6) { setError(t('auth.verifyEmail.enterCode')); return; }
+    Keyboard.dismiss();
     setLoading(true);
     setError(null);
     try {
-      const res = await authService.verifyEmail(email, code);
+      const res = await authService.verifyEmail(email, entered);
       await tokenStorage.set(res.token);
       navigation.reset({ index: 0, routes: [await signedInRoute()] });
     } catch (e) {
@@ -39,6 +42,14 @@ export default function VerifyEmailScreen({ route, navigation }: Readonly<Props>
     } finally {
       setLoading(false);
     }
+  };
+
+  // The iPhone number pad has no return key and covered the Verify button, so
+  // people typed all six digits and were stuck. A complete code now confirms itself.
+  const onCodeChange = (value: string) => {
+    const digits = value.replace(/\D/g, '').slice(0, 6);
+    setCode(digits);
+    if (digits.length === 6 && !loading) handleVerify(digits);
   };
 
   const handleResend = async () => {
@@ -58,9 +69,10 @@ export default function VerifyEmailScreen({ route, navigation }: Readonly<Props>
   };
 
   return (
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
     <View style={styles.screen}>
       <FloatingBackground />
-      <View style={styles.container}>
+      <KeyboardAvoidingView style={styles.container} behavior={KEYBOARD_BEHAVIOR}>
       <GlassCard style={styles.card}>
         <Text style={styles.title}>{t('auth.verifyEmail.title')}</Text>
         <Text style={styles.subtitle}>
@@ -79,8 +91,11 @@ export default function VerifyEmailScreen({ route, navigation }: Readonly<Props>
           placeholder="000000"
           placeholderTextColor={Colors.textSecondary}
           value={code}
-          onChangeText={setCode}
+          onChangeText={onCodeChange}
           keyboardType="number-pad"
+          // Lets iOS offer the code from the Mail app above the keyboard.
+          textContentType="oneTimeCode"
+          autoComplete="one-time-code"
           maxLength={6}
           textAlign="center"
           autoFocus
@@ -89,7 +104,7 @@ export default function VerifyEmailScreen({ route, navigation }: Readonly<Props>
         {loading ? (
           <ActivityIndicator style={{ marginTop: 16 }} color={Colors.primary} />
         ) : (
-          <GlassButton onPress={handleVerify} style={styles.button}>
+          <GlassButton onPress={() => handleVerify()} style={styles.button}>
             <Text style={styles.buttonText}>{t('auth.verifyEmail.verify')}</Text>
           </GlassButton>
         )}
@@ -110,8 +125,9 @@ export default function VerifyEmailScreen({ route, navigation }: Readonly<Props>
           </TouchableOpacity>
         </View>
       </GlassCard>
-      </View>
+      </KeyboardAvoidingView>
     </View>
+    </TouchableWithoutFeedback>
   );
 }
 
