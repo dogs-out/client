@@ -352,6 +352,8 @@
       "cameraPermission": "Dogs Out ha bisogno dell'accesso alla fotocamera. Puoi consentirlo nelle impostazioni.",
       "timeSlotsLabel": "Orari in cui posso fare il dogsitter",
       "availabilityLabel": "Quando posso fare il dogsitter",
+      "locationReminder": "Quasi fatto: Dogs Out ha ancora bisogno della tua posizione per mostrarti i cani vicino a te. Inserisci la tua località o il tuo NPA, oppure lasciala rilevare automaticamente.",
+      "locationHint": "Inserisci la tua località o il tuo NPA, oppure rileva la tua posizione automaticamente.",
       "seekerAvailabilityLabel": "Quando ti serve di solito un dogsitter?",
       "seekerAvailabilityHint": "Tocca i giorni e le fasce orarie. I dogsitter lo vedono sul tuo profilo e possono filtrare in base a questo.",
       "availabilityHint": "Spunta gli orari in cui sei di solito libero. Tocca un giorno per riempire tutta la riga."

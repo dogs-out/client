@@ -352,6 +352,8 @@
       "cameraPermission": "Dogs Out braucht Kamerazugriff, um ein Foto aufzunehmen. Du kannst das in den Einstellungen erlauben.",
       "timeSlotsLabel": "Zeiten, zu denen ich sitten kann",
       "availabilityLabel": "Wann ich sitten kann",
+      "locationReminder": "Fast geschafft: Dogs Out braucht noch deinen Standort, um dir Hunde in deiner Nähe zu zeigen. Gib deinen Ort oder deine PLZ ein oder lass ihn automatisch ermitteln.",
+      "locationHint": "Gib deinen Ort oder deine PLZ ein oder lass deinen Standort automatisch ermitteln.",
       "seekerAvailabilityLabel": "Wann brauchst du meistens einen Sitter?",
       "seekerAvailabilityHint": "Tippe Tage und Tageszeiten an. Sitter sehen das in deinem Profil und können danach filtern.",
       "availabilityHint": "Kreuze an, wann du meistens Zeit hast. Tippe auf einen Tag, um die ganze Zeile zu füllen."

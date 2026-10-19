@@ -16,7 +16,9 @@ export type SignedInRoute =
  */
 export async function signedInRoute(): Promise<SignedInRoute> {
   const user = await userService.getMe();
-  const home: Home = user.dateOfBirth ? 'MainTabs' : 'ProfileSetup';
+  // A profile without a location sees nobody nearby and is found by nobody, so it
+  // is as unfinished as one without a date of birth.
+  const home: Home = user.dateOfBirth && user.latitude != null ? 'MainTabs' : 'ProfileSetup';
   // The terms come before everything, including finishing a profile — otherwise
   // someone types their name and date of birth into an app whose terms they have
   // not been shown.

@@ -7,7 +7,7 @@ const getMe = userService.getMe as jest.Mock;
 
 describe('signedInRoute', () => {
   it('sends someone who has not accepted the terms to the gate, then on to the app', async () => {
-    getMe.mockResolvedValue({ termsAccepted: false, dateOfBirth: '1990-01-01' });
+    getMe.mockResolvedValue({ termsAccepted: false, dateOfBirth: '1990-01-01', latitude: 47.4 });
     expect(await signedInRoute()).toEqual({ name: 'AcceptTerms', params: { next: 'MainTabs' } });
   });
 
@@ -21,8 +21,13 @@ describe('signedInRoute', () => {
     expect(await signedInRoute()).toEqual({ name: 'ProfileSetup' });
   });
 
+  it('sends a profile without a location back to setup', async () => {
+    getMe.mockResolvedValue({ termsAccepted: true, dateOfBirth: '1990-01-01', latitude: null });
+    expect(await signedInRoute()).toEqual({ name: 'ProfileSetup' });
+  });
+
   it('lets everyone else straight into the app', async () => {
-    getMe.mockResolvedValue({ termsAccepted: true, dateOfBirth: '1990-01-01' });
+    getMe.mockResolvedValue({ termsAccepted: true, dateOfBirth: '1990-01-01', latitude: 47.4 });
     expect(await signedInRoute()).toEqual({ name: 'MainTabs' });
   });
 });

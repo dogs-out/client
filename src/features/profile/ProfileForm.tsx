@@ -85,6 +85,8 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved, onC
   const cropIndex = cropQueue.length > 0 ? cropQueue[0] : null;
   const nextInQueue = () => setCropQueue(q => q.slice(1));
   const [location, setLocation]             = useState<{ latitude: number; longitude: number } | null>(null);
+  /** An existing profile that only lacks a location: say why they are back here. */
+  const [onlyLocationMissing, setOnlyLocationMissing] = useState(false);
   /** The name of a place chosen by hand, shown on the button instead of "detected". */
   const [locationLabel, setLocationLabel]   = useState<string | null>(null);
   const [locationProblem, setLocationProblem] = useState<Exclude<DeviceLocationResult, { ok: true }> | null>(null);
@@ -113,6 +115,7 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved, onC
       if (user.name) setName(user.name);
       if (user.bio) setBio(user.bio);
       if (user.dateOfBirth) setDateOfBirth(new Date(user.dateOfBirth));
+      setOnlyLocationMissing(!!user.dateOfBirth && user.latitude == null);
       if (user.latitude && user.longitude) {
         setLocation({ latitude: user.latitude, longitude: user.longitude });
       }
@@ -355,6 +358,13 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved, onC
           <Text style={styles.title}>{title}</Text>
           <Text style={styles.subtitle}>{subtitle}</Text>
 
+          {onlyLocationMissing && !location && (
+            <View style={styles.locationReminder} testID="location-reminder">
+              <Ionicons name="location-outline" size={18} color={Colors.primary} />
+              <Text style={styles.locationReminderText}>{t('profile.form.locationReminder')}</Text>
+            </View>
+          )}
+
           <Text style={styles.label}>{t('profile.form.photosLabel')} <Text style={styles.optional}>({photos.length}/{MAX_PHOTOS})</Text></Text>
           <View style={styles.photoGrid}>
             {Array.from({ length: 3 }).map((_, i) => {
@@ -475,6 +485,7 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved, onC
           )}
 
           <Text style={styles.label}>{t('profile.form.location')}</Text>
+          {!location && <Text style={styles.locationHint}>{t('profile.form.locationHint')}</Text>}
           <GlassButton onPress={detectLocation} disabled={locating} style={styles.locationButton}>
             {locating ? (
               <ActivityIndicator size="small" color={Colors.primary} />
@@ -749,6 +760,12 @@ const styles = StyleSheet.create({
   dateText:     { fontSize: 16, color: Colors.text },
   datePlaceholder: { fontSize: 16, color: Colors.textSecondary },
 
+  locationReminder: {
+    flexDirection: 'row', alignItems: 'flex-start', gap: 8, padding: 12, marginBottom: 16, borderRadius: 14,
+    backgroundColor: 'rgba(46,158,107,0.10)', borderWidth: 1, borderColor: 'rgba(46,158,107,0.30)',
+  },
+  locationReminderText: { flex: 1, fontSize: 14, color: Colors.text, lineHeight: 20 },
+  locationHint: { fontSize: 13, color: Colors.textSecondary, marginTop: -4, marginBottom: 10, lineHeight: 18 },
   locationButton:          { marginBottom: 0 },
   chooseLocation:          { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, paddingVertical: 10 },
   chooseLocationText:      { color: Colors.primary, fontSize: 14, fontWeight: '700' },

@@ -206,6 +206,19 @@ describe('ProfileForm', () => {
       expect(onChooseLocation).toHaveBeenCalled();
     });
 
+    it('tells a returning user without a location why they are here', async () => {
+      getMeMock.mockResolvedValue({ name: 'Joel', dateOfBirth: '1990-01-01', latitude: null, longitude: null });
+      await renderForm();
+      await waitFor(() => expect(screen.getByTestId('location-reminder')).toBeTruthy());
+      expect(screen.getByText('profile.form.locationReminder')).toBeTruthy();
+    });
+
+    it('does not show the reminder to someone setting up for the first time', async () => {
+      await renderForm();
+      await waitFor(() => expect(screen.getByText('profile.form.locationHint')).toBeTruthy());
+      expect(screen.queryByTestId('location-reminder')).toBeNull();
+    });
+
     it('shows a place picked on the map', async () => {
       await renderForm({ pickedPlace: { name: 'Opfikon', address: '8152 Opfikon, Switzerland', latitude: 47.43, longitude: 8.57 } });
       await waitFor(() => expect(screen.getByText('8152 Opfikon, Switzerland')).toBeTruthy());
