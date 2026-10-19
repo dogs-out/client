@@ -156,7 +156,14 @@ export default function DiscoverScreen() {
   const [adsEnabled, setAdsEnabled] = useState(false);
   const [adCard, setAdCard] = useState<NativeAd | null>(null);
   const swipeCountRef = useRef(0);
-  const { take: takeDeckAd } = useDeckAd(adsEnabled);
+  // Load the ad one swipe before its slot, not the moment Discover opens: at
+  // launch 43% of loaded ads were never seen, because people stopped swiping
+  // first — wasted data for them, and a show rate that tells AdMob the slot is
+  // poor. Also loaded when the deck is about to run out, for the last-card and
+  // empty-deck ads. (The swipe count is a ref; this render follows the swipe.)
+  const remainingCards = feed.length - idx;
+  const adSoon = swipeCountRef.current % AD_EVERY_N_SWIPES === AD_EVERY_N_SWIPES - 1 || remainingCards <= 1;
+  const { take: takeDeckAd } = useDeckAd(adsEnabled && adSoon);
   const adCardRef = useRef<NativeAd | null>(null);
   adCardRef.current = adCard;
   useEffect(() => () => adCardRef.current?.destroy(), []);

@@ -6,8 +6,9 @@ import { DECK_NATIVE_AD_UNIT } from '../../constants/ads';
  * Keeps one native ad loaded and ready for the deck.
  *
  * <p>Loaded ahead of time so the card is there the moment its slot comes round —
- * an ad that starts loading on the fourth swipe would either hold up the deck or
- * miss its slot. `take()` hands the ready ad over (the caller then owns it and
+ * an ad that starts loading on the slot's own swipe would either hold up the deck
+ * or miss it. The caller turns `enabled` on one swipe before the slot; an ad that
+ * is already loaded is kept even while it is off. `take()` hands the ready ad over (the caller then owns it and
  * destroys it once swiped away) and starts loading the next one. No ad is fine:
  * a slot with nothing loaded is simply skipped.
  */
