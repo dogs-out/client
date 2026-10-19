@@ -28,7 +28,12 @@
           }
         ],
         "ITSAppUsesNonExemptEncryption": false,
-        "CFBundleLocalizations": ["en", "de", "fr", "it"]
+        "CFBundleLocalizations": [
+          "en",
+          "de",
+          "fr",
+          "it"
+        ]
       },
       "buildNumber": "26"
     },
@@ -158,6 +163,15 @@
         "expo-tracking-transparency",
         {
           "userTrackingPermission": "Allow tracking so the ads in Dogs Out match your interests. The ads keep Dogs Out free; your choice changes nothing else in the app."
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "enableMinifyInReleaseBuilds": true,
+            "enableShrinkResourcesInReleaseBuilds": true
+          }
         }
       ]
     ],

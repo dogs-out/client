@@ -1,7 +1,9 @@
 {
-  "NSUserTrackingUsageDescription": "Autorise le suivi pour que les publicités dans Dogs Out correspondent à tes centres d’intérêt. La publicité permet à Dogs Out de rester gratuit ; ton choix ne change rien d’autre dans l’app.",
-  "NSLocationWhenInUseUsageDescription": "Dogs Out utilise ta position pour te montrer les chiens, playdates et dogsitters près de chez toi. Les autres voient seulement à quelle distance tu te trouves.",
-  "NSPhotoLibraryUsageDescription": "Dogs Out a besoin d’accéder à tes photos pour que tu puisses ajouter des images de toi et de ton chien.",
-  "NSCalendarsUsageDescription": "Dogs Out ajoute les playdates que tu enregistres à ton calendrier.",
-  "NSCalendarsWriteOnlyAccessUsageDescription": "Dogs Out ajoute les playdates que tu enregistres à ton calendrier."
+  "ios": {
+    "NSUserTrackingUsageDescription": "Autorise le suivi pour que les publicités dans Dogs Out correspondent à tes centres d’intérêt. La publicité permet à Dogs Out de rester gratuit ; ton choix ne change rien d’autre dans l’app.",
+    "NSLocationWhenInUseUsageDescription": "Dogs Out utilise ta position pour te montrer les chiens, playdates et dogsitters près de chez toi. Les autres voient seulement à quelle distance tu te trouves.",
+    "NSPhotoLibraryUsageDescription": "Dogs Out a besoin d’accéder à tes photos pour que tu puisses ajouter des images de toi et de ton chien.",
+    "NSCalendarsUsageDescription": "Dogs Out ajoute les playdates que tu enregistres à ton calendrier.",
+    "NSCalendarsWriteOnlyAccessUsageDescription": "Dogs Out ajoute les playdates que tu enregistres à ton calendrier."
+  }
 }
