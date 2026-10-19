@@ -7,6 +7,12 @@
       "com.dogsout.app"
     ],
     "version": "1.3.0",
+    "locales": {
+      "en": "./locales/ios-en.json",
+      "de": "./locales/ios-de.json",
+      "fr": "./locales/ios-fr.json",
+      "it": "./locales/ios-it.json"
+    },
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -21,7 +27,8 @@
             ]
           }
         ],
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "CFBundleLocalizations": ["en", "de", "fr", "it"]
       },
       "buildNumber": "26"
     },
@@ -61,13 +68,13 @@
       [
         "expo-location",
         {
-          "locationWhenInUsePermission": "DogsOut needs your location to show nearby dogs."
+          "locationWhenInUsePermission": "Dogs Out uses your location to show dogs, playdates and sitters near you. Others only see how far away you are."
         }
       ],
       [
         "expo-image-picker",
         {
-          "photosPermission": "DogsOut needs access to your photos to set a profile picture."
+          "photosPermission": "Dogs Out needs access to your photos so you can add pictures of yourself and your dog."
         }
       ],
       "expo-localization",
@@ -81,8 +88,8 @@
       [
         "expo-calendar",
         {
-          "calendarPermission": "DogsOut adds playdates you save to your calendar.",
-          "writeOnlyCalendarPermission": "DogsOut adds playdates you save to your calendar.",
+          "calendarPermission": "Dogs Out adds playdates you save to your calendar.",
+          "writeOnlyCalendarPermission": "Dogs Out adds playdates you save to your calendar.",
           "writeOnlyAccess": true
         }
       ],
@@ -144,13 +151,13 @@
             "97r2b46745.skadnetwork",
             "3qcr597p9d.skadnetwork"
           ],
-          "userTrackingUsageDescription": "Your data will be used to show you more relevant ads. Dogs Out stays free either way."
+          "userTrackingUsageDescription": "Allow tracking so the ads in Dogs Out match your interests. The ads keep Dogs Out free; your choice changes nothing else in the app."
         }
       ],
       [
         "expo-tracking-transparency",
         {
-          "userTrackingPermission": "Your data will be used to show you more relevant ads. Dogs Out stays free either way."
+          "userTrackingPermission": "Allow tracking so the ads in Dogs Out match your interests. The ads keep Dogs Out free; your choice changes nothing else in the app."
         }
       ]
     ],

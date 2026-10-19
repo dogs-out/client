@@ -17,15 +17,14 @@ import { useTabBarHeight } from '../../components/GlassTabBar';
 import { FloatingBackground } from '../../components/FloatingBackground';
 import { GlassCard } from '../../components/GlassCard';
 import { useListAd } from '../ads/useListAd';
-import { ChatListAdCard } from '../ads/ChatListAdCard';
-import { CHATS_NATIVE_AD_UNIT } from '../../constants/ads';
+import { ListAdCard } from '../ads/ListAdCard';
+import { AD_AFTER_LIST_ITEMS, LIST_NATIVE_AD_UNIT } from '../../constants/ads';
 
 /** A row is either a 1:1 match or a playdate group; `matchId` discriminates them. */
 /** The single ad row; never inside a conversation, only between them in this list. */
 type AdRow = { kind: 'ad' };
 type ChatRow = MatchSummary | Playdate | AdRow;
-/** The ad goes after this many conversations, or at the end of a shorter list. */
-const AD_AFTER_CHATS = 3;
+
 type SectionMeta = { key: 'direct' | 'groups'; title: string };
 
 const POLL_MS = 8000;
@@ -58,7 +57,7 @@ export default function ChatsScreen() {
   const [error, setError] = useState<string | null>(null);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const focused = useIsFocused();
-  const ad = useListAd(CHATS_NATIVE_AD_UNIT, focused);
+  const ad = useListAd(LIST_NATIVE_AD_UNIT, focused);
 
   const load = useCallback(() => {
     // Playdates are secondary here — if that call fails, still show personal chats
@@ -188,7 +187,7 @@ export default function ChatsScreen() {
 
   // Someone with no conversations sees the empty state, not an ad on its own.
   const directRows: ChatRow[] = ad && matches.length > 0
-    ? [...matches.slice(0, AD_AFTER_CHATS), { kind: 'ad' }, ...matches.slice(AD_AFTER_CHATS)]
+    ? [...matches.slice(0, AD_AFTER_LIST_ITEMS), { kind: 'ad' }, ...matches.slice(AD_AFTER_LIST_ITEMS)]
     : matches;
 
   const sections: (SectionMeta & { data: ChatRow[] })[] = [
@@ -211,7 +210,7 @@ export default function ChatsScreen() {
         sections={sections}
         keyExtractor={item => ('kind' in item ? 'ad' : 'matchId' in item ? `m${item.matchId}` : `p${item.id}`)}
         renderItem={({ item, section }) => {
-          if ('kind' in item) return ad ? <ChatListAdCard nativeAd={ad} /> : null;
+          if ('kind' in item) return ad ? <ListAdCard nativeAd={ad} /> : null;
           return section.key === 'groups'
             ? renderGroup({ item: item as Playdate })
             : renderMatch({ item: item as MatchSummary });

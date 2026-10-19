@@ -14,11 +14,11 @@ jest.mock('../../../services/socket', () => ({ chatSocket: { subscribe: () => ()
 jest.mock('../../../services/playdateService', () => ({ playdateService: { getPlaydates: () => Promise.resolve([]) } }));
 jest.mock('../../../services/chatService', () => ({ chatService: { getMatches: jest.fn() } }));
 jest.mock('../../ads/useListAd', () => ({ useListAd: () => ({ headline: 'An ad' }) }));
-jest.mock('../../ads/ChatListAdCard', () => {
+jest.mock('../../ads/ListAdCard', () => {
   const { Text } = jest.requireActual('react-native');
-  return { ChatListAdCard: () => <Text>AD-ROW</Text> };
+  return { ListAdCard: () => <Text>AD-ROW</Text> };
 });
-jest.mock('../../../constants/ads', () => ({ CHATS_NATIVE_AD_UNIT: 'test-unit' }));
+jest.mock('../../../constants/ads', () => ({ LIST_NATIVE_AD_UNIT: 'test-unit', AD_AFTER_LIST_ITEMS: 3 }));
 
 const match = (id: number) => ({
   matchId: id, otherUserId: 100 + id, otherUserName: `Person${id}`, otherUserProfilePicture: null,

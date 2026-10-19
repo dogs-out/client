@@ -19,7 +19,9 @@ const RELEASE_NATIVE_UNIT = Platform.select({
 export const DECK_NATIVE_AD_UNIT = __DEV__ ? TestIds.NATIVE : RELEASE_NATIVE_UNIT;
 
 /**
- * The ad card in the Chats list. Same Native unit as the deck for now; give it its
- * own unit in AdMob ("Chats list") to see the two placements apart in reports.
+ * The ad card in the lists (Chats, Playdates, Walks). Same Native unit as the deck
+ * for now; give it its own unit in AdMob ("Lists") to see the placements apart.
  */
-export const CHATS_NATIVE_AD_UNIT = DECK_NATIVE_AD_UNIT;
+export const LIST_NATIVE_AD_UNIT = DECK_NATIVE_AD_UNIT;
+/** The ad goes after this many entries of a list, or at the end of a shorter one. */
+export const AD_AFTER_LIST_ITEMS = 3;

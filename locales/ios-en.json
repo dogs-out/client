@@ -1,0 +1,7 @@
+{
+  "NSUserTrackingUsageDescription": "Allow tracking so the ads in Dogs Out match your interests. The ads keep Dogs Out free; your choice changes nothing else in the app.",
+  "NSLocationWhenInUseUsageDescription": "Dogs Out uses your location to show dogs, playdates and sitters near you. Others only see how far away you are.",
+  "NSPhotoLibraryUsageDescription": "Dogs Out needs access to your photos so you can add pictures of yourself and your dog.",
+  "NSCalendarsUsageDescription": "Dogs Out adds playdates you save to your calendar.",
+  "NSCalendarsWriteOnlyAccessUsageDescription": "Dogs Out adds playdates you save to your calendar."
+}

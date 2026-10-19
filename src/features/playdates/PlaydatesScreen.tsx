@@ -5,7 +5,7 @@ import {
 } from 'react-native';
 import { RemoteImage } from '../../components/ui/RemoteImage';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useIsFocused, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
@@ -18,6 +18,9 @@ import { useHasDog } from '../../hooks/useHasDog';
 import { FloatingBackground } from '../../components/FloatingBackground';
 import { GlassCard } from '../../components/GlassCard';
 import { WhenWhereFilter } from '../../components/WhenWhereFilter';
+import { useListAd } from '../ads/useListAd';
+import { ListAdCard } from '../ads/ListAdCard';
+import { AD_AFTER_LIST_ITEMS, LIST_NATIVE_AD_UNIT } from '../../constants/ads';
 import { userService } from '../../services/userService';
 import { DEFAULT_RADIUS_KM } from '../../constants/discover';
 import { useTabBarHeight } from '../../components/GlassTabBar';
@@ -100,6 +103,14 @@ export default function PlaydatesScreen() {
   // Walks are 1:1 and started from a chat, so they get their own list rather than
   // sitting among the meetups anyone nearby can join.
   const shown = playdates.filter(p => mode === 'walks' ? p.walk : !p.walk);
+
+  // One ad in the Playdates and Walks lists — not in "who's outside", which is a
+  // map of friends, and never inside a playdate or its group chat.
+  const focused = useIsFocused();
+  const ad = useListAd(LIST_NATIVE_AD_UNIT, focused && mode !== 'outside');
+  const rows: (Playdate | { kind: 'ad' })[] = ad && shown.length > 0
+    ? [...shown.slice(0, AD_AFTER_LIST_ITEMS), { kind: 'ad' }, ...shown.slice(AD_AFTER_LIST_ITEMS)]
+    : shown;
 
   /** The person a walk is with: the host if someone invited me, else the one I invited. */
   const walkPartner = (p: Playdate) => p.myStatus === 'HOST'
@@ -200,9 +211,11 @@ export default function PlaydatesScreen() {
         <View style={styles.centered}><ActivityIndicator size="large" color={Colors.primary} /></View>
       ) : (
         <FlatList
-          data={shown}
-          keyExtractor={item => String(item.id)}
-          renderItem={renderPlaydate}
+          data={rows}
+          keyExtractor={item => ('kind' in item ? 'ad' : String(item.id))}
+          renderItem={({ item }) => ('kind' in item
+            ? (ad ? <ListAdCard nativeAd={ad} /> : null)
+            : renderPlaydate({ item }))}
           contentContainerStyle={[styles.list, { paddingBottom: tabBarHeight + 24 }]}
           showsVerticalScrollIndicator={false}
           refreshControl={

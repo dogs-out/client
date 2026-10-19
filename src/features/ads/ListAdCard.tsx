@@ -6,14 +6,15 @@ import {
 import { Colors } from '../../constants/colors';
 
 /**
- * The one ad in the Chats list.
+ * The one ad in a list — Chats, Playdates, Walks.
  *
- * <p>Built not to pass for a conversation: AdMob's native ad policy forbids ads
- * that look like the content around them, and here that content is people. So it
- * has its own tinted background instead of the glass rows, a "Sponsored" label
- * where a name would be, no avatar, and a button rather than a message preview.
+ * <p>Built not to pass for an entry of the list: AdMob's native ad policy forbids
+ * ads that look like the content around them, and here that content is people and
+ * their plans. So it has its own tinted background instead of the glass cards, a
+ * "Sponsored" label where a name would be, no avatar, and a button rather than a
+ * message preview.
  */
-export function ChatListAdCard({ nativeAd }: Readonly<{ nativeAd: NativeAd }>) {
+export function ListAdCard({ nativeAd }: Readonly<{ nativeAd: NativeAd }>) {
   const { t } = useTranslation();
   const aspect = nativeAd.mediaContent?.aspectRatio || 16 / 9;
 

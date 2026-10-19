@@ -481,7 +481,7 @@
       },
       "dataUse": {
         "title": "6. Comment tes données sont utilisées",
-        "body": "Tes données ne sont utilisées que pour faire fonctionner Dogs Out : montrer ton profil aux utilisateurs à proximité, transmettre les messages et envoyer des notifications push que tu peux désactiver à tout moment. Nous ne vendons pas tes données. Découvrir et la liste des chats affichent parfois des publicités de Google AdMob (jamais dans une conversation) ; Google reçoit l'identifiant publicitaire de ton appareil, ton adresse IP et tes interactions avec les publicités et, si tu l'acceptes, personnalise les publicités. Tu peux changer ton choix à tout moment dans Réglages → Confidentialité des publicités. Les discussions signalées sont examinées par notre équipe de modération."
+        "body": "Tes données ne sont utilisées que pour faire fonctionner Dogs Out : montrer ton profil aux utilisateurs à proximité, transmettre les messages et envoyer des notifications push que tu peux désactiver à tout moment. Nous ne vendons pas tes données. Découvrir et les listes des chats, playdates et balades affichent parfois des publicités de Google AdMob (jamais dans une conversation) ; Google reçoit l'identifiant publicitaire de ton appareil, ton adresse IP et tes interactions avec les publicités et, si tu l'acceptes, personnalise les publicités. Tu peux changer ton choix à tout moment dans Réglages → Confidentialité des publicités. Les discussions signalées sont examinées par notre équipe de modération."
       },
       "deletingData": {
         "title": "7. Supprimer tes données",
