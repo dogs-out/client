@@ -316,7 +316,7 @@
     "form": {
       "maxPhotos": "Maximal 3 Fotos pro Profil.",
       "photoPermission": "Zugriff auf die Fotomediathek ist erforderlich.",
-      "locationPermission": "Standortzugriff wird benötigt, um Hunde in der Nähe zu finden.",
+      "locationPermission": "Dogs Out darf deinen Standort nicht verwenden. Wähle den Ort stattdessen auf der Karte oder gib ihn ein.",
       "locationError": "Standort konnte nicht ermittelt werden. Bitte versuche es erneut.",
       "nameRequired": "Bitte gib deinen Namen ein.",
       "nameProfanity": "Dein Name enthält unangemessene Sprache.",
@@ -1149,6 +1149,7 @@
       "searchPlaceholder": "Ort oder PLZ, z. B. 8044 Zürich",
       "longPressHint": "Oder halte die Karte gedrückt, um eine Nadel zu setzen",
       "confirm": "Diesen Standort verwenden"
-    }
+    },
+    "enterTown": "Ort oder PLZ eingeben"
   }
 }

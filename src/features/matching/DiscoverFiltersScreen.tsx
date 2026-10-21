@@ -34,7 +34,7 @@ const openEnded = (value: number, max: number) => (value >= max ? `${max}+` : St
 
 // ──────────────────────────────────────────────────────────────────────────────
 
-export default function DiscoverFiltersScreen({ navigation }: Readonly<Props>) {
+export default function DiscoverFiltersScreen({ navigation, route }: Readonly<Props>) {
   const { t } = useTranslation();
   const [loading, setLoading]         = useState(true);
   const [saving, setSaving]           = useState(false);
@@ -109,6 +109,16 @@ export default function DiscoverFiltersScreen({ navigation }: Readonly<Props>) {
    * and a stale location is one of the two reasons it can be (the other is the
    * radius, right below).
    */
+  // A town picked on the map — the way in that needs no Location Services.
+  const picked = route.params?.pickedPlace;
+  useEffect(() => {
+    if (!picked) return;
+    const next = { latitude: picked.latitude, longitude: picked.longitude };
+    userService.updateProfile(next)
+      .then(() => { setLocation(next); bumpDiscoverFiltersVersion(); })
+      .catch(() => Alert.alert(t('common.error'), t('profile.form.locationError')));
+  }, [picked, t]);
+
   const detectLocation = async () => {
     setLocating(true);
     try {
@@ -214,6 +224,14 @@ export default function DiscoverFiltersScreen({ navigation }: Readonly<Props>) {
                     <Text style={styles.locationBtnText}>{t('matching.filters.useCurrentLocation')}</Text>
                   </>
                 )}
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.locationBtn}
+              onPress={() => navigation.navigate('ParkPicker', { mode: 'home', returnTo: 'DiscoverFilters' })}
+              activeOpacity={0.7}
+            >
+              <Ionicons name="search-outline" size={16} color={Colors.primary} />
+              <Text style={styles.locationBtnText}>{t('location.enterTown')}</Text>
             </TouchableOpacity>
           </GlassCard>
         </View>

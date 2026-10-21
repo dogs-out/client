@@ -10,13 +10,15 @@ interface Props {
   disabled?: boolean;
   /** Optional rgba() overlay color, e.g. to read as a primary CTA rather than neutral glass. */
   tint?: string;
+  testID?: string;
 }
 
 const isIOS = Platform.OS === 'ios';
 
-export function GlassButton({ onPress, children, style, disabled, tint }: Readonly<Props>) {
+export function GlassButton({ onPress, children, style, disabled, tint, testID }: Readonly<Props>) {
   return (
     <TouchableOpacity
+      testID={testID}
       onPress={onPress}
       disabled={disabled}
       activeOpacity={0.75}

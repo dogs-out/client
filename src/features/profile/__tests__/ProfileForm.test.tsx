@@ -62,8 +62,8 @@ jest.mock('../../../components/GlassButton', () => {
   const React = require('react');
   const { TouchableOpacity } = require('react-native');
   return {
-    GlassButton: ({ onPress, children }: { onPress: () => void; children: React.ReactNode }) =>
-      React.createElement(TouchableOpacity, { onPress }, children),
+    GlassButton: ({ onPress, children, testID }: { onPress: () => void; children: React.ReactNode; testID?: string }) =>
+      React.createElement(TouchableOpacity, { onPress, testID }, children),
   };
 });
 
@@ -222,6 +222,7 @@ describe('ProfileForm', () => {
     it('shows a place picked on the map', async () => {
       await renderForm({ pickedPlace: { name: 'Opfikon', address: '8152 Opfikon, Switzerland', latitude: 47.43, longitude: 8.57 } });
       await waitFor(() => expect(screen.getByText('8152 Opfikon, Switzerland')).toBeTruthy());
+      expect(screen.getByTestId('location-set')).toBeTruthy();
     });
   });
 });

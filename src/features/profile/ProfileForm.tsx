@@ -486,31 +486,30 @@ export function ProfileForm({ title, subtitle, submitLabel, onBack, onSaved, onC
 
           <Text style={styles.label}>{t('profile.form.location')}</Text>
           {!location && <Text style={styles.locationHint}>{t('profile.form.locationHint')}</Text>}
+          {/* Two equal ways in. Typing a town comes first: it needs no Location
+              Services at all, and App Review (5.1.5) rejected 1.3 when the only
+              obvious way forward was the GPS button. */}
+          {location && (
+            <View style={styles.locationSet} testID="location-set">
+              <Ionicons name="location" size={18} color="#48bb78" />
+              <Text style={styles.locationSetText} numberOfLines={1}>{locationLabel ?? t('profile.form.locationDetected')}</Text>
+            </View>
+          )}
+          <GlassButton onPress={onChooseLocation} style={styles.locationButton} testID="choose-location">
+            <Ionicons name="search-outline" size={18} color={Colors.text} style={{ marginRight: 8 }} />
+            <Text style={styles.locationButtonText} numberOfLines={1}>{t('location.enterTown')}</Text>
+          </GlassButton>
           <GlassButton onPress={detectLocation} disabled={locating} style={styles.locationButton}>
             {locating ? (
               <ActivityIndicator size="small" color={Colors.primary} />
             ) : (
               <>
-                <Ionicons
-                  name={location ? 'location' : 'location-outline'}
-                  size={18}
-                  color={location ? '#48bb78' : Colors.text}
-                  style={{ marginRight: 8 }}
-                />
-                <Text style={[styles.locationButtonText, location && styles.locationButtonTextActive]} numberOfLines={1}>
-                  {location ? (locationLabel ?? t('profile.form.locationDetected')) : t('profile.form.detectLocation')}
-                </Text>
+                <Ionicons name="navigate-outline" size={18} color={Colors.text} style={{ marginRight: 8 }} />
+                <Text style={styles.locationButtonText} numberOfLines={1}>{t('profile.form.detectLocation')}</Text>
               </>
             )}
           </GlassButton>
-          {locationProblem
-            ? <LocationProblem problem={locationProblem} onChooseManually={onChooseLocation} />
-            : (
-              <TouchableOpacity style={styles.chooseLocation} onPress={onChooseLocation} testID="choose-location">
-                <Ionicons name="search-outline" size={15} color={Colors.primary} />
-                <Text style={styles.chooseLocationText}>{t('location.chooseManually')}</Text>
-              </TouchableOpacity>
-            )}
+          {locationProblem && <LocationProblem problem={locationProblem} onChooseManually={onChooseLocation} />}
           <View style={{ height: 24 }} />
 
           {/* DOGSITTING */}
@@ -766,9 +765,9 @@ const styles = StyleSheet.create({
   },
   locationReminderText: { flex: 1, fontSize: 14, color: Colors.text, lineHeight: 20 },
   locationHint: { fontSize: 13, color: Colors.textSecondary, marginTop: -4, marginBottom: 10, lineHeight: 18 },
-  locationButton:          { marginBottom: 0 },
-  chooseLocation:          { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, paddingVertical: 10 },
-  chooseLocationText:      { color: Colors.primary, fontSize: 14, fontWeight: '700' },
+  locationButton:          { marginBottom: 10 },
+  locationSet:             { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 10 },
+  locationSetText:         { flex: 1, fontSize: 15, fontWeight: '600', color: '#48bb78' },
 
   switchRow: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
@@ -780,7 +779,6 @@ const styles = StyleSheet.create({
   sitterBox:   { marginBottom: 8 },
   experienceValue: { color: Colors.primary, fontWeight: '700', textTransform: 'none', letterSpacing: 0 },
   locationButtonText:      { color: Colors.text, fontSize: 16, fontWeight: '600' },
-  locationButtonTextActive: { color: '#48bb78' },
 
   button:     { marginTop: 4 },
   buttonText: { color: Colors.text, fontSize: 16, fontWeight: '700' },

@@ -17,7 +17,7 @@ export type RootStackParamList = {
   AddDog: { fromOnboarding?: boolean };
   EditDog: { dogId: number };
   SwipePreview: undefined;
-  DiscoverFilters: undefined;
+  DiscoverFilters: { pickedPlace?: PlaceResult } | undefined;
   ChangePassword: undefined;
   ChatDetail: { matchId: number; otherUserId: number; name: string; profilePicture: string | null };
   UserProfile: { userId: number };
@@ -47,7 +47,7 @@ export type RootStackParamList = {
     initialLng?: number;
     /** Which screen the pick goes back to. Defaults to CreatePlaydate. */
     returnTo?: 'CreatePlaydate' | 'SetStatus' | 'SittingDetails' | 'RaiseSos'
-      | 'ProfileSetup' | 'EditProfile' | 'LocationSettings';
+      | 'ProfileSetup' | 'EditProfile' | 'LocationSettings' | 'DiscoverFilters';
     /** 'home': choosing your own location — towns and postcodes, never asks for GPS. */
     mode?: 'park' | 'home';
   } | undefined;

@@ -316,7 +316,7 @@
     "form": {
       "maxPhotos": "Maximum 3 photos par profil.",
       "photoPermission": "L'accès à la photothèque est requis.",
-      "locationPermission": "L'accès à la localisation est nécessaire pour trouver des chiens à proximité.",
+      "locationPermission": "Dogs Out ne peut pas utiliser ta position. Choisis plutôt le lieu sur la carte ou saisis une localité.",
       "locationError": "Impossible d'obtenir la position. Veuillez réessayer.",
       "nameRequired": "Veuillez entrer votre nom.",
       "nameProfanity": "Ton nom contient un langage inapproprié.",
@@ -1149,6 +1149,7 @@
       "searchPlaceholder": "Localité ou NPA, p. ex. 1003 Lausanne",
       "longPressHint": "Ou maintiens le doigt sur la carte pour placer une épingle",
       "confirm": "Utiliser cette position"
-    }
+    },
+    "enterTown": "Saisir une localité ou un NPA"
   }
 }

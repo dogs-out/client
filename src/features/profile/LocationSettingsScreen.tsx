@@ -110,14 +110,12 @@ export default function LocationSettingsScreen({ navigation, route }: Readonly<P
           <Text style={styles.updateText}>{updating ? t('profile.locationSettings.updating') : t('profile.locationSettings.updateToCurrentLocation')}</Text>
         </TouchableOpacity>
 
-        {problem
-          ? <LocationProblem problem={problem} onChooseManually={chooseManually} />
-          : (
-            <TouchableOpacity style={styles.manualBtn} onPress={chooseManually}>
-              <Ionicons name="search-outline" size={16} color={Colors.primary} />
-              <Text style={styles.manualText}>{t('location.chooseManually')}</Text>
-            </TouchableOpacity>
-          )}
+        {/* Equal to the GPS button: typing a town needs no Location Services. */}
+        <TouchableOpacity style={styles.manualBtn} onPress={chooseManually}>
+          <Ionicons name="search-outline" size={18} color={Colors.primary} />
+          <Text style={styles.manualText}>{t('location.enterTown')}</Text>
+        </TouchableOpacity>
+        {problem && <LocationProblem problem={problem} onChooseManually={chooseManually} />}
 
         {error && <Text style={styles.errorText}>{error}</Text>}
 
@@ -149,7 +147,10 @@ const styles = StyleSheet.create({
   updateBtnDisabled: { opacity: 0.6 },
   updateText:        { color: '#fff', fontSize: 15, fontWeight: '700' },
 
-  manualBtn:  { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, paddingVertical: 12, marginTop: 4 },
+  manualBtn: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8,
+    borderRadius: 24, paddingVertical: 12, marginTop: 10, borderWidth: 1.5, borderColor: Colors.primary,
+  },
   manualText: { color: Colors.primary, fontSize: 15, fontWeight: '700' },
 
   errorText: { color: Colors.error, fontSize: 13, marginTop: 12, textAlign: 'center' },

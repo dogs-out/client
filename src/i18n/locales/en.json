@@ -316,7 +316,7 @@
     "form": {
       "maxPhotos": "Maximum 3 photos per profile.",
       "photoPermission": "Photo library access is needed.",
-      "locationPermission": "Location access is needed to find nearby dogs.",
+      "locationPermission": "Dogs Out can't use your location. You can choose the place on the map or type a town instead.",
       "locationError": "Could not get location. Please try again.",
       "nameRequired": "Please enter your name.",
       "nameProfanity": "Your name contains inappropriate language.",
@@ -1056,6 +1056,7 @@
       "searchPlaceholder": "Town or postcode, e.g. 8044 Zürich",
       "longPressHint": "Or press and hold the map to drop a pin",
       "confirm": "Use this location"
-    }
+    },
+    "enterTown": "Enter town or postcode"
   }
 }

@@ -316,7 +316,7 @@
     "form": {
       "maxPhotos": "Massimo 3 foto per profilo.",
       "photoPermission": "È necessario l'accesso alla libreria foto.",
-      "locationPermission": "È necessario l'accesso alla posizione per trovare cani nelle vicinanze.",
+      "locationPermission": "Dogs Out non può usare la tua posizione. Scegli invece il luogo sulla mappa o inserisci una località.",
       "locationError": "Impossibile ottenere la posizione. Riprova.",
       "nameRequired": "Inserisci il tuo nome.",
       "nameProfanity": "Il tuo nome contiene un linguaggio inappropriato.",
@@ -1149,6 +1149,7 @@
       "searchPlaceholder": "Località o NPA, ad es. 6900 Lugano",
       "longPressHint": "Oppure tieni premuto sulla mappa per mettere uno spillo",
       "confirm": "Usa questa posizione"
-    }
+    },
+    "enterTown": "Inserisci località o NPA"
   }
 }
