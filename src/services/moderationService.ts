@@ -7,12 +7,22 @@ export interface BlockedUser {
   blockedAt: string;
 }
 
+/**
+ * Sent to the API as these exact English strings and translated only for display,
+ * so the wording here is also what lands in the moderation email.
+ *
+ * "Child safety" is deliberately its own reason rather than being folded into
+ * "Safety concern": the published child safety standards promise a way to report
+ * it, and a report that names it explicitly can be triaged ahead of the queue
+ * instead of being read first to find out how urgent it is.
+ */
 export const REPORT_REASONS = [
   'Inappropriate messages',
   'Harassment or bullying',
   'Spam or scam',
   'Fake profile',
   'Safety concern',
+  'Child safety',
   'Other',
 ] as const;
 
