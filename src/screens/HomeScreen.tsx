@@ -175,14 +175,18 @@ export default function HomeScreen({ navigation }: Readonly<Props>) {
                     )}
                     <View style={styles.dogInfo}>
                       <Text style={styles.dogName}>{dog.name}</Text>
-                      <View style={styles.dogMeta}>
-                        {breedAndSex(dog, t, i18n.language) !== '' && <Text style={styles.dogMetaText}>{breedAndSex(dog, t, i18n.language)}</Text>}
-                        {breedAndSex(dog, t, i18n.language) !== '' && dog.dateOfBirth != null && <Text style={styles.dogMetaDot}> · </Text>}
-                        {dog.dateOfBirth != null && (() => {
+                      {/* One Text, not a row of them: a row does not wrap, so once the
+                          line got long (breed · sex · neutered) the age was pushed out
+                          of the card. A single string wraps like any sentence. */}
+                      {(() => {
+                        const parts = [breedAndSex(dog, t, i18n.language)];
+                        if (dog.dateOfBirth != null) {
                           const age = Math.floor((Date.now() - new Date(dog.dateOfBirth).getTime()) / (1000 * 60 * 60 * 24 * 365.25));
-                          return <Text style={styles.dogMetaText}>{t('home.yearAbbrev', { count: age })}</Text>;
-                        })()}
-                      </View>
+                          parts.push(t('home.yearAbbrev', { count: age }));
+                        }
+                        const line = parts.filter(Boolean).join(' · ');
+                        return line ? <Text style={[styles.dogMetaText, styles.dogMeta]}>{line}</Text> : null;
+                      })()}
                       {dog.bio && <Text style={styles.dogBio} numberOfLines={2}>{dog.bio}</Text>}
                     </View>
                   </View>
@@ -310,9 +314,8 @@ const styles = StyleSheet.create({
   dogEmoji:     { fontSize: 30 },
   dogInfo:      { flex: 1 },
   dogName:      { fontSize: 18, fontWeight: '700', color: Colors.text, marginBottom: 4 },
-  dogMeta:      { flexDirection: 'row', alignItems: 'center', marginBottom: 4 },
+  dogMeta:      { marginBottom: 4 },
   dogMetaText:  { fontSize: 13, color: Colors.textSecondary },
-  dogMetaDot:   { fontSize: 13, color: Colors.textSecondary },
   dogBio:       { fontSize: 13, color: Colors.text, lineHeight: 18 },
 
   previewButton:     { marginTop: 8, marginBottom: 4 },

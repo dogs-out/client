@@ -156,7 +156,9 @@ export default function CreatePlaydateScreen({ navigation, route }: Readonly<Pro
       await playdateService.createPlaydate({
         ...payload,
         visibility,
-        inviteUserIds: visibility === 'INVITE_ONLY' ? invitees : undefined,
+        // Invites work with every visibility: a public playdate can still ping your
+        // friends directly, while everyone nearby can join on their own.
+        inviteUserIds: invitees.length > 0 ? invitees : undefined,
       });
       // ParkPicker returns here via navigate(), so it can still be sitting under
       // this screen — goBack() would drop the user back onto the map they already
@@ -329,30 +331,30 @@ export default function CreatePlaydateScreen({ navigation, route }: Readonly<Pro
                 );
               })}
 
-              {visibility === 'INVITE_ONLY' && (
-                <View style={styles.inviteeSection}>
-                  <Text style={styles.inviteeLabel}>{t('playdates.create.invitees')}</Text>
-                  {matches.length === 0 ? (
-                    <Text style={styles.noMatchesText}>{t('playdates.create.noMatches')}</Text>
-                  ) : matches.map(match => {
-                    const selected = invitees.includes(match.otherUserId);
-                    return (
-                      <TouchableOpacity key={match.matchId} style={styles.inviteeRow} onPress={() => toggleInvitee(match.otherUserId)}>
-                        {match.otherUserProfilePicture
-                          ? <RemoteImage source={{ uri: match.otherUserProfilePicture }} style={styles.inviteeAvatar} />
-                          : <View style={[styles.inviteeAvatar, styles.avatarPlaceholder]}><Text style={{ fontSize: 14 }}>🐶</Text></View>
-                        }
-                        <Text style={styles.inviteeName} numberOfLines={1}>{match.otherUserName}</Text>
-                        <Ionicons
-                          name={selected ? 'checkbox' : 'square-outline'}
-                          size={22}
-                          color={selected ? Colors.primary : Colors.textSecondary}
-                        />
-                      </TouchableOpacity>
-                    );
-                  })}
-                </View>
-              )}
+              <View style={styles.inviteeSection}>
+                <Text style={styles.inviteeLabel}>
+                  {t(visibility === 'INVITE_ONLY' ? 'playdates.create.invitees' : 'playdates.create.inviteesOptional')}
+                </Text>
+                {matches.length === 0 ? (
+                  <Text style={styles.noMatchesText}>{t('playdates.create.noMatches')}</Text>
+                ) : matches.map(match => {
+                  const selected = invitees.includes(match.otherUserId);
+                  return (
+                    <TouchableOpacity key={match.matchId} style={styles.inviteeRow} onPress={() => toggleInvitee(match.otherUserId)}>
+                      {match.otherUserProfilePicture
+                        ? <RemoteImage source={{ uri: match.otherUserProfilePicture }} style={styles.inviteeAvatar} />
+                        : <View style={[styles.inviteeAvatar, styles.avatarPlaceholder]}><Text style={{ fontSize: 14 }}>🐶</Text></View>
+                      }
+                      <Text style={styles.inviteeName} numberOfLines={1}>{match.otherUserName}</Text>
+                      <Ionicons
+                        name={selected ? 'checkbox' : 'square-outline'}
+                        size={22}
+                        color={selected ? Colors.primary : Colors.textSecondary}
+                      />
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
             </GlassCard>
           )}
 

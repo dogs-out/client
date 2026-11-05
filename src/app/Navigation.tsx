@@ -34,6 +34,14 @@ import SittingDetailsScreen from '../features/sitter/SittingDetailsScreen';
 import SitterReviewsScreen from '../features/sitter/SitterReviewsScreen';
 import HelpFaqScreen from '../features/profile/HelpFaqScreen';
 import TermsPrivacyScreen from '../features/profile/TermsPrivacyScreen';
+import PremiumScreen from '../features/bones/PremiumScreen';
+import ListingDetailScreen from '../features/market/ListingDetailScreen';
+import EditListingScreen from '../features/market/EditListingScreen';
+import ListingChatScreen from '../features/market/ListingChatScreen';
+import SchoolDetailScreen from '../features/school/SchoolDetailScreen';
+import EditSchoolScreen from '../features/school/EditSchoolScreen';
+import EventDetailScreen from '../features/school/EventDetailScreen';
+import EditEventScreen from '../features/school/EditEventScreen';
 import AboutScreen from '../features/profile/AboutScreen';
 import FeedbackScreen from '../features/profile/FeedbackScreen';
 import LanguageScreen from '../features/profile/LanguageScreen';
@@ -113,6 +121,15 @@ export default function Navigation() {
         // so this lands on the dogsitting tab, where the job wears a Rate button.
         // "FindSitter" is the route; "Dogsitting" is only what the tab is labelled.
         navigationRef.navigate('MainTabs', { screen: 'FindSitter' } as never);
+      } else if (data.type === 'LISTING_MESSAGE' && data.conversationId) {
+        navigationRef.navigate('ListingChat', { conversationId: data.conversationId });
+      } else if ((data.type === 'SCHOOL_EVENT_JOINED' || data.type === 'SCHOOL_EVENT_UPDATED') && data.eventId) {
+        navigationRef.navigate('EventDetail', { eventId: data.eventId });
+      } else if (data.type === 'SCHOOL_REVIEWED') {
+        navigationRef.navigate('MainTabs', { screen: 'FindSitter' } as never);
+      } else if (data.type === 'DAILY_NUDGE') {
+        if (data.screen === 'CreatePlaydate') navigationRef.navigate('CreatePlaydate', undefined);
+        else navigationRef.navigate('MainTabs', { screen: 'Discover' } as never);
       }
     }), []);
 
@@ -216,6 +233,14 @@ export default function Navigation() {
         <Stack.Screen name="SitterReviews"        component={SitterReviewsScreen} />
         <Stack.Screen name="HelpFaq"              component={HelpFaqScreen} />
         <Stack.Screen name="TermsPrivacy"         component={TermsPrivacyScreen} />
+        <Stack.Screen name="Premium"              component={PremiumScreen} />
+        <Stack.Screen name="ListingDetail"        component={ListingDetailScreen} />
+        <Stack.Screen name="EditListing"          component={EditListingScreen} />
+        <Stack.Screen name="ListingChat"          component={ListingChatScreen} />
+        <Stack.Screen name="SchoolDetail"         component={SchoolDetailScreen} />
+        <Stack.Screen name="EditSchool"           component={EditSchoolScreen} />
+        <Stack.Screen name="EventDetail"          component={EventDetailScreen} />
+        <Stack.Screen name="EditEvent"            component={EditEventScreen} />
         <Stack.Screen name="About"                component={AboutScreen} />
         <Stack.Screen name="Feedback"              component={FeedbackScreen} />
         <Stack.Screen name="Language"               component={LanguageScreen} />

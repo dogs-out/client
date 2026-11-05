@@ -7,6 +7,7 @@ import { userService } from '../services/userService';
 import { chatSocket } from '../services/socket';
 import { RootStackParamList } from '../types/navigation';
 import { MatchOverlay } from './MatchOverlay';
+import { useHoldPopupGate } from '../utils/popupGate';
 
 /**
  * Shows "It's a Match!" to the person who liked first.
@@ -59,6 +60,8 @@ export function PendingMatchCelebration() {
   useEffect(() => {
     if (current) chatService.markMatchCelebrated(current.matchId).catch(() => {});
   }, [current]);
+
+  useHoldPopupGate(current != null);
 
   if (!current) return null;
 

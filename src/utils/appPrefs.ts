@@ -13,10 +13,14 @@ export interface AppPrefs {
   birthdayGreetedYear: number;
   /** Whether this device has opened the app tour. It then only comes back from Settings. */
   tourSeen: boolean;
+  /** The day ("2026-11-03") this device last showed the daily card; '' means never. */
+  dailyCardDay: string;
+  /** Premium members: stars in the background instead of dogs. */
+  premiumBackground: boolean;
 }
 
 const KEY = 'dogsout_prefs';
-const DEFAULTS: AppPrefs = { freezeBackground: false, birthdayGreetedYear: 0, tourSeen: false };
+const DEFAULTS: AppPrefs = { freezeBackground: false, birthdayGreetedYear: 0, tourSeen: false, dailyCardDay: '', premiumBackground: true };
 
 /**
  * Device-local settings.

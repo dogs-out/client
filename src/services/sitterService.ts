@@ -35,6 +35,10 @@ export interface SittingRequest {
   addressLongitude: number | null;
   /** True once the owner has handed them over, so the card can say "updated". */
   detailsShared: boolean;
+  /** A weekly series' days ("TUESDAY"); empty for a single window. startsAt is then the first visit, endsAt the end of the last. */
+  repeatWeekdays?: string[];
+  /** How long each visit of a series lasts. */
+  occurrenceMinutes?: number | null;
   /** Rounded; -1 when either side has no location. */
   distanceKm: number;
 }
@@ -130,6 +134,9 @@ export const sitterService = {
     endsAt: string;
     dogIds: number[];
     note?: string;
+    /** Weekly series: the weekdays, and the last day (YYYY-MM-DD) it runs. */
+    repeatWeekdays?: string[];
+    repeatUntil?: string;
   }): Promise<SittingRequest> =>
     api.post<SittingRequest>('/sitters/requests', body).then(r => r.data),
 
@@ -143,6 +150,9 @@ export const sitterService = {
     endsAt: string;
     dogIds: number[];
     note?: string;
+    /** Weekly series: the weekdays, and the last day (YYYY-MM-DD) it runs. */
+    repeatWeekdays?: string[];
+    repeatUntil?: string;
   }): Promise<SittingRequest> =>
     api.put<SittingRequest>(`/sitters/requests/${id}`, body).then(r => r.data),
 

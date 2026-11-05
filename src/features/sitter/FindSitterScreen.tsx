@@ -8,7 +8,6 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
-import { TFunction } from 'i18next';
 import { DiscoverProfile } from '../../services/discoverService';
 import { sitterService, SittingRequest } from '../../services/sitterService';
 import { userService } from '../../services/userService';
@@ -20,18 +19,19 @@ import { GlassCard } from '../../components/GlassCard';
 import { WhenWhereFilter } from '../../components/WhenWhereFilter';
 import { DEFAULT_RADIUS_KM } from '../../constants/discover';
 import { translateBreed } from '../../i18n/translateBreed';
+import { formatDistance } from '../../utils/geo';
+import { ExpandableText } from '../../components/ui/ExpandableText';
+import { formatSittingWindow } from '../../utils/sittingWindow';
 import { isMyJobStillListed } from './jobVisibility';
 import { SosBanner } from '../sos/SosBanner';
 
 type SitterMode = 'jobs' | 'requests';
 
-function formatDistance(km: number, t: TFunction): string {
-  if (km < 0) return '';
-  if (km < 1) return t('matching.discover.lessThanOneKm');
-  return t('matching.discover.distanceAway', { km: Math.round(km) });
-}
-
-export default function FindSitterScreen() {
+/**
+ * @param embedded shown as the "Sitting" section of the Community tab, which owns
+ *                 the safe area, background, title and SOS banner around it.
+ */
+export default function FindSitterScreen({ embedded = false }: Readonly<{ embedded?: boolean }> = {}) {
   const { t, i18n } = useTranslation();
   // Every phone reserves a different amount at the bottom; a constant left the
   // last row under the tab bar on those with three-button navigation.
@@ -189,13 +189,7 @@ export default function FindSitterScreen() {
     );
   };
 
-  const formatWindow = (job: SittingRequest) => {
-    const from = new Date(job.startsAt);
-    const to = new Date(job.endsAt);
-    const day = from.toLocaleDateString(i18n.language, { weekday: 'short', day: 'numeric', month: 'short' });
-    const time = (d: Date) => d.toLocaleTimeString(i18n.language, { hour: '2-digit', minute: '2-digit' });
-    return `${day} · ${time(from)} – ${time(to)}`;
-  };
+  const formatWindow = (job: SittingRequest) => formatSittingWindow(job, t, i18n.language);
 
   /**
    * Days and times filter whichever pool is showing: sitters free then, or owners
@@ -228,7 +222,9 @@ export default function FindSitterScreen() {
         </View>
         {!job.mine && <Ionicons name="chevron-forward" size={18} color={Colors.textSecondary} />}
       </TouchableOpacity>
-      {job.note ? <Text style={styles.jobNote} numberOfLines={3}>{job.note}</Text> : null}
+      {/* Notes can be long ("keys are under the mat, she needs her pill at 6…"), and
+          the end is often the part that matters, so it can be opened in place. */}
+      {job.note ? <ExpandableText style={styles.jobNote} testID={`job-note-${job.id}`}>{job.note}</ExpandableText> : null}
 
       {/* Who is coming, once somebody is. The owner's most useful line by far —
           and the sitter's name is how they recognise the knock at the door. */}
@@ -407,18 +403,21 @@ export default function FindSitterScreen() {
     );
   };
 
+  const Outer = embedded ? View : SafeAreaView;
   return (
-    <SafeAreaView style={styles.safe} edges={['top']}>
-      <FloatingBackground />
+    // Embedded: no background of its own, or it covers the Community tab's
+    // drifting icons and the glass cards turn flat white.
+    <Outer style={embedded ? styles.embedded : styles.safe} {...(embedded ? {} : { edges: ['top'] as const })}>
+      {!embedded && <FloatingBackground />}
 
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>{t('sitter.list.title')}</Text>
+      <View style={[styles.header, embedded && styles.headerEmbedded]}>
+        {!embedded && <Text style={styles.headerTitle}>{t('sitter.list.title')}</Text>}
         <Text style={styles.headerSubtitle}>
           {t(mode === 'jobs' ? 'sitter.list.subtitleJobs' : 'sitter.list.subtitleRequests')}
         </Text>
       </View>
 
-      <SosBanner />
+      {!embedded && <SosBanner />}
 
       {showSwitcher && (
         <View style={styles.segmented}>
@@ -498,7 +497,7 @@ export default function FindSitterScreen() {
           }
         />
       )}
-    </SafeAreaView>
+    </Outer>
   );
 }
 
@@ -540,11 +539,13 @@ const styles = StyleSheet.create({
   postBtnText: { fontSize: 14, fontWeight: '700', color: Colors.primary },
 
   safe:     { flex: 1, backgroundColor: Colors.background },
+  embedded: { flex: 1 },
   centered: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 32, paddingTop: 60 },
 
   header:         { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 12 },
   headerTitle:    { fontSize: 28, fontWeight: '800', color: Colors.text },
   headerSubtitle: { fontSize: 14, color: Colors.textSecondary, marginTop: 2 },
+  headerEmbedded: { paddingTop: 0, paddingBottom: 8 },
 
   hintBanner: {
     flexDirection: 'row', alignItems: 'center',

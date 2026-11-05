@@ -16,55 +16,66 @@ import { Colors } from '../../constants/colors';
  */
 export function ListAdCard({ nativeAd }: Readonly<{ nativeAd: NativeAd }>) {
   const { t } = useTranslation();
-  const aspect = nativeAd.mediaContent?.aspectRatio || 16 / 9;
 
   return (
+    // No padding on NativeAdView itself: the native container applied it on the
+    // left only, so the image and button ran into the right edge. A plain inner
+    // View does the padding instead.
     <NativeAdView nativeAd={nativeAd} style={styles.card}>
-      <View style={styles.headRow}>
-        <Text style={styles.badge}>{t('ads.sponsored')}</Text>
-        {nativeAd.advertiser ? (
-          <NativeAsset assetType={NativeAssetType.ADVERTISER}>
-            <Text style={styles.advertiser} numberOfLines={1}>{nativeAd.advertiser}</Text>
-          </NativeAsset>
-        ) : null}
-      </View>
-
-      <View style={styles.body}>
-        {nativeAd.icon && (
-          <NativeAsset assetType={NativeAssetType.ICON}>
-            <Image source={{ uri: nativeAd.icon.url }} style={styles.icon} />
-          </NativeAsset>
-        )}
-        <View style={styles.text}>
-          <NativeAsset assetType={NativeAssetType.HEADLINE}>
-            <Text style={styles.headline} numberOfLines={2}>{nativeAd.headline}</Text>
-          </NativeAsset>
-          {nativeAd.body ? (
-            <NativeAsset assetType={NativeAssetType.BODY}>
-              <Text style={styles.bodyText} numberOfLines={2}>{nativeAd.body}</Text>
+      <View style={styles.inner}>
+        <View style={styles.headRow}>
+          <Text style={styles.badge}>{t('ads.sponsored')}</Text>
+          {nativeAd.advertiser ? (
+            <NativeAsset assetType={NativeAssetType.ADVERTISER}>
+              <Text style={styles.advertiser} numberOfLines={1}>{nativeAd.advertiser}</Text>
             </NativeAsset>
           ) : null}
         </View>
+
+        <View style={styles.body}>
+          {nativeAd.icon && (
+            <NativeAsset assetType={NativeAssetType.ICON}>
+              <Image source={{ uri: nativeAd.icon.url }} style={styles.icon} />
+            </NativeAsset>
+          )}
+          <View style={styles.text}>
+            <NativeAsset assetType={NativeAssetType.HEADLINE}>
+              <Text style={styles.headline} numberOfLines={2}>{nativeAd.headline}</Text>
+            </NativeAsset>
+            {nativeAd.body ? (
+              <NativeAsset assetType={NativeAssetType.BODY}>
+                <Text style={styles.bodyText} numberOfLines={2}>{nativeAd.body}</Text>
+              </NativeAsset>
+            ) : null}
+          </View>
+        </View>
+
+        {/* The media view is required whenever the ad brings media; kept short so
+            the card stays a list row and not a second Discover deck. */}
+        {/* Fixed height at full width: with only a max height the view kept its
+            aspect ratio, shrank, and sat to the left. */}
+        <NativeMediaView style={styles.media} resizeMode="cover" />
+
+        {/* The wrapper sets the width: the native button otherwise took the whole
+            card's width without its padding and stuck out on the right. */}
+        {nativeAd.callToAction ? (
+          <View style={styles.ctaWrap}>
+            <NativeAsset assetType={NativeAssetType.CALL_TO_ACTION}>
+              <Text style={styles.cta}>{nativeAd.callToAction}</Text>
+            </NativeAsset>
+          </View>
+        ) : null}
       </View>
-
-      {/* The media view is required whenever the ad brings media; kept short so
-          the card stays a list row and not a second Discover deck. */}
-      <NativeMediaView style={[styles.media, { aspectRatio: Math.max(aspect, 1.6) }]} resizeMode="cover" />
-
-      {nativeAd.callToAction ? (
-        <NativeAsset assetType={NativeAssetType.CALL_TO_ACTION}>
-          <Text style={styles.cta}>{nativeAd.callToAction}</Text>
-        </NativeAsset>
-      ) : null}
     </NativeAdView>
   );
 }
 
 const styles = StyleSheet.create({
   card: {
-    marginBottom: 10, borderRadius: 18, padding: 12, gap: 10,
+    marginBottom: 10, borderRadius: 18, overflow: 'hidden',
     backgroundColor: 'rgba(13,40,24,0.06)', borderWidth: 1, borderColor: 'rgba(13,40,24,0.12)',
   },
+  inner: { padding: 12, gap: 10 },
   headRow:    { flexDirection: 'row', alignItems: 'center', gap: 8 },
   badge: {
     fontSize: 10.5, fontWeight: '800', letterSpacing: 0.4, textTransform: 'uppercase',
@@ -77,9 +88,10 @@ const styles = StyleSheet.create({
   text:       { flex: 1 },
   headline:   { fontSize: 15, fontWeight: '800', color: Colors.text },
   bodyText:   { fontSize: 13, color: Colors.textSecondary, marginTop: 2, lineHeight: 17 },
-  media:      { width: '100%', maxHeight: 150, borderRadius: 12, overflow: 'hidden', backgroundColor: '#111' },
+  media:      { alignSelf: 'stretch', height: 150, borderRadius: 12, overflow: 'hidden', backgroundColor: '#111' },
+  ctaWrap:    { alignSelf: 'stretch' },
   cta: {
-    textAlign: 'center', overflow: 'hidden',
+    width: '100%', textAlign: 'center', overflow: 'hidden',
     backgroundColor: Colors.primary, color: '#fff', fontSize: 14, fontWeight: '800',
     borderRadius: 12, paddingVertical: 9,
   },

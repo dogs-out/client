@@ -30,6 +30,8 @@ export interface Dog {
   offLeash: string | null;
   /** 'MALE' or 'FEMALE'; null for dogs saved before it was asked. */
   sex?: DogSex | null;
+  /** Neutered or spayed; null for dogs saved before it was asked. */
+  neutered?: boolean | null;
   kidsComfort: number | null;
   tags: string[];
   photos: DogPhoto[];
@@ -47,6 +49,7 @@ export interface DogPayload {
   loves?: string[];
   offLeash?: string;
   sex?: DogSex;
+  neutered?: boolean;
   kidsComfort?: number;
   tags?: string[];
 }

@@ -10,7 +10,9 @@
     "loading": "Caricamento…",
     "retry": "Riprova",
     "back": "Indietro",
-    "yearsOld": "{{age}} anni"
+    "yearsOld": "{{age}} anni",
+    "showMore": "Altro",
+    "showLess": "Meno"
   },
   "settings": {
     "headerTitle": "Impostazioni",
@@ -51,7 +53,9 @@
       "freezeLabel": "Animazione di sfondo",
       "on": "Animazione attiva",
       "off": "Animazione disattivata",
-      "footNote": "Questa impostazione resta su questo dispositivo e non segue il tuo account su un altro telefono."
+      "footNote": "Questa impostazione resta su questo dispositivo e non segue il tuo account su un altro telefono.",
+      "premiumLabel": "Sfondo stellato",
+      "premiumHint": "Come membro Premium, sullo sfondo fluttuano stelle invece dei cani."
     },
     "adPrivacy": {
       "title": "Privacy degli annunci",
@@ -193,6 +197,17 @@
       "MALE": "Maschio",
       "FEMALE": "Femmina"
     },
+    "neutered": {
+      "yes": "Sterilizzato",
+      "no": "Non sterilizzato"
+    },
+    "detailsPrompt": {
+      "title": "Ancora un'informazione sul tuo cane",
+      "body": "La sterilizzazione influisce su come un cane va d'accordo con gli altri, quindi ora fa parte di ogni profilo.",
+      "save": "Salva",
+      "incomplete": "Rispondi per ogni cane.",
+      "failed": "Salvataggio non riuscito. Riprova."
+    },
     "form": {
       "loadFailed": "Impossibile caricare il profilo del cane.",
       "maxPhotos": "Massimo 6 foto per cane.",
@@ -213,6 +228,7 @@
       "photosHint": "Almeno 1, fino a 6 belle foto del tuo cane",
       "photoRequired": "Aggiungi almeno una foto del tuo cane.",
       "sexRequired": "Indica se il tuo cane è maschio o femmina.",
+      "neuteredRequired": "Indica se il tuo cane è sterilizzato.",
       "mainBadge": "Principale",
       "basicInfo": "Informazioni di base",
       "namePlaceholder": "Nome *",
@@ -406,7 +422,9 @@
       "saveError": "Impossibile salvare la tua preferenza. Riprova.",
       "pushNotifications": "Notifiche push",
       "pushNotificationsSub": "Nuovi messaggi e match quando l'app è chiusa",
-      "hint": "Le notifiche devono essere consentite per Dogs Out anche nelle impostazioni di sistema del tuo telefono."
+      "hint": "Le notifiche devono essere consentite per Dogs Out anche nelle impostazioni di sistema del tuo telefono.",
+      "daily": "Promemoria giornaliero",
+      "dailySub": "Al massimo uno al giorno, verso le 18: nuovi proprietari di cani vicino o i tuoi ossi sono tornati."
     },
     "locationSettings": {
       "permissionNeeded": "È necessario l'accesso alla posizione per trovare cani nelle vicinanze. Puoi consentirlo nelle impostazioni di sistema del tuo telefono.",
@@ -623,7 +641,13 @@
     "Personal information": "Informazioni personali",
     "Morning": "Mattina · 8–12",
     "Afternoon": "Pomeriggio · 12–16",
-    "Evening": "Sera · 16–20"
+    "Evening": "Sera · 16–20",
+    "Live animal": "Animale vivo",
+    "Medicine": "Medicinali",
+    "Not dog-related": "Non riguarda i cani",
+    "Scam or spam": "Truffa o spam",
+    "Not a real dog school": "Non è una vera scuola cinofila",
+    "Inappropriate content": "Contenuto inappropriato"
   },
   "sitter": {
     "tabTitle": "Dogsitting",
@@ -693,7 +717,17 @@
       "endBeforeStart": "La fine deve venire dopo l'inizio.",
       "loadFailed": "Non è stato possibile caricare i tuoi cani.",
       "editTitle": "Modifica la richiesta",
-      "save": "Salva modifiche"
+      "save": "Salva modifiche",
+      "kind": {
+        "once": "Una volta",
+        "days": "Più giorni",
+        "weekly": "Ogni settimana"
+      },
+      "firstVisit": "Prima visita: {{date}}",
+      "until": "Fino al {{date}}",
+      "everyLabel": "Ogni",
+      "tooLong": "Un dogsitting può durare fino a 30 giorni.",
+      "untilBeforeStart": "La serie deve finire dopo l'inizio."
     },
     "offer": {
       "label": "Offerta di accudimento",
@@ -753,6 +787,10 @@
       "sendShort": "Invia dettagli",
       "editShort": "Dettagli",
       "cardLabel": "Dettagli accudimento"
+    },
+    "window": {
+      "every": "Ogni {{days}}",
+      "until": "fino al {{date}}"
     }
   },
   "playdates": {
@@ -774,6 +812,7 @@
       "limitValue": "Max {{count}} partecipanti",
       "visibilityLabel": "Chi può vederlo?",
       "invitees": "Invita dai tuoi match",
+      "inviteesOptional": "Invita anche alcuni dei tuoi match (facoltativo)",
       "noMatches": "Non hai ancora nessun match.",
       "save": "Crea playdate 🐾",
       "saveChanges": "Salva le modifiche",
@@ -1095,7 +1134,7 @@
       },
       "findSitter": {
         "title": "Trova un dogsitter",
-        "body": "In Dogsitting trovi dogsitter vicino a te per giorno e momento della giornata, oppure pubblica una richiesta e lascia che si propongano."
+        "body": "In Community → Dogsitting trova dogsitter vicino a te per giorno e fascia oraria, oppure pubblica una richiesta singola, di più giorni o settimanale."
       },
       "sosOwner": {
         "title": "Se il tuo cane si perde",
@@ -1103,7 +1142,7 @@
       },
       "sittingJobs": {
         "title": "Lavori da dogsitter",
-        "body": "In Dogsitting vedi le famiglie vicine che cercano un dogsitter e puoi offrire il tuo aiuto. Aggiungi i tuoi giorni e orari liberi al profilo."
+        "body": "In Community → Dogsitting vedi le famiglie vicine che cercano un dogsitter e offri il tuo aiuto. Aggiungi i tuoi giorni e orari liberi al profilo."
       },
       "sittingStatus": {
         "title": "Fuori con un cane?",
@@ -1128,6 +1167,18 @@
       "done": {
         "title": "Tutto pronto",
         "body": "Puoi rivedere questo tour in qualsiasi momento nelle impostazioni."
+      },
+      "bones": {
+        "title": "Ossi: i tuoi swipe giornalieri",
+        "body": "Ogni premio o passaggio costa un osso. Ne ricevi 10 al giorno, nuovi ogni mezzanotte. Ne vuoi di più? Guarda una breve pubblicità, compra un pacchetto o passa a Premium: 20 al giorno senza pubblicità."
+      },
+      "marketplace": {
+        "title": "Mercatino",
+        "body": "Passa guinzagli, cucce, giochi e altro ai proprietari di cani vicino a te. Accordatevi su ritiro e pagamento in chat. In Community → Mercatino."
+      },
+      "schoolEvents": {
+        "title": "Eventi delle scuole cinofile",
+        "body": "In Playdates → Eventi le scuole cinofile pubblicano lezioni e corsi. Ad alcuni ti iscrivi data per data, ad altri per tutto il corso: un'iscrizione vale per tutte le lezioni. Gestisci una scuola cinofila? Registrala in Community → Scuole cinofile."
       }
     },
     "showMe": "Mostrami",
@@ -1151,5 +1202,219 @@
       "confirm": "Usa questa posizione"
     },
     "enterTown": "Inserisci località o NPA"
+  },
+  "bones": {
+    "hoursMinutes": "{{h}} h {{m}} min",
+    "minutes": "{{m}} min",
+    "soon": "un attimo",
+    "outTitle": "Niente più ossa per oggi",
+    "outSub": "Ogni premio o passaggio costa un osso. I tuoi {{count}} nuovi ossi arrivano tra {{time}}.",
+    "watchAd": "Guarda una breve pubblicità per 1 osso",
+    "getPremium": "Passa a DogsOut Premium",
+    "buyMore": "Compra altri ossi"
+  },
+  "premium": {
+    "title": "Premium",
+    "name": "DogsOut Premium",
+    "perkBones": "20 ossi al giorno invece di 10",
+    "perkNoAds": "Nessuna pubblicità",
+    "subscribe": "Abbonati a {{price}} / mese",
+    "active": "Premium è attivo. Grazie!",
+    "unavailable": "Non disponibile al momento. Riprova più tardi.",
+    "renewal": "Si rinnova ogni mese fino alla disdetta. Disdici quando vuoi negli abbonamenti App Store o Google Play; Premium resta attivo fino alla fine del mese pagato.",
+    "packsTitle": "Ossi extra",
+    "packsSub": "Usati dopo i tuoi ossi giornalieri, non scadono mai.",
+    "bones_10": "10 ossi",
+    "bones_30": "30 ossi",
+    "bonusLeft": "Hai {{count}} ossi extra.",
+    "restore": "Ripristina acquisti",
+    "restoredTitle": "Ripristinato",
+    "restoredBody": "I tuoi acquisti sono aggiornati.",
+    "thanksTitle": "Grazie!",
+    "thanksPremium": "Premium è attivo: 20 ossi al giorno e nessuna pubblicità.",
+    "thanksBones": "I tuoi ossi sono arrivati.",
+    "thanksPending": "Grazie! Può volerci un minuto prima che appaia.",
+    "failed": "L'acquisto non è andato a buon fine. Nessun addebito.",
+    "showBadge": "Mostra ⭐ accanto al mio nome in Scopri"
+  },
+  "daily": {
+    "newNearbyTitle": "{{count}} nuovi proprietari di cani vicino a te",
+    "newNearbyBody": "Oggi hai {{count}} ossi. Saluta con un premio!",
+    "bonesTitle": "I tuoi {{count}} ossi sono pronti 🦴",
+    "bonesBody": "{{count}} cani ti aspettano in Scopri.",
+    "playdateTitle": "Organizzare un playdate?",
+    "playdateBody": "Scegli un parco e un orario e guarda chi si unisce.",
+    "goSwipe": "Inizia",
+    "goPlaydate": "Crea un playdate",
+    "later": "Più tardi"
+  },
+  "market": {
+    "free": "Gratis",
+    "sell": "Vendi qualcosa",
+    "mine": "I miei annunci",
+    "browseAll": "Tutti gli annunci",
+    "all": "Tutti",
+    "empty": "Ancora niente in vendita vicino a te. Hai un guinzaglio o una cuccia diventati piccoli? Pubblicali!",
+    "emptyMine": "Non hai ancora pubblicato nulla.",
+    "status": {
+      "ACTIVE": "Disponibile",
+      "RESERVED": "Riservato",
+      "SOLD": "Venduto"
+    },
+    "detail": {
+      "message": "Scrivi al venditore",
+      "openChat": "Apri la tua chat",
+      "pickupNote": "Dogs Out non gestisce né pagamento né consegna. Accordatevi sul ritiro e sul pagamento (contanti o TWINT) in chat e incontratevi in un luogo in cui ti senti al sicuro.",
+      "asked": "{{count}} richieste",
+      "edit": "Modifica",
+      "markACTIVE": "Segna come disponibile",
+      "markRESERVED": "Segna come riservato",
+      "markSOLD": "Segna come venduto",
+      "delete": "Elimina annuncio",
+      "deleteTitle": "Eliminare l'annuncio?",
+      "deleteBody": "Anche le sue chat vengono eliminate."
+    },
+    "edit": {
+      "newTitle": "Vendi qualcosa",
+      "editTitle": "Modifica annuncio",
+      "rulesTitle": "Solo articoli per cani",
+      "rules": "Guinzagli, cucce, giochi, cibo, trasportini, cappottini. Niente animali vivi, niente medicinali, niente che non sia per cani. Gli annunci non conformi vengono rimossi.",
+      "titlePlaceholder": "Cos'è? (es. Cuccia, grande)",
+      "descriptionPlaceholder": "Taglia, condizioni, dove ritirarlo…",
+      "category": "Categoria",
+      "giveAway": "Regalalo",
+      "pricePlaceholder": "Prezzo in CHF",
+      "save": "Salva",
+      "publish": "Pubblica",
+      "titleRequired": "Aggiungi un titolo.",
+      "categoryRequired": "Scegli una categoria.",
+      "priceInvalid": "Inserisci un prezzo come 15 o 12.50, oppure regalalo.",
+      "photoRequired": "Aggiungi almeno una foto.",
+      "profanity": "Mantieni un tono gentile."
+    },
+    "chat": {
+      "placeholder": "Messaggio…",
+      "emptyBuyer": "Chiedi se è ancora disponibile e quando potresti ritirarlo.",
+      "emptySeller": "Ancora nessun messaggio."
+    },
+    "report": {
+      "doneTitle": "Grazie della segnalazione",
+      "doneBody": "L'annuncio è nascosto finché non lo controlliamo."
+    },
+    "chatsLabel": "Mercatino",
+    "category": {
+      "LEASH_COLLAR": "Guinzagli & collari",
+      "BED": "Cucce & coperte",
+      "TOYS": "Giochi",
+      "FOOD": "Cibo & snack",
+      "CRATE_TRANSPORT": "Trasportini",
+      "CLOTHING": "Cappottini & vestiti",
+      "CARE": "Cura & ciotole",
+      "OTHER": "Altro"
+    }
+  },
+  "community": {
+    "tab": "Community",
+    "title": "Community",
+    "sitting": "Dogsitting",
+    "market": "Mercatino",
+    "schools": "Scuole cinofile"
+  },
+  "school": {
+    "register": "Sei una scuola cinofila? Registrati qui",
+    "empty": "Ancora nessuna scuola cinofila vicino a te.",
+    "mine": {
+      "title": "La tua scuola cinofila: {{name}}"
+    },
+    "status": {
+      "PENDING": "In verifica",
+      "APPROVED": "Online",
+      "REJECTED": "Da modificare"
+    },
+    "statusHint": {
+      "PENDING": "Verifichiamo ogni scuola prima che appaia nell'app, di solito entro uno o due giorni.",
+      "APPROVED": "",
+      "REJECTED": "Correggi quanto indicato qui sotto e salva di nuovo; verrà verificata di nuovo."
+    },
+    "call": "Chiama",
+    "website": "Sito web",
+    "directions": "Indicazioni",
+    "address": "Indirizzo",
+    "openingHours": "Orari",
+    "about": "Chi siamo",
+    "edit": "Modifica scuola",
+    "addEvent": "Crea evento",
+    "upcoming": "Prossimi eventi",
+    "noEvents": "Nessun evento in programma.",
+    "form": {
+      "newTitle": "Registra una scuola cinofila",
+      "editTitle": "Modifica scuola cinofila",
+      "reviewNote": "Verifichiamo ogni scuola cinofila prima che appaia nell'app. Una volta approvata, puoi creare eventi.",
+      "logo": "Logo",
+      "name": "Nome della scuola",
+      "address": "Indirizzo (scegli sulla mappa)",
+      "phone": "Telefono (facoltativo)",
+      "website": "Sito web (facoltativo)",
+      "openingHours": "Orari (es. lun–ven 9–18)",
+      "about": "La tua scuola",
+      "save": "Salva",
+      "submit": "Invia per verifica",
+      "nameRequired": "Inserisci il nome della scuola.",
+      "addressRequired": "Scegli l'indirizzo della scuola sulla mappa."
+    },
+    "event": {
+      "tab": "Eventi",
+      "empty": "Al momento nessun evento di scuole cinofile vicino a te.",
+      "signedUp": "Iscritto/a",
+      "full": "Completo",
+      "perDog": "per cane",
+      "signedUpCount": "{{count}} iscritti",
+      "placesLeft": "Ancora {{count}} posti",
+      "payNote": "L'iscrizione qui è gratuita. Il prezzo si paga direttamente alla scuola.",
+      "join": "Iscriviti",
+      "leave": "Annulla iscrizione",
+      "edit": "Modifica",
+      "cancel": "Annulla evento",
+      "cancelTitle": "Annullare l'evento?",
+      "cancelBody": "Tutti gli iscritti verranno avvisati.",
+      "cancelled": "Annullato",
+      "participants": "Iscritti ({{count}})",
+      "nextClass": "Prossima lezione: {{date}}",
+      "courseConfirmTitle": "Iscriversi a tutto il corso?",
+      "courseNote_one": "Iscrivendoti a questo corso ti iscrivi anche all'altra lezione in programma.",
+      "courseNote_other": "Iscrivendoti a questo corso ti iscrivi anche alle altre {{count}} lezioni in programma.",
+      "cancelDate": "Annulla",
+      "cancelDateTitle": "Annullare {{date}}?",
+      "cancelDateBody": "Chi è iscritto a questa lezione viene avvisato. Le altre lezioni si svolgono.",
+      "placesPerClass": "{{count}} posti per lezione",
+      "noLimit": "Posti illimitati",
+      "pickDates": "Scegli le tue date",
+      "dates": "Date"
+    },
+    "eventForm": {
+      "newTitle": "Nuovo evento",
+      "editTitle": "Modifica evento",
+      "title": "Titolo (es. Corso cuccioli)",
+      "description": "Cosa succede, cosa portare…",
+      "atSchool": "Presso la scuola (tocca per un altro luogo)",
+      "useSchool": "Svolgere presso la scuola",
+      "free": "Gratis",
+      "price": "Prezzo per cane in CHF",
+      "places": "Posti (vuoto = illimitati)",
+      "placesInvalid": "Inserisci un numero di posti o lascia vuoto.",
+      "firstClass": "Prima lezione: {{date}}",
+      "starts": "Inizio",
+      "ends": "Fine",
+      "signupLabel": "Come ci si iscrive?",
+      "modeDATE": "Per data",
+      "modeDATEHint": "Ognuno sceglie le lezioni che preferisce. I posti valgono per lezione.",
+      "modeCOURSE": "Per tutto il corso",
+      "modeCOURSEHint": "Per lezioni che si susseguono: un'iscrizione vale per tutte le lezioni."
+    },
+    "delete": "Elimina scuola cinofila",
+    "deleteTitle": "Eliminare la tua scuola cinofila?",
+    "deleteBody": "La pagina e tutti gli eventi vengono rimossi. Chi è iscritto a un evento futuro viene avvisato.",
+    "reportDoneTitle": "Grazie della segnalazione",
+    "reportDoneBody": "Daremo un'occhiata."
   }
 }

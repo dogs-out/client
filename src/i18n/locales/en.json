@@ -10,7 +10,9 @@
     "loading": "Loading…",
     "retry": "Try again",
     "back": "Back",
-    "yearsOld": "{{age}} years old"
+    "yearsOld": "{{age}} years old",
+    "showMore": "More",
+    "showLess": "Less"
   },
   "settings": {
     "headerTitle": "Settings",
@@ -51,7 +53,9 @@
       "freezeHint": "The paws, balls and bones that drift behind every screen. Turning them off can help if motion bothers you, or to save a little battery.",
       "on": "Animation on",
       "off": "Animation off",
-      "footNote": "This setting lives on this device, so it does not follow your account to another phone."
+      "footNote": "This setting lives on this device, so it does not follow your account to another phone.",
+      "premiumLabel": "Star background",
+      "premiumHint": "As a Premium member, stars float in the background instead of dogs."
     },
     "adPrivacy": {
       "title": "Ad privacy",
@@ -193,6 +197,17 @@
       "MALE": "Male",
       "FEMALE": "Female"
     },
+    "neutered": {
+      "yes": "Neutered",
+      "no": "Not neutered"
+    },
+    "detailsPrompt": {
+      "title": "One more thing about your dog",
+      "body": "Whether a dog is neutered changes how it gets on with others, so it is now part of every dog profile.",
+      "save": "Save",
+      "incomplete": "Please answer for every dog.",
+      "failed": "Could not save. Please try again."
+    },
     "form": {
       "loadFailed": "Failed to load dog profile.",
       "maxPhotos": "Maximum 6 photos per dog.",
@@ -213,6 +228,7 @@
       "photosHint": "At least 1, up to 6 great shots of your dog",
       "photoRequired": "Add at least one photo of your dog.",
       "sexRequired": "Choose whether your dog is male or female.",
+      "neuteredRequired": "Choose whether your dog is neutered.",
       "mainBadge": "Main",
       "basicInfo": "Basic Info",
       "namePlaceholder": "Name *",
@@ -406,7 +422,9 @@
       "saveError": "Could not save your preference. Please try again.",
       "pushNotifications": "Push notifications",
       "pushNotificationsSub": "New messages and matches while the app is closed",
-      "hint": "Notifications also need to be allowed for Dogs Out in your phone's system settings."
+      "hint": "Notifications also need to be allowed for Dogs Out in your phone's system settings.",
+      "daily": "Daily reminder",
+      "dailySub": "At most one a day, around 18:00: new dog owners nearby or your bones being back."
     },
     "locationSettings": {
       "permissionNeeded": "Location access is needed to find nearby dogs. You can allow it in your phone's system settings.",
@@ -583,7 +601,17 @@
       "endBeforeStart": "The end has to come after the start.",
       "loadFailed": "Couldn't load your dogs.",
       "editTitle": "Edit your request",
-      "save": "Save changes"
+      "save": "Save changes",
+      "kind": {
+        "once": "Once",
+        "days": "Several days",
+        "weekly": "Weekly"
+      },
+      "firstVisit": "First visit: {{date}}",
+      "until": "Until {{date}}",
+      "everyLabel": "Every",
+      "tooLong": "A sitting can last up to 30 days.",
+      "untilBeforeStart": "The series has to end after it starts."
     },
     "offer": {
       "label": "Sitting offer",
@@ -643,6 +671,10 @@
       "sendShort": "Send details",
       "editShort": "Details",
       "cardLabel": "Sitting details"
+    },
+    "window": {
+      "every": "Every {{days}}",
+      "until": "until {{date}}"
     }
   },
   "playdates": {
@@ -664,6 +696,7 @@
       "limitValue": "Max {{count}} participants",
       "visibilityLabel": "Who can see it?",
       "invitees": "Invite from your matches",
+      "inviteesOptional": "Also invite some of your matches (optional)",
       "noMatches": "You don't have any matches yet.",
       "save": "Create playdate 🐾",
       "saveChanges": "Save changes",
@@ -884,7 +917,13 @@
     "Personal information": null,
     "Morning": "Morning · 8–12",
     "Afternoon": "Afternoon · 12–16",
-    "Evening": "Evening · 16–20"
+    "Evening": "Evening · 16–20",
+    "Live animal": "Live animal",
+    "Medicine": "Medicine",
+    "Not dog-related": "Not dog-related",
+    "Scam or spam": "Scam or spam",
+    "Not a real dog school": "Not a real dog school",
+    "Inappropriate content": "Inappropriate content"
   },
   "walk": {
     "inviteButton": "Invite for a walk",
@@ -1002,7 +1041,7 @@
       },
       "findSitter": {
         "title": "Find a dogsitter",
-        "body": "In Dogsitting, find sitters near you by day and time of day, or post a request and let them offer."
+        "body": "In Community → Dogsitting, find sitters near you by day and time of day, or post a one-off, multi-day or weekly request and let them offer."
       },
       "sosOwner": {
         "title": "If your dog gets lost",
@@ -1010,7 +1049,7 @@
       },
       "sittingJobs": {
         "title": "Sitting jobs",
-        "body": "In Dogsitting, see families nearby who need a sitter and offer to help. Add your free days and times to your profile."
+        "body": "In Community → Dogsitting, see families nearby who need a sitter and offer to help. Add your free days and times to your profile."
       },
       "sittingStatus": {
         "title": "Out with a dog?",
@@ -1035,6 +1074,18 @@
       "done": {
         "title": "You're all set",
         "body": "You can watch this tour again any time in Settings."
+      },
+      "bones": {
+        "title": "Bones: your daily swipes",
+        "body": "Every treat or pass costs a bone. You get 10 a day, new ones every midnight. Need more? Watch a short ad, buy a pack, or get Premium for 20 a day without ads."
+      },
+      "marketplace": {
+        "title": "Marketplace",
+        "body": "Pass on leads, beds, toys and more to dog owners nearby. Agree on pickup and payment in the chat. In Community → Marketplace."
+      },
+      "schoolEvents": {
+        "title": "Dog-school events",
+        "body": "Under Playdates → Events, dog schools post classes and courses. Some you join date by date, others as a whole course, where one sign-up covers every class. Running a dog school? Register it in Community → Dog schools."
       }
     },
     "showMe": "Show me",
@@ -1058,5 +1109,219 @@
       "confirm": "Use this location"
     },
     "enterTown": "Enter town or postcode"
+  },
+  "bones": {
+    "hoursMinutes": "{{h}} h {{m}} min",
+    "minutes": "{{m}} min",
+    "soon": "a moment",
+    "outTitle": "Out of bones for today",
+    "outSub": "Every treat or pass costs a bone. Your {{count}} new bones arrive in {{time}}.",
+    "watchAd": "Watch a short ad for 1 bone",
+    "getPremium": "Get DogsOut Premium",
+    "buyMore": "Buy more bones"
+  },
+  "premium": {
+    "title": "Premium",
+    "name": "DogsOut Premium",
+    "perkBones": "20 bones every day instead of 10",
+    "perkNoAds": "No ads",
+    "subscribe": "Subscribe for {{price}} / month",
+    "active": "Premium is active. Thank you!",
+    "unavailable": "Not available right now. Please try again later.",
+    "renewal": "Renews monthly until cancelled. Cancel any time in your App Store or Google Play subscriptions; Premium then runs to the end of the paid month.",
+    "packsTitle": "Extra bones",
+    "packsSub": "Used after your daily bones, and they never expire.",
+    "bones_10": "10 bones",
+    "bones_30": "30 bones",
+    "bonusLeft": "You have {{count}} extra bones.",
+    "restore": "Restore purchases",
+    "restoredTitle": "Restored",
+    "restoredBody": "Your purchases are up to date.",
+    "thanksTitle": "Thank you!",
+    "thanksPremium": "Premium is active: 20 bones a day and no ads.",
+    "thanksBones": "Your bones have arrived.",
+    "thanksPending": "Thanks! It can take a minute to show up.",
+    "failed": "The purchase did not go through. You have not been charged.",
+    "showBadge": "Show ⭐ next to my name in Discover"
+  },
+  "daily": {
+    "newNearbyTitle": "{{count}} new dog owners near you",
+    "newNearbyBody": "You have {{count}} bones today. Say hi with a treat!",
+    "bonesTitle": "Your {{count}} bones are ready 🦴",
+    "bonesBody": "{{count}} dogs are waiting in Discover.",
+    "playdateTitle": "Plan a playdate?",
+    "playdateBody": "Pick a park and a time, and see who joins.",
+    "goSwipe": "Start swiping",
+    "goPlaydate": "Create a playdate",
+    "later": "Later"
+  },
+  "market": {
+    "free": "Free",
+    "sell": "Sell something",
+    "mine": "My listings",
+    "browseAll": "All listings",
+    "all": "All",
+    "empty": "Nothing for sale nearby yet. Have a lead or bed your dog has outgrown? List it!",
+    "emptyMine": "You have not listed anything yet.",
+    "status": {
+      "ACTIVE": "Available",
+      "RESERVED": "Reserved",
+      "SOLD": "Sold"
+    },
+    "detail": {
+      "message": "Message the seller",
+      "openChat": "Open your chat",
+      "pickupNote": "Dogs Out handles no payment or delivery. Agree on pickup and payment (cash or TWINT) in the chat, and meet somewhere you feel safe.",
+      "asked": "{{count}} people asked",
+      "edit": "Edit",
+      "markACTIVE": "Mark as available",
+      "markRESERVED": "Mark as reserved",
+      "markSOLD": "Mark as sold",
+      "delete": "Delete listing",
+      "deleteTitle": "Delete this listing?",
+      "deleteBody": "Its chats are deleted too."
+    },
+    "edit": {
+      "newTitle": "Sell something",
+      "editTitle": "Edit listing",
+      "rulesTitle": "Dog things only",
+      "rules": "Leashes, beds, toys, food, crates, coats. No live animals, no medicines, nothing that is not for dogs. Listings that break this are removed.",
+      "titlePlaceholder": "What is it? (e.g. Dog bed, large)",
+      "descriptionPlaceholder": "Size, condition, where to pick it up…",
+      "category": "Category",
+      "giveAway": "Give it away for free",
+      "pricePlaceholder": "Price in CHF",
+      "save": "Save",
+      "publish": "Publish",
+      "titleRequired": "Give it a title.",
+      "categoryRequired": "Choose a category.",
+      "priceInvalid": "Enter a price like 15 or 12.50, or give it away for free.",
+      "photoRequired": "Add at least one photo.",
+      "profanity": "Please keep it friendly."
+    },
+    "chat": {
+      "placeholder": "Message…",
+      "emptyBuyer": "Ask if it is still available and when you could pick it up.",
+      "emptySeller": "No messages yet."
+    },
+    "report": {
+      "doneTitle": "Thanks for reporting",
+      "doneBody": "The listing is hidden while we take a look."
+    },
+    "chatsLabel": "Marketplace",
+    "category": {
+      "LEASH_COLLAR": "Leashes & collars",
+      "BED": "Beds & blankets",
+      "TOYS": "Toys",
+      "FOOD": "Food & treats",
+      "CRATE_TRANSPORT": "Crates & transport",
+      "CLOTHING": "Coats & clothing",
+      "CARE": "Care & bowls",
+      "OTHER": "Other"
+    }
+  },
+  "community": {
+    "tab": "Community",
+    "title": "Community",
+    "sitting": "Dogsitting",
+    "market": "Marketplace",
+    "schools": "Dog schools"
+  },
+  "school": {
+    "register": "Are you a dog school? Register here",
+    "empty": "No dog schools nearby yet.",
+    "mine": {
+      "title": "Your dog school: {{name}}"
+    },
+    "status": {
+      "PENDING": "Waiting for review",
+      "APPROVED": "Live",
+      "REJECTED": "Needs a change"
+    },
+    "statusHint": {
+      "PENDING": "We check every school before it appears in the app, usually within a day or two.",
+      "APPROVED": "",
+      "REJECTED": "Please fix what is noted below and save again; it then goes back for review."
+    },
+    "call": "Call",
+    "website": "Website",
+    "directions": "Directions",
+    "address": "Address",
+    "openingHours": "Opening hours",
+    "about": "About",
+    "edit": "Edit school",
+    "addEvent": "Add event",
+    "upcoming": "Upcoming events",
+    "noEvents": "No upcoming events.",
+    "form": {
+      "newTitle": "Register a dog school",
+      "editTitle": "Edit dog school",
+      "reviewNote": "We check every dog school before it appears in the app. Once it is approved you can add events.",
+      "logo": "Logo",
+      "name": "Name of the school",
+      "address": "Address (pick on the map)",
+      "phone": "Phone (optional)",
+      "website": "Website (optional)",
+      "openingHours": "Opening hours (e.g. Mon–Fri 9–18)",
+      "about": "About your school",
+      "save": "Save",
+      "submit": "Send for review",
+      "nameRequired": "Enter the school's name.",
+      "addressRequired": "Pick the school's address on the map."
+    },
+    "event": {
+      "tab": "Events",
+      "empty": "No dog-school events nearby right now.",
+      "signedUp": "Signed up",
+      "full": "Full",
+      "perDog": "per dog",
+      "signedUpCount": "{{count}} signed up",
+      "placesLeft": "{{count}} places left",
+      "payNote": "Signing up is free here. The price is paid to the school directly.",
+      "join": "Sign up",
+      "leave": "Cancel my sign-up",
+      "edit": "Edit",
+      "cancel": "Cancel event",
+      "cancelTitle": "Cancel this event?",
+      "cancelBody": "Everyone who signed up is notified.",
+      "cancelled": "Cancelled",
+      "participants": "Signed up ({{count}})",
+      "nextClass": "Next class: {{date}}",
+      "courseConfirmTitle": "Sign up for the whole course?",
+      "courseNote_one": "Signing up for this course also signs you up for the other upcoming class.",
+      "courseNote_other": "Signing up for this course also signs you up for the other {{count}} upcoming classes.",
+      "cancelDate": "Call off",
+      "cancelDateTitle": "Call off {{date}}?",
+      "cancelDateBody": "Everyone signed up for this class is told. The other classes go ahead.",
+      "placesPerClass": "{{count}} places per class",
+      "noLimit": "No limit on places",
+      "pickDates": "Pick your dates",
+      "dates": "Dates"
+    },
+    "eventForm": {
+      "newTitle": "New event",
+      "editTitle": "Edit event",
+      "title": "Title (e.g. Puppy class)",
+      "description": "What happens, what to bring…",
+      "atSchool": "At the school (tap to pick another place)",
+      "useSchool": "Hold it at the school",
+      "free": "Free",
+      "price": "Price per dog in CHF",
+      "places": "Places (leave empty for no limit)",
+      "placesInvalid": "Enter a number of places, or leave it empty.",
+      "firstClass": "First class: {{date}}",
+      "starts": "Starts",
+      "ends": "Ends",
+      "signupLabel": "How do people sign up?",
+      "modeDATE": "Per date",
+      "modeDATEHint": "Everyone picks the classes they want. Places count per class.",
+      "modeCOURSE": "For the whole course",
+      "modeCOURSEHint": "For classes that build on each other: one sign-up covers every class."
+    },
+    "delete": "Delete dog school",
+    "deleteTitle": "Delete your dog school?",
+    "deleteBody": "Its page and all its events are removed. Everyone signed up for an upcoming event is told.",
+    "reportDoneTitle": "Thanks for reporting",
+    "reportDoneBody": "We will take a look."
   }
 }

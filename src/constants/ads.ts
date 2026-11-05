@@ -25,3 +25,28 @@ export const DECK_NATIVE_AD_UNIT = __DEV__ ? TestIds.NATIVE : RELEASE_NATIVE_UNI
 export const LIST_NATIVE_AD_UNIT = DECK_NATIVE_AD_UNIT;
 /** The ad goes after this many entries of a list, or at the end of a shorter one. */
 export const AD_AFTER_LIST_ITEMS = 3;
+
+/**
+ * "Extra bone" Rewarded ad units (created 2026-10-30). Null hides the button in a
+ * release build, for a platform without a unit.
+ * Each unit needs Server-side verification set to https://api.dogsout.app/bones/admob-ssv,
+ * because the bone is granted by that callback, never by the app.
+ */
+const RELEASE_REWARDED_UNIT: string | null = Platform.select({
+  ios: 'ca-app-pub-6036286386570373/1150721058', // Extra bone (Rewarded, SSV on)
+  android: 'ca-app-pub-6036286386570373/8422706414', // Extra bone (Rewarded, SSV on)
+  default: null,
+});
+
+export const REWARDED_BONE_AD_UNIT: string | null = __DEV__ ? TestIds.REWARDED : RELEASE_REWARDED_UNIT;
+
+/**
+ * Context sent with every ad request. Without consent to personalised ads, Google
+ * picks ads by region alone, and that is how a Swedish travel-SIM ad ends up in a
+ * Swiss dog app. Keywords and the site tell it what the app is about, so contextual
+ * (non-personalised) ads lean towards dogs and pets.
+ */
+export const AD_REQUEST_CONTEXT = {
+  keywords: ['dog', 'dogs', 'pets', 'dog food', 'dog training', 'Hund', 'Hunde', 'Haustier', 'Hundefutter', 'Hundeschule'],
+  contentUrl: 'https://dogsout.app',
+};

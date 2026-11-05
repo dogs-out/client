@@ -132,7 +132,8 @@ export default function ParkPickerScreen({ navigation, route }: Readonly<Props>)
     // params have a different shape, and merge:true carries the rest of them
     // back — which the types cannot see, so a computed target will not narrow.
     const target = route.params?.returnTo ?? 'CreatePlaydate';
-    if (target === 'ProfileSetup' || target === 'EditProfile' || target === 'LocationSettings' || target === 'DiscoverFilters') {
+    if (target === 'ProfileSetup' || target === 'EditProfile' || target === 'LocationSettings' || target === 'DiscoverFilters'
+      || target === 'EditSchool' || target === 'EditEvent') {
       navigation.popTo(target, { pickedPlace: selected }, { merge: true });
     } else if (target === 'SetStatus') {
       navigation.popTo('SetStatus', { pickedPlace: selected }, { merge: true });

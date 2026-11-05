@@ -19,6 +19,7 @@ import { FloatingBackground } from '../../components/FloatingBackground';
 import { GlassCard } from '../../components/GlassCard';
 import { translateTag } from '../../i18n/translateTag';
 import { breedAndSex } from '../../utils/dogLine';
+import { formatDistance } from '../../utils/geo';
 import { AvailabilityGrid } from '../../components/AvailabilityGrid';
 import { availabilityGrid } from '../../utils/availability';
 
@@ -253,8 +254,14 @@ export default function UserProfileScreen({ navigation, route }: Readonly<Props>
             <PhotoCarousel photos={ownerPhotos} placeholder="👤" />
             <View style={styles.dogInfo}>
               <Text style={styles.dogName}>
-                {profile.name}{profile.age !== null ? `, ${profile.age}` : ''}
+                {profile.name}{profile.age !== null ? `, ${profile.age}` : ''}{profile.premiumBadge ? ' ⭐' : ''}
               </Text>
+              {profile.distanceKm >= 0 && (
+                <View style={styles.distanceRow} testID="profile-distance">
+                  <Ionicons name="location-outline" size={14} color={Colors.textSecondary} />
+                  <Text style={styles.distanceText}>{formatDistance(profile.distanceKm, t)}</Text>
+                </View>
+              )}
               {profile.relationshipStatus && <Text style={styles.subLine}>{translateTag(profile.relationshipStatus, t)}</Text>}
               {ownerTags.length > 0 && (
                 <View style={styles.tagRow}>
@@ -381,6 +388,8 @@ const styles = StyleSheet.create({
   dogInfo: { padding: 18 },
   dogName: { fontSize: 22, fontWeight: '800', color: Colors.text, marginBottom: 2 },
   subLine: { fontSize: 14, color: Colors.textSecondary, marginBottom: 8 },
+  distanceRow: { flexDirection: 'row', alignItems: 'center', gap: 4, marginBottom: 8 },
+  distanceText: { fontSize: 14, color: Colors.textSecondary },
 
   tagRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: 8 },
   tag: {

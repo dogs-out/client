@@ -23,11 +23,15 @@ const SUBSTRING_WORDS = [
 // Short/ambiguous words — whole-word matches only, so ordinary words
 // like "Wasser", "passt", "Barsch", "Cocker", "schwanken" stay clean.
 const WORD_PATTERN = new RegExp(
-  String.raw`\b(ass|fag|kike|dick|cock|pussy|slut|twat|wank|prick|crap|shit|`
+  String.raw`\b(ass|fag|kike|cock|pussy|slut|twat|wank|prick|crap|shit|`
   + String.raw`fick|arsch|wichse|wixer|hure|nutte|kacke|kacken|bumsen|pisser|voegeln)\b`
 );
 
 const filter = new Filter();
+// The library's list is English, and some of its words are everyday German — "Lust"
+// ("Lust auf ein Playdate?"), "hell" (bright), "dick" (fat) — or ordinary dog talk:
+// "balls". Blocking those blocked normal messages, and none is worth the false hits.
+filter.removeWords('lust', 'hell', 'dick', 'balls', 'damn');
 
 function normalize(text: string): string {
   return text

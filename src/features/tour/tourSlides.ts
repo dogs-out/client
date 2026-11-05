@@ -35,10 +35,13 @@ export function tourSlides(variant: TourVariant): TourSlide[] {
       return [
         { key: 'welcome', emoji: '🐾' },
         { key: 'discover', emoji: '💚', target: { tab: 'Discover' } },
+        { key: 'bones', emoji: '🦴', target: { tab: 'Discover' } },
         { key: 'playdates', emoji: '🌳', target: { tab: 'Playdates' } },
+        { key: 'schoolEvents', emoji: '🎓', target: { tab: 'Playdates' } },
         { key: 'status', emoji: '🚶', target: { screen: 'SetStatus' } },
         { key: 'walk', emoji: '💬', target: { tab: 'Chats' } },
         { key: 'findSitter', emoji: '🏡', target: { tab: 'FindSitter' } },
+        { key: 'marketplace', emoji: '🛍️', target: { tab: 'FindSitter' } },
         { key: 'sosOwner', emoji: '🚨', target: { tab: 'Profile' } },
         { key: 'done', emoji: '🎉' },
       ];
@@ -48,6 +51,8 @@ export function tourSlides(variant: TourVariant): TourSlide[] {
         { key: 'sittingJobs', emoji: '🏡', target: { tab: 'FindSitter' } },
         { key: 'sittingStatus', emoji: '🦮', target: { screen: 'SetStatus' } },
         { key: 'playdatesSitter', emoji: '🌳', target: { tab: 'Playdates' } },
+        { key: 'schoolEvents', emoji: '🎓', target: { tab: 'Playdates' } },
+        { key: 'marketplace', emoji: '🛍️', target: { tab: 'FindSitter' } },
         { key: 'sosHelp', emoji: '🚨' },
         { key: 'shelters', emoji: '🏠', target: { screen: 'Shelters' } },
         { key: 'done', emoji: '🎉' },
@@ -56,6 +61,8 @@ export function tourSlides(variant: TourVariant): TourSlide[] {
       return [
         { key: 'welcome', emoji: '🐾' },
         { key: 'findSitter', emoji: '🏡', target: { tab: 'FindSitter' } },
+        { key: 'schoolEvents', emoji: '🎓', target: { tab: 'Playdates' } },
+        { key: 'marketplace', emoji: '🛍️', target: { tab: 'FindSitter' } },
         { key: 'sosHelp', emoji: '🚨' },
         { key: 'shelters', emoji: '🏠', target: { screen: 'Shelters' } },
         { key: 'addDog', emoji: '🐶', target: { screen: 'AddDog' } },

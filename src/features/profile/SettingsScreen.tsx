@@ -12,6 +12,7 @@ import { tokenStorage } from '../../utils/tokenStorage';
 import { userService } from '../../services/userService';
 import { notificationService } from '../../services/notificationService';
 import { showAdPrivacyOptions } from '../../services/ads';
+import { purchases } from '../../services/purchases';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Settings'>;
 
@@ -69,6 +70,9 @@ export default function SettingsScreen({ navigation }: Readonly<Props>) {
     {
       title: t('settings.sections.app'),
       rows: [
+        ...(purchases.available()
+          ? [{ icon: 'star-outline', label: t('premium.name'), onPress: () => navigation.navigate('Premium') }]
+          : []),
         { icon: 'options-outline', label: t('settings.rows.discoveryPreferences'), onPress: () => navigation.navigate('DiscoverFilters') },
         // Not under Privacy: how the app looks is not a question about who can see
         // what, and a tester reasonably found it odd sitting there.

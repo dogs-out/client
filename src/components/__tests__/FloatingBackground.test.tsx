@@ -3,6 +3,7 @@ import { act, cleanup, render, screen } from '@testing-library/react-native';
 import { FloatingBackground } from '../FloatingBackground';
 import { appPrefs } from '../../utils/appPrefs';
 import { celebration } from '../../utils/celebration';
+import { setPremium } from '../../utils/premium';
 
 jest.mock('expo-secure-store', () => ({
   getItemAsync: jest.fn().mockResolvedValue(null),
@@ -18,6 +19,8 @@ describe('FloatingBackground', () => {
     // renderer in a state where the next render produces an empty tree.
     cleanup();
     appPrefs.set('freezeBackground', false);
+    appPrefs.set('premiumBackground', true);
+    setPremium(false);
     celebration.clear();
     jest.restoreAllMocks();
   });
@@ -69,5 +72,20 @@ describe('FloatingBackground', () => {
   it('stays ordinary on an ordinary day', async () => {
     await render(<FloatingBackground />);
     expect(screen.queryAllByText('🎂')).toHaveLength(0);
+  });
+
+  it('gives Premium members stars instead of dogs', async () => {
+    setPremium(true);
+    await render(<FloatingBackground />);
+    expect(screen.queryAllByText('⭐').length).toBeGreaterThan(0);
+    expect(screen.queryAllByText('🐕')).toHaveLength(0);
+  });
+
+  it('keeps the dogs for a Premium member who switched the stars off', async () => {
+    setPremium(true);
+    appPrefs.set('premiumBackground', false);
+    await render(<FloatingBackground />);
+    expect(screen.queryAllByText('⭐')).toHaveLength(0);
+    expect(screen.queryAllByText('🐕').length).toBeGreaterThan(0);
   });
 });

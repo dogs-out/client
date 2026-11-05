@@ -2,6 +2,7 @@ import axios from 'axios';
 import { Platform } from 'react-native';
 import Constants from 'expo-constants';
 import { tokenStorage } from '../utils/tokenStorage';
+import i18next from 'i18next';
 
 // Raised from 10s when photos were inline base64 and /discover was ~18 MB, which
 // overran the timeout on a normal connection and surfaced as "Cannot reach the
@@ -35,6 +36,9 @@ api.interceptors.request.use(async config => {
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+    // Read per request: the language can be changed in Settings at any time, and
+    // the server writes pushes (the daily one, for a start) in it.
+    config.headers['X-App-Language'] = i18next.language;
     if (__DEV__) {
       console.log('[API]', config.method?.toUpperCase(), config.url, token ? 'WITH token' : 'NO token');
     }

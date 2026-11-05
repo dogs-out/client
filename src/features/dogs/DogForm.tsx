@@ -59,6 +59,7 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Re
   const [name, setName]               = useState('');
   const [breed, setBreed]             = useState<string | null>(null);
   const [sex, setSex]                 = useState<DogSex | null>(null);
+  const [neutered, setNeutered]       = useState<boolean | null>(null);
   const [dateOfBirth, setDateOfBirth] = useState<Date | null>(null);
   const [bio, setBio]                 = useState('');
   const [photos, setPhotos]           = useState<PhotoState[]>([]);
@@ -91,6 +92,7 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Re
       setName(dog.name);
       setBreed(dog.breed);
       setSex(dog.sex ?? null);
+      setNeutered(dog.neutered ?? null);
       if (dog.dateOfBirth) setDateOfBirth(new Date(dog.dateOfBirth));
       setBio(dog.bio ?? '');
       // Thumbs: these render as small grid tiles, never full size.
@@ -162,10 +164,10 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Re
   // Everything the form holds, as one string. Photos are included by id, uri and
   // framing, so adding, cropping or reordering one counts as a change too.
   const fingerprint = useMemo(() => JSON.stringify([
-    name, breed, sex, dateOfBirth?.toISOString() ?? null, bio,
+    name, breed, sex, neutered, dateOfBirth?.toISOString() ?? null, bio,
     energyLevel, socialBehavior, loves, offLeash, kidsComfort, dogTags, removedIds,
     photos.map(p => [p.kind, p.kind === 'existing' ? p.photoId : p.uri, p.crop]),
-  ]), [name, breed, sex, dateOfBirth, bio, energyLevel, socialBehavior, loves,
+  ]), [name, breed, sex, neutered, dateOfBirth, bio, energyLevel, socialBehavior, loves,
        offLeash, kidsComfort, dogTags, removedIds, photos]);
 
   const { markSaved } = useUnsavedChanges({
@@ -181,6 +183,7 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Re
     if (bio && containsProfanity(bio)) { setError(t('dogs.form.bioProfanity')); return; }
     if (photos.length === 0) { setError(t('dogs.form.photoRequired')); return; }
     if (!sex) { setError(t('dogs.form.sexRequired')); return; }
+    if (neutered === null) { setError(t('dogs.form.neuteredRequired')); return; }
     setLoading(true);
     setError(null);
     try {
@@ -188,6 +191,7 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Re
         name: name.trim(),
         breed: breed ?? undefined,
         sex: sex ?? undefined,
+        neutered,
         dateOfBirth: dateOfBirth ? dateOfBirth.toISOString().split('T')[0] : undefined,
         bio: bio.trim() || undefined,
         // profilePicture is no longer sent: the server derives it from the first
@@ -407,6 +411,22 @@ export function DogForm({ dogId, fromOnboarding, onSaved, onBack, onDelete }: Re
                 >
                   <Text style={[styles.optionText, sex === opt && styles.optionTextActive]}>
                     {opt === 'MALE' ? '♂ ' : '♀ '}{t(`dogs.sex.${opt}`)}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+
+            {/* Neutered or not changes how two dogs get on as much as their sex does. */}
+            <View style={styles.sexRow}>
+              {([true, false] as const).map(opt => (
+                <TouchableOpacity
+                  key={String(opt)}
+                  style={[styles.optionChip, styles.sexChip, neutered === opt && styles.optionChipActive]}
+                  onPress={() => setNeutered(opt)}
+                  testID={`dog-neutered-${opt ? 'yes' : 'no'}`}
+                >
+                  <Text style={[styles.optionText, neutered === opt && styles.optionTextActive]}>
+                    {t(opt ? 'dogs.neutered.yes' : 'dogs.neutered.no')}
                   </Text>
                 </TouchableOpacity>
               ))}

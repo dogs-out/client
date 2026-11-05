@@ -30,7 +30,9 @@ export interface PushData {
     | 'WALK_INVITE'
     | 'SITTING_OFFER' | 'SITTING_ACCEPTED' | 'SITTING_RATE'
     | 'SITTING_CANCELLED' | 'SITTING_DETAILS' | 'SITTING_REVIEWED' | 'SITTING_BLOCKED'
-    | 'SOS_ALERT' | 'SOS_FOUND';
+    | 'SOS_ALERT' | 'SOS_FOUND'
+    | 'DAILY_NUDGE' | 'LISTING_MESSAGE'
+    | 'SCHOOL_REVIEWED' | 'SCHOOL_EVENT_JOINED' | 'SCHOOL_EVENT_UPDATED';
   matchId?: number;
   otherUserId?: number;
   name?: string;
@@ -40,6 +42,12 @@ export interface PushData {
   sitterId?: number;
   /** A lost-dog alert to open. */
   alertId?: number;
+  /** SCHOOL_EVENT_*: the dog-school event to open. */
+  eventId?: number;
+  /** LISTING_MESSAGE: the marketplace conversation to open. */
+  conversationId?: number;
+  /** DAILY_NUDGE: where it leads, "Discover" or "CreatePlaydate". */
+  screen?: string;
 }
 
 export const notificationService = {
@@ -91,6 +99,10 @@ export const notificationService = {
 
   setEnabled: (enabled: boolean): Promise<void> =>
     api.put('/users/me/notifications', { enabled }).then(() => {}),
+
+  /** The once-a-day nudge, separately from all other pushes. */
+  setDailyRemindersEnabled: (enabled: boolean): Promise<void> =>
+    api.put('/users/me/daily-reminders', { enabled }).then(() => {}),
 
   /** Fires when the user taps a notification; returns an unsubscribe. */
   onNotificationTap: (handler: (data: PushData) => void): (() => void) => {

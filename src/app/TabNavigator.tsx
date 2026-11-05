@@ -12,7 +12,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import DiscoverScreen from '../features/matching/DiscoverScreen';
-import FindSitterScreen from '../features/sitter/FindSitterScreen';
+import CommunityScreen from '../features/community/CommunityScreen';
 import PlaydatesScreen from '../features/playdates/PlaydatesScreen';
 import ChatsScreen from '../features/chat/ChatsScreen';
 import HomeScreen from '../screens/HomeScreen';
@@ -20,7 +20,12 @@ import { glassTabBarStyles as styles, TAB_ICON_SIZE, WRAPPER_PAD_B } from '../co
 import { useHasDog } from '../hooks/useHasDog';
 import { useUnreadCount } from '../hooks/useUnreadCount';
 import { PendingMatchCelebration } from '../components/PendingMatchCelebration';
+import { DogDetailsPrompt } from '../components/DogDetailsPrompt';
+import { DailyCard } from '../components/DailyCard';
 import { Colors } from '../constants/colors';
+import { purchases } from '../services/purchases';
+import { boneService } from '../services/boneService';
+import { userService } from '../services/userService';
 
 export type MainTabParamList = {
   Discover: undefined;
@@ -34,7 +39,7 @@ const Tab = createBottomTabNavigator<MainTabParamList>();
 
 const TAB_ITEMS: { name: keyof MainTabParamList; labelKey: string; icon: string; iconActive: string }[] = [
   { name: 'Discover',   labelKey: 'matching.discover.headerTitle', icon: 'paw-outline',       iconActive: 'paw' },
-  { name: 'FindSitter', labelKey: 'sitter.tabTitle',                icon: 'people-outline',     iconActive: 'people' },
+  { name: 'FindSitter', labelKey: 'community.tab',                icon: 'people-outline',     iconActive: 'people' },
   { name: 'Playdates',  labelKey: 'playdates.tabTitle',             icon: 'calendar-outline',   iconActive: 'calendar' },
   { name: 'Chats',      labelKey: 'chat.chatsScreen.headerTitle',  icon: 'chatbubble-outline', iconActive: 'chatbubble' },
   { name: 'Profile',    labelKey: 'home.profileTab',                icon: 'person-outline',     iconActive: 'person' },
@@ -108,6 +113,13 @@ export default function TabNavigator() {
   // The user is authenticated once the main tabs mount — register this device for push
   useEffect(() => { notificationService.register(); }, []);
 
+  // Purchases belong to the account, so RevenueCat learns who is signed in; the
+  // bone status also tells every ad slot whether this is a Premium user.
+  useEffect(() => {
+    userService.getMe().then(me => purchases.identify(me.id)).catch(() => {});
+    boneService.getStatus().catch(() => {});
+  }, []);
+
   // The tour, once per device: new accounts on their first arrival, and everyone
   // already here on the first launch after it shipped. Settings replays it.
   useEffect(() => {
@@ -148,13 +160,18 @@ export default function TabNavigator() {
     <>
       {/* "It's a Match!" for whoever liked first, on their next visit. */}
       <PendingMatchCelebration />
+      {/* Neutered status (and sex) for dogs saved before the form asked for them. */}
+      <DogDetailsPrompt />
+      {/* Once a day: new people nearby, bones ready, or a playdate to plan. */}
+      <DailyCard />
       <Tab.Navigator
         tabBar={props => <GlassTabBar {...props} />}
         screenOptions={{ headerShown: false }}
         initialRouteName={hasDog === false ? 'FindSitter' : 'Discover'}
       >
         <Tab.Screen name="Discover" component={DiscoverScreen} />
-        <Tab.Screen name="FindSitter" component={FindSitterScreen} />
+        {/* Route name kept so existing links (pushes, onboarding) still land here. */}
+        <Tab.Screen name="FindSitter" component={CommunityScreen} />
         <Tab.Screen name="Playdates"  component={PlaydatesScreen} />
         <Tab.Screen name="Chats"      component={ChatsScreen} />
         <Tab.Screen name="Profile"  component={HomeScreen} />

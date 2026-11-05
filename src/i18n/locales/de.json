@@ -10,7 +10,9 @@
     "loading": "Wird geladen…",
     "retry": "Erneut versuchen",
     "back": "Zurück",
-    "yearsOld": "{{age}} Jahre alt"
+    "yearsOld": "{{age}} Jahre alt",
+    "showMore": "Mehr",
+    "showLess": "Weniger"
   },
   "settings": {
     "headerTitle": "Einstellungen",
@@ -51,7 +53,9 @@
       "freezeHint": "Die Pfoten, Bälle und Knochen, die hinter jedem Bildschirm treiben. Ausschalten hilft, wenn dich Bewegung stört — und spart etwas Akku.",
       "on": "Animation ein",
       "off": "Animation aus",
-      "footNote": "Diese Einstellung gilt nur für dieses Gerät und wandert nicht mit deinem Konto auf ein anderes Handy."
+      "footNote": "Diese Einstellung gilt nur für dieses Gerät und wandert nicht mit deinem Konto auf ein anderes Handy.",
+      "premiumLabel": "Sternen-Hintergrund",
+      "premiumHint": "Als Premium-Mitglied schweben im Hintergrund Sterne statt Hunde."
     },
     "adPrivacy": {
       "title": "Datenschutz bei Werbung",
@@ -193,6 +197,17 @@
       "MALE": "Rüde",
       "FEMALE": "Hündin"
     },
+    "neutered": {
+      "yes": "Kastriert",
+      "no": "Nicht kastriert"
+    },
+    "detailsPrompt": {
+      "title": "Noch eine Angabe zu deinem Hund",
+      "body": "Ob ein Hund kastriert ist, beeinflusst, wie er sich mit anderen versteht. Deshalb gehört es jetzt zu jedem Hundeprofil.",
+      "save": "Speichern",
+      "incomplete": "Bitte für jeden Hund ausfüllen.",
+      "failed": "Speichern fehlgeschlagen. Bitte versuch es nochmal."
+    },
     "form": {
       "loadFailed": "Hundeprofil konnte nicht geladen werden.",
       "maxPhotos": "Maximal 6 Fotos pro Hund.",
@@ -213,6 +228,7 @@
       "photosHint": "Mindestens 1, bis zu 6 tolle Fotos deines Hundes",
       "photoRequired": "Füge mindestens ein Foto deines Hundes hinzu.",
       "sexRequired": "Wähle, ob dein Hund ein Rüde oder eine Hündin ist.",
+      "neuteredRequired": "Gib an, ob dein Hund kastriert ist.",
       "mainBadge": "Hauptfoto",
       "basicInfo": "Grundlegende Infos",
       "namePlaceholder": "Name *",
@@ -406,7 +422,9 @@
       "saveError": "Deine Einstellung konnte nicht gespeichert werden. Bitte versuche es erneut.",
       "pushNotifications": "Push-Benachrichtigungen",
       "pushNotificationsSub": "Neue Nachrichten und Matches, während die App geschlossen ist",
-      "hint": "Benachrichtigungen müssen für Dogs Out auch in den Systemeinstellungen deines Telefons erlaubt sein."
+      "hint": "Benachrichtigungen müssen für Dogs Out auch in den Systemeinstellungen deines Telefons erlaubt sein.",
+      "daily": "Tägliche Erinnerung",
+      "dailySub": "Höchstens eine pro Tag, gegen 18 Uhr: neue Hundebesitzer in der Nähe oder deine Knochen sind wieder da."
     },
     "locationSettings": {
       "permissionNeeded": "Standortzugriff wird benötigt, um Hunde in der Nähe zu finden. Du kannst ihn in den Systemeinstellungen deines Telefons erlauben.",
@@ -623,7 +641,13 @@
     "Personal information": "Persönliche Daten",
     "Morning": "Morgen · 8–12",
     "Afternoon": "Nachmittag · 12–16",
-    "Evening": "Abend · 16–20"
+    "Evening": "Abend · 16–20",
+    "Live animal": "Lebendes Tier",
+    "Medicine": "Medikamente",
+    "Not dog-related": "Nichts für Hunde",
+    "Scam or spam": "Betrug oder Spam",
+    "Not a real dog school": "Keine echte Hundeschule",
+    "Inappropriate content": "Unangemessener Inhalt"
   },
   "sitter": {
     "tabTitle": "Dogsitting",
@@ -693,7 +717,17 @@
       "endBeforeStart": "Das Ende muss nach dem Beginn liegen.",
       "loadFailed": "Deine Hunde konnten nicht geladen werden.",
       "editTitle": "Anfrage bearbeiten",
-      "save": "Änderungen speichern"
+      "save": "Änderungen speichern",
+      "kind": {
+        "once": "Einmalig",
+        "days": "Mehrere Tage",
+        "weekly": "Wöchentlich"
+      },
+      "firstVisit": "Erster Termin: {{date}}",
+      "until": "Bis {{date}}",
+      "everyLabel": "Jeden",
+      "tooLong": "Ein Sitting kann bis zu 30 Tage dauern.",
+      "untilBeforeStart": "Die Serie muss nach dem Start enden."
     },
     "offer": {
       "label": "Betreuungsangebot",
@@ -753,6 +787,10 @@
       "sendShort": "Details senden",
       "editShort": "Details",
       "cardLabel": "Betreuungsdetails"
+    },
+    "window": {
+      "every": "Jeden {{days}}",
+      "until": "bis {{date}}"
     }
   },
   "playdates": {
@@ -774,6 +812,7 @@
       "limitValue": "Max. {{count}} Teilnehmer",
       "visibilityLabel": "Wer kann es sehen?",
       "invitees": "Aus deinen Matches einladen",
+      "inviteesOptional": "Zusätzlich Matches einladen (optional)",
       "noMatches": "Du hast noch keine Matches.",
       "save": "Playdate erstellen 🐾",
       "saveChanges": "Änderungen speichern",
@@ -1095,7 +1134,7 @@
       },
       "findSitter": {
         "title": "Dogsitter finden",
-        "body": "Unter Dogsitting findest du Sitter in deiner Nähe nach Tag und Tageszeit, oder du erstellst eine Anfrage und lässt sie sich melden."
+        "body": "Unter Community → Dogsitting findest du Sitter in der Nähe nach Tag und Tageszeit, oder du gibst eine einmalige, mehrtägige oder wöchentliche Anfrage auf."
       },
       "sosOwner": {
         "title": "Wenn dein Hund verloren geht",
@@ -1103,7 +1142,7 @@
       },
       "sittingJobs": {
         "title": "Sitter-Jobs",
-        "body": "Unter Dogsitting siehst du Familien in der Nähe, die einen Sitter brauchen, und kannst deine Hilfe anbieten. Trage deine freien Tage und Zeiten im Profil ein."
+        "body": "Unter Community → Dogsitting siehst du Familien in der Nähe, die einen Sitter suchen, und kannst deine Hilfe anbieten. Trag deine freien Tage und Zeiten im Profil ein."
       },
       "sittingStatus": {
         "title": "Mit einem Hund unterwegs?",
@@ -1128,6 +1167,18 @@
       "done": {
         "title": "Alles bereit",
         "body": "Du kannst diese Tour jederzeit in den Einstellungen wieder ansehen."
+      },
+      "bones": {
+        "title": "Knochen: deine täglichen Swipes",
+        "body": "Jedes Leckerli und jedes Weiter kostet einen Knochen. Du bekommst 10 pro Tag, um Mitternacht gibt's neue. Mehr gefällig? Kurze Werbung ansehen, ein Paket kaufen oder Premium mit 20 pro Tag ohne Werbung."
+      },
+      "marketplace": {
+        "title": "Marktplatz",
+        "body": "Gib Leinen, Betten, Spielzeug und mehr an Hundebesitzer in der Nähe weiter. Abholung und Bezahlung vereinbart ihr im Chat. Unter Community → Marktplatz."
+      },
+      "schoolEvents": {
+        "title": "Events von Hundeschulen",
+        "body": "Unter Playdates → Events zeigen Hundeschulen ihre Lektionen und Kurse. Bei manchen meldest du dich pro Termin an, bei anderen für den ganzen Kurs, dann gilt eine Anmeldung für alle Lektionen. Du führst eine Hundeschule? Registriere sie unter Community → Hundeschulen."
       }
     },
     "showMe": "Zeig's mir",
@@ -1151,5 +1202,219 @@
       "confirm": "Diesen Standort verwenden"
     },
     "enterTown": "Ort oder PLZ eingeben"
+  },
+  "bones": {
+    "hoursMinutes": "{{h}} Std. {{m}} Min.",
+    "minutes": "{{m}} Min.",
+    "soon": "Kürze",
+    "outTitle": "Keine Knochen mehr für heute",
+    "outSub": "Jedes Leckerli und jedes Weiter kostet einen Knochen. Deine {{count}} neuen Knochen kommen in {{time}}",
+    "watchAd": "Kurze Werbung für 1 Knochen ansehen",
+    "getPremium": "DogsOut Premium holen",
+    "buyMore": "Mehr Knochen kaufen"
+  },
+  "premium": {
+    "title": "Premium",
+    "name": "DogsOut Premium",
+    "perkBones": "20 Knochen pro Tag statt 10",
+    "perkNoAds": "Keine Werbung",
+    "subscribe": "Abonnieren für {{price}} / Monat",
+    "active": "Premium ist aktiv. Danke!",
+    "unavailable": "Gerade nicht verfügbar. Bitte versuch es später nochmal.",
+    "renewal": "Verlängert sich monatlich bis zur Kündigung. Jederzeit kündbar in deinen App-Store- oder Google-Play-Abos; Premium läuft dann bis zum Ende des bezahlten Monats.",
+    "packsTitle": "Extra-Knochen",
+    "packsSub": "Werden nach deinen täglichen Knochen verbraucht und verfallen nie.",
+    "bones_10": "10 Knochen",
+    "bones_30": "30 Knochen",
+    "bonusLeft": "Du hast {{count}} Extra-Knochen.",
+    "restore": "Käufe wiederherstellen",
+    "restoredTitle": "Wiederhergestellt",
+    "restoredBody": "Deine Käufe sind auf dem neusten Stand.",
+    "thanksTitle": "Danke!",
+    "thanksPremium": "Premium ist aktiv: 20 Knochen pro Tag und keine Werbung.",
+    "thanksBones": "Deine Knochen sind da.",
+    "thanksPending": "Danke! Es kann eine Minute dauern, bis es erscheint.",
+    "failed": "Der Kauf hat nicht geklappt. Es wurde nichts belastet.",
+    "showBadge": "⭐ neben meinem Namen in Entdecken zeigen"
+  },
+  "daily": {
+    "newNearbyTitle": "{{count}} neue Hundebesitzer in deiner Nähe",
+    "newNearbyBody": "Du hast heute {{count}} Knochen. Sag Hallo mit einem Leckerli!",
+    "bonesTitle": "Deine {{count}} Knochen sind bereit 🦴",
+    "bonesBody": "{{count}} Hunde warten in Entdecken.",
+    "playdateTitle": "Playdate planen?",
+    "playdateBody": "Wähl einen Park und eine Zeit und schau, wer mitkommt.",
+    "goSwipe": "Los geht's",
+    "goPlaydate": "Playdate erstellen",
+    "later": "Später"
+  },
+  "market": {
+    "free": "Gratis",
+    "sell": "Etwas verkaufen",
+    "mine": "Meine Inserate",
+    "browseAll": "Alle Inserate",
+    "all": "Alle",
+    "empty": "In deiner Nähe wird noch nichts angeboten. Hast du eine Leine oder ein Bett, aus dem dein Hund rausgewachsen ist? Inseriere es!",
+    "emptyMine": "Du hast noch nichts inseriert.",
+    "status": {
+      "ACTIVE": "Verfügbar",
+      "RESERVED": "Reserviert",
+      "SOLD": "Verkauft"
+    },
+    "detail": {
+      "message": "Verkäufer anschreiben",
+      "openChat": "Zu deinem Chat",
+      "pickupNote": "Dogs Out wickelt weder Zahlung noch Versand ab. Abholung und Bezahlung (bar oder TWINT) vereinbart ihr im Chat. Trefft euch an einem Ort, an dem du dich sicher fühlst.",
+      "asked": "{{count}} Anfragen",
+      "edit": "Bearbeiten",
+      "markACTIVE": "Als verfügbar markieren",
+      "markRESERVED": "Als reserviert markieren",
+      "markSOLD": "Als verkauft markieren",
+      "delete": "Inserat löschen",
+      "deleteTitle": "Inserat löschen?",
+      "deleteBody": "Die Chats dazu werden auch gelöscht."
+    },
+    "edit": {
+      "newTitle": "Etwas verkaufen",
+      "editTitle": "Inserat bearbeiten",
+      "rulesTitle": "Nur Hundesachen",
+      "rules": "Leinen, Betten, Spielzeug, Futter, Boxen, Mäntel. Keine lebenden Tiere, keine Medikamente, nichts, was nicht für Hunde ist. Inserate, die dagegen verstossen, werden entfernt.",
+      "titlePlaceholder": "Was ist es? (z. B. Hundebett, gross)",
+      "descriptionPlaceholder": "Grösse, Zustand, wo abholen…",
+      "category": "Kategorie",
+      "giveAway": "Gratis abgeben",
+      "pricePlaceholder": "Preis in CHF",
+      "save": "Speichern",
+      "publish": "Veröffentlichen",
+      "titleRequired": "Gib einen Titel ein.",
+      "categoryRequired": "Wähl eine Kategorie.",
+      "priceInvalid": "Gib einen Preis wie 15 oder 12.50 ein, oder gib es gratis ab.",
+      "photoRequired": "Füg mindestens ein Foto hinzu.",
+      "profanity": "Bitte bleib freundlich."
+    },
+    "chat": {
+      "placeholder": "Nachricht…",
+      "emptyBuyer": "Frag, ob es noch da ist und wann du es abholen könntest.",
+      "emptySeller": "Noch keine Nachrichten."
+    },
+    "report": {
+      "doneTitle": "Danke für die Meldung",
+      "doneBody": "Das Inserat ist ausgeblendet, bis wir es angeschaut haben."
+    },
+    "chatsLabel": "Marktplatz",
+    "category": {
+      "LEASH_COLLAR": "Leinen & Halsbänder",
+      "BED": "Betten & Decken",
+      "TOYS": "Spielzeug",
+      "FOOD": "Futter & Leckerli",
+      "CRATE_TRANSPORT": "Boxen & Transport",
+      "CLOTHING": "Mäntel & Kleidung",
+      "CARE": "Pflege & Näpfe",
+      "OTHER": "Anderes"
+    }
+  },
+  "community": {
+    "tab": "Community",
+    "title": "Community",
+    "sitting": "Dogsitting",
+    "market": "Marktplatz",
+    "schools": "Hundeschulen"
+  },
+  "school": {
+    "register": "Bist du eine Hundeschule? Hier registrieren",
+    "empty": "Noch keine Hundeschulen in deiner Nähe.",
+    "mine": {
+      "title": "Deine Hundeschule: {{name}}"
+    },
+    "status": {
+      "PENDING": "Wird geprüft",
+      "APPROVED": "Online",
+      "REJECTED": "Bitte anpassen"
+    },
+    "statusHint": {
+      "PENDING": "Wir prüfen jede Hundeschule, bevor sie in der App erscheint, meist innert ein bis zwei Tagen.",
+      "APPROVED": "",
+      "REJECTED": "Bitte pass an, was unten steht, und speichere nochmals; dann wird sie erneut geprüft."
+    },
+    "call": "Anrufen",
+    "website": "Website",
+    "directions": "Route",
+    "address": "Adresse",
+    "openingHours": "Öffnungszeiten",
+    "about": "Über uns",
+    "edit": "Schule bearbeiten",
+    "addEvent": "Event erstellen",
+    "upcoming": "Nächste Events",
+    "noEvents": "Keine bevorstehenden Events.",
+    "form": {
+      "newTitle": "Hundeschule registrieren",
+      "editTitle": "Hundeschule bearbeiten",
+      "reviewNote": "Wir prüfen jede Hundeschule, bevor sie in der App erscheint. Sobald sie freigegeben ist, kannst du Events erstellen.",
+      "logo": "Logo",
+      "name": "Name der Schule",
+      "address": "Adresse (auf der Karte wählen)",
+      "phone": "Telefon (optional)",
+      "website": "Website (optional)",
+      "openingHours": "Öffnungszeiten (z. B. Mo–Fr 9–18)",
+      "about": "Über deine Schule",
+      "save": "Speichern",
+      "submit": "Zur Prüfung senden",
+      "nameRequired": "Gib den Namen der Schule ein.",
+      "addressRequired": "Wähl die Adresse der Schule auf der Karte."
+    },
+    "event": {
+      "tab": "Events",
+      "empty": "Gerade keine Hundeschul-Events in deiner Nähe.",
+      "signedUp": "Angemeldet",
+      "full": "Ausgebucht",
+      "perDog": "pro Hund",
+      "signedUpCount": "{{count}} angemeldet",
+      "placesLeft": "Noch {{count}} Plätze",
+      "payNote": "Die Anmeldung hier ist gratis. Den Preis zahlst du direkt der Hundeschule.",
+      "join": "Anmelden",
+      "leave": "Abmelden",
+      "edit": "Bearbeiten",
+      "cancel": "Event absagen",
+      "cancelTitle": "Event absagen?",
+      "cancelBody": "Alle Angemeldeten werden benachrichtigt.",
+      "cancelled": "Abgesagt",
+      "participants": "Angemeldet ({{count}})",
+      "nextClass": "Nächste Lektion: {{date}}",
+      "courseConfirmTitle": "Für den ganzen Kurs anmelden?",
+      "courseNote_one": "Mit der Anmeldung zu diesem Kurs meldest du dich auch für die andere kommende Lektion an.",
+      "courseNote_other": "Mit der Anmeldung zu diesem Kurs meldest du dich auch für die anderen {{count}} kommenden Lektionen an.",
+      "cancelDate": "Absagen",
+      "cancelDateTitle": "{{date}} absagen?",
+      "cancelDateBody": "Alle, die für diese Lektion angemeldet sind, werden informiert. Die anderen Lektionen finden statt.",
+      "placesPerClass": "{{count}} Plätze pro Lektion",
+      "noLimit": "Unbegrenzte Plätze",
+      "pickDates": "Wähl deine Termine",
+      "dates": "Termine"
+    },
+    "eventForm": {
+      "newTitle": "Neues Event",
+      "editTitle": "Event bearbeiten",
+      "title": "Titel (z. B. Welpenkurs)",
+      "description": "Was passiert, was mitbringen…",
+      "atSchool": "In der Hundeschule (tippen für anderen Ort)",
+      "useSchool": "In der Hundeschule durchführen",
+      "free": "Gratis",
+      "price": "Preis pro Hund in CHF",
+      "places": "Plätze (leer lassen für unbegrenzt)",
+      "placesInvalid": "Gib eine Anzahl Plätze ein oder lass das Feld leer.",
+      "firstClass": "Erste Lektion: {{date}}",
+      "starts": "Beginn",
+      "ends": "Ende",
+      "signupLabel": "Wie melden sich Leute an?",
+      "modeDATE": "Pro Termin",
+      "modeDATEHint": "Jede Person wählt die Lektionen, die passen. Plätze gelten pro Lektion.",
+      "modeCOURSE": "Für den ganzen Kurs",
+      "modeCOURSEHint": "Für aufeinander aufbauende Lektionen: eine Anmeldung gilt für alle Lektionen."
+    },
+    "delete": "Hundeschule löschen",
+    "deleteTitle": "Hundeschule löschen?",
+    "deleteBody": "Die Seite und alle Events werden entfernt. Alle, die für ein kommendes Event angemeldet sind, werden informiert.",
+    "reportDoneTitle": "Danke für die Meldung",
+    "reportDoneBody": "Wir schauen es uns an."
   }
 }

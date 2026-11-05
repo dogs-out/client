@@ -12,6 +12,7 @@ jest.mock('../../../components/GlassTabBar', () => ({ useTabBarHeight: () => 80 
 jest.mock('../../../components/FloatingBackground', () => ({ FloatingBackground: () => null }));
 jest.mock('../../../services/socket', () => ({ chatSocket: { subscribe: () => () => {}, isConnected: () => true } }));
 jest.mock('../../../services/playdateService', () => ({ playdateService: { getPlaydates: () => Promise.resolve([]) } }));
+jest.mock('../../../services/marketService', () => ({ marketService: { conversations: () => Promise.resolve([]) } }));
 jest.mock('../../../services/chatService', () => ({ chatService: { getMatches: jest.fn() } }));
 jest.mock('../../ads/useListAd', () => ({ useListAd: () => ({ headline: 'An ad' }) }));
 jest.mock('../../ads/ListAdCard', () => {

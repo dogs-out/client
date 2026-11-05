@@ -7,10 +7,9 @@ import { RemoteImage } from '../../components/ui/RemoteImage';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useIsFocused, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useTranslation } from 'react-i18next';
-import { TFunction } from 'i18next';
 import { discoverService, DiscoverProfile } from '../../services/discoverService';
 import { Dog } from '../../services/dogService';
 import { userService } from '../../services/userService';
@@ -34,6 +33,16 @@ import { initAds } from '../../services/ads';
 import { useDeckAd } from '../ads/useDeckAd';
 import { DeckAdCard } from '../ads/DeckAdCard';
 import { AD_EVERY_N_SWIPES } from '../../constants/ads';
+import { useBones } from '../bones/useBones';
+import { BoneCounter } from '../bones/BoneCounter';
+import { OutOfBones } from '../bones/OutOfBones';
+import { useRewardedBone } from '../bones/useRewardedBone';
+import { useListAd } from '../ads/useListAd';
+import { LIST_NATIVE_AD_UNIT } from '../../constants/ads';
+import { OUT_OF_BONES } from '../../services/boneService';
+import { isPremium } from '../../utils/premium';
+import { purchases } from '../../services/purchases';
+import { formatDistance } from '../../utils/geo';
 
 const { width: SW, height: SH } = Dimensions.get('window');
 const CARD_W = SW - 32;
@@ -48,12 +57,6 @@ type FlatPhoto = { uri: string; crop: CropRect | null; dogIndex: number };
 function getAge(dob: string | null): number | null {
   if (!dob) return null;
   return Math.floor((Date.now() - new Date(dob).getTime()) / (1000 * 60 * 60 * 24 * 365.25));
-}
-
-function formatDistance(km: number, t: TFunction): string {
-  if (km < 0) return '';
-  if (km < 1) return t('matching.discover.lessThanOneKm');
-  return t('matching.discover.distanceAway', { km: Math.round(km) });
 }
 
 function buildFlatPhotos(profile: DiscoverProfile): FlatPhoto[] {
@@ -170,6 +173,11 @@ export default function DiscoverScreen() {
   // Sitter-only accounts (no dog) don't get the swipe feed — they see a locked state
   const [locked, setLocked] = useState(false);
   const lockedRef = useRef(false);
+  // Every treat or pass costs a bone; at zero the deck makes way for OutOfBones.
+  const { bones, setBones, refresh: refreshBones } = useBones();
+  const rewardedBone = useRewardedBone(bones?.remaining === 0, setBones);
+  // The out-of-bones screen has room for an ad card; nothing to interrupt there.
+  const outOfBonesAd = useListAd(LIST_NATIVE_AD_UNIT, useIsFocused() && bones?.remaining === 0);
 
   useEffect(() => {
     userService.getMe().then(u => {
@@ -238,7 +246,8 @@ export default function DiscoverScreen() {
     swipeCountRef.current += 1;
     // Any swipe while ads are not running yet, not only the first: a start-up that
     // failed (offline, a slow consent form) gets another chance on the next one.
-    if (!adsEnabled) initAds().then(setAdsEnabled);
+    // Premium has no ads, so no consent dialog either.
+    if (!adsEnabled && !isPremium()) initAds().then(setAdsEnabled);
     // Every Nth swipe, and also as the very last card: when the deck runs out
     // there is nothing left to interrupt, so the slot costs nobody a profile.
     if (!hasNext || swipeCountRef.current % AD_EVERY_N_SWIPES === 0) {
@@ -254,7 +263,7 @@ export default function DiscoverScreen() {
   const deckEmpty = !loading && !locked && !error && feed[idx] === undefined;
   useEffect(() => {
     if (!deckEmpty) { emptyAdShownRef.current = false; return; }
-    if (!adsEnabled) { initAds().then(setAdsEnabled); return; }
+    if (!adsEnabled) { if (!isPremium()) initAds().then(setAdsEnabled); return; }
     if (emptyAdShownRef.current || adCard) return;
     const ad = takeDeckAd();
     if (ad) { emptyAdShownRef.current = true; setAdCard(ad); }
@@ -278,6 +287,7 @@ export default function DiscoverScreen() {
 
     const profile = feed[idx];
     if (!profile) return;
+    if (bones && bones.remaining === 0) return;
     const hasNext = idx + 1 < feed.length;
 
     setSwiping(true);
@@ -286,11 +296,27 @@ export default function DiscoverScreen() {
 
     Animated.timing(pan, { toValue: { x: toX, y: dy }, duration: 280, useNativeDriver: false }).start(() => {
       discoverService.swipe(profile.userId, action)
-        .then(res => { if (res.match) setMatchInfo({ profile, matchId: res.matchId }); })
-        .catch(() => {})
-        .finally(() => { advanceCard(); afterSwipe(hasNext); });
+        .then(res => {
+          if (res.bones) setBones(res.bones);
+          if (res.match) setMatchInfo({ profile, matchId: res.matchId });
+          advanceCard();
+          afterSwipe(hasNext);
+        })
+        .catch(err => {
+          // Refused for lack of bones: the swipe never happened, so the card
+          // comes back rather than vanishing, and the counter shows why.
+          if (err?.response?.status === 429 && err?.response?.data?.message === OUT_OF_BONES) {
+            pan.setValue({ x: 0, y: 0 });
+            setShowBoneCatch(false);
+            setSwiping(false);
+            refreshBones();
+            return;
+          }
+          advanceCard();
+          afterSwipe(hasNext);
+        });
     });
-  }, [swiping, adCard, feed, idx, pan, advanceCard, afterSwipe]);
+  }, [swiping, adCard, feed, idx, pan, advanceCard, afterSwipe, bones, setBones, refreshBones]);
 
   const openMatchChat = useCallback(() => {
     if (!matchInfo) return;
@@ -378,6 +404,24 @@ export default function DiscoverScreen() {
     );
   }
 
+  // Out of bones with dogs still to see: the deck waits until tomorrow. An ad card
+  // still goes first — it costs no bone to swipe away.
+  if (profile && !adCard && bones && bones.remaining === 0) {
+    return (
+      <SafeAreaView style={styles.safe}>
+        <FloatingBackground />
+        <OutOfBones
+          bones={bones}
+          onRefilled={refreshBones}
+          onWatchAd={rewardedBone.available ? rewardedBone.watch : undefined}
+          watchingAd={rewardedBone.watching}
+          onGetMore={purchases.available() ? () => navigation.navigate('Premium') : undefined}
+          ad={outOfBonesAd}
+        />
+      </SafeAreaView>
+    );
+  }
+
   if (!profile) {
     return (
       <SafeAreaView style={styles.safe}>
@@ -443,9 +487,12 @@ export default function DiscoverScreen() {
 
       <View style={styles.header}>
         <Text style={styles.headerTitle}>{t('matching.discover.headerTitle')}</Text>
-        {profile.distanceKm >= 0 && (
-          <Text style={styles.headerDist}>{formatDistance(profile.distanceKm, t)}</Text>
-        )}
+        <View style={styles.headerRight}>
+          {profile.distanceKm >= 0 && (
+            <Text style={styles.headerDist}>{formatDistance(profile.distanceKm, t)}</Text>
+          )}
+          <BoneCounter bones={bones} onPress={purchases.available() ? () => navigation.navigate('Premium') : undefined} />
+        </View>
       </View>
 
       <SosBanner />
@@ -566,7 +613,7 @@ export default function DiscoverScreen() {
             {showOwner ? (
               <View key="owner-info" style={styles.infoContent}>
                 <Text style={styles.mainName}>
-                  {profile.name}{ownerAge !== null ? `, ${ownerAge}` : ''}
+                  {profile.name}{ownerAge !== null ? `, ${ownerAge}` : ''}{profile.premiumBadge ? ' ⭐' : ''}
                 </Text>
                 {profile.relationshipStatus && (
                   <Text style={styles.subLine}>{translateTag(profile.relationshipStatus, t)}</Text>
@@ -727,6 +774,7 @@ const styles = StyleSheet.create({
   safe:   { flex: 1, backgroundColor: Colors.background },
   centered: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 32 },
 
+  headerRight: { flexDirection: 'row', alignItems: 'center', gap: 10 },
   header:      { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingTop: 8, paddingBottom: 4 },
   headerTitle: { fontSize: 22, fontWeight: '800', color: Colors.text },
   headerDist:  { fontSize: 13, color: Colors.text, opacity: 0.55 },

@@ -7,6 +7,7 @@ import { GlassCard } from './GlassCard';
 import { GlassButton } from './GlassButton';
 import { appPrefs, useAppPrefs } from '../utils/appPrefs';
 import { useCelebration } from '../utils/celebration';
+import { useHoldPopupGate } from '../utils/popupGate';
 
 /**
  * A greeting on the day, shown once.
@@ -40,6 +41,8 @@ export function BirthdayGreeting() {
     setGreeting(true);
     appPrefs.set('birthdayGreetedYear', year);
   }, [celebrating, birthdayGreetedYear, year, greeting]);
+
+  useHoldPopupGate(greeting && !dismissed);
 
   if (!greeting || dismissed) return null;
 

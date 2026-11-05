@@ -141,6 +141,10 @@ export interface UserProfile {
   minDogAge: number | null;
   maxDogAge: number | null;
   notificationsEnabled: boolean;
+  /** The once-a-day nudge; on unless turned off. */
+  dailyRemindersEnabled?: boolean;
+  /** Premium star next to the name; on unless turned off. */
+  showPremiumBadge?: boolean;
 }
 
 export interface UpdateProfilePayload {
@@ -251,6 +255,9 @@ export const userService = {
     const { data } = await api.post<UserPhoto>('/users/me/photos', form, MULTIPART_CONFIG);
     return data;
   },
+  /** Premium members: show or hide the star next to their name in Discover. */
+  setShowPremiumBadge: (enabled: boolean): Promise<void> =>
+    api.put('/users/me/premium-badge', { enabled }).then(() => {}),
   deletePhoto: (photoId: number): Promise<void> =>
     api.delete(`/users/me/photos/${photoId}`).then(() => {}),
   /** Persists photo order; the first id becomes the main photo / profile picture. */

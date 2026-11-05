@@ -52,3 +52,20 @@ describe('tourSlides', () => {
     }
   });
 });
+
+describe('the 1.4 slides', () => {
+  const keys = (v: Parameters<typeof tourSlides>[0]) => tourSlides(v).map(s => s.key);
+
+  it('tells owners about bones, the only ones who swipe', () => {
+    expect(keys('owner')).toContain('bones');
+    expect(keys('sitter')).not.toContain('bones');
+    expect(keys('neither')).not.toContain('bones');
+  });
+
+  it('shows the marketplace and dog-school events to everyone', () => {
+    for (const v of ['owner', 'sitter', 'neither'] as const) {
+      expect(keys(v)).toContain('marketplace');
+      expect(keys(v)).toContain('schoolEvents');
+    }
+  });
+});

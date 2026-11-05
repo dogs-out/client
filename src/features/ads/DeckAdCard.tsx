@@ -65,9 +65,11 @@ export function DeckAdCard({ nativeAd, width, height }: Readonly<Props>) {
         ) : null}
 
         {nativeAd.callToAction ? (
-          <NativeAsset assetType={NativeAssetType.CALL_TO_ACTION}>
-            <Text style={styles.cta}>{nativeAd.callToAction}</Text>
-          </NativeAsset>
+          <View style={styles.ctaWrap}>
+            <NativeAsset assetType={NativeAssetType.CALL_TO_ACTION}>
+              <Text style={styles.cta}>{nativeAd.callToAction}</Text>
+            </NativeAsset>
+          </View>
         ) : null}
 
         <Text style={styles.hint}>{t('ads.swipeHint')}</Text>
@@ -92,8 +94,10 @@ const styles = StyleSheet.create({
   headline:   { fontSize: 18, fontWeight: '800', color: Colors.text },
   advertiser: { fontSize: 13, color: Colors.textSecondary, marginTop: 2 },
   body:     { fontSize: 14, color: Colors.text, lineHeight: 19 },
+  // The wrapper sets the width; the native button alone overflowed the padding.
+  ctaWrap: { alignSelf: 'stretch' },
   cta: {
-    alignSelf: 'stretch', textAlign: 'center', overflow: 'hidden',
+    width: '100%', textAlign: 'center', overflow: 'hidden',
     backgroundColor: Colors.primary, color: '#fff', fontSize: 15, fontWeight: '800',
     borderRadius: 14, paddingVertical: 11,
   },

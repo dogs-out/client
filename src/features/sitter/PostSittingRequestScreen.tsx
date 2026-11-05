@@ -18,12 +18,22 @@ import { RemoteImage } from '../../components/ui/RemoteImage';
 import { dogService, Dog } from '../../services/dogService';
 import { sitterService } from '../../services/sitterService';
 import { getApiError } from '../../utils/apiError';
+import { shortWeekday } from '../../utils/sittingWindow';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'PostSittingRequest'>;
 
 /** A request a few minutes from now is almost always a mis-tap, not a plan. */
 const DEFAULT_LEAD_HOURS = 2;
 const DEFAULT_LENGTH_HOURS = 4;
+/** The longest single sitting the server takes. */
+const MAX_DAYS = 30;
+
+type Kind = 'once' | 'days' | 'weekly';
+const WEEKDAYS = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'];
+/** "TUESDAY" for a date, in the phone's own time zone (the same one the times are picked in). */
+const weekdayOf = (d: Date) => WEEKDAYS[(d.getDay() + 6) % 7];
+/** YYYY-MM-DD in local time, not UTC: late evening must not become tomorrow. */
+const localDay = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 
 /**
  * Asking for a sitter for a particular window — or changing what you asked for.
@@ -42,12 +52,27 @@ export default function PostSittingRequestScreen({ navigation, route }: Readonly
 
   const [dogs, setDogs] = useState<Dog[]>([]);
   const [selected, setSelected] = useState<number[]>(editing?.dogIds ?? []);
+  const editingSeries = !!editing?.repeatWeekdays?.length && !!editing?.occurrenceMinutes;
   const [start, setStart] = useState(() =>
     editing ? new Date(editing.startsAt) : roundToNextHour(DEFAULT_LEAD_HOURS));
-  const [end, setEnd] = useState(() =>
-    editing ? new Date(editing.endsAt) : roundToNextHour(DEFAULT_LEAD_HOURS + DEFAULT_LENGTH_HOURS));
+  // For a weekly series this is the end of the first visit; the series' end is `until`.
+  const [end, setEnd] = useState(() => {
+    if (!editing) return roundToNextHour(DEFAULT_LEAD_HOURS + DEFAULT_LENGTH_HOURS);
+    return editingSeries
+      ? new Date(new Date(editing.startsAt).getTime() + editing.occurrenceMinutes! * 60000)
+      : new Date(editing.endsAt);
+  });
+  const [kind, setKind] = useState<Kind>(() => {
+    if (editingSeries) return 'weekly';
+    if (editing && new Date(editing.startsAt).toDateString() !== new Date(editing.endsAt).toDateString()) return 'days';
+    return 'once';
+  });
+  const [repeatDays, setRepeatDays] = useState<string[]>(() =>
+    editingSeries ? editing!.repeatWeekdays! : [weekdayOf(editing ? new Date(editing.startsAt) : roundToNextHour(DEFAULT_LEAD_HOURS))]);
+  const [until, setUntil] = useState<Date>(() =>
+    editingSeries ? new Date(editing!.endsAt) : new Date(Date.now() + 28 * 86400_000));
   const [note, setNote] = useState(editing?.note ?? '');
-  const [picker, setPicker] = useState<'start-date' | 'start-time' | 'end-time' | null>(null);
+  const [picker, setPicker] = useState<'start-date' | 'start-time' | 'end-date' | 'end-time' | 'until-date' | null>(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -68,15 +93,40 @@ export default function PostSittingRequestScreen({ navigation, route }: Readonly
   /** Keeps the end after the start, by moving it rather than refusing to save. */
   const changeStart = (next: Date) => {
     setStart(next);
+    if (kind !== 'days') setEnd(prev => withTimeFrom(next, prev));
     if (end <= next) setEnd(new Date(next.getTime() + DEFAULT_LENGTH_HOURS * 3600_000));
+    // The first visit of a series is always one of its days.
+    const day = weekdayOf(next);
+    setRepeatDays(prev => prev.includes(day) ? prev : [...prev, day]);
+  };
+
+  const changeKind = (next: Kind) => {
+    setKind(next);
+    if (next === 'days') {
+      // A few days by default: the next morning at the same time.
+      const tomorrow = new Date(start.getTime() + 86400_000);
+      setEnd(withTimeFrom(tomorrow, end));
+    } else {
+      const sameDay = withTimeFrom(start, end);
+      setEnd(sameDay > start ? sameDay : new Date(start.getTime() + DEFAULT_LENGTH_HOURS * 3600_000));
+    }
+  };
+
+  const toggleRepeatDay = (day: string) => {
+    if (day === weekdayOf(start)) return; // the first visit's day stays
+    setRepeatDays(prev => prev.includes(day) ? prev.filter(d => d !== day) : [...prev, day]);
   };
 
   /** What a picked value means depends on which field opened the picker. */
   const applyPicked = (chosen?: Date) => {
     if (!chosen) return;
     if (picker === 'end-time') {
-      // The end keeps the start's day; only the clock time is being set.
-      setEnd(withTimeFrom(start, chosen));
+      // Over several days the end has a day of its own; otherwise it keeps the start's.
+      setEnd(withTimeFrom(kind === 'days' ? end : start, chosen));
+    } else if (picker === 'end-date') {
+      setEnd(withDateFrom(chosen, end));
+    } else if (picker === 'until-date') {
+      setUntil(chosen);
     } else if (picker === 'start-time') {
       changeStart(withTimeFrom(start, chosen));
     } else if (picker === 'start-date') {
@@ -87,6 +137,10 @@ export default function PostSittingRequestScreen({ navigation, route }: Readonly
   const submit = async () => {
     if (selected.length === 0) { setError(t('sitter.request.pickADog')); return; }
     if (end <= start) { setError(t('sitter.request.endBeforeStart')); return; }
+    if (kind === 'days' && end.getTime() - start.getTime() > MAX_DAYS * 86400_000) {
+      setError(t('sitter.request.tooLong')); return;
+    }
+    if (kind === 'weekly' && localDay(until) < localDay(start)) { setError(t('sitter.request.untilBeforeStart')); return; }
 
     setSaving(true);
     setError(null);
@@ -96,6 +150,7 @@ export default function PostSittingRequestScreen({ navigation, route }: Readonly
         endsAt: end.toISOString(),
         dogIds: selected,
         note: note.trim() || undefined,
+        ...(kind === 'weekly' ? { repeatWeekdays: repeatDays, repeatUntil: localDay(until) } : {}),
       };
       if (editing) {
         await sitterService.updateRequest(editing.id, body);
@@ -109,6 +164,10 @@ export default function PostSittingRequestScreen({ navigation, route }: Readonly
       setSaving(false);
     }
   };
+
+  const pickerValue = picker === 'end-time' || picker === 'end-date' ? end : picker === 'until-date' ? until : start;
+  const pickerMode: 'date' | 'time' = picker === 'start-time' || picker === 'end-time' ? 'time' : 'date';
+  const pickerMin = picker === 'start-date' ? new Date() : picker === 'end-date' || picker === 'until-date' ? start : undefined;
 
   const formatDate = (d: Date) =>
     d.toLocaleDateString(i18n.language, { weekday: 'long', day: 'numeric', month: 'long' });
@@ -132,9 +191,20 @@ export default function PostSittingRequestScreen({ navigation, route }: Readonly
           <GlassCard style={styles.card}>
             <Text style={styles.sectionLabel}>{t('sitter.request.whenLabel')}</Text>
 
+            <View style={styles.kindRow}>
+              {(['once', 'days', 'weekly'] as Kind[]).map(k => (
+                <TouchableOpacity key={k} style={[styles.kindChip, kind === k && styles.kindChipActive]}
+                  onPress={() => changeKind(k)} testID={`sitting-kind-${k}`}>
+                  <Text style={[styles.kindText, kind === k && styles.kindTextActive]}>{t(`sitter.request.kind.${k}`)}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+
             <TouchableOpacity style={styles.row} onPress={() => setPicker('start-date')}>
               <Ionicons name="calendar-outline" size={17} color={Colors.primary} />
-              <Text style={styles.rowValue}>{formatDate(start)}</Text>
+              <Text style={styles.rowValue}>
+                {kind === 'weekly' ? t('sitter.request.firstVisit', { date: formatDate(start) }) : formatDate(start)}
+              </Text>
             </TouchableOpacity>
 
             <View style={styles.timeRow}>
@@ -148,6 +218,34 @@ export default function PostSittingRequestScreen({ navigation, route }: Readonly
                 <Text style={styles.rowValue}>{formatTime(end)}</Text>
               </TouchableOpacity>
             </View>
+
+            {kind === 'days' && (
+              <TouchableOpacity style={[styles.row, styles.spaced]} onPress={() => setPicker('end-date')} testID="sitting-end-date">
+                <Ionicons name="calendar-outline" size={17} color={Colors.primary} />
+                <Text style={styles.rowValue}>{t('sitter.request.until', { date: formatDate(end) })}</Text>
+              </TouchableOpacity>
+            )}
+
+            {kind === 'weekly' && (
+              <>
+                <Text style={[styles.hint, styles.spaced]}>{t('sitter.request.everyLabel')}</Text>
+                <View style={styles.dayRow}>
+                  {WEEKDAYS.map(d => {
+                    const on = repeatDays.includes(d);
+                    return (
+                      <TouchableOpacity key={d} style={[styles.dayChip, on && styles.kindChipActive]}
+                        onPress={() => toggleRepeatDay(d)} testID={`sitting-day-${d}`}>
+                        <Text style={[styles.kindText, on && styles.kindTextActive]}>{shortWeekday(d, i18n.language)}</Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
+                <TouchableOpacity style={[styles.row, styles.spaced]} onPress={() => setPicker('until-date')} testID="sitting-until">
+                  <Ionicons name="repeat-outline" size={17} color={Colors.primary} />
+                  <Text style={styles.rowValue}>{t('sitter.request.until', { date: formatDate(until) })}</Text>
+                </TouchableOpacity>
+              </>
+            )}
           </GlassCard>
 
           <GlassCard style={styles.card}>
@@ -203,9 +301,9 @@ export default function PostSittingRequestScreen({ navigation, route }: Readonly
           no relation to the field being edited. Same sheet as the playdate form. */}
       {picker && Platform.OS !== 'ios' && (
         <DateTimePicker
-          value={picker === 'end-time' ? end : start}
-          mode={picker === 'start-date' ? 'date' : 'time'}
-          minimumDate={picker === 'start-date' ? new Date() : undefined}
+          value={pickerValue}
+          mode={pickerMode}
+          minimumDate={pickerMin}
           onChange={(_, chosen) => { setPicker(null); applyPicked(chosen); }}
         />
       )}
@@ -220,11 +318,11 @@ export default function PostSittingRequestScreen({ navigation, route }: Readonly
                 </TouchableOpacity>
               </View>
               <DateTimePicker
-                value={picker === 'end-time' ? end : start}
-                mode={picker === 'start-date' ? 'date' : 'time'}
+                value={pickerValue}
+                mode={pickerMode}
                 display="spinner"
                 // Nothing in the past: a window that has already closed helps nobody.
-                minimumDate={picker === 'start-date' ? new Date() : undefined}
+                minimumDate={pickerMin}
                 onChange={(_, chosen) => applyPicked(chosen)}
               />
             </View>
@@ -273,6 +371,20 @@ const styles = StyleSheet.create({
   rowValue: { flex: 1, fontSize: 15, fontWeight: '600', color: Colors.text },
   timeRow:  { flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 10 },
   timeCell: { flex: 1 },
+  spaced:   { marginTop: 10 },
+  kindRow:  { flexDirection: 'row', gap: 8, marginBottom: 12 },
+  kindChip: {
+    flex: 1, alignItems: 'center', paddingVertical: 8, borderRadius: 16,
+    borderWidth: 1.5, borderColor: Colors.border, backgroundColor: Colors.glass.inputBg,
+  },
+  kindChipActive: { borderColor: Colors.primary, backgroundColor: 'rgba(46,158,107,0.12)' },
+  kindText: { fontSize: 13, fontWeight: '600', color: Colors.textSecondary },
+  kindTextActive: { color: Colors.primary },
+  dayRow:   { flexDirection: 'row', gap: 5, marginTop: 6 },
+  dayChip:  {
+    flex: 1, alignItems: 'center', paddingVertical: 7, borderRadius: 12,
+    borderWidth: 1.5, borderColor: Colors.border, backgroundColor: Colors.glass.inputBg,
+  },
   toLabel:  { fontSize: 16, color: Colors.textSecondary },
 
   dogRow: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 9 },

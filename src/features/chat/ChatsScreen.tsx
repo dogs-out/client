@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { TFunction } from 'i18next';
 import { chatService, MatchSummary } from '../../services/chatService';
 import { playdateService, Playdate } from '../../services/playdateService';
+import { ListingConversation, marketService } from '../../services/marketService';
 import { chatSocket } from '../../services/socket';
 import { RootStackParamList } from '../../types/navigation';
 import { Colors } from '../../constants/colors';
@@ -23,9 +24,9 @@ import { AD_AFTER_LIST_ITEMS, LIST_NATIVE_AD_UNIT } from '../../constants/ads';
 /** A row is either a 1:1 match or a playdate group; `matchId` discriminates them. */
 /** The single ad row; never inside a conversation, only between them in this list. */
 type AdRow = { kind: 'ad' };
-type ChatRow = MatchSummary | Playdate | AdRow;
+type ChatRow = MatchSummary | Playdate | ListingConversation | AdRow;
 
-type SectionMeta = { key: 'direct' | 'groups'; title: string };
+type SectionMeta = { key: 'direct' | 'groups' | 'market'; title: string };
 
 const POLL_MS = 8000;
 // With a live socket, polling is only a safety net every SLOW_POLL_TICKS * POLL_MS
@@ -52,6 +53,8 @@ export default function ChatsScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [matches, setMatches] = useState<MatchSummary[]>([]);
   const [groups, setGroups] = useState<Playdate[]>([]);
+  // Marketplace chats: not matches, so they get their own section.
+  const [listingChats, setListingChats] = useState<ListingConversation[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -65,9 +68,11 @@ export default function ChatsScreen() {
     Promise.all([
       chatService.getMatches(),
       playdateService.getPlaydates().catch(() => [] as Playdate[]),
+      marketService.conversations().catch(() => [] as ListingConversation[]),
     ])
-      .then(([matchData, playdateData]) => {
+      .then(([matchData, playdateData, listingData]) => {
         setMatches(matchData);
+        setListingChats(listingData);
         // Only playdates you're actually in have a group chat; INVITED users can't
         // post until they accept, and PUBLIC ones you haven't joined aren't yours.
         // A walk already lives in the 1:1 conversation it was invited from; listing
@@ -180,6 +185,27 @@ export default function ChatsScreen() {
     </TouchableOpacity>
   );
 
+  const renderListingChat = ({ item }: { item: ListingConversation }) => (
+    <TouchableOpacity activeOpacity={0.7} onPress={() => navigation.navigate('ListingChat', { conversationId: item.id })}>
+      <GlassCard padding={0} style={styles.card}>
+        <View style={styles.row}>
+          {item.listingPhoto
+            ? <RemoteImage source={{ uri: item.listingPhoto }} style={[styles.avatar, styles.listingPhoto]} />
+            : <View style={[styles.avatar, styles.groupAvatar]}><Text style={{ fontSize: 22 }}>🦴</Text></View>}
+          <View style={styles.rowBody}>
+            <View style={styles.rowTop}>
+              <Text style={styles.name} numberOfLines={1}>{item.listingTitle}</Text>
+              <Text style={styles.when}>{formatWhen(item.lastMessageAt, t)}</Text>
+            </View>
+            <Text style={[styles.preview, item.unread && styles.previewUnread]} numberOfLines={1}>
+              {item.otherName}: {item.lastMessage ?? ''}
+            </Text>
+          </View>
+        </View>
+      </GlassCard>
+    </TouchableOpacity>
+  );
+
   // Group chats sort by most recent activity, falling back to when the playdate
   // starts for ones nobody has written in yet.
   const sortedGroups = [...groups].sort((a, b) =>
@@ -195,6 +221,8 @@ export default function ChatsScreen() {
       ? [{ key: 'direct' as const, title: t('chat.chatsScreen.sectionDirect'), data: directRows }] : []),
     ...(sortedGroups.length > 0
       ? [{ key: 'groups' as const, title: t('chat.chatsScreen.sectionGroups'), data: sortedGroups as ChatRow[] }] : []),
+    ...(listingChats.length > 0
+      ? [{ key: 'market' as const, title: t('market.chatsLabel'), data: listingChats as ChatRow[] }] : []),
   ];
 
   const isEmpty = sections.length === 0;
@@ -208,9 +236,12 @@ export default function ChatsScreen() {
 
       <SectionList<ChatRow, SectionMeta>
         sections={sections}
-        keyExtractor={item => ('kind' in item ? 'ad' : 'matchId' in item ? `m${item.matchId}` : `p${item.id}`)}
+        keyExtractor={item => ('kind' in item ? 'ad'
+          : 'matchId' in item ? `m${item.matchId}`
+          : 'listingId' in item ? `l${item.id}` : `p${item.id}`)}
         renderItem={({ item, section }) => {
           if ('kind' in item) return ad ? <ListAdCard nativeAd={ad} /> : null;
+          if (section.key === 'market') return renderListingChat({ item: item as ListingConversation });
           return section.key === 'groups'
             ? renderGroup({ item: item as Playdate })
             : renderMatch({ item: item as MatchSummary });
@@ -257,6 +288,7 @@ const styles = StyleSheet.create({
   avatar:            { width: 56, height: 56, borderRadius: 28 },
   avatarPlaceholder: { backgroundColor: 'rgba(46,158,107,0.12)', alignItems: 'center', justifyContent: 'center' },
   // Square-ish tile distinguishes a group at a glance from the round personal avatars
+  listingPhoto:      { borderRadius: 14 },
   groupAvatar:       { borderRadius: 16, backgroundColor: 'rgba(46,158,107,0.16)', alignItems: 'center', justifyContent: 'center' },
   sectionHeader:     { fontSize: 13, fontWeight: '700', color: Colors.textSecondary, marginTop: 14, marginBottom: 2, marginLeft: 4 },
 

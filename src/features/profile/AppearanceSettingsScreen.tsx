@@ -8,6 +8,7 @@ import { Colors } from '../../constants/colors';
 import { FloatingBackground } from '../../components/FloatingBackground';
 import { GlassCard } from '../../components/GlassCard';
 import { appPrefs, useAppPrefs } from '../../utils/appPrefs';
+import { usePremium } from '../../utils/premium';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'AppearanceSettings'>;
 
@@ -24,7 +25,8 @@ type Props = NativeStackScreenProps<RootStackParamList, 'AppearanceSettings'>;
  */
 export default function AppearanceSettingsScreen({ navigation }: Readonly<Props>) {
   const { t } = useTranslation();
-  const { freezeBackground } = useAppPrefs();
+  const { freezeBackground, premiumBackground } = useAppPrefs();
+  const premium = usePremium();
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -65,6 +67,31 @@ export default function AppearanceSettingsScreen({ navigation }: Readonly<Props>
           </View>
         </GlassCard>
 
+        {/* Only for Premium members, whose background is the starry one. */}
+        {premium && (
+          <GlassCard style={styles.secondCard}>
+            <View style={styles.settingHead}>
+              <View style={styles.iconWrap}>
+                <Ionicons name="star-outline" size={18} color={Colors.primary} />
+              </View>
+              <Text style={styles.settingLabel}>{t('settings.appearance.premiumLabel')}</Text>
+            </View>
+            <Text style={styles.settingHint}>{t('settings.appearance.premiumHint')}</Text>
+            <View style={styles.switchRow}>
+              <Text style={styles.switchState}>
+                {t(premiumBackground ? 'settings.appearance.on' : 'settings.appearance.off')}
+              </Text>
+              <Switch
+                value={premiumBackground}
+                onValueChange={on => appPrefs.set('premiumBackground', on)}
+                trackColor={{ false: Colors.border, true: Colors.primary }}
+                thumbColor="#fff"
+                testID="premium-background-switch"
+              />
+            </View>
+          </GlassCard>
+        )}
+
         <Text style={styles.footNote}>{t('settings.appearance.footNote')}</Text>
       </View>
     </SafeAreaView>
@@ -72,6 +99,7 @@ export default function AppearanceSettingsScreen({ navigation }: Readonly<Props>
 }
 
 const styles = StyleSheet.create({
+  secondCard: { marginTop: 14 },
   safe:        { flex: 1, backgroundColor: Colors.background },
   header:      { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingTop: 8, paddingBottom: 12 },
   headerTitle: { flex: 1, textAlign: 'center', fontSize: 16, fontWeight: '700', color: Colors.text },

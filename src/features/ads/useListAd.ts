@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { NativeAd } from 'react-native-google-mobile-ads';
 import { adsAlreadyStarted } from '../../services/ads';
+import { usePremium } from '../../utils/premium';
+import { AD_REQUEST_CONTEXT } from '../../constants/ads';
 
 /** Native ads go stale; past this they are replaced the next time the list is shown. */
 const MAX_AGE_MS = 45 * 60 * 1000;
@@ -13,7 +15,10 @@ const MAX_AGE_MS = 45 * 60 * 1000;
  * @param visible pass the screen's focus state: a fresh ad is fetched on a later
  *                visit once the shown one is old, never while it is on screen
  */
-export function useListAd(unitId: string, visible: boolean): NativeAd | null {
+export function useListAd(unitId: string, wanted: boolean): NativeAd | null {
+  // Premium means no ads anywhere.
+  const premium = usePremium();
+  const visible = wanted && !premium;
   const [ad, setAd] = useState<NativeAd | null>(null);
   const loadedAt = useRef(0);
   const loading = useRef(false);
@@ -28,7 +33,7 @@ export function useListAd(unitId: string, visible: boolean): NativeAd | null {
     let cancelled = false;
     loading.current = true;
     adsAlreadyStarted()
-      .then(started => started ? NativeAd.createForAdRequest(unitId, { startVideoMuted: true }) : null)
+      .then(started => started ? NativeAd.createForAdRequest(unitId, { startVideoMuted: true, ...AD_REQUEST_CONTEXT }) : null)
       .then(next => {
         if (!next) return;
         if (cancelled) { next.destroy(); return; }
@@ -41,5 +46,5 @@ export function useListAd(unitId: string, visible: boolean): NativeAd | null {
     return () => { cancelled = true; };
   }, [visible, unitId]);
 
-  return ad;
+  return premium ? null : ad;
 }

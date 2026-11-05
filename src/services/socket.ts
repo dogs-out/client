@@ -1,13 +1,17 @@
 import { ChatMessage } from './chatService';
 import { PlaydateMessage } from './playdateService';
+import { ListingMessage } from './marketService';
 import { tokenStorage } from '../utils/tokenStorage';
 
 export interface ChatSocketEvent {
-  type: 'NEW_MESSAGE' | 'NEW_MATCH' | 'PLAYDATE_MESSAGE' | 'PLAYDATE_UPDATED';
+  type: 'NEW_MESSAGE' | 'NEW_MATCH' | 'PLAYDATE_MESSAGE' | 'PLAYDATE_UPDATED' | 'LISTING_MESSAGE';
   matchId?: number;
   message?: ChatMessage;
   playdateId?: number;
   playdateMessage?: PlaydateMessage;
+  /** LISTING_MESSAGE: a marketplace conversation and its new message. */
+  conversationId?: number;
+  listingMessage?: ListingMessage;
 }
 
 type Listener = (event: ChatSocketEvent) => void;

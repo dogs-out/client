@@ -16,12 +16,13 @@ type Props = NativeStackScreenProps<RootStackParamList, 'NotificationSettings'>;
 export default function NotificationSettingsScreen({ navigation }: Readonly<Props>) {
   const { t } = useTranslation();
   const [enabled, setEnabled] = useState<boolean | null>(null);
+  const [daily, setDaily] = useState<boolean | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     userService.getMe()
-      .then(u => setEnabled(u.notificationsEnabled))
-      .catch(() => setEnabled(true));
+      .then(u => { setEnabled(u.notificationsEnabled); setDaily(u.dailyRemindersEnabled ?? true); })
+      .catch(() => { setEnabled(true); setDaily(true); });
   }, []);
 
   const toggle = (value: boolean) => {
@@ -33,6 +34,15 @@ export default function NotificationSettingsScreen({ navigation }: Readonly<Prop
         setEnabled(!value);
         setError(t('profile.notificationSettings.saveError'));
       });
+  };
+
+  const toggleDaily = (value: boolean) => {
+    setDaily(value); // optimistic
+    setError(null);
+    notificationService.setDailyRemindersEnabled(value).catch(() => {
+      setDaily(!value);
+      setError(t('profile.notificationSettings.saveError'));
+    });
   };
 
   return (
@@ -61,6 +71,22 @@ export default function NotificationSettingsScreen({ navigation }: Readonly<Prop
               trackColor={{ true: Colors.primary }}
             />
           </View>
+          {/* Only meaningful while pushes are on at all. */}
+          {enabled !== false && (
+            <View style={[styles.row, styles.rowDivider]}>
+              <View style={styles.rowText}>
+                <Text style={styles.rowLabel}>{t('profile.notificationSettings.daily')}</Text>
+                <Text style={styles.rowSub}>{t('profile.notificationSettings.dailySub')}</Text>
+              </View>
+              <Switch
+                value={daily ?? true}
+                onValueChange={toggleDaily}
+                disabled={daily === null}
+                trackColor={{ true: Colors.primary }}
+                testID="daily-reminders-switch"
+              />
+            </View>
+          )}
         </GlassCard>
 
         {error && <Text style={styles.errorText}>{error}</Text>}
@@ -82,6 +108,7 @@ const styles = StyleSheet.create({
 
   row:      { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 14, gap: 12 },
   rowText:  { flex: 1 },
+  rowDivider: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: Colors.border },
   rowLabel: { fontSize: 15, fontWeight: '600', color: Colors.text, marginBottom: 2 },
   rowSub:   { fontSize: 13, color: Colors.textSecondary, lineHeight: 18 },
 

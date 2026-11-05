@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { Animated, Easing, StyleSheet, View, useWindowDimensions } from 'react-native';
 import { useAppPrefs } from '../utils/appPrefs';
 import { celebration, useCelebration } from '../utils/celebration';
+import { usePremium } from '../utils/premium';
 
 type AnimStyle = 'float' | 'breathe' | 'diagonal' | 'spin';
 
@@ -52,7 +53,16 @@ const BIRTHDAY_SHAPES: ShapeConfig[] = SHAPES.map((shape, i) => ({
   emoji: ['🎂', '🎉', '🎈', '🕯️', '🎊', '🥳'][i % 6],
 }));
 
-export type BackgroundVariant = 'default' | 'birthday';
+/**
+ * Premium: the same layout and motion, stars instead of dogs — with a few bones
+ * left in, so it still reads as Dogs Out.
+ */
+const PREMIUM_SHAPES: ShapeConfig[] = SHAPES.map((shape, i) => ({
+  ...shape,
+  emoji: ['⭐', '✨', '🌟', '🦴', '💫', '⭐', '✨', '🦴'][i % 8],
+}));
+
+export type BackgroundVariant = 'default' | 'birthday' | 'premium';
 
 function FloatingShape({ cfg, sw, sh, frozen }: Readonly<{
   cfg: ShapeConfig; sw: number; sh: number; frozen: boolean;
@@ -124,13 +134,17 @@ function FloatingShape({ cfg, sw, sh, frozen }: Readonly<{
 
 export function FloatingBackground({ variant }: Readonly<{ variant?: BackgroundVariant }> = {}) {
   const { width, height } = useWindowDimensions();
-  const { freezeBackground } = useAppPrefs();
+  const { freezeBackground, premiumBackground } = useAppPrefs();
+  const premium = usePremium();
   // On your own or your dog's birthday the whole app gets the cake, not just the
   // one chat that happened to be told about it. An explicit variant still wins,
   // so a chat can celebrate someone else's birthday on an ordinary day.
   useCelebration();
-  const resolved = variant ?? (celebration.any() ? 'birthday' : 'default');
-  const shapes = resolved === 'birthday' ? BIRTHDAY_SHAPES : SHAPES;
+  // A birthday still wins; otherwise Premium members get the stars, unless they
+  // switched back to the dogs in Appearance.
+  const resolved = variant
+    ?? (celebration.any() ? 'birthday' : premium && premiumBackground ? 'premium' : 'default');
+  const shapes = resolved === 'birthday' ? BIRTHDAY_SHAPES : resolved === 'premium' ? PREMIUM_SHAPES : SHAPES;
 
   return (
     <View style={[StyleSheet.absoluteFill, { pointerEvents: 'none' }]}>

@@ -33,6 +33,14 @@ export type RootStackParamList = {
   SitterReviews: { sitterId: number; name: string };
   HelpFaq: undefined;
   TermsPrivacy: undefined;
+  Premium: undefined;
+  ListingDetail: { listingId: number };
+  EditListing: { listingId?: number } | undefined;
+  ListingChat: { conversationId: number };
+  SchoolDetail: { schoolId: number };
+  EditSchool: { pickedPlace?: PlaceResult } | undefined;
+  EventDetail: { eventId: number };
+  EditEvent: { eventId?: number; pickedPlace?: PlaceResult } | undefined;
   About: undefined;
   Feedback: undefined;
   Language: undefined;
@@ -47,7 +55,8 @@ export type RootStackParamList = {
     initialLng?: number;
     /** Which screen the pick goes back to. Defaults to CreatePlaydate. */
     returnTo?: 'CreatePlaydate' | 'SetStatus' | 'SittingDetails' | 'RaiseSos'
-      | 'ProfileSetup' | 'EditProfile' | 'LocationSettings' | 'DiscoverFilters';
+      | 'ProfileSetup' | 'EditProfile' | 'LocationSettings' | 'DiscoverFilters'
+      | 'EditSchool' | 'EditEvent';
     /** 'home': choosing your own location — towns and postcodes, never asks for GPS. */
     mode?: 'park' | 'home';
   } | undefined;

@@ -1,6 +1,7 @@
 import api from './api';
 import { Dog } from './dogService';
 import { UserPhoto } from './userService';
+import { BoneStatus } from './boneService';
 
 export interface DiscoverProfile {
   userId: number;
@@ -26,11 +27,15 @@ export interface DiscoverProfile {
   lookingForSitter: boolean;
   /** This person, or one of their dogs, has a birthday today. */
   celebratingToday: boolean;
+  /** A Premium member who shows it: a star next to the name. */
+  premiumBadge?: boolean;
 }
 
 export interface SwipeResponse {
   match: boolean;
   matchId: number;
+  /** The counter after this swipe; null when it cost nothing (a repeat). */
+  bones?: BoneStatus | null;
 }
 
 export const discoverService = {

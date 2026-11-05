@@ -27,11 +27,13 @@ import { useTabBarHeight } from '../../components/GlassTabBar';
 import { WhosOutsideView } from './WhosOutsideView';
 import { playdateTitle } from './playdateTitle';
 import { SosBanner } from '../sos/SosBanner';
+import { SchoolEventsList } from '../school/SchoolEventsList';
 
-type PlaydateMode = 'playdates' | 'walks' | 'outside';
+type PlaydateMode = 'playdates' | 'events' | 'walks' | 'outside';
 
 const MODE_LABEL: Record<PlaydateMode, string> = {
   playdates: 'playdates.headerTitle',
+  events: 'school.event.tab',
   walks: 'walk.tab',
   outside: 'whosOutside.tab',
 };
@@ -107,7 +109,7 @@ export default function PlaydatesScreen() {
   // One ad in the Playdates and Walks lists — not in "who's outside", which is a
   // map of friends, and never inside a playdate or its group chat.
   const focused = useIsFocused();
-  const ad = useListAd(LIST_NATIVE_AD_UNIT, focused && mode !== 'outside');
+  const ad = useListAd(LIST_NATIVE_AD_UNIT, focused && (mode === 'playdates' || mode === 'walks'));
   const rows: (Playdate | { kind: 'ad' })[] = ad && shown.length > 0
     ? [...shown.slice(0, AD_AFTER_LIST_ITEMS), { kind: 'ad' }, ...shown.slice(AD_AFTER_LIST_ITEMS)]
     : shown;
@@ -175,7 +177,7 @@ export default function PlaydatesScreen() {
       <SosBanner />
 
       <View style={styles.segmented}>
-        {(['playdates', 'walks', 'outside'] as PlaydateMode[]).map(m => (
+        {(['playdates', 'events', 'walks', 'outside'] as PlaydateMode[]).map(m => (
           <TouchableOpacity
             key={m}
             style={[styles.segment, mode === m && styles.segmentActive]}
@@ -207,7 +209,7 @@ export default function PlaydatesScreen() {
         onRadiusCommit={commitRadius}
       />
 
-      {mode === 'outside' ? <WhosOutsideView /> : loading ? (
+      {mode === 'events' ? <SchoolEventsList bottomInset={tabBarHeight + 24} /> : mode === 'outside' ? <WhosOutsideView /> : loading ? (
         <View style={styles.centered}><ActivityIndicator size="large" color={Colors.primary} /></View>
       ) : (
         <FlatList
@@ -227,6 +229,9 @@ export default function PlaydatesScreen() {
               <Text style={styles.emptyText}>
                 {error ? t('playdates.loadError') : t(mode === 'walks' ? 'walk.empty' : 'playdates.empty')}
               </Text>
+              {/* Walks are often empty; the ad slot then sits under the empty state
+                  rather than nowhere. */}
+              {mode === 'walks' && ad && !error && <View style={styles.emptyAd}><ListAdCard nativeAd={ad} /></View>}
             </View>
           }
         />
@@ -300,6 +305,7 @@ const styles = StyleSheet.create({
   badgeTextActive: { color: Colors.primary },
 
   emptyEmoji: { fontSize: 56, marginBottom: 12 },
+  emptyAd:   { alignSelf: 'stretch', marginTop: 24 },
   emptyText:  { fontSize: 15, color: Colors.textSecondary, textAlign: 'center', lineHeight: 22 },
 
   fab: {
