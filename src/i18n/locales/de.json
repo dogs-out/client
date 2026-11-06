@@ -480,7 +480,7 @@
     },
     "termsPrivacy": {
       "headerTitle": "AGB & Datenschutz",
-      "updated": "Version 2.2 · 19. Oktober 2026 · Eine Zusammenfassung — es gelten die vollständigen Nutzungsbedingungen und die Datenschutzerklärung unten.",
+      "updated": "Version 2.3 · 6. November 2026 · Eine Zusammenfassung — es gelten die vollständigen Nutzungsbedingungen und die Datenschutzerklärung unten.",
       "whoCanUse": {
         "title": "1. Wer Dogs Out nutzen darf",
         "body": "Dogs Out ist für Erwachsene: Du musst mindestens 18 sein. Ein Konto pro Person, mit wahren Angaben zu dir und deinen Hunden. Behalte deine Zugangsdaten für dich. Dogs Out wird von Moritz Davinghausen und Lea Mutschler, Opfikon, Schweiz, betrieben."
@@ -498,25 +498,33 @@
         "body": "Dogs Out bringt Halter und Betreuungspersonen nur zusammen. Jede Vereinbarung, auch die Bezahlung, gilt allein zwischen euch; wir prüfen weder Identität noch Erfahrung oder Zuverlässigkeit und sind nicht Vertragspartei. Klärt alles im Voraus und lernt euch zuerst kennen. Übergabedetails (Adresse, Notfallnummer) sieht nur die angenommene Betreuungsperson. Drei kurzfristige Absagen (weniger als 24 Stunden vorher) innerhalb eines Jahres sperren die Annahme von Aufträgen für 30 Tage. Soweit gesetzlich zulässig, haften wir nicht für Schäden aus Treffen oder Betreuungen."
       },
       "dataStored": {
-        "title": "5. Welche Daten wir speichern",
+        "title": "7. Welche Daten wir speichern",
         "body": "Dein Konto (E-Mail, Name, Geburtsdatum), Profil, Hunde und Fotos, den Standort, den du festlegst (per GPS oder Ortssuche), Matches, Nachrichten, Playdates, Status, Betreuungsaufträge und Bewertungen, SOS-Alarme, Blockierungen und Meldungen sowie wann, auf welchem Gerätetyp (iPhone oder Android) und mit welcher App-Version du Dogs Out zuletzt genutzt hast. Unsere Server stehen in den USA (Railway)."
       },
       "dataUse": {
-        "title": "6. Wer was sieht",
+        "title": "8. Wer was sieht",
         "body": "Andere sehen dein Profil und wie weit du entfernt bist — nie deinen gespeicherten Standort. Ein Ort wird nur geteilt, wo du es willst: in einem Status, einem SOS-Alarm, einem Playdate oder den Übergabedetails. Google zeigt die Werbung und erhält deine Werbe-ID (auf dem iPhone nur, wenn du Tracking erlaubst), deine IP-Adresse und Interaktionen mit Anzeigen; über personalisierte Werbung entscheidest du unter Einstellungen → Datenschutz bei Werbung. Wir verkaufen deine Daten nie."
       },
       "deletingData": {
-        "title": "7. Konto löschen",
+        "title": "9. Konto löschen",
         "body": "Einstellungen → Konto löschen entfernt dein Konto, Profil, Fotos, Hunde, Matches, Chats, Status, Alarme und Betreuungsaufträge sofort und endgültig. Meldungen bleiben erhalten, damit wir wiederholtes Verhalten erkennen. Du kannst auch Auskunft, Berichtigung oder eine Kopie deiner Daten verlangen."
       },
       "contact": {
-        "title": "8. Kontakt",
+        "title": "10. Kontakt",
         "body": "help@dogsout.app · Moritz Davinghausen und Lea Mutschler, c/o Moritz Davinghausen, Wallisellerstrasse 124, 8152 Opfikon, Schweiz. Es gilt Schweizer Recht."
       },
       "fullTerms": "Vollständige Nutzungsbedingungen",
       "fullPrivacy": "Vollständige Datenschutzerklärung",
       "termsUrl": "https://dogsout.app/legal/nutzungsbedingungen.html",
-      "privacyUrl": "https://dogsout.app/legal/datenschutz.html"
+      "privacyUrl": "https://dogsout.app/legal/datenschutz.html",
+      "marketSchools": {
+        "title": "5. Marktplatz und Hundeschulen",
+        "body": "Im Marktplatz kannst du Hundesachen an Leute in der Nähe weitergeben. Dogs Out ist nur das Anschlagbrett: Käufer und Verkäufer vereinbaren Abholung und Bezahlung selbst, und wir sind nicht Vertragspartei. Keine lebenden Tiere, keine Medikamente, nichts, was nicht für Hunde ist. Hundeschulen erscheinen erst, nachdem wir sie geprüft haben; mit der Anmeldung zu einem Event oder Kurs teilst du der Schule mit, dass du kommen möchtest, und bezahlst direkt die Schule."
+      },
+      "purchases": {
+        "title": "6. Knochen, Premium und Käufe",
+        "body": "Jedes Ja oder Nein unter „Entdecken“ verbraucht einen Knochen: 10 pro Tag, mit Premium 20, erneuert um Mitternacht. Extra-Knochen gibt es über ein Werbevideo mit Belohnung oder ein Paket; sie haben keinen Geldwert und verfallen, wenn du dein Konto löschst. Premium verlängert sich monatlich, bis du es spätestens 24 Stunden vor Ende der Periode in deinen App-Store- oder Google-Play-Abos kündigst. Apple bzw. Google ist Verkäufer und wickelt Zahlung und Rückerstattungen ab. Bei Knochen-Paketen erlischt das Widerrufsrecht, sobald die Knochen gutgeschrieben sind."
+      }
     }
   },
   "home": {

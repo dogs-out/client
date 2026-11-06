@@ -1,5 +1,6 @@
 import { signedInRoute } from '../signedInRoute';
 import { userService } from '../../services/userService';
+import { TERMS_EFFECTIVE_FROM } from '../../constants/terms';
 
 jest.mock('../../services/userService', () => ({ userService: { getMe: jest.fn() } }));
 
@@ -37,7 +38,9 @@ describe('signedInRoute', () => {
   });
 
   it('lets a current acceptance through', async () => {
-    getMe.mockResolvedValue({ termsAccepted: true, termsAcceptedAt: '2026-10-20T08:00:00.123456Z', dateOfBirth: '1990-01-01', latitude: 47.4 });
+    // A day after the current terms took effect, whichever version that is.
+    const after = new Date(Date.parse(TERMS_EFFECTIVE_FROM) + 86400_000).toISOString();
+    getMe.mockResolvedValue({ termsAccepted: true, termsAcceptedAt: after, dateOfBirth: '1990-01-01', latitude: 47.4 });
     expect(await signedInRoute()).toEqual({ name: 'MainTabs' });
   });
 });

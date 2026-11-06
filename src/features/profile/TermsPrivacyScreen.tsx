@@ -11,7 +11,7 @@ import { FullLegalLinks } from '../../components/FullLegalLinks';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'TermsPrivacy'>;
 
-const SECTION_KEYS = ['whoCanUse', 'contentBehaviour', 'meetingInPerson', 'dogsitting', 'dataStored', 'dataUse', 'deletingData', 'contact'] as const;
+const SECTION_KEYS = ['whoCanUse', 'contentBehaviour', 'meetingInPerson', 'dogsitting', 'marketSchools', 'purchases', 'dataStored', 'dataUse', 'deletingData', 'contact'] as const;
 
 export default function TermsPrivacyScreen({ navigation }: Readonly<Props>) {
   const { t } = useTranslation();

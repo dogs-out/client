@@ -480,7 +480,7 @@
     },
     "termsPrivacy": {
       "headerTitle": "Terms & Privacy",
-      "updated": "Version 2.2 · 19 October 2026 · A summary — the full Terms of Use and Privacy Policy below apply.",
+      "updated": "Version 2.3 · 6 November 2026 · A summary — the full Terms of Use and Privacy Policy below apply.",
       "whoCanUse": {
         "title": "1. Who can use Dogs Out",
         "body": "Dogs Out is for adults: you must be at least 18. One account per person, with true information about you and your dogs. Keep your login to yourself. Dogs Out is operated by Moritz Davinghausen and Lea Mutschler, Opfikon, Switzerland."
@@ -498,25 +498,33 @@
         "body": "Dogs Out only connects owners and sitters. Any agreement, including payment, is solely between you; we do not check identity, experience or reliability and are not a party to it. Agree on everything in advance and meet first. Handover details (address, emergency number) are shown only to the sitter you accepted. Three late cancellations (less than 24 hours before) within a year pause taking jobs for 30 days. To the extent permitted by law, we are not liable for damage arising from meetings or sittings."
       },
       "dataStored": {
-        "title": "5. What data we store",
+        "title": "7. What data we store",
         "body": "Your account (email, name, date of birth), profile, dogs and photos, the location you set (from GPS or a town you search), matches, messages, playdates, statuses, dogsitting jobs and reviews, SOS alerts, blocks and reports, and when and on which kind of device (iPhone or Android) and app version you last used Dogs Out. Our servers are in the USA (Railway)."
       },
       "dataUse": {
-        "title": "6. Who sees what",
+        "title": "8. Who sees what",
         "body": "Others see your profile and how far away you are — never your saved location. A place is shared only where you choose to: a status, an SOS alert, a playdate or the handover details. Google shows the ads and receives your advertising identifier (on iPhone only if you allow tracking), IP address and ad interactions; you decide about personalised ads in Settings → Ad privacy choices. We never sell your data."
       },
       "deletingData": {
-        "title": "7. Deleting your account",
+        "title": "9. Deleting your account",
         "body": "Settings → Delete account removes your account, profile, photos, dogs, matches, chats, statuses, alerts and dogsitting jobs immediately and for good. Reports are kept so we can recognise repeat behaviour. You may also ask us what we store, have it corrected, or receive a copy."
       },
       "contact": {
-        "title": "8. Contact",
+        "title": "10. Contact",
         "body": "help@dogsout.app · Moritz Davinghausen and Lea Mutschler, c/o Moritz Davinghausen, Wallisellerstrasse 124, 8152 Opfikon, Switzerland. Swiss law applies."
       },
       "fullTerms": "Full Terms of Use",
       "fullPrivacy": "Full Privacy Policy",
       "termsUrl": "https://dogsout.app/legal/terms.html",
-      "privacyUrl": "https://dogsout.app/legal/privacy.html"
+      "privacyUrl": "https://dogsout.app/legal/privacy.html",
+      "marketSchools": {
+        "title": "5. Marketplace and dog schools",
+        "body": "In the marketplace you can pass on dog items to people nearby. Dogs Out is only the notice board: buyer and seller agree on pickup and payment themselves, and we are not a party to the sale. No live animals, no medicines, nothing that isn't for dogs. Dog schools appear only after we have reviewed them; signing up for an event or course tells the school you want to come, and you pay the school directly."
+      },
+      "purchases": {
+        "title": "6. Bones, Premium and purchases",
+        "body": "Every yes or no in Discover uses a bone: 10 a day, 20 with Premium, renewed at midnight. Extra bones come from a rewarded ad or a pack; they have no cash value and lapse when you delete your account. Premium renews monthly until you cancel it at least 24 hours before the end of the period in your App Store or Google Play subscriptions. Apple or Google is the seller and handles payment and refunds. For bone packs, the right of withdrawal ends once the bones are credited."
+      }
     }
   },
   "home": {

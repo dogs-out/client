@@ -480,7 +480,7 @@
     },
     "termsPrivacy": {
       "headerTitle": "Termini e privacy",
-      "updated": "Versione 2.2 · 19 ottobre 2026 · Un riassunto — valgono le condizioni d’uso e l’informativa sulla privacy complete qui sotto.",
+      "updated": "Versione 2.3 · 6 novembre 2026 · Un riassunto — valgono i Termini d'uso completi e l'Informativa sulla privacy qui sotto.",
       "whoCanUse": {
         "title": "1. Chi può usare Dogs Out",
         "body": "Dogs Out è per adulti: devi avere almeno 18 anni. Un account per persona, con informazioni vere su di te e sui tuoi cani. Tieni per te i tuoi dati di accesso. Dogs Out è gestita da Moritz Davinghausen e Lea Mutschler, Opfikon, Svizzera."
@@ -498,25 +498,33 @@
         "body": "Dogs Out mette solo in contatto proprietari e dogsitter. Ogni accordo, compreso il pagamento, riguarda solo voi; non verifichiamo identità, esperienza o affidabilità e non siamo parte dell’accordo. Accordatevi su tutto in anticipo e conoscetevi prima. I dettagli di consegna (indirizzo, numero d’emergenza) li vede solo il dogsitter accettato. Tre cancellazioni tardive (meno di 24 ore prima) in un anno bloccano l’accettazione di incarichi per 30 giorni. Nei limiti di legge, non rispondiamo dei danni derivanti da incontri o custodie."
       },
       "dataStored": {
-        "title": "5. Dati che conserviamo",
+        "title": "7. Dati che conserviamo",
         "body": "Il tuo account (e-mail, nome, data di nascita), profilo, cani e foto, la posizione che imposti (tramite GPS o ricerca della località), match, messaggi, playdate, stati, incarichi di dogsitting e recensioni, allarmi SOS, blocchi e segnalazioni, e quando, su quale tipo di dispositivo (iPhone o Android) e con quale versione hai usato Dogs Out l’ultima volta. I nostri server sono negli Stati Uniti (Railway)."
       },
       "dataUse": {
-        "title": "6. Chi vede cosa",
+        "title": "8. Chi vede cosa",
         "body": "Gli altri vedono il tuo profilo e quanto sei lontano — mai la tua posizione salvata. Un luogo viene condiviso solo se lo scegli: in uno stato, un allarme SOS, un playdate o nei dettagli di consegna. Google mostra gli annunci e riceve il tuo identificativo pubblicitario (su iPhone solo se consenti il tracciamento), l’indirizzo IP e le interazioni; decidi tu sugli annunci personalizzati in Impostazioni → Privacy degli annunci. Non vendiamo mai i tuoi dati."
       },
       "deletingData": {
-        "title": "7. Eliminare l’account",
+        "title": "9. Eliminare l’account",
         "body": "Impostazioni → Elimina account rimuove subito e definitivamente account, profilo, foto, cani, match, chat, stati, allarmi e incarichi di dogsitting. Le segnalazioni vengono conservate per riconoscere comportamenti ripetuti. Puoi anche chiedere accesso, rettifica o una copia dei tuoi dati."
       },
       "contact": {
-        "title": "8. Contatto",
+        "title": "10. Contatto",
         "body": "help@dogsout.app · Moritz Davinghausen e Lea Mutschler, c/o Moritz Davinghausen, Wallisellerstrasse 124, 8152 Opfikon, Svizzera. Si applica il diritto svizzero."
       },
       "fullTerms": "Condizioni d’uso complete (in inglese)",
       "fullPrivacy": "Informativa sulla privacy completa (in inglese)",
       "termsUrl": "https://dogsout.app/legal/terms.html",
-      "privacyUrl": "https://dogsout.app/legal/privacy.html"
+      "privacyUrl": "https://dogsout.app/legal/privacy.html",
+      "marketSchools": {
+        "title": "5. Mercatino e scuole cinofile",
+        "body": "Nel mercatino puoi cedere articoli per cani a persone vicine. Dogs Out è solo la bacheca: acquirente e venditore si accordano da soli su ritiro e pagamento, e noi non siamo parte della vendita. Niente animali vivi, niente medicinali, niente che non sia per cani. Le scuole cinofile compaiono solo dopo la nostra verifica; iscriverti a un evento o a un corso comunica alla scuola che vuoi partecipare, e paghi direttamente la scuola."
+      },
+      "purchases": {
+        "title": "6. Ossi, Premium e acquisti",
+        "body": "Ogni sì o no in Scopri usa un osso: 10 al giorno, 20 con Premium, rinnovati a mezzanotte. Gli ossi extra arrivano da una pubblicità con premio o da un pacchetto; non hanno valore monetario e decadono se elimini il tuo account. Premium si rinnova ogni mese finché non lo disdici almeno 24 ore prima della fine del periodo negli abbonamenti App Store o Google Play. Apple o Google è il venditore e gestisce pagamento e rimborsi. Per i pacchetti di ossi, il diritto di recesso termina appena gli ossi sono accreditati."
+      }
     }
   },
   "home": {

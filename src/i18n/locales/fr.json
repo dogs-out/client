@@ -480,7 +480,7 @@
     },
     "termsPrivacy": {
       "headerTitle": "Conditions & confidentialité",
-      "updated": "Version 2.2 · 19 octobre 2026 · Un résumé — les conditions d’utilisation et la politique de confidentialité complètes ci-dessous s’appliquent.",
+      "updated": "Version 2.3 · 6 novembre 2026 · Un résumé — les Conditions d'utilisation complètes et la Politique de confidentialité ci-dessous s'appliquent.",
       "whoCanUse": {
         "title": "1. Qui peut utiliser Dogs Out",
         "body": "Dogs Out est réservé aux adultes : tu dois avoir au moins 18 ans. Un compte par personne, avec des informations exactes sur toi et tes chiens. Garde tes identifiants pour toi. Dogs Out est exploité par Moritz Davinghausen et Lea Mutschler, Opfikon, Suisse."
@@ -498,25 +498,33 @@
         "body": "Dogs Out met seulement en relation propriétaires et dogsitters. Tout accord, y compris le paiement, vous concerne uniquement ; nous ne vérifions ni l’identité, ni l’expérience, ni la fiabilité et ne sommes pas partie à l’accord. Mettez-vous d’accord sur tout à l’avance et rencontrez-vous d’abord. Les détails de remise (adresse, numéro d’urgence) ne sont visibles que par le dogsitter accepté. Trois annulations tardives (moins de 24 heures avant) en un an bloquent l’acceptation de missions pendant 30 jours. Dans la mesure permise par la loi, nous déclinons toute responsabilité pour les dommages liés aux rencontres ou aux gardes."
       },
       "dataStored": {
-        "title": "5. Données enregistrées",
+        "title": "7. Données enregistrées",
         "body": "Ton compte (e-mail, nom, date de naissance), ton profil, tes chiens et photos, la position que tu définis (par GPS ou recherche de localité), les matchs, messages, playdates, statuts, missions de garde et évaluations, alertes SOS, blocages et signalements, ainsi que quand, sur quel type d’appareil (iPhone ou Android) et avec quelle version tu as utilisé Dogs Out pour la dernière fois. Nos serveurs sont aux États-Unis (Railway)."
       },
       "dataUse": {
-        "title": "6. Qui voit quoi",
+        "title": "8. Qui voit quoi",
         "body": "Les autres voient ton profil et à quelle distance tu te trouves — jamais ta position enregistrée. Un lieu n’est partagé que si tu le choisis : dans un statut, une alerte SOS, un playdate ou les détails de remise. Google affiche les publicités et reçoit ton identifiant publicitaire (sur iPhone seulement si tu autorises le suivi), ton adresse IP et tes interactions ; tu choisis les publicités personnalisées dans Réglages → Confidentialité des publicités. Nous ne vendons jamais tes données."
       },
       "deletingData": {
-        "title": "7. Supprimer ton compte",
+        "title": "9. Supprimer ton compte",
         "body": "Réglages → Supprimer le compte efface immédiatement et définitivement ton compte, profil, photos, chiens, matchs, chats, statuts, alertes et missions de garde. Les signalements sont conservés afin de reconnaître les comportements répétés. Tu peux aussi demander l’accès à tes données, leur correction ou une copie."
       },
       "contact": {
-        "title": "8. Contact",
+        "title": "10. Contact",
         "body": "help@dogsout.app · Moritz Davinghausen et Lea Mutschler, c/o Moritz Davinghausen, Wallisellerstrasse 124, 8152 Opfikon, Suisse. Le droit suisse s’applique."
       },
       "fullTerms": "Conditions d’utilisation complètes (en anglais)",
       "fullPrivacy": "Politique de confidentialité complète (en anglais)",
       "termsUrl": "https://dogsout.app/legal/terms.html",
-      "privacyUrl": "https://dogsout.app/legal/privacy.html"
+      "privacyUrl": "https://dogsout.app/legal/privacy.html",
+      "marketSchools": {
+        "title": "5. Marché et écoles canines",
+        "body": "Dans le marché, tu peux céder des articles pour chiens à des personnes près de chez toi. Dogs Out n'est que le tableau d'affichage : acheteur et vendeur conviennent eux-mêmes du retrait et du paiement, et nous ne sommes pas partie à la vente. Pas d'animaux vivants, pas de médicaments, rien qui ne soit pas pour les chiens. Les écoles canines n'apparaissent qu'après notre vérification ; t'inscrire à un événement ou à un cours informe l'école que tu veux venir, et tu paies directement l'école."
+      },
+      "purchases": {
+        "title": "6. Os, Premium et achats",
+        "body": "Chaque oui ou non dans Découvrir utilise un os : 10 par jour, 20 avec Premium, renouvelés à minuit. Les os supplémentaires viennent d'une pub récompensée ou d'un pack ; ils n'ont aucune valeur monétaire et expirent si tu supprimes ton compte. Premium se renouvelle chaque mois jusqu'à ce que tu le résilies au moins 24 heures avant la fin de la période dans tes abonnements App Store ou Google Play. Apple ou Google est le vendeur et gère paiement et remboursements. Pour les packs d'os, le droit de rétractation prend fin dès que les os sont crédités."
+      }
     }
   },
   "home": {

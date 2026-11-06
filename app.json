@@ -35,7 +35,7 @@
           "it"
         ]
       },
-      "buildNumber": "35"
+      "buildNumber": "36"
     },
     "android": {
       "googleServicesFile": "./google-services.json",
