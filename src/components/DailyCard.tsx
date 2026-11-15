@@ -7,7 +7,6 @@ import { Colors } from '../constants/colors';
 import { RootStackParamList } from '../types/navigation';
 import { DailyDigest, dailyService } from '../services/dailyService';
 import { appPrefs } from '../utils/appPrefs';
-import { userService } from '../services/userService';
 import { usePopupGateBusy } from '../utils/popupGate';
 
 type Card = { emoji: string; title: string; body: string; action: string; go: 'Discover' | 'CreatePlaydate' };
@@ -55,13 +54,10 @@ export function DailyCard() {
 
   const check = useCallback(async () => {
     await appPrefs.load();
-    // Admins see it on every start, to check how it looks; everyone else once a day.
-    const admin = await userService.getMe().then(me => me.role === 'ADMIN').catch(() => false);
-    if (!admin && appPrefs.get().dailyCardDay === today()) return;
+    if (appPrefs.get().dailyCardDay === today()) return;
     const digest = await dailyService.today().catch(() => null);
     if (!digest) return;
-    // An admin with nothing new still gets a card to look at.
-    const next = pickCard(digest, t) ?? (admin ? pickCard({ ...digest, canHost: true }, t) : null);
+    const next = pickCard(digest, t);
     if (next) setCard(next);
   }, [t]);
 

@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 import { Colors } from '../constants/colors';
 import { RemoteImage } from './ui/RemoteImage';
 import { Dog, DogSex, dogService } from '../services/dogService';
-import { userService } from '../services/userService';
 import { useHoldPopupGate } from '../utils/popupGate';
 
 type Answer = { sex: DogSex | null; neutered: boolean | null };
@@ -33,11 +32,9 @@ export function DogDetailsPrompt() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Admins get it on every start with all their dogs, answers filled in, to check
-    // how it looks. Everyone else only for dogs that miss an answer.
-    Promise.all([dogService.getMyDogs(), userService.getMe().then(me => me.role === 'ADMIN').catch(() => false)])
-      .then(([mine, admin]) => {
-        const missing = admin ? mine : mine.filter(needsDetails);
+    dogService.getMyDogs()
+      .then(mine => {
+        const missing = mine.filter(needsDetails);
         setDogs(missing);
         setAnswers(Object.fromEntries(missing.map(d => [d.id, { sex: d.sex ?? null, neutered: d.neutered ?? null }])));
       })
