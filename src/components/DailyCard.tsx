@@ -62,8 +62,8 @@ export function DailyCard() {
   }, [t]);
 
   useEffect(() => {
-    check();
-    const sub = AppState.addEventListener('change', s => { if (s === 'active') check(); });
+    void check();
+    const sub = AppState.addEventListener('change', s => { if (s === 'active') void check(); });
     return () => sub.remove();
   }, [check]);
 

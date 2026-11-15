@@ -47,7 +47,7 @@ export default function ParkPickerScreen({ navigation, route }: Readonly<Props>)
   // Center on the user: device GPS first, stored profile location as fallback
   useEffect(() => {
     if (route.params?.initialLat != null) return;
-    (async () => {
+    void (async () => {
       if (!home) {
         try {
           const { status } = await Location.requestForegroundPermissionsAsync();

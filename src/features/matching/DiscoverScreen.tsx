@@ -247,7 +247,7 @@ export default function DiscoverScreen() {
     // Any swipe while ads are not running yet, not only the first: a start-up that
     // failed (offline, a slow consent form) gets another chance on the next one.
     // Premium has no ads, so no consent dialog either.
-    if (!adsEnabled && !isPremium()) initAds().then(setAdsEnabled);
+    if (!adsEnabled && !isPremium()) void initAds().then(setAdsEnabled);
     // Every Nth swipe, and also as the very last card: when the deck runs out
     // there is nothing left to interrupt, so the slot costs nobody a profile.
     if (!hasNext || swipeCountRef.current % AD_EVERY_N_SWIPES === 0) {
@@ -263,7 +263,7 @@ export default function DiscoverScreen() {
   const deckEmpty = !loading && !locked && !error && feed[idx] === undefined;
   useEffect(() => {
     if (!deckEmpty) { emptyAdShownRef.current = false; return; }
-    if (!adsEnabled) { if (!isPremium()) initAds().then(setAdsEnabled); return; }
+    if (!adsEnabled) { if (!isPremium()) void initAds().then(setAdsEnabled); return; }
     if (emptyAdShownRef.current || adCard) return;
     const ad = takeDeckAd();
     if (ad) { emptyAdShownRef.current = true; setAdCard(ad); }

@@ -36,7 +36,7 @@ export function useRewardedBone(enabled: boolean, onBones: (bones: BoneStatus) =
   useEffect(() => {
     if (!enabled || !REWARDED_BONE_AD_UNIT) return;
     userService.getMe().then(me => { if (mounted.current) setUserId(me.id); }).catch(() => {});
-    initAds().then(ok => { if (mounted.current) setCanShowAds(ok); });
+    void initAds().then(ok => { if (mounted.current) setCanShowAds(ok); });
   }, [enabled]);
 
   const watch = useCallback(async () => {

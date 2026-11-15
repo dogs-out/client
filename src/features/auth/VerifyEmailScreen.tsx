@@ -49,7 +49,7 @@ export default function VerifyEmailScreen({ route, navigation }: Readonly<Props>
   const onCodeChange = (value: string) => {
     const digits = value.replace(/\D/g, '').slice(0, 6);
     setCode(digits);
-    if (digits.length === 6 && !loading) handleVerify(digits);
+    if (digits.length === 6 && !loading) void handleVerify(digits);
   };
 
   const handleResend = async () => {

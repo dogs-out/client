@@ -265,7 +265,7 @@ export default function ChatDetailScreen() {
         if (offerIds.includes(job.id)) byId[job.id] = job;
       }
       setOfferJobs(byId);
-    });
+    }).catch(() => {});
   }, [offerIds]);
 
   useEffect(() => { loadOfferJobs(); }, [loadOfferJobs]);

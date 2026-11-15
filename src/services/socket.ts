@@ -46,7 +46,7 @@ function scheduleReconnect() {
   reconnectTimer = setTimeout(() => {
     reconnectTimer = null;
     backoffMs = Math.min(backoffMs * 2, MAX_BACKOFF_MS);
-    connect();
+    void connect();
   }, backoffMs);
 }
 
@@ -54,7 +54,9 @@ async function connect() {
   if (listeners.size === 0) return;
   if (socket && (socket.readyState === WebSocket.CONNECTING || socket.readyState === WebSocket.OPEN)) return;
 
-  const token = await tokenStorage.get();
+  // A failed keystore read is treated like having no token yet: try again later
+  // rather than letting the rejection escape and the socket stay down for good.
+  const token = await tokenStorage.get().catch(() => null);
   if (!token) { scheduleReconnect(); return; }
 
   const ws = new WebSocket(`${WS_URL}?token=${encodeURIComponent(token)}`);
@@ -93,7 +95,7 @@ export const chatSocket = {
   /** Delivers live chat events; the socket lives while at least one subscriber exists. */
   subscribe(listener: Listener): () => void {
     listeners.add(listener);
-    connect();
+    void connect();
     return () => {
       listeners.delete(listener);
       if (listeners.size === 0) teardown();

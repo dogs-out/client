@@ -39,7 +39,7 @@ export function MarketplaceSection() {
       .catch(e => setError(getApiError(e)));
   }, [mine, category]);
 
-  useFocusEffect(useCallback(() => { load(); }, [load]));
+  useFocusEffect(useCallback(() => { void load(); }, [load]));
 
   const renderItem = ({ item }: { item: Listing }) => (
     <TouchableOpacity
@@ -104,7 +104,7 @@ export function MarketplaceSection() {
           contentContainerStyle={styles.list}
           refreshControl={
             <RefreshControl refreshing={refreshing} tintColor={Colors.primary}
-              onRefresh={() => { setRefreshing(true); load().finally(() => setRefreshing(false)); }} />
+              onRefresh={() => { setRefreshing(true); void load().finally(() => setRefreshing(false)); }} />
           }
           ListEmptyComponent={
             <View style={styles.empty}>

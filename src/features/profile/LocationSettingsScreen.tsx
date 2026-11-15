@@ -69,7 +69,7 @@ export default function LocationSettingsScreen({ navigation, route }: Readonly<P
     if (!picked) return;
     setError(null);
     setProblem(null);
-    save(picked.latitude, picked.longitude, picked.address ?? picked.name);
+    void save(picked.latitude, picked.longitude, picked.address ?? picked.name);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [picked]);
 

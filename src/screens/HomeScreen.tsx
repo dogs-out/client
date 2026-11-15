@@ -54,9 +54,9 @@ export default function HomeScreen({ navigation }: Readonly<Props>) {
     }
   };
 
-  useFocusEffect(useCallback(() => { load(); }, []));
+  useFocusEffect(useCallback(() => { void load(); }, []));
 
-  const onRefresh = () => { setRefreshing(true); load(); };
+  const onRefresh = () => { setRefreshing(true); void load(); };
 
   const formatAge = (dob: string | null) => {
     if (!dob) return null;

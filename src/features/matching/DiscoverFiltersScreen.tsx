@@ -85,7 +85,7 @@ export default function DiscoverFiltersScreen({ navigation, route }: Readonly<Pr
         setMinDogAge(u.minDogAge ?? DOG_AGE_MIN);
         setMaxDogAge(u.maxDogAge ?? DOG_AGE_MAX);
       }
-    }).finally(() => setLoading(false));
+    }).catch(() => { /* offline: the sliders keep their defaults */ }).finally(() => setLoading(false));
   }, []);
 
   // The screen has its own back button, so the native edge-swipe-to-go-back gesture is

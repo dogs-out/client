@@ -135,7 +135,7 @@ export default function Navigation() {
 
   // Device preferences before the first screen paints, so the background does not
   // start animating and then stop for someone who asked it not to.
-  useEffect(() => { appPrefs.load(); }, []);
+  useEffect(() => { void appPrefs.load(); }, []);
 
   useEffect(() => {
     const resolve = async () => {
@@ -153,7 +153,9 @@ export default function Navigation() {
         setInitialRoute('Login');
       }
     };
-    resolve();
+    // Reading the stored token can itself fail (a locked or damaged keystore).
+    // Without a route the app would sit on its splash screen forever.
+    resolve().catch(() => setInitialRoute('Login'));
   }, []);
 
   // Most "opening the app" on a phone is resuming it, not a cold start, so the

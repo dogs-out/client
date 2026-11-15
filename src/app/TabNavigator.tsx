@@ -111,7 +111,7 @@ export default function TabNavigator() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   // The user is authenticated once the main tabs mount — register this device for push
-  useEffect(() => { notificationService.register(); }, []);
+  useEffect(() => { void notificationService.register(); }, []);
 
   // Purchases belong to the account, so RevenueCat learns who is signed in; the
   // bone status also tells every ad slot whether this is a Premium user.
@@ -123,7 +123,7 @@ export default function TabNavigator() {
   // The tour, once per device: new accounts on their first arrival, and everyone
   // already here on the first launch after it shipped. Settings replays it.
   useEffect(() => {
-    appPrefs.load().then(() => {
+    void appPrefs.load().then(() => {
       if (!appPrefs.get().tourSeen) navigation.navigate('Tour');
     });
   }, [navigation]);

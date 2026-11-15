@@ -43,7 +43,7 @@ export default function PlaydateDetailScreen({ navigation, route }: Readonly<Pro
   useEffect(() => {
     if (!playdate) return;
     let cancelledLookup = false;
-    fullAddress(playdate).then(a => { if (!cancelledLookup) setCopyableAddress(a); });
+    fullAddress(playdate).then(a => { if (!cancelledLookup) setCopyableAddress(a); }).catch(() => {});
     return () => { cancelledLookup = true; };
   }, [playdate]);
 

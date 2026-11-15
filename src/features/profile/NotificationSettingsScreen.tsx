@@ -29,7 +29,7 @@ export default function NotificationSettingsScreen({ navigation }: Readonly<Prop
     setEnabled(value); // optimistic
     setError(null);
     notificationService.setEnabled(value)
-      .then(() => { if (value) notificationService.register(); })
+      .then(() => { if (value) void notificationService.register(); })
       .catch(() => {
         setEnabled(!value);
         setError(t('profile.notificationSettings.saveError'));

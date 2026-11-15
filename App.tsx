@@ -9,7 +9,11 @@ import { initI18n } from './src/i18n';
 export default function App() {
   const [ready, setReady] = useState(false);
 
-  useEffect(() => { initI18n().then(() => setReady(true)); }, []);
+  useEffect(() => {
+    // Ready either way: a failed language read must not leave the app on its
+    // loading screen for good. i18next then runs on its fallbacks.
+    initI18n().catch(() => {}).finally(() => setReady(true));
+  }, []);
 
   if (!ready) {
     return (

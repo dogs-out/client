@@ -57,7 +57,7 @@ export function usePlaceName(
       return;
     }
     let active = true;
-    resolvePlaceName(latitude, longitude).then(resolved => {
+    void resolvePlaceName(latitude, longitude).then(resolved => {
       if (active) setName(resolved);
     });
     return () => { active = false; };

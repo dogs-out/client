@@ -26,7 +26,7 @@ export function SchoolsSection() {
     schoolService.mine().then(setMine).catch(() => setMine(null)),
   ]).catch(e => setError(getApiError(e))), []);
 
-  useFocusEffect(useCallback(() => { load(); }, [load]));
+  useFocusEffect(useCallback(() => { void load(); }, [load]));
 
   const header = mine === undefined ? null : mine ? (
     <TouchableOpacity onPress={() => navigation.navigate('SchoolDetail', { schoolId: mine.id })} testID="my-school">
@@ -54,7 +54,7 @@ export function SchoolsSection() {
       contentContainerStyle={styles.list}
       refreshControl={
         <RefreshControl refreshing={refreshing} tintColor={Colors.primary}
-          onRefresh={() => { setRefreshing(true); load().finally(() => setRefreshing(false)); }} />
+          onRefresh={() => { setRefreshing(true); void load().finally(() => setRefreshing(false)); }} />
       }
       renderItem={({ item }) => (
         <TouchableOpacity onPress={() => navigation.navigate('SchoolDetail', { schoolId: item.id })} testID={`school-${item.id}`}>

@@ -27,7 +27,7 @@ export function SchoolEventsList({ bottomInset }: Readonly<{ bottomInset: number
     .then(e => { setEvents(e); setError(null); })
     .catch(e => setError(getApiError(e))), []);
 
-  useFocusEffect(useCallback(() => { load(); }, [load]));
+  useFocusEffect(useCallback(() => { void load(); }, [load]));
 
   if (events === null && !error) return <ActivityIndicator style={{ marginTop: 40 }} color={Colors.primary} />;
 
@@ -48,7 +48,7 @@ export function SchoolEventsList({ bottomInset }: Readonly<{ bottomInset: number
       contentContainerStyle={[styles.list, { paddingBottom: bottomInset }]}
       refreshControl={
         <RefreshControl refreshing={refreshing} tintColor={Colors.primary}
-          onRefresh={() => { setRefreshing(true); load().finally(() => setRefreshing(false)); }} />
+          onRefresh={() => { setRefreshing(true); void load().finally(() => setRefreshing(false)); }} />
       }
       ListEmptyComponent={
         <View style={styles.empty}>

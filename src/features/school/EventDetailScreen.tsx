@@ -55,7 +55,7 @@ export default function EventDetailScreen({ navigation, route }: Readonly<Props>
   /** One-off or whole course. A course says first what signing up commits to. */
   const toggle = () => {
     if (!event) return;
-    if (event.joined) { run(() => schoolService.leave(event.id)); return; }
+    if (event.joined) { void run(() => schoolService.leave(event.id)); return; }
     const others = Math.max(0, (event.remainingClasses ?? 0) - 1);
     if (isCourse && others > 0) {
       Alert.alert(t('school.event.courseConfirmTitle'), t('school.event.courseNote', { count: others }), [
@@ -64,13 +64,13 @@ export default function EventDetailScreen({ navigation, route }: Readonly<Props>
       ]);
       return;
     }
-    run(() => schoolService.join(event.id));
+    void run(() => schoolService.join(event.id));
   };
 
   /** One class of a per-date event. */
   const toggleDate = (o: EventOccurrence) => {
     if (!event) return;
-    run(() => (o.joined ? schoolService.leave(event.id, o.date) : schoolService.join(event.id, o.date)));
+    void run(() => (o.joined ? schoolService.leave(event.id, o.date) : schoolService.join(event.id, o.date)));
   };
 
   /** The school calling off one class. */

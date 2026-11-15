@@ -71,7 +71,7 @@ export default function LoginScreen({ navigation }: Readonly<Props>) {
 
   useEffect(() => {
     if (Platform.OS === 'ios') {
-      AppleAuthentication.isAvailableAsync().then(setAppleAvailable);
+      AppleAuthentication.isAvailableAsync().then(setAppleAvailable).catch(() => setAppleAvailable(false));
     }
   }, []);
 
@@ -213,7 +213,7 @@ export default function LoginScreen({ navigation }: Readonly<Props>) {
 
         <TouchableOpacity
           style={[styles.googleButton, (!request || loading) && styles.googleButtonDisabled]}
-          onPress={() => { setError(null); promptAsync(); }}
+          onPress={() => { setError(null); promptAsync().catch(() => setError(t('auth.login.googleSignInFailed'))); }}
           disabled={!request || loading}
         >
           <Ionicons name="logo-google" size={20} color="#fff" style={styles.buttonIcon} />
